@@ -1,0 +1,276 @@
+{
+	"entropy": [
+		{
+			"name": "amino-acid",
+			"price": 15
+		},
+		{
+			"name": "dna",
+			"price": 100
+		},
+		{
+			"name": "prokaryotic-cell",
+			"price": 600
+		},
+		{
+			"name": "eukaryotic-cell",
+			"price": 3000
+		},
+		{
+			"name": "sponge",
+			"price": 10000
+		},
+		{
+			"name": "jellyfish",
+			"price": 40000
+		},
+		{
+			"name": "flatworm",
+			"price": 200000
+		},
+		{
+			"name": "fish",
+			"price": 1.67E6
+		},
+		{
+			"name": "tetrapod",
+			"price": 73.68E6
+		},
+		{
+			"name": "mammal",
+			"price": 1.66E9
+		},
+		{
+			"name": "ape",
+			"price": 67E9
+		},
+		{
+			"name": "human",
+			"price": 1.77E12
+		},
+		{
+			"name": "cyborg",
+			"price": 4.42E15
+		},
+		{
+			"name": "superhuman",
+			"price": 13.21E18
+		},
+		{
+			"name": "humanoid-colonist",
+			"price": 1.32E21
+		},
+		{
+			"name": "turtles",
+			"price": 35.8E9
+		},
+		{
+			"name": "crocodilia",
+			"price": 61E12
+		},
+		{
+			"name": "lizard",
+			"price": 3.3E18
+		},
+		{
+			"name": "snake",
+			"price": 167E18
+		},
+		{
+			"name": "galliformes",
+			"price": 6.67E21
+		},
+		{
+			"name": "anseriformes",
+			"price": 52E24
+		},
+		{
+			"name": "paleognathae",
+			"price": 25.4E27
+		},
+		{
+			"name": "neoaves",
+			"price": 8.35E30
+		}
+	],
+	"ideas": [
+		{
+			"name": "stone-age",
+			"price": 46
+		},
+		{
+			"name": "neolithic-age",
+			"price": 460
+		},
+		{
+			"name": "bronze-age",
+			"price": 1380
+		},
+		{
+			"name": "iron-age",
+			"price": 6900
+		},
+		{
+			"name": "middle-age",
+			"price": 23000
+		},
+		{
+			"name": "age-of-discovery",
+			"price": 138000
+		},
+		{
+			"name": "scientific-revolution",
+			"price": 575000
+		},
+		{
+			"name": "industrial-revolution",
+			"price": 3.83E6
+		},
+		{
+			"name": "atomic-age",
+			"price": 283.95E6
+		},
+		{
+			"name": "information-age",
+			"price": 9.2E9
+		},
+		{
+			"name": "emergent-age",
+			"price": 172.5E9
+		},
+		{
+			"name": "singularity",
+			"price": 9.82E12
+		},
+		{
+			"name": "android",
+			"price": 101.62E15
+		},
+		{
+			"name": "sentient-android",
+			"price": 1.32E18
+		},
+		{
+			"name": "rover",
+			"price": 12.27E12
+		},
+		{
+			"name": "human-expedition",
+			"price": 984E15
+		},
+		{
+			"name": "martian-settlement",
+			"price": 10.56E21
+		},
+		{
+			"name": "martian-factory",
+			"price": 4.76E24
+		},
+		{
+			"name": "martian-city",
+			"price": 4.4E27
+		}
+	],
+	"fossils": [
+		{
+			"name": "archosaur",
+			"price": 3.74
+		},
+		{
+			"name": "ornithischia",
+			"price": 60
+		},
+		{
+			"name": "stegosaurus",
+			"price": 720
+		},
+		{
+			"name": "ankylosaurus",
+			"price": 8640
+		},
+		{
+			"name": "triceratops",
+			"price": 103680
+		},
+		{
+			"name": "pterosaur",
+			"price": 1.24E6
+		},
+		{
+			"name": "plesiosaur",
+			"price": 14.93E6
+		},
+		{
+			"name": "saurischia",
+			"price": 179.16E6
+		},
+		{
+			"name": "sauropoda",
+			"price": 2.15E9
+		},
+		{
+			"name": "theropoda",
+			"price": 25.8E9
+		},
+		{
+			"name": "compsognathus",
+			"price": 309.58E9
+		},
+		{
+			"name": "velociraptor",
+			"price": 3.72E12
+		},
+		{
+			"name": "pachycephalosaurus",
+			"price": 44.58E12
+		},
+		{
+			"name": "gallimimus",
+			"price": 534.97E12
+		},
+		{
+			"name": "archaeopteryx",
+			"price": 6.42E15
+		},
+		{
+			"name": "brachiosaurus",
+			"price": 77.04E15
+		},
+		{
+			"name": "tyrannosaurus-rex",
+			"price": 924.42E15
+		},
+		{
+			"name": "spinosaurus",
+			"price": 11.09E18
+		},
+		{
+			"name": "iguanodon",
+			"price": 133.12E18
+		},
+		{
+			"name": "ichthyosaur",
+			"price": 1.6E21
+		},
+		{
+			"name": "cynodont",
+			"price": 19.17E21
+		},
+		{
+			"name": "eoraptor",
+			"price": 230.02E21
+		},
+		{
+			"name": "mosasaurus",
+			"price": 2.76E24
+		},
+		{
+			"name": "argentinosaurus",
+			"price": 33.12E24
+		},
+		{
+			"name": "giganotosaurus",
+			"price": 397.5E24
+		}
+	]
+}

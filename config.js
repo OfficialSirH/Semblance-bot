@@ -1,0 +1,28 @@
+const { MessageAttachment } = require('discord.js'),
+    currentLogo = new MessageAttachment("./images/Current_Logo.png"),
+    sharks = new MessageAttachment("./images/Sharks.jpg"),
+    roadMap = new MessageAttachment('./images/roadMap.png'),
+    simStatsLocation = new MessageAttachment("./images/SimStatsLocation.png"),
+    geodeImage = new MessageAttachment('./images/GeodeLevelComparison.png'),
+    prestigeImage = new MessageAttachment('./images/Prestige.png'),
+    archieDance = new MessageAttachment("./images/ArchieDance.mp4"),
+    patreon = new MessageAttachment("./images/Patreon_Mark_Coral.jpg"),
+    sembcommunist = new MessageAttachment('./images/CommunistSemblance.jpg'),
+    nanobots = new MessageAttachment('./images/Nanobots.png');
+module.exports = {
+    prefix: "s!",
+    sembID: "668688939888148480",
+    sirhID: "279080959612026880",
+    c2sID: "488478892873744385",
+    sirhGuildID: "643957301425995821",
+    currentLogo: currentLogo,
+    sharks: sharks,
+    roadMap: roadMap,
+    simStatsLocation: simStatsLocation,
+    geodeImage: geodeImage,
+    prestigeImage: prestigeImage,
+    archieDance: archieDance,
+    patreon: patreon,
+    sembcommunist: sembcommunist,
+    nanobots: nanobots
+}

@@ -1,0 +1,32 @@
+{
+  "name": "Semblance",
+  "version": "1.0.0",
+  "description": "The AI that runs the Reality Engine",
+  "main": "bot.js",
+  "author": "SirH",
+  "dependencies": {
+    "boats.js": "^2.4.0",
+    "cron": "^1.8.2",
+    "dblapi.js": "^2.4.1",
+    "discord.js": "^12.4.1",
+    "ffmpeg": "0.0.4",
+    "ffmpeg-static": "^4.2.7",
+    "mongoose": "^5.10.11",
+    "node-fetch": "^2.6.1",
+    "node-gyp": "^7.1.0",
+    "opusscript": "0.0.7",
+    "request": "^2.88.2",
+    "tmi.js": "^1.5.0",
+    "twitch": "^4.2.2",
+    "twitch-chat-client": "^4.2.2",
+    "twitch-webhooks": "^4.2.2",
+    "twitter": "^1.7.1",
+    "winston": "^3.3.3",
+    "ytdl-core-discord": "^1.2.1"
+  },
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "keywords": [],
+  "license": "ISC"
+}
