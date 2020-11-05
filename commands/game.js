@@ -176,6 +176,7 @@ async function gameStats(client, message) {
             { name: 'Percent Increase', value: statsHandler.percentIncrease },
             { name: 'Next Upgrade Cost', value: nxtUpgrade },
             { name: 'Idle Profit', value: statsHandler.idleProfit }
-        );
+        )
+        .setFooter("Remember to vote for Semblance to gain a production boost!");
     message.channel.send(embed);
 }

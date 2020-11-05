@@ -15,8 +15,8 @@ module.exports.run = async (client, message, args) => {
 	.setTitle("Vote")
 	.setColor(randomColor())
 	.setThumbnail(client.user.avatarURL())
-		.setDescription("**Websites that provide game boost/is interactible if voted on**",
-			["[Top.gg](https://top.gg/bot/668688939888148480)\n",
+		.setDescription(["**Websites that provide game boost/is interactible if voted on**",
+				"[Top.gg](https://top.gg/bot/668688939888148480)\n",
 				"**Extra voting sites/Don't have any type of interactivity yet**",
 				"[Discord.boats](https://discord.boats/bot/668688939888148480)",
 				"[Discordbotlist.com](https://discordbotlist.com/bots/semblance)",
