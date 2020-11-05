@@ -1,5 +1,3 @@
-This is the Semblance bot for Discord, which is totally epic and helps a lot of the members and is also supercool 😎😎
-
 ## **Who is Semblance?**
 
 - Semblance is an AI from the educational and epic idle game, Cell to Singularity, to which she runs the Reality Engine and all the simulations.
