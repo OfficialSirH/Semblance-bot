@@ -41,6 +41,10 @@
 			"price": 1.66E9
 		},
 		{
+			"name": "turtles",
+			"price": 35.8E9
+		},
+		{
 			"name": "ape",
 			"price": 67E9
 		},
@@ -49,32 +53,28 @@
 			"price": 1.77E12
 		},
 		{
-			"name": "cyborg",
-			"price": 4.42E15
-		},
-		{
-			"name": "superhuman",
-			"price": 13.21E18
-		},
-		{
-			"name": "humanoid-colonist",
-			"price": 1.32E21
-		},
-		{
-			"name": "turtles",
-			"price": 35.8E9
-		},
-		{
 			"name": "crocodilia",
 			"price": 61E12
+		},
+		{
+			"name": "cyborg",
+			"price": 4.42E15
 		},
 		{
 			"name": "lizard",
 			"price": 3.3E18
 		},
 		{
+			"name": "superhuman",
+			"price": 13.21E18
+		},
+		{
 			"name": "snake",
 			"price": 167E18
+		},
+		{
+			"name": "humanoid-colonist",
+			"price": 1.32E21
 		},
 		{
 			"name": "galliformes",

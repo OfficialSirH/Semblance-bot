@@ -121,7 +121,11 @@ client.on('ready', () => {
 	}
 	client.clearCache = setInterval(() => {
 		client.sweepUsers();
-	}, 300);
+	}, 30000);
+	client.updateLeaderboards = setInterval(async () => {
+		commands['game'].updateLeaderboard(client);
+		commands['leaderboard'].updateLeaderboard(client);
+	}, 60000);
 });
 
 var myActivity = setInterval(ShowMyActivity, 10000);

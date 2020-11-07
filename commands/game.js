@@ -7,7 +7,8 @@ module.exports = {
         "<help, create, collect, upgrade, leaderboard>": ""
     },
     permissionRequired: 0,
-    checkArgs: args => args.length >= 0
+    checkArgs: args => args.length >= 0,
+    updateLeaderboard: (client) => updateLeaderboard(client)
 }
 
 module.exports.run = async (client, message, args) => {
@@ -73,22 +74,29 @@ async function help(client, message) {
     message.channel.send(embed);
 }
 
-async function leaderboard(client, message) {
-        var users = {};
-        var mappedUsers = await GameModel.find({});
-        await mappedUsers.forEach(async (user, ind) => users[user.player] = user.level);
-        var list = [];
-        for (const [key, value] of Object.entries(users)) {
-            var user = await client.users.fetch(key);
-            list.push([user.tag, value]);
+async function updateLeaderboard(client) {
+    var users = {};
+    var mappedUsers = await GameModel.find({});
+    await mappedUsers.forEach(async (user, ind) => users[user.player] = user.level);
+    var list = [];
+    for (const [key, value] of Object.entries(users)) {
+        var user = await client.users.fetch(key, { cache: false });
+        list.push([user.tag, value]);
     }
     list = list.sort((a, b) => b[1] - a[1]).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - level ${cur[1]}\n`, '');
-    if (!list) list = 'There is currently no one who has upgraded their income';
+    if (!list) leaderboardList = 'There is currently no one who has upgraded their income.';
+    else leaderboardList = list;
+}
+
+var leaderboardList = 'There is currently no one who has upgraded their income or the leaderboard hasn\'t updated.';
+
+async function leaderboard(client, message) {
+        
     var embed = new MessageEmbed()
         .setTitle("Semblance's idle-game leaderboard")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
-        .setDescription(`${list}`)
+        .setDescription(`${leaderboardList}`)
         .setFooter("May the odds be with you.");
     message.channel.send(embed);
 }

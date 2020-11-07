@@ -8,29 +8,37 @@ module.exports = {
 		"": ""
 	},
 	permissionRequired: 0,
-	checkArgs: (args) => args.length >= 0
+	checkArgs: (args) => args.length >= 0,
+	updateLeaderboard: (client) => updateLeaderboard(client)
 }
 
 module.exports.run = async (client, message, args) => {
 	var channel = NameToChannel("semblance-votes", client);try {
-		var users = {};
-		var mappedUsers = await VoteModel.find({});
-		await mappedUsers.forEach(async (user, ind) => users[user.user] = user.voteCount);
-		var list = [];
-		for (const [key, value] of Object.entries(users)) {
-			var user = await client.users.fetch(key, {cache: false});
-			list.push([user.tag, value]);
-		}
-		list = list.sort((a, b) => b[1] - a[1]).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - ${cur[1]} vote(s)\n`, '');
-		if (!list || list.length == 0) list = 'There is currently no voters for this month.';
+		
 		var embed = new MessageEmbed()
 			.setTitle("Voting Leaderboard")
 			.setThumbnail(client.user.displayAvatarURL())
 			.setColor(randomColor())
-			.setDescription(`${list}`)
+			.setDescription(`${leaderboardList}`)
 			.setFooter("Vote for Semblance on Top.gg");
 		message.channel.send(embed);
 	} catch (error) { console.log(error); message.reply("Something seemed to have not worked, unfortunately. oopsy"); return; }
+}
+
+var leaderboardList = 'There is currently no votes for this month.';
+
+async function updateLeaderboard(client) {
+	var users = {};
+	var mappedUsers = await VoteModel.find({});
+	await mappedUsers.forEach(async (user, ind) => users[user.user] = user.voteCount);
+	var list = [];
+	for (const [key, value] of Object.entries(users)) {
+		var user = await client.users.fetch(key, { cache: false });
+		list.push([user.tag, value]);
+	}
+	list = list.sort((a, b) => b[1] - a[1]).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - ${cur[1]} vote(s)\n`, '');
+	if (!list || list.length == 0) leaderboardList = 'There is currently no voters for this month.';
+	else leaderboardList = list;
 }
 
 function NameToChannel(channel, theClient) {
