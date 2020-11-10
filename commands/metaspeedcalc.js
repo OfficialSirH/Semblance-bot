@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js');
+const { MessageEmbed } = require('discord.js'), { bigToE, checkIfAllowedValue } = require('../constants/largeNumberConversion.js');
 
 module.exports = {
     description: "Provides the production multiplier when given metabit input.",
@@ -13,8 +13,8 @@ module.exports.run = async (client, message, args) => {
     if (args.length == 0) return message.reply(`The usage of this command is metaspeedcalc <metabits> <total meso ranks accumulated> <simulation speed upgrades percentage>`);
     if (args.length == 1) return message.reply('You forgot input for `accumulated meso ranks` and `sim speed upgrades percentage`');
     if (args.length == 2) return message.reply('You forgot input for `sim speed upgrades percentage`');
-    var metabits = args[0];
-    var dinoRanks = (args[1] > 550) ? 550 : args[1];
+    var metabits = checkIfAllowedValue(args[0], message, 'metabits');
+    var dinoRanks = (Math.floor(args[1].replace(/\D/g, '')) > 550) ? 550 : Math.floor(args[1].replace(/\D/g, ''));
     var num = 1.0;
     if (metabits > 1000.0) {
         var num2 = metabits - 1000.0;
@@ -31,9 +31,9 @@ module.exports.run = async (client, message, args) => {
     else {
         num += metabits * 0.009999999776482582;
     }
-    var dinoranksMulti = 1 + args[1] * 0.02;
+    var dinoranksMulti = 1 + Math.floor(args[1].replace(/\D/g, '')) * 0.02;
     num *= dinoranksMulti;
-    var simspeed = (args[2] > 1400) ? 1400 : args[2];
+    var simspeed = (Math.floor(args[2].replace(/\D/g, '')) > 1400) ? 1400 : Math.floor(args[2].replace(/\D/g, ''));
     num *= ((simspeed/100)+1);
-    message.reply(`${metabits} metabits, an accumulation of ${dinoRanks} meso ranks, and ${simspeed}% in simulation speed upgrades would give you a production multiplier of x${num}.`);
+    message.reply(`${metabits} metabits, an accumulation of ${dinoRanks} meso ranks, and ${simspeed}% in simulation speed upgrades would give you a production multiplier of x${bigToE(num)}.`);
 }
