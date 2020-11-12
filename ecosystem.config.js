@@ -2,7 +2,7 @@ module.exports = {
     apps: [{
         name: 'Semblance',
         script: './bot.js',
-        watch: '.',
+        watch: 'true',
         instances: 'max',
         env: {
             NODE_ENV: "development"
