@@ -3,7 +3,7 @@ module.exports = {
         name: 'Semblance',
         script: './bot.js',
         watch: 'true',
-        instances: 'max',
+        instances: '1',
         env: {
             NODE_ENV: "development"
         },
