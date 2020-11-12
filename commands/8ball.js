@@ -9,7 +9,7 @@ module.exports = {
 
 module.exports.run = async (client, message, args) => {
     if (args.length == 0) return message.reply("Ask any question and Semblance will answer.");
-    var randomizedChoice = Math.ceil(Math.random() * 20);
+    let randomizedChoice = Math.ceil(Math.random() * 20);
     if (randomizedChoice == 1) return message.reply('It is certain');
     if (randomizedChoice == 2) return message.reply('It is decidely so.');
     if (randomizedChoice == 3) return message.reply('Without a doubt');

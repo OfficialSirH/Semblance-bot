@@ -10,13 +10,13 @@ async function isStreamLive(userName, client) {
 		if (!user) {
 			return false;
 		}
-		var retrievedStream = await user.getStream();
+		let retrievedStream = await user.getStream();
 		if (currentStream == null) currentStream = await user.getStream();
 		try {
 			if (retrievedStream.id !== currentStream.id && currentStream) {
 				try {
 					if (currentStream.type == "live") {
-						var channel = client.channels.cache.get("730612621753057352");
+						let channel = client.channels.cache.get("730612621753057352");
 						channel.send(`${twitchName} is live! Come and enjoy ${twitchName} stream **${currentStream.title}** https://twitch.tv/${twitchName}`);
 					}
 				} catch (err) {

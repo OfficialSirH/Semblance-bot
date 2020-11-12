@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js'),
 	randomColor = require("../constants/colorRandomizer.js"),
 	msToTime = require('../constants/msToTime.js');
-var alphabet = "abcdefghijklmnopqrstuvwxyz";
+let alphabet = "abcdefghijklmnopqrstuvwxyz";
 
 module.exports = {
 	description: "Set a reminder for yourself.",
@@ -16,12 +16,12 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-		var time = args[0];
-		var timeAmount = 0;
-		var specifiedTime = false;
-		var h = false, m = false, s = false;
-		var reminder = args.splice(1, args.length);
-	for (var i = 0; i < time.length; i++) {
+		let time = args[0];
+		let timeAmount = 0;
+		let specifiedTime = false;
+		let h = false, m = false, s = false;
+		let reminder = args.splice(1, args.length);
+	for (let i = 0; i < time.length; i++) {
 		if (alphabet.indexOf(time[i]) >= 0) {
 			if (time[i] == "h" || time[i] == "m" || time[i] == "s") {
 				specifiedTime = true;
@@ -56,7 +56,7 @@ module.exports.run = async (client, message, args) => {
 			message.reply("You seem to be missing some input for time.");
 			return;
 		} else if (i == time.length - 1 && specifiedTime) {
-			var day = 24 * 60 * 60 * 1000;
+			let day = 24 * 60 * 60 * 1000;
 			if (msToTime(timeAmount).indexOf("e") >= 0 || msToTime(timeAmount) == "Infinityd") {
 				message.reply("Even science itself hates the number you specified.");
 				message.delete();
@@ -66,8 +66,8 @@ module.exports.run = async (client, message, args) => {
 				message.delete();
 				return;
 			}
-			var userAvatar = message.author.avatarURL();
-			var embed = new MessageEmbed()
+			let userAvatar = message.author.avatarURL();
+			let embed = new MessageEmbed()
 				.setTitle("Reminder")
 				.setColor(randomColor())
 				.setThumbnail(userAvatar)

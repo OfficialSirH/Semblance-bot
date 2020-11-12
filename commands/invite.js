@@ -11,13 +11,13 @@ module.exports = {
 }
 
 module.exports.run = (client, message, args, identifier) => {
-	var user = message.author;
-	var link = args[0];
+	let user = message.author;
+	let link = args[0];
 	if (link == 'support' || identifier == 'support') return user.send("discord.gg/Z38vUq6");
 	if (link) return message.reply("You made a typo.").then(msg => msg.delete({ timeout: 5000 }));
-	var semblanceAvatar = client.user.avatarURL(),
+	let semblanceAvatar = client.user.avatarURL(),
 		userAvatar = message.author.displayAvatarURL();
-	var embed = new MessageEmbed()
+	let embed = new MessageEmbed()
 		.setTitle("Bot Invite")
 		.setColor(randomColor())
 		.setThumbnail(semblanceAvatar)

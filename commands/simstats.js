@@ -12,7 +12,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var embed = new MessageEmbed()
+	let embed = new MessageEmbed()
 		.setTitle("Simulation Statistics")
 		.attachFiles([currentLogo, simStatsLocation])
 		.setThumbnail("attachment://Current_Logo.png")

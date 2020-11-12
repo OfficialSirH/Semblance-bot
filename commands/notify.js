@@ -12,8 +12,8 @@ module.exports = {
 
 module.exports.run = async (client, message, args) => {
   if (message.guild.id != sirhGuildID) return message.reply("This command is exclusive to SirH's server.");
-  var sembNotifications = message.guild.roles.cache.find(r => r.name == "Semblance Notifications");
-  var hasRole = message.member.roles.cache.has(sembNotifications.id);
+  let sembNotifications = message.guild.roles.cache.find(r => r.name == "Semblance Notifications");
+  let hasRole = message.member.roles.cache.has(sembNotifications.id);
   if (args[0] == 'remove' && hasRole) {
     return message.member.roles.remove(sembNotifications)
     .then(msg => msg.reply("Your role was successfully removed"));

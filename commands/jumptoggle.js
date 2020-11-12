@@ -12,8 +12,8 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-    var choice = args[0].toLowerCase();
-    var toggleHandler = await JTModel.findOne({ guild: message.guild.id });
+    let choice = args[0].toLowerCase();
+    let toggleHandler = await JTModel.findOne({ guild: message.guild.id });
     if (choice == 't' || choice == 'true') {
         if (toggleHandler && toggleHandler.active) return message.reply("You've already got `jump` enabled on this guild.");
         else if (toggleHandler && !toggleHandler.active) {

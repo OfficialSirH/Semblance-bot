@@ -10,7 +10,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var embed = new MessageEmbed()
+	let embed = new MessageEmbed()
 		.setTitle("Steam and Mobile Updates")
 		.setColor(randomColor())
 		.attachFiles(currentLogo)
@@ -22,7 +22,7 @@ module.exports.run = async (client, message, args) => {
 			"- Explore the evolutionary branches of the three mammal clades: Eutherians, Marsupials, and Monotremes!",
 			"- Lions, tigers, and bears... oh, my! Encounter different families of Eutherians, including Caniformes, Feliformes, and more.",
 			"- The Land Garden has now been divided into 6 biomes: tundra, desert, savannah, rainforest, grasslands, and the outback!",
-			"- Treat your eyes to improved textures, restructured terrain, and varied foliage!",
+			"- Treat your eyes to improved textures, restructured terrain, and letied foliage!",
 
 			"\n**Additional Features:**",
 			"- Find 6 mysterious glitches in the simulation after you achieve Singularity! It looks like they need MetaBits to grant access to mammal branches on the main tree...",

@@ -1,7 +1,7 @@
 const { MessageEmbed, MessageAttachment, GuildEmoji } = require('discord.js'),
 	randomColor = require("../constants/colorRandomizer.js"),
 	msToTime = require('../constants/msToTime.js');
-var embed = new MessageEmbed();
+let embed = new MessageEmbed();
 const botStartTime = Date.now();
 
 module.exports = {
@@ -14,11 +14,11 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-		var uptime = Date.now() - botStartTime;
-		var duration = msToTime(uptime);
-		var responseTime = Date.now() - message.createdTimestamp;
-	var userAvatar = message.author.avatarURL({ dynamic: true });
-		var embed = new MessageEmbed()
+		let uptime = Date.now() - botStartTime;
+		let duration = msToTime(uptime);
+		let responseTime = Date.now() - message.createdTimestamp;
+	let userAvatar = message.author.avatarURL({ dynamic: true });
+		let embed = new MessageEmbed()
 		.setTitle("Latency")
 		.setColor(randomColor())
 		.setThumbnail(userAvatar)

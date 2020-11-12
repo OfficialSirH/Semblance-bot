@@ -1,8 +1,8 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js');
 const randomColor = require("../constants/colorRandomizer.js");
-var embeddingUser = [];
-var sembMessages = [];
-var embedList = [];
+let embeddingUser = [];
+let sembMessages = [];
+let embedList = [];
 
 module.exports = {
 	description: "Create an embedded message with this command",
@@ -20,8 +20,8 @@ module.exports.run = async (client, message, args) => {
 }
 
 	async function embedSetup(client, message) {
-		var inList = false;
-		for (var i = 0; i < embeddingUser.length; i++) {
+		let inList = false;
+		for (let i = 0; i < embeddingUser.length; i++) {
 			if (embeddingUser[i] == message.author.id) {
 				inList = true;
 			}
@@ -34,10 +34,10 @@ module.exports.run = async (client, message, args) => {
 	}
 
 	async function embedCreate(client, message) {
-		var msg = message.content;
-		var inList = false;
-		var arrayPos;
-		for (var i = 0; i < embeddingUser.length; i++) {
+		let msg = message.content;
+		let inList = false;
+		let arrayPos;
+		for (let i = 0; i < embeddingUser.length; i++) {
 			if (embeddingUser[i] == message.author.id) {
 				inList = true;
 				arrayPos = i;
@@ -60,9 +60,9 @@ module.exports.run = async (client, message, args) => {
 				.catch(console.log("Something didn't work"));
 			return;
 		}
-		var embedEdit = embedList[arrayPos];
+		let embedEdit = embedList[arrayPos];
 		if (!embedEdit) {
-			for (var i = 0; i < arrayPos+1 - embedList.length; i++) {
+			for (let i = 0; i < arrayPos+1 - embedList.length; i++) {
 				embedList.push([]);
             }
 		}
@@ -81,7 +81,7 @@ module.exports.run = async (client, message, args) => {
 				sembMessages[arrayPos].edit("What would you like your thumbnail to be? type 'null' for none, 'me' for your avatar, 'server' for the server icon, or use a (Valid!) link.");
 				return;
 			}
-			var authorIcon;
+			let authorIcon;
 			if (msg.indexOf(":me") >= 0) {
 				authorIcon = message.author.avatarURL();
 				msg = msg.replace(/:me/, "");
@@ -177,7 +177,7 @@ module.exports.run = async (client, message, args) => {
 				sembMessages[arrayPos].edit("What would you like the title of your first field to be? type 'null' to skip");
 				return;
 			} else if (message.attachments.size > 0) {
-				var attachmentList = [];
+				let attachmentList = [];
 				message.attachments.forEach(attachment => {
 					attachmentList.push(attachment);
 				});
@@ -198,7 +198,7 @@ module.exports.run = async (client, message, args) => {
 				sembMessages[arrayPos].edit("What would you like your Field description to be? type 'null' to skip.");
 			}
 		} else if (embedEdit.length == 9) {
-			var fields = embedEdit[8];
+			let fields = embedEdit[8];
 			if (msg == 'null') {
 				if (fields[0] == 2) {
 					fields.push(false);
@@ -247,7 +247,7 @@ module.exports.run = async (client, message, args) => {
 			message.reply("You don't have enough permission to use this command. Required Perms: Manage Messages");
 			return;
 		}
-		var embed = new MessageEmbed()
+		let embed = new MessageEmbed()
 			.setTitle("Embed Creation Help")
 			.setAuthor(message.author.tag, message.author.avatarURL())
 			.setColor(randomColor())
@@ -266,11 +266,11 @@ module.exports.run = async (client, message, args) => {
 		sembMessages.splice(arrayPos, 1);
 		embedList.splice(arrayPos, 1);
 
-		var embed = new MessageEmbed();
+		let embed = new MessageEmbed();
 		if (embedInput[0] != "null" && embedInput[0]) embed.setTitle(embedInput[0]);
 		if (embedInput[1] != 'null' && embedInput[1]) {
 			if (Array.isArray(embedInput[1])) {
-				var authorArray = embedInput[1];
+				let authorArray = embedInput[1];
 				embed.setAuthor(authorArray[0], authorArray[1]);
 			} else {
 				embed.setAuthor(embedInput[1]);
@@ -291,7 +291,7 @@ module.exports.run = async (client, message, args) => {
 		}
 		if (embedInput[6] != 'null' && embedInput[6]) {
 			if (Array.isArray(embedInput[6])) {
-				var footerArray = embedInput[6];
+				let footerArray = embedInput[6];
 				embed.setFooter(footerArray[0], footerArray[1]);
 			} else {
 				embed.setFooter(embedInput[6]);
@@ -301,13 +301,13 @@ module.exports.run = async (client, message, args) => {
 			embed.attachFiles(embedInput[7]);
 		}
 		if (embedInput[8] != 'null' && embedInput[8]) {
-			var fieldsRaw = embedInput[8];
+			let fieldsRaw = embedInput[8];
 			fieldsRaw.shift();
-			var fieldArray = [];
+			let fieldArray = [];
 			if (fieldsRaw[fieldsRaw.length - 1] == 'null') fieldsRaw.splice(fieldsRaw.length - 1, 1);
-			var looper = Math.ceil(fieldsRaw.length / 3);
-			for (var i = 0; i < looper; i++) {
-				var field = fieldsRaw.slice(0, 2);
+			let looper = Math.ceil(fieldsRaw.length / 3);
+			for (let i = 0; i < looper; i++) {
+				let field = fieldsRaw.slice(0, 2);
 				fieldsRaw.splice(0, 3);
 				fieldArray.push({
 					name: field[0],

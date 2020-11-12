@@ -12,11 +12,11 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-    var uptime = Date.now() - botStartTime;
-    var duration = msToTime(uptime);
-    var responseTime = Date.now() - message.createdTimestamp;
-    var totalMembers = client.guilds.cache.reduce((total, cur, ind) => total += cur.memberCount, 0);
-    var usage = Math.round(process.memoryUsage().heapUsed / Math.pow(1024, 2) * 100) / 100;
+    let uptime = Date.now() - botStartTime;
+    let duration = msToTime(uptime);
+    let responseTime = Date.now() - message.createdTimestamp;
+    let totalMembers = client.guilds.cache.reduce((total, cur, ind) => total += cur.memberCount, 0);
+    let usage = Math.round(process.memoryUsage().heapUsed / Math.pow(1024, 2) * 100) / 100;
       if (message.client.shard) {
       guilds = await message.client.shard.broadcastEval('this.guilds.cache.size').then(res => res.reduce((prev, val) => prev + val, 0))
       users = await message.client.shard.broadcastEval('this.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b)').then(res => res.reduce((prev, val) => prev + val, 0))
@@ -26,7 +26,7 @@ module.exports.run = async (client, message, args) => {
       users = message.client.users.size
       shardCount = 0
     }
-    var embed = new MessageEmbed()
+    let embed = new MessageEmbed()
         .setTitle(`Bot Information - ${client.user.tag}`)
         .setAuthor(message.author.tag, message.author.avatarURL())
         .setColor(randomColor())

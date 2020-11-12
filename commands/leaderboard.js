@@ -13,9 +13,9 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var channel = NameToChannel("semblance-votes", client);try {
+	let channel = NameToChannel("semblance-votes", client);try {
 		
-		var embed = new MessageEmbed()
+		let embed = new MessageEmbed()
 			.setTitle("Voting Leaderboard")
 			.setThumbnail(client.user.displayAvatarURL())
 			.setColor(randomColor())
@@ -25,20 +25,21 @@ module.exports.run = async (client, message, args) => {
 	} catch (error) { console.log(error); message.reply("Something seemed to have not worked, unfortunately. oopsy"); return; }
 }
 
-var leaderboardList = 'There is currently no votes for this month.';
+let leaderboardList = 'There is currently no votes for this month.';
 
 async function updateLeaderboard(client) {
-	var users = {};
-	var mappedUsers = await VoteModel.find({});
+	let users = {};
+	let mappedUsers = await VoteModel.find({});
 	await mappedUsers.forEach(async (user, ind) => users[user.user] = user.voteCount);
-	var list = [];
+	let list = [];
 	for (const [key, value] of Object.entries(users)) {
-		var user = await client.users.fetch(key, { cache: false });
+		let user = await client.users.fetch(key, { cache: false });
 		list.push([user.tag, value]);
 	}
-	list = list.sort((a, b) => b[1] - a[1]).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - ${cur[1]} vote(s)\n`, '');
+	list = await list.sort((a, b) => b[1] - a[1]).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - ${cur[1]} vote(s)\n`, '');
 	if (!list || list.length == 0) leaderboardList = 'There is currently no voters for this month.';
 	else leaderboardList = list;
+	setTimeout(module.exports.updateLeaderboard(client), 60000);
 }
 
 function NameToChannel(channel, theClient) {

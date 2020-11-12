@@ -10,7 +10,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var embed = new MessageEmbed()
+	let embed = new MessageEmbed()
 		.setColor(randomColor())
 		.setTitle("Semblance Command List")
 		.attachFiles(currentLogo)

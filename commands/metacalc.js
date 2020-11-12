@@ -13,13 +13,13 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
     if (args.length == 0) return message.reply('An example of this command would be `s!metacalc 58T 67T`, which translates to an input of 58 trillion entropy and 67 trillion ideas which will then output the amount of metabits you\'d accumulate from that.');
     if (args.length == 1) return message.reply('You forgot input for "ideas".');
-    var entropy = args[0], ideas = args[1];
+    let entropy = args[0], ideas = args[1];
     entropy = checkIfAllowedValue(entropy, message, 'entropy');
     ideas = checkIfAllowedValue(ideas, message, 'ideas');
     if (isNaN(entropy)) return;
     if (isNaN(ideas)) return;
-    //var metabits = Math.sqrt(entropy+(ideas/10E12));
-    var metabits = Math.floor(Math.pow(entropy + ideas, 0.3333333333333333) / 10000 - 1);
+    //let metabits = Math.sqrt(entropy+(ideas/10E12));
+    let metabits = Math.floor(Math.pow(entropy + ideas, 0.3333333333333333) / 10000 - 1);
     if (metabits < 1) {
         message.reply("That would produce ***nothing***!");
         return;

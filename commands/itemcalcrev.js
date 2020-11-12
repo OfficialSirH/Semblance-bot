@@ -12,15 +12,15 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-    var itemInput = args[0], curAmount = args[1], currentLevel = args[2];
+    let itemInput = args[0], curAmount = args[1], currentLevel = args[2];
     if (!itemInput) return message.reply("You forgot input for 'item'.");
     if (!curAmount) return message.reply("You forgot input for 'Currency Amount'.");
     if (!currentLevel || currentLevel < 0) currentLevel = 0;
     itemInput = itemInput.toLowerCase();
     curAmount = checkIfAllowedValue(curAmount, message, 'cost');
     if (isNaN(curAmount)) return;
-    var itemCost = null;
-    var itemCostType;
+    let itemCost = null;
+    let itemCostType;
     itemList.entropy.forEach(item => {
         if (item.name == itemInput) {
             itemCost = item.price;
@@ -49,8 +49,8 @@ module.exports.run = async (client, message, args) => {
         })
     }
     if (!itemCost) return message.reply("Your input for 'item' was invalid.");
-    var num3 = curAmount * 0.1499999761581421;
-    var num5 = itemCost * Math.pow(1.149999976158142, currentLevel);
-    var level = Math.floor(Math.log(num3 / num5 + 1) / Math.log(1.149999976158142));
+    let num3 = curAmount * 0.1499999761581421;
+    let num5 = itemCost * Math.pow(1.149999976158142, currentLevel);
+    let level = Math.floor(Math.log(num3 / num5 + 1) / Math.log(1.149999976158142));
     message.reply(`${bigToE(curAmount)} ${itemCostType} would give you ${level} levels of ${itemInput} starting at level ${currentLevel}.`);
 }

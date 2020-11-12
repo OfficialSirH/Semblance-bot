@@ -10,7 +10,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-    var embed = new MessageEmbed()
+    let embed = new MessageEmbed()
         .setTitle("Changelog")
         .setAuthor(message.author.tag, message.author.avatarURL())
         .setColor(randomColor())

@@ -11,7 +11,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var embed = new MessageEmbed()
+	let embed = new MessageEmbed()
 		.setTitle("Beyond")
 		.setColor(randomColor())
 		.attachFiles([currentLogo, roadMap])

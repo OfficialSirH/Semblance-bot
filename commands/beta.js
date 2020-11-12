@@ -10,7 +10,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var embed = new MessageEmbed()
+	let embed = new MessageEmbed()
 		.setTitle("March of the Mammals(6_90)")
 		.setColor(randomColor())
 		.attachFiles(currentLogo)

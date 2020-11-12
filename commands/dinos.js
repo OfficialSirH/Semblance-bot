@@ -13,7 +13,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-    var embed = new MessageEmbed()
+    let embed = new MessageEmbed()
         .setTitle(`${trexSkull} Mesozoic Valley`)
         .setColor(randomColor())
         .attachFiles(currentLogo)

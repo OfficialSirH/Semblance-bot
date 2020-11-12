@@ -11,9 +11,9 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var serverList = [];
-	var serverCount = 0;
-	var semblanceAvatar = client.user.avatarURL();
+	let serverList = [];
+	let serverCount = 0;
+	let semblanceAvatar = client.user.avatarURL();
 	client.guilds.cache.forEach( guild => {
 		serverCount++;
 		try {
@@ -22,7 +22,7 @@ module.exports.run = async (client, message, args) => {
 			serverList.push(`${guild.name}(*unable to get owner's name*)`);
 		}
 	});
-	var embed = new MessageEmbed()
+	let embed = new MessageEmbed()
 	.setTitle(`Server List [${serverCount}]`)
 	.setColor(randomColor())
 	.setThumbnail(semblanceAvatar)

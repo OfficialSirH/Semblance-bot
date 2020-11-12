@@ -1,6 +1,6 @@
 const { MessageEmbed, Collection } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { prefix } = require('../config.js'),
     GameModel = require('../models/Game.js');
-var cooldownHandler = new Collection();
+let cooldownHandler = new Collection();
 module.exports = {
     description: "An idle-game within Semblance",
     usage: {
@@ -19,10 +19,10 @@ module.exports.run = async (client, message, args) => {
         cooldownHandler.set(message.author.id, new Date());
     }
     if (args.length == 0) return message.reply(`Start with \`${prefix}game help\` to get more info on Semblance's idle game.`);
-    var choice = args[0].toLowerCase();
+    let choice = args[0].toLowerCase();
     if (choice == 'help') return help(client, message);
     if (choice == 'leaderboard') return leaderboard(client, message);
-    if (choice == 'stats') return gameStats(client, message);
+    if (choice == 'stats') return gameStats(client, message, args);
     if (choice == 'create') return create(client, message);
     if (choice == 'collect') return collect(client, message);
     if (choice == 'upgrade') return upgrade(client, message, args[1]);
@@ -35,7 +35,7 @@ async function noGame(message) {
 }
 
 async function graphs(client, message) {
-    var embed = new MessageEmbed()
+    let embed = new MessageEmbed()
         .setTitle("Graphed Data of Semblance's Idle Game")
         .setColor(randomColor())
         .setDescription("[Click Here for Game Data Graphs](https://charts.mongodb.com/charts-semblance-xnkqg/public/dashboards/5f9e8f7f-59c6-4a87-8563-0d68faed8515)");
@@ -43,7 +43,7 @@ async function graphs(client, message) {
 }
 
 async function about(client, message) {
-    var embed = new MessageEmbed()
+    let embed = new MessageEmbed()
         .setTitle("What's Semblance's Idle-Game about?")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
@@ -60,7 +60,7 @@ async function about(client, message) {
 }
 
 async function help(client, message) {
-    var embed = new MessageEmbed()
+    let embed = new MessageEmbed()
         .setTitle('game help')
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
@@ -75,24 +75,25 @@ async function help(client, message) {
 }
 
 async function updateLeaderboard(client) {
-    var users = {};
-    var mappedUsers = await GameModel.find({});
+    let users = {};
+    let mappedUsers = await GameModel.find({});
     await mappedUsers.forEach(async (user, ind) => users[user.player] = user.level);
-    var list = [];
+    let list = [];
     for (const [key, value] of Object.entries(users)) {
-        var user = await client.users.fetch(key, { cache: false });
+        let user = await client.users.fetch(key, { cache: false });
         list.push([user.tag, value]);
     }
-    list = list.sort((a, b) => b[1] - a[1]).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - level ${cur[1]}\n`, '');
+    list = await list.sort((a, b) => b[1] - a[1]).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - level ${cur[1]}\n`, '');
     if (!list) leaderboardList = 'There is currently no one who has upgraded their income.';
     else leaderboardList = list;
+    setTimeout(module.exports.updateLeaderboard(client), 60000);
 }
 
-var leaderboardList = 'There is currently no one who has upgraded their income or the leaderboard hasn\'t updated.';
+let leaderboardList = 'There is currently no one who has upgraded their income or the leaderboard hasn\'t updated.';
 
 async function leaderboard(client, message) {
         
-    var embed = new MessageEmbed()
+    let embed = new MessageEmbed()
         .setTitle("Semblance's idle-game leaderboard")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
@@ -112,20 +113,20 @@ async function currentPrice(userID, userData) {
 }
 
 async function create(client, message) {
-    var percent = ((Math.ceil(Math.random() * 25) + 25) / 100) + 1;
-    var startingProfits = (Math.random() * 0.05) + 0.05;
-    var existingData = GameModel.findOne({ player: message.author.id });
+    let percent = ((Math.ceil(Math.random() * 25) + 25) / 100) + 1;
+    let startingProfits = (Math.random() * 0.05) + 0.05;
+    let existingData = GameModel.findOne({ player: message.author.id });
     if (existingData) await GameModel.findOneAndDelete({ player: message.author.id });
-    var creationHandler = new GameModel({ player: message.author.id, percentIncrease: percent, idleProfit: startingProfits, idleCollection: Date.now() });
+    let creationHandler = new GameModel({ player: message.author.id, percentIncrease: percent, idleProfit: startingProfits, idleCollection: Date.now() });
     await creationHandler.save();
-    var embed = new MessageEmbed()
+    let embed = new MessageEmbed()
         .setTitle('Game Created')
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
         .setDescription(`Game Successfully created! Now you can start collecting Random-Bucks by typing \`${prefix}game collect\` and upgrade your Random-Bucks with \`${prefix}game upgrade\`\n\n`+
                        `Price Increase: ${(creationHandler.percentIncrease - 1)*100}%\n`+
                        `Starting Profits: ${creationHandler.idleProfit}/sec\n\n`+
-                       `Reminder, don't be constantly creating a new game just cause your RNG stats are bad, cause \n`+
+                       `Reminder, don't be constantly creating a new game just cause your RNG stats aren't perfect, cause \n`+
                        `1. That's pretty much spamming if you're going to be doing that a lot and\n`+
                        `2. I might decide to troll you with my eval command if you keep creating a new game.`)
         .setFooter("Enjoy idling!");
@@ -133,12 +134,12 @@ async function create(client, message) {
 }
 
 async function collect(client, message) {
-    var collectionHandler = await GameModel.findOne({ player: message.author.id });
+    let collectionHandler = await GameModel.findOne({ player: message.author.id });
     if (!collectionHandler) return noGame(message);
-    var currentCollection = Date.now();
-    var collected = collectionHandler.idleProfit * ((currentCollection - collectionHandler.idleCollection) / 1000);
+    let currentCollection = Date.now();
+    let collected = collectionHandler.idleProfit * ((currentCollection - collectionHandler.idleCollection) / 1000);
     collectionHandler = await GameModel.findOneAndUpdate({ player: message.author.id }, { $set: { money: collectionHandler.money + collected, idleCollection: currentCollection } }, { new: true });
-    var embed = new MessageEmbed()
+    let embed = new MessageEmbed()
         .setTitle("Balance")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
@@ -147,10 +148,10 @@ async function collect(client, message) {
 }
 
 async function upgrade(client, message, max) {
-    var upgradeHandler = await GameModel.findOne({ player: message.author.id });
+    let upgradeHandler = await GameModel.findOne({ player: message.author.id });
     if (!upgradeHandler) return noGame(message);
-    var previousLevel = upgradeHandler.level;
-    var costSubtraction = await currentPrice(message.author.id, upgradeHandler);
+    let previousLevel = upgradeHandler.level;
+    let costSubtraction = await currentPrice(message.author.id, upgradeHandler);
     if (upgradeHandler.money < costSubtraction) return message.reply(`You don't have enough Random-Bucks for this upgrade, your current balance is ${upgradeHandler.money} Random-Bucks and the next upgrade requires ${costSubtraction} Random-Bucks.`);
     if (max && max.toLowerCase() == 'max') {
         while (upgradeHandler.money > costSubtraction) {
@@ -160,7 +161,7 @@ async function upgrade(client, message, max) {
     } else {
         upgradeHandler = await GameModel.findOneAndUpdate({ player: message.author.id }, { $set: { money: upgradeHandler.money - costSubtraction, level: upgradeHandler.level + 1, idleProfit: upgradeHandler.idleProfit * (Math.random() * 0.05 + 1.05) } }, { new: true });
     }
-    var embed = new MessageEmbed()
+    let embed = new MessageEmbed()
         .setTitle("Upgrade Stats")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
@@ -169,11 +170,13 @@ async function upgrade(client, message, max) {
     message.channel.send(embed);
 }
 
-async function gameStats(client, message) {
-    var statsHandler = await GameModel.findOne({ player: message.author.id });
+async function gameStats(client, message, args) {
+    if (args[0].match(/\d/g)) let player = (args[0].match(/\d/g).join('').length == 18) ? args[0].match(/\d/g).join('') : message.author.id;
+    else player = message.author.id;
+    let statsHandler = await GameModel.findOne({ player: player });
     if (!statsHandler) return noGame(message);
-    var nxtUpgrade = await currentPrice(message.author.id, statsHandler);
-    var embed = new MessageEmbed()
+    let nxtUpgrade = await currentPrice(message.author.id, statsHandler);
+    let embed = new MessageEmbed()
         .setTitle(`${message.author.username}'s gamestats`)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())

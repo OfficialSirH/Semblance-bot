@@ -11,8 +11,8 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var feedbackImage = "https://i.imgur.com/lKQh5zW.png";
-	var embed = new MessageEmbed()
+	let feedbackImage = "https://i.imgur.com/lKQh5zW.png";
+	let embed = new MessageEmbed()
 	.setTitle("Feedback")
 	.setColor(randomColor())
 	.setDescription("Give feedback for ComputerLunch's game, C2S.")

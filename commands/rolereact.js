@@ -1,4 +1,4 @@
-﻿var reactionData = [];
+﻿let reactionData = [];
 const { MessageEmbed } = require('discord.js');
 
 module.exports = {
@@ -13,14 +13,14 @@ module.exports = {
 
 module.exports.run = async (client, message, args) => {
     return message.reply("This command has been disabled temporarily due to many problems with it currently, this will be fixed soon.");
-    var emoji = args[0];
-    var role = args[1];
-    var reactMessage = args.slice(2, args.length).join(" ");
-        var reactMsg;
-        var emojiReaction = emoji.replace(/:/g, "");
-        var mainRole = message.guild.roles.cache.get(role.replace(/<@&/, "").replace(/>/, ""));
-        var data = findReactionData(mainRole, false);
-        var embed = new MessageEmbed()
+    let emoji = args[0];
+    let role = args[1];
+    let reactMessage = args.slice(2, args.length).join(" ");
+        let reactMsg;
+        let emojiReaction = emoji.replace(/:/g, "");
+        let mainRole = message.guild.roles.cache.get(role.replace(/<@&/, "").replace(/>/, ""));
+        let data = findReactionData(mainRole, false);
+        let embed = new MessageEmbed()
             .setTitle("React Me")
             .setThumbnail(client.user.avatarURL())
             .setDescription(reactMessage);
@@ -37,11 +37,11 @@ module.exports.run = async (client, message, args) => {
 
     async function reactionToRole(reaction, user, reacted) {
         if (reactionData.length == 0) return;
-        var data = findReactionData(false, reaction.message.id);
+        let data = findReactionData(false, reaction.message.id);
         if (!data) return;
         if (reaction.emoji.name == data[1] && reaction.message.id == data[0].id) {
-            var role = reaction.message.guild.roles.cache.find(r => r.name === data[2].name);
-            var member = reaction.message.guild.members.cache.get(user.id);
+            let role = reaction.message.guild.roles.cache.find(r => r.name === data[2].name);
+            let member = reaction.message.guild.members.cache.get(user.id);
             if (reacted) {
                 console.log('reacted');
                 member.roles.add(role, "Reacted to autoRole Message.");
@@ -63,13 +63,13 @@ async function findReactionData(role, message) {
             }
         });
         reactionData.push([]);
-        var data = reactionData[reactionData.length - 1];
-        for (var i = 0; i < 2; i++) data.push([]);
+        let data = reactionData[reactionData.length - 1];
+        for (let i = 0; i < 2; i++) data.push([]);
         data.push(role);
         return data;
     } else {
-        var yes = false;
-        var item;
+        let yes = false;
+        let item;
         reactionData.forEach((data, index) => {
             if (data[0].id == message) {
                 yes = true;

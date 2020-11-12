@@ -13,12 +13,12 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
     if (args.length == 0) return message.reply('rps stands for "Rock, Paper, Scissors", which you can play with me by choosing one of the **Five** (Don\'t forget Lizard and Spock) and I\'ll choose one as well and we\'ll see who wins, there\'s also secret bonuses. :D');
     args[0] = Util.removeMentions(args[0]);
-    var randomFailure = Math.ceil(Math.random() * 100);
+    let randomFailure = Math.ceil(Math.random() * 100);
     if (randomFailure == 100) return message.reply('***Error Ocurred... rebooting, try again in a moment.***');
-    var sembRandomness = Math.ceil(Math.random() * 5), sembChoice = convertNumberToChoice(sembRandomness);
-    var playerChoice = args[0].toLowerCase();
+    let sembRandomness = Math.ceil(Math.random() * 5), sembChoice = convertNumberToChoice(sembRandomness);
+    let playerChoice = args[0].toLowerCase();
     if (playerChoice == 'senate') {
-        var embed = new MessageEmbed()
+        let embed = new MessageEmbed()
             .setDescription('I *am* the senate, which means ***WE*** win this round!')
             .attachFiles(sembcommunist)
             .setImage('attachment://CommunistSemblance.jpg');

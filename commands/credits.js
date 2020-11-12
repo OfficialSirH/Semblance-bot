@@ -10,7 +10,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var embed = new MessageEmbed()
+	let embed = new MessageEmbed()
 		.setTitle("Credits")
 		.setColor(randomColor())
 		.setDescription("Special Thanks to Aditya for motivating me from the very beginning to work on this bot. " +

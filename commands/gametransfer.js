@@ -1,7 +1,7 @@
 ﻿const { MessageEmbed, MessageAttachment } = require('discord.js'),
 	randomColor = require("../constants/colorRandomizer.js"),
 	{ currentLogo } = require('../config.js');
-var pageOne = "https://i.imgur.com/BsjMAu6.png",
+let pageOne = "https://i.imgur.com/BsjMAu6.png",
 	pageTwo = "https://i.imgur.com/QbDAOkF.png",
 	pageThree = "https://i.imgur.com/w1jEuzh.png",
 	pageFour = "https://i.imgur.com/6qTz2Li.png",
@@ -18,7 +18,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var embed = new MessageEmbed()
+	let embed = new MessageEmbed()
 		.setTitle("Game Transfer")
 		.setColor(randomColor())
 		.attachFiles(currentLogo)
@@ -33,15 +33,15 @@ module.exports.run = async (client, message, args) => {
 }
 
 async function TurnPage(client, reaction, user) {
-	var pages = [pageOne, pageTwo, pageThree, pageFour, pageFive];
+	let pages = [pageOne, pageTwo, pageThree, pageFour, pageFive];
 	if (reaction.message.embeds.length > 0) {
-		var embed = reaction.message.embeds[0];
+		let embed = reaction.message.embeds[0];
 		if (embed.image && (embed.image.url == pageOne || embed.image.url == pageTwo || embed.image.url == pageThree || embed.image.url == pageFour || embed.image.url == pageFive)) {
-			var isPageOne = embed.image.url == pageOne;
-			var isPageTwo = embed.image.url == pageTwo;
-			var isPageThree = embed.image.url == pageThree;
-			var isPageFour = embed.image.url == pageFour;
-			var isPageFive = embed.image.url == pageFive;
+			let isPageOne = embed.image.url == pageOne;
+			let isPageTwo = embed.image.url == pageTwo;
+			let isPageThree = embed.image.url == pageThree;
+			let isPageFour = embed.image.url == pageFour;
+			let isPageFive = embed.image.url == pageFive;
 			if (reaction.emoji.name == "➡️") {
 				if (isPageOne) {
 					embed = new MessageEmbed()

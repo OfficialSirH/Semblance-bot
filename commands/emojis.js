@@ -1,8 +1,8 @@
 const { GuildEmoji } = require('discord.js');
-var mainClient;
-var entropy, idea, darwinium, metabit, mutagen, fossil; //currency
-	var trexBadge, raptorBadge, iguanBadge, skull; //badges
-	var edone, idone, ddone, medone, mudone, fdone, trexdone, raptordone, iguandone, skulldone; //completed emojis
+let mainClient;
+let entropy, idea, darwinium, metabit, mutagen, fossil; //currency
+	let trexBadge, raptorBadge, iguanBadge, skull; //badges
+	let edone, idone, ddone, medone, mudone, fdone, trexdone, raptordone, iguandone, skulldone; //completed emojis
 const clientFE = require('../bot.js').client;
 
 module.exports = {

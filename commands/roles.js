@@ -10,7 +10,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-    var embed = new MessageEmbed()
+    let embed = new MessageEmbed()
         .setTitle("C2S Roles")
         .setAuthor(message.author.tag, message.author.avatarURL())
         .attachFiles(currentLogo)

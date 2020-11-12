@@ -10,8 +10,8 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var channel = args[0];
-	var purgeNum = args[1];
+	let channel = args[0];
+	let purgeNum = args[1];
 	if (!message.member.hasPermission("MANAGE_MESSAGES") && !message.member.hasPermission("MANAGE_CHANNELS")) {
 		message.reply("You lack the permission to use this command. You must be able to manage messages or channels.");
 		return;

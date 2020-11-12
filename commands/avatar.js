@@ -15,7 +15,7 @@ module.exports.run = async (client, message, args) => {
 		user = message.author;
 	} else {
 		try {
-			var user = args[0].replace(/<@!/, "").replace(/<@/, "").replace(/>/, "");
+			let user = args[0].replace(/<@!/, "").replace(/<@/, "").replace(/>/, "");
 			user = await client.users.fetch(user);
 			if (!user) return message.reply('I couldn\'t find that user');
 		} catch (error) {
@@ -24,9 +24,9 @@ module.exports.run = async (client, message, args) => {
 			return;
 		}
 	}
-	var image = user.displayAvatarURL({ dynamic: true});
+	let image = user.displayAvatarURL({ dynamic: true});
 	image = `${image}?size=1024`;
-	var embed = new MessageEmbed()
+	let embed = new MessageEmbed()
 	.setTitle("Avatar")
 	.setAuthor(user.tag, user.displayAvatarURL())
 	.setColor(randomColor())

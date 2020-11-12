@@ -11,7 +11,7 @@ module.exports = {
 }
 
 module.exports.run = (client, message, args) => {
-	var screen_name = args[0];
+	let screen_name = args[0];
 	if (!screen_name) {
 		screen_name = "ComputerLunch";
 	}

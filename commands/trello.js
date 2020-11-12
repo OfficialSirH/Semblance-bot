@@ -10,7 +10,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-  var embed = new MessageEmbed()
+  let embed = new MessageEmbed()
     .setDescription("[Semblance's Trello board](https://trello.com/b/Zhrs5AaN/semblance-project)")
     .setColor(randomColor());
   message.channel.send(embed);

@@ -11,8 +11,8 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var guildID = args[0];
-	var isGuild = false;
+	let guildID = args[0];
+	let isGuild = false;
 	if (guildID) {
 		if (guildID.length == 18) {
 			client.guilds.cache.forEach( guild => { 
@@ -27,7 +27,7 @@ module.exports.run = async (client, message, args) => {
 				return;
 			}
 			client.guilds.cache.forEach( guild => { 
-				var guildName = guild.name;
+				let guildName = guild.name;
 				if (guildID == guildName) {
 					guildID = guild;
 					isGuild = true;
@@ -42,7 +42,7 @@ module.exports.run = async (client, message, args) => {
 		message.reply("I couldn't find the server you were looking for");
 		return;
 	}
-	var textChannel = 0, voiceChannel = 0, categoryChannel = 0;
+	let textChannel = 0, voiceChannel = 0, categoryChannel = 0;
 	guildID.channels.cache.forEach(channel => {
 		if(channel.type == "text") {
 			textChannel++;
@@ -54,18 +54,18 @@ module.exports.run = async (client, message, args) => {
 			categoryChannel++;
 		}
 	});
-	var roleList = [];
-	var roleCount = 0;
+	let roleList = [];
+	let roleCount = 0;
 	guildID.roles.cache.forEach(role => {
 		roleList.push(role.name);
 		roleCount++;
 	});
 	roleList = roleList.join(", ");
-	var currentLogo = new MessageAttachment("./images/Current_Logo.png");
-	var serverCreated = `${guildID.createdAt}`;
+	let currentLogo = new MessageAttachment("./images/Current_Logo.png");
+	let serverCreated = `${guildID.createdAt}`;
 	serverCreated = serverCreated.substring(0, 16);
-	var canRoleListWork = (roleList.length > 1024) ? "*Too many roles*":roleList;
-	var embed = new MessageEmbed()
+	let canRoleListWork = (roleList.length > 1024) ? "*Too many roles*":roleList;
+	let embed = new MessageEmbed()
 	.setAuthor(guildID.name, guildID.iconURL())
 	.setColor(randomColor())
 	.addFields(
@@ -81,9 +81,9 @@ module.exports.run = async (client, message, args) => {
 	.setFooter(`ID: ${guildID.id} | Server Created: ${serverCreated}`);
 	message.channel.send(embed);
 	/*if (canRoleListWork == "*Read next msg*") {
-		var msgCount = Math.ceil(roleList.length/2048);
-		for (var i = 1; i <= msgCount; i++) {
-			var roleListEmbed = new MessageEmbed()
+		let msgCount = Math.ceil(roleList.length/2048);
+		for (let i = 1; i <= msgCount; i++) {
+			let roleListEmbed = new MessageEmbed()
 			.setTitle("Roles")
 			.setDescription(roleList.substring(2048*(i-1), 2048*i))
 			.setAuthor(guildID.name, guildID.iconURL())

@@ -3,8 +3,8 @@ const { MessageEmbed, MessageAttachment, Collection } = require('discord.js'),
 	randomColor = require("../constants/colorRandomizer.js"),
 	{ sembID } = require('../config.js');
 let afkListData = new Collection();
-var afkList = [];
-var reasonList = [];
+let afkList = [];
+let reasonList = [];
 
 module.exports = {
 	description: "Set yourself afk so users know you're unavailable when they ping you.",
@@ -19,12 +19,12 @@ module.exports = {
 
 module.exports.run = async (client, message, reasonArray) => {
 	if (message.author.id == sembID) return;
-		var reason = (reasonArray.length > 0) ? reasonArray.join(" "):"Just because";
+		let reason = (reasonArray.length > 0) ? reasonArray.join(" "):"Just because";
 	if (!afkListData.has(message.author.id) || !afkListData.get(message.author.id).afk) afkListData.set(message.author.id, {
 		afk: true,
 		afkReason: reason
 	});
-		var embed = new MessageEmbed()
+		let embed = new MessageEmbed()
 		.setTitle("AFK")
 		.setColor(randomColor())
 		.setDescription(`You are now afk ${message.author} \n`+
@@ -36,8 +36,8 @@ module.exports.run = async (client, message, reasonArray) => {
 	async function dontDisturb(client, message, mentioned) {
 		mentioned.forEach( user => {
 			if(afkListData.has(user.id) && afkListData.get(user.id).afk && message.author.id != user.id) {
-				var reason = afkListData.get(user.id).afkReason;
-				var embed = new MessageEmbed()
+				let reason = afkListData.get(user.id).afkReason;
+				let embed = new MessageEmbed()
 					.setTitle("Currently Afk")
 					.setColor(randomColor())
 					.setThumbnail(user.avatarURL())

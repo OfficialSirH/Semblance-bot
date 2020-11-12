@@ -11,12 +11,12 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var chosenUser = args[0];
+	let chosenUser = args[0];
 	if (args.length == 0) return guildProfileEmbed(message, message.member);
 	chosenUser = chosenUser.replace(/^<@/, "").replace(/!/, "").replace(/>/, "");
-	var guildMember = await message.guild.members.fetch(chosenUser)
+	let guildMember = await message.guild.members.fetch(chosenUser)
 		.catch(async (err) => {
-			var clientUser = await client.users.fetch(chosenUser);
+			let clientUser = await client.users.fetch(chosenUser);
 			if (clientUser) return userProfileEmbed(message, clientUser);
 			else message.reply("Sorry, that user coulnd't be found in my database.");
 		})
@@ -24,11 +24,11 @@ module.exports.run = async (client, message, args) => {
 }
 
 async function guildProfileEmbed(message, member) {
-	var accountCreated = `${member.user.createdAt}`;
+	let accountCreated = `${member.user.createdAt}`;
 	accountCreated = `${accountCreated.substring(0, 16)}(${daysAgo(member.user.createdAt)})`;
-	var accountJoined = `${member.joinedAt}`;
+	let accountJoined = `${member.joinedAt}`;
 	accountJoined = `${accountJoined.substring(0, 16)}(${daysAgo(member.joinedAt)})`;
-	var embed = new MessageEmbed()
+	let embed = new MessageEmbed()
 		.setTitle("Guild User Profile")
 		.setDescription(`User data for ${member}:`)
 		.setColor(randomColor())
@@ -46,8 +46,8 @@ async function guildProfileEmbed(message, member) {
 }
 
 async function userProfileEmbed(message, user) {
-	var accountCreated = `${message.author.createdAt.toString().substring(0, 16)}(${daysAgo(user.createdTimestamp)})`;
-	var embed = new MessageEmbed()
+	let accountCreated = `${message.author.createdAt.toString().substring(0, 16)}(${daysAgo(user.createdTimestamp)})`;
+	let embed = new MessageEmbed()
 		.setTitle("User Profile")
 		.setDescription(`User data for ${user}:`)
 		.setColor(randomColor())
@@ -63,6 +63,6 @@ async function userProfileEmbed(message, user) {
 }
 
 function daysAgo(date) {
-	var msToDays = 1000 * 60 * 60 * 24;
+	let msToDays = 1000 * 60 * 60 * 24;
 	return `${Math.round((Date.now() - date) / msToDays)} days ago`;
 }

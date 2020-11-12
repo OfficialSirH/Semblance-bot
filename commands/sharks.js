@@ -12,7 +12,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	var embed = new MessageEmbed()
+	let embed = new MessageEmbed()
 	.setTitle("Sharks")
 	.setColor(randomColor())
 	.attachFiles([sharks, currentLogo])

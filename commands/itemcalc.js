@@ -12,7 +12,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-    var itemInput = args[0], level = args[1], currentLevel = args[2];
+    let itemInput = args[0], level = args[1], currentLevel = args[2];
     if (!itemInput) return message.reply("You forgot input for 'item'.");
     if (!level) return message.reply("You forgot input for 'level'.");
     if (!currentLevel || currentLevel < 0) currentLevel = 0;
@@ -21,8 +21,8 @@ module.exports.run = async (client, message, args) => {
     if (isNaN(level)) return;
     currentLevel = checkIfAllowedValue(currentLevel, message, 'current level');
     if (isNaN(currentLevel)) return;
-    var itemCost = null;
-    var itemCostType;
+    let itemCost = null;
+    let itemCostType;
     itemList.entropy.forEach(item => {
         if (item.name == itemInput) {
             itemCost = item.price;
@@ -51,8 +51,8 @@ module.exports.run = async (client, message, args) => {
         });
     }
     if (!itemCost) return message.reply("Your input for 'item' was invalid.");
-    var resultingPrice = 0;
-    for (var i = currentLevel; i < (level + currentLevel); i++) {
+    let resultingPrice = 0;
+    for (let i = currentLevel; i < (level + currentLevel); i++) {
         resultingPrice += itemCost * Math.pow(1.149999976158142, i);
         if (!isFinite(resultingPrice)) break;
     }
