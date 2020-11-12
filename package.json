@@ -25,7 +25,7 @@
     "ytdl-core-discord": "^1.2.4"
   },
   "scripts": {
-    "start": "node bot.js"
+    "start": "pm2-runtime start ecosystem.config.js --env production"
   },
   "keywords": [],
   "license": "ISC"
