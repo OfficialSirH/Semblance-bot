@@ -39,7 +39,7 @@ async function updateLeaderboard(client) {
 	list = await list.sort((a, b) => b[1] - a[1]).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - ${cur[1]} vote(s)\n`, '');
 	if (!list || list.length == 0) leaderboardList = 'There is currently no voters for this month.';
 	else leaderboardList = list;
-	setTimeout(module.exports.updateLeaderboard(client), 60000);
+	setTimeout(() => module.exports.updateLeaderboard(client), 60000);
 }
 
 function NameToChannel(channel, theClient) {

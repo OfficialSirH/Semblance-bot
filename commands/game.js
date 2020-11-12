@@ -86,7 +86,7 @@ async function updateLeaderboard(client) {
     list = await list.sort((a, b) => b[1] - a[1]).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - level ${cur[1]}\n`, '');
     if (!list) leaderboardList = 'There is currently no one who has upgraded their income.';
     else leaderboardList = list;
-    setTimeout(module.exports.updateLeaderboard(client), 60000);
+    setTimeout(() => module.exports.updateLeaderboard(client), 60000);
 }
 
 let leaderboardList = 'There is currently no one who has upgraded their income or the leaderboard hasn\'t updated.';
