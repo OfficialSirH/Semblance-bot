@@ -171,7 +171,7 @@ async function upgrade(client, message, max) {
 }
 
 async function gameStats(client, message, args) {
-    if (args[0].match(/\d/g)) let player = (args[0].match(/\d/g).join('').length == 18) ? args[0].match(/\d/g).join('') : message.author.id;
+    if (args[0].match(/\d/g)) var player = (args[0].match(/\d/g).join('').length == 18) ? args[0].match(/\d/g).join('') : message.author.id;
     else player = message.author.id;
     let statsHandler = await GameModel.findOne({ player: player });
     if (!statsHandler) return noGame(message);
