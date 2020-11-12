@@ -14,7 +14,7 @@ module.exports.run = async (client, message, args) => {
     if (args.length == 0) return message.reply('This command is used by doing s!say #MentionChannel <message> and if you place \'embed\' at the end of your message, your message will be embedded.');
     if (!message.mentions) {
         let channel = message.guild.channels.cache.get(args[0].substring(0, args[0].length));
-    } else let channel = message.mentions.channels.first();
+    } else var channel = message.mentions.channels.first();
     if (!channel) {
         let channel = message.guild.channels.cache.get(args[0].substring(2, args[0].length - 1));
         if (!channel) return message.reply('Your specified channel was invalid.');
