@@ -88,7 +88,7 @@ const checkTweet = () => twClient.get('statuses/user_timeline', {
 setInterval(checkTweet, 2000);
 //End of Twitter implementation
 
-client.on('ready', () => {
+client.on('ready', async () => {
 	console.log(`Logged in as ${client.user.tag}!`);
 	setTimeout(function () {
 		topGG = require("./commands/websiteScripts/topGG.js");
