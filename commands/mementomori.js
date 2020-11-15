@@ -12,8 +12,8 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args, identifier) => {
-    if (identifier == 'mementomori' || identifier == 'unusannus') return mementoMori(message).then(() => message.delete({ timeout: 1000 }));
-    if ((identifier == 'memento' && args[0] == 'mori') || (identifier == 'unus' && args[0] == 'mori')) return mementoMori(message).then(() => message.delete({ timeout: 1000 }));
+    if (identifier == 'mementomori' || identifier == 'unusannus') return sendIt(message).then(() => message.delete({ timeout: 1000 }));
+    if ((identifier == 'memento' && args[0] == 'mori') || (identifier == 'unus' && args[0] == 'mori')) return sendIt(message).then(() => message.delete({ timeout: 1000 }));
 }
 
 async function sendIt(message) {
