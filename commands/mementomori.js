@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args, identifier) => {
     if ((identifier == 'memento' && args[0] == 'mori') || (identifier == 'unus' && args[0] == 'mori')) return mementoMori(message).then(() => message.delete({ timeout: 1000 }));
 }
 
-async function mementoMori(message) {
+async function sendIt(message) {
     let embed = new MessageEmbed()
         .setTitle("Memento Mori")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
