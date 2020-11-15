@@ -5,6 +5,7 @@
   "main": "bot.js",
   "author": "SirH",
   "dependencies": {
+    "bluebird": "^3.7.2",
     "boats.js": "^2.5.0",
     "cron": "^1.8.2",
     "dblapi.js": "^2.4.1",

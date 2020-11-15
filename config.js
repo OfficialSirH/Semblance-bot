@@ -1,14 +1,16 @@
 const { MessageAttachment } = require('discord.js'),
-    currentLogo = new MessageAttachment("./images/Current_Logo.png"),
-    sharks = new MessageAttachment("./images/Sharks.jpg"),
-    roadMap = new MessageAttachment('./images/roadMap.png'),
-    simStatsLocation = new MessageAttachment("./images/SimStatsLocation.png"),
-    geodeImage = new MessageAttachment('./images/GeodeLevelComparison.png'),
-    prestigeImage = new MessageAttachment('./images/Prestige.png'),
-    archieDance = new MessageAttachment("./images/ArchieDance.mp4"),
-    patreon = new MessageAttachment("./images/Patreon_Mark_Coral.jpg"),
-    sembcommunist = new MessageAttachment('./images/CommunistSemblance.jpg'),
-    nanobots = new MessageAttachment('./images/Nanobots.png');
+    attachmentURL = 'attachment://',
+    currentLogo = new MessageAttachment("./images/Current_Logo.png", `${attachmentURL}Current_Logo.png`),
+    sharks = new MessageAttachment("./images/Sharks.jpg", `${attachmentURL}Sharks.jpg`),
+    roadMap = new MessageAttachment('./images/roadMap.png', `${attachmentURL}roadMap.png`),
+    simStatsLocation = new MessageAttachment("./images/SimStatsLocation.png", `${attachmentURL}SimStatsLocation.png`),
+    geodeImage = new MessageAttachment('./images/GeodeLevelComparison.png', `${attachmentURL}GeodeLevelComparison.png`),
+    prestigeImage = new MessageAttachment('./images/Prestige.png', `${attachmentURL}Prestige.png`),
+    archieDance = new MessageAttachment("./images/ArchieDance.mp4", `${attachmentURL}ArchieDance.mp4`),
+    patreon = new MessageAttachment("./images/Patreon_Mark_Coral.jpg", `${attachmentURL}Patreon_Mark_Coral.jpg`),
+    sembcommunist = new MessageAttachment('./images/CommunistSemblance.jpg', `${attachmentURL}CommunistSemblance.jpg`),
+    nanobots = new MessageAttachment('./images/Nanobots.png', `${attachmentURL}Nanobots.png`),
+    mementoMori = new MessageAttachment('./images/MementoMori.png', `${attachmentURL}MementoMori.png`);
 module.exports = {
     prefix: "s!",
     sembID: "668688939888148480",
@@ -24,5 +26,6 @@ module.exports = {
     archieDance: archieDance,
     patreon: patreon,
     sembcommunist: sembcommunist,
-    nanobots: nanobots
+    nanobots: nanobots,
+    mementoMori: mementoMori
 }

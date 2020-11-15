@@ -12,24 +12,18 @@ module.exports = {
 
 module.exports.run = async (client, message, args) => {
 	if (args.length == 0) {
-		user = message.author;
+		var user = message.author;
 	} else {
-		try {
-			let user = args[0].replace(/<@!/, "").replace(/<@/, "").replace(/>/, "");
-			user = await client.users.fetch(user);
-			if (!user) return message.reply('I couldn\'t find that user');
-		} catch (error) {
-			console.log(error);
-			message.reply("Something didn't work right, oops.");
-			return;
-		}
+		var user = args[0].match(/\d/g).join('');
+		user = await client.users.fetch(user);
+		if (!user) return message.reply('I couldn\'t find that user');
 	}
-	let image = user.displayAvatarURL({ dynamic: true});
+	let image = user.displayAvatarURL({ dynamic: true });
 	image = `${image}?size=1024`;
 	let embed = new MessageEmbed()
-	.setTitle("Avatar")
-	.setAuthor(user.tag, user.displayAvatarURL())
-	.setColor(randomColor())
-	.setImage(image)
+		.setTitle("Avatar")
+		.setAuthor(user.tag, user.displayAvatarURL())
+		.setColor(randomColor())
+		.setImage(image)
 	message.channel.send(embed);
 }
