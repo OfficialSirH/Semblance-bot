@@ -15,7 +15,7 @@ module.exports.run = async (client, message, args) => {
 		.setColor(randomColor())
 		.attachFiles(currentLogo)
 		.setThumbnail("attachment://Current_Logo.png")
-		.setDescription(["**Steam(7_00):**",
+		.setDescription(["**Steam(7_02):**",
 
 			"\n**New Traits to Discover!**",
 			"- From Ibex to Platypus, we've added a diverse array of mammals to our warm-blooded roster!",
