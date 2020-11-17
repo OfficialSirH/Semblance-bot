@@ -14,7 +14,6 @@ module.exports.run = async (client, message, args) => {
         .setTitle("Changelog")
         .setAuthor(message.author.tag, message.author.avatarURL())
         .setColor(randomColor())
-        .setDescription([`+ Memento Mori`,
-            `+ fixed \`s!avatar\` not working properly`].join('\n'));
+        .setDescription(`Fixed accuracy of \`s!metaspeedcalc\``);
     message.channel.send(embed);
 }
