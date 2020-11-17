@@ -125,9 +125,7 @@ async function create(client, message) {
         .setDescription(`Game Successfully created! Now you can start collecting Random-Bucks by typing \`${prefix}game collect\` and upgrade your Random-Bucks with \`${prefix}game upgrade\`\n\n`+
                        `Price Increase: ${(creationHandler.percentIncrease - 1)*100}%\n`+
                        `Starting Profits: ${creationHandler.idleProfit}/sec\n\n`+
-                       `Reminder, don't be constantly creating a new game just cause your RNG stats aren't perfect, cause \n`+
-                       `1. That's pretty much spamming if you're going to be doing that a lot and\n`+
-                       `2. I might decide to troll you with my eval command if you keep creating a new game.`)
+                       `Reminder, don't be constantly spamming and creating a new game just cause your RNG stats aren't perfect \n`)
         .setFooter("Enjoy idling!");
     message.channel.send(embed);
 }
