@@ -52,8 +52,7 @@ async function about(client, message) {
                        "If you're confused by the acronym RNG, it's an acronym for \"Random Number Generation/Generator\", which "+
                        "means that everything is kind of random and runs on random chance in the game. Everything that is random "+
                        "within this game is the cost multiplier per upgrade, starting profits, and the amount your profits increase.\n\n"+
-                       "If you'd like to suggest ideas for the idle-game, just ping me, but please stop asking for automatic collection "+
-                       "just so then you don't have to collect it manually, cause that isn't how the game works.")
+                       "You have to collect Random-Bucks manually every once in a while, that is how the game works.")
         .setFooter("Noice");
     message.channel.send(embed);
     
