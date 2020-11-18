@@ -36,7 +36,7 @@ async function updateLeaderboard(client) {
 		let user = await client.users.fetch(key, { cache: false });
 		list.push([user.tag, value]);
 	}
-	list = await list.sort((a, b) => b[1] - a[1]).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - ${cur[1]} vote(s)\n`, '');
+	list = await list.filter((item, ind) => ind < 20).sort((a, b) => b[1] - a[1]).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - ${cur[1]} vote(s)\n`, '');
 	if (!list || list.length == 0) leaderboardList = 'There is currently no voters for this month.';
 	else leaderboardList = list;
 	setTimeout(() => module.exports.updateLeaderboard(client), 60000);
