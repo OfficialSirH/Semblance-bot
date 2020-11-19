@@ -82,10 +82,10 @@ async function updateLeaderboard(client) {
         let user = await client.users.fetch(key, { cache: false });
         list.push([user.tag, value]);
     }
-    list = await list.filter((item, ind) => ind < 20).sort((a, b) => b[1] - a[1]).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - level ${cur[1]}\n`, '');
+    list = await list.sort((a, b) => b[1] - a[1]).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - level ${cur[1]}\n`, '');
     if (!list) leaderboardList = 'There is currently no one who has upgraded their income.';
     else leaderboardList = list;
-    setTimeout(() => module.exports.updateLeaderboard(client), 60000);
+    setTimeout(() => module.exports.updateLeaderboard(client), (60000 * 10));
 }
 
 let leaderboardList = 'There is currently no one who has upgraded their income or the leaderboard hasn\'t updated.';
@@ -97,7 +97,7 @@ async function leaderboard(client, message) {
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
         .setDescription(`${leaderboardList}`)
-        .setFooter("May the odds be with you.");
+        .setFooter("May the odds be with you.\n(Updates every 10 minutes)");
     message.channel.send(embed);
 }
 
