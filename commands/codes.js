@@ -18,8 +18,8 @@ module.exports.run = async (client, message, args) => {
         .setColor(randomColor())
         .attachFiles(currentLogo)
         .setThumbnail("attachment://Current_Logo.png")
-        .setDescription('DARWIN\nPOEM\nGLITCH\nSTRIPES')
-        .addField("Expired(meaning these don't work)", "MANIA\nTWITCH\nFINALS\nSCALES")
+        .setDescription(['DARWIN','STRIPES'].join('\n'))
+        .addField("Expired(meaning these don't work)", ["MANIA", "TWITCH", "FINALS", "SCALES", 'POEM', 'GLITCH'].join('\n'))
         .setFooter("Magical Codes!");
     message.channel.send(embed);
 }
