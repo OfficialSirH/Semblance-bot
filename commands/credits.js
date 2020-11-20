@@ -21,7 +21,7 @@ module.exports.run = async (client, message, args) => {
 		.addFields(
 			{ name: "Developer", value: "SirH" },
 			{ name: "Special Thanks and Organizer", value: "Aditya" },
-			{ name: "Artist", value: "**Semblance Profile Picture:** cabiie\n**Semblance Beta Profile Picture:** Bloodexx" },
+			{ name: "Artist", value: "**Semblance Profile Picture:** cabiie" },
 			{ name: "Silly dude who makes up funny ideas", value: "NerdGamer" },
 			{ name: "Early Testers", value: "Aditya, Parrot, Diza, 0NrD, and Aure" },
 		);
