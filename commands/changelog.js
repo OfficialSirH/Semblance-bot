@@ -14,6 +14,7 @@ module.exports.run = async (client, message, args) => {
         .setTitle("Changelog")
         .setAuthor(message.author.tag, message.author.avatarURL())
         .setColor(randomColor())
-        .setDescription(`Fixed accuracy of \`s!metaspeedcalc\``);
+        .setDescription([`+ Moved rick roll from \`s!secret\` due to certain... *complaints.*`,
+            `+ New (temporary) code added, check \`s!codes\``].join('\n'));
     message.channel.send(embed);
 }
