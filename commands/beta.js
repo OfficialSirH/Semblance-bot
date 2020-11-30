@@ -11,20 +11,11 @@ module.exports = {
 
 module.exports.run = async (client, message, args) => {
 	let embed = new MessageEmbed()
-		.setTitle("Android(7.17) Beta")
+		.setTitle("No Beta")
 		.setColor(randomColor())
 		.attachFiles(currentLogo)
 		.setThumbnail("attachment://Current_Logo.png")
-		.setDescription(["-Fixed bug showing 6 available items in the life notification tab.",
-					"- Fixed Issue Tree line connections were not displaying after buying a item.",
-					"- Added 2 NEW reality engine speed simulation upgrades and reduce cost on overdrive boost upgrades.",
-					"- Kangaroo and Koala texture updated.",
-					"- Added Beaver animation",
-					"- Adjusted land masses in the land garden.",
-					"- Reduced over all memory allocation.This should help prevent the game from crashing on old mobile devices.",
-					"- Added button to Skip Open Geode After the first dino prestige.",
-					"- Get ready for the photo contest.The Camera mode allow for more angle rotation to get the perfect shot.This feature does clip though the world, but we want to give photographs more control of their shooting.",
-					"- Reboot button popup, now displays the amount of speed simulation increase you will get after rebooting."].join('\n'))
-		.setFooter("Beta is epicc");
+		.setDescription(["Currently no beta"].join('\n'))
+		.setFooter("Nope");
 	message.channel.send(embed);
 }
