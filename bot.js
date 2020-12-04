@@ -135,6 +135,12 @@ client.on('ready', async () => {
 	}, 30000);
 	await commands['game'].updateLeaderboard(client);
 	await commands['leaderboard'].updateLeaderboard(client);
+
+	/*
+	* Reminder check
+	*/
+
+	setInterval(commands['remindme'].checkReminders(client), 60000 * 5);
 });
 
 /*
@@ -347,11 +353,7 @@ client.on('message', message => {
 	//commands end here
 });
 
-/*
- * Reminder check
- */
 
-setInterval(commands['remindme'].checkReminders(client), 60000 * 5);
 
 /*
  * message reaction events
