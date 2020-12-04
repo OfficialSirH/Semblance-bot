@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js');
+﻿const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js');
 
 module.exports = {
     description: "Provides the latest changes to Semblance.",
@@ -14,6 +14,10 @@ module.exports.run = async (client, message, args) => {
         .setTitle("Changelog")
         .setAuthor(message.author.tag, message.author.avatarURL())
         .setColor(randomColor())
-        .setDescription([`+ Updated info for \`s!roles\`, \`s!update\`, & \`s!beta\``].join('\n'));
+        .setDescription([`+ something new is in \`s!currency\`. 👀`,
+            `+ added new code in \`s!codes\``,
+            `+ Reminders in \`s!remindme\` now stay even after Semblance reboots!`,
+            `+ added an argument into \`s!beyond\`: \`s!beyond clips\``,
+            `+ Updated road map in \`s!beyond\``].join('\n'));
     message.channel.send(embed);
 }

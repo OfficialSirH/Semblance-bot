@@ -114,7 +114,7 @@ async function currentPrice(userID, userData) {
 async function create(client, message) {
     let percent = ((Math.ceil(Math.random() * 25) + 25) / 100) + 1;
     let startingProfits = (Math.random() * 0.05) + 0.05;
-    let existingData = GameModel.findOne({ player: message.author.id });
+    let existingData = await GameModel.findOne({ player: message.author.id });
     if (existingData) await GameModel.findOneAndDelete({ player: message.author.id });
     let creationHandler = new GameModel({ player: message.author.id, percentIncrease: percent, idleProfit: startingProfits, idleCollection: Date.now() });
     await creationHandler.save();

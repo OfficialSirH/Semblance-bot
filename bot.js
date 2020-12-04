@@ -1,4 +1,8 @@
-﻿const { Client, MessageEmbed, MessageAttachment, GuildEmoji, Collection } = require('discord.js'), 
+﻿/*
+ * Constants
+ */
+
+const { Client, MessageEmbed, MessageAttachment, GuildEmoji, Collection } = require('discord.js'), 
 	constants = require("./constants"), { getPermissionLevel, parseArgs } = constants,
 	{ connect } = require('mongoose'),
 	client = new Client({
@@ -22,6 +26,10 @@ const { embedCreate } = require('./commands/embed.js'),
 //keep bot active
 const stayActive = require('./stayActive.js'),
 	twitch = require("./commands/twitch.js");
+
+/*
+ * Command setup
+ */
 
 const commands = {}, aliases = {} // { "command": require("that_command") }, { "alias": "command" }
 fs.readdir("./commands/", (err, files) => {
@@ -49,8 +57,12 @@ let discordBoats;
 //Twitch implementation
 //setInterval( function() { twitch(client); }, 2000);
 
-//Twitter implementation
-let current_id = null, screen_name = "ComputerLunch", backup_id = null;
+/*
+ * Twitter implementation
+ * @Return Promise<MagicalTwitterPost>
+ */
+
+let current_id = null, screen_name = "ComputerLunch";
 
 const checkTweet = () => twClient.get('statuses/user_timeline', {
   screen_name,
@@ -63,7 +75,7 @@ const checkTweet = () => twClient.get('statuses/user_timeline', {
 	}
   let tweet = tweets[0];
   try {
-  if (tweet.id_str !== current_id && current_id && tweet.id_str !== backup_id && backup_id && screen_name == "ComputerLunch") {
+  if (tweet.id_str !== current_id && current_id) {
 	  fetch(process.env.C2SWebhook, {
 		  method: "POST",
 		  headers: {
@@ -76,17 +88,16 @@ const checkTweet = () => twClient.get('statuses/user_timeline', {
 	  let guild = client.guilds.cache.get(`488478892873744385`);
 	  let channel = guild.channels.cache.find(c => c.name == "cells-tweets");
 	  channel.send(`Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`);
-	backup_id = current_id;
   }
-  } catch (error) {screen_name = "ComputerLunch"}
+  } catch (error) {}
   current_id = tweet.id_str;
-  if (screen_name == "ComputerLunch") {
-  	  backup_id = current_id;
-  }
 })
 
 setInterval(checkTweet, 2000);
-//End of Twitter implementation
+
+/*
+ * The start of the bot client
+ */
 
 client.on('ready', async () => {
 	console.log(`Logged in as ${client.user.tag}!`);
@@ -126,6 +137,10 @@ client.on('ready', async () => {
 	await commands['leaderboard'].updateLeaderboard(client);
 });
 
+/*
+ * Setup for alternating activity
+ */
+
 const myActivity = setInterval(ShowMyActivity, 10000);
 let alternateActivity = false;
 
@@ -155,6 +170,10 @@ async function ShowMyActivity() {
     }
 }
 
+/*
+ * Bot login and MongoDB connection
+ */
+
 (async () => {
 	await connect(process.env.mongoDBKey, {
 		useNewUrlParser: true,
@@ -163,6 +182,10 @@ async function ShowMyActivity() {
 	});
 	return client.login(process.env.token);
 })()
+
+/*
+ * Message updates
+ */
 
 client.on('messageUpdate', (oldMsg, newMsg) => {
 	if (!newMsg.guild) return;
@@ -186,19 +209,28 @@ client.on('messageUpdate', (oldMsg, newMsg) => {
 	}
 });
 
+/*
+ * Check for GitHub updates
+ */
+
 async function checkForGitHubUpdate(message) {
 	if (message.channel.name == 'semblance-updates' && message.guild.id == sirhGuildID && message.author.username == 'GitHub') {
 		let embed = new MessageEmbed()
 			.setTitle("Semblance Update")
 			.setColor(randomColor())
 			.setAuthor(client.user.tag, client.user.avatarURL())
-			.setDescription(`**${message.embeds[0].description.substring(message.embeds[0].description.indexOf(')')+2)}**`);
-		
+			.setDescription(`**${message.embeds[0].description.substring(message.embeds[0].description.indexOf(')') + 2)}**`)
+			.setFooter("Wait approximately 1 minute before checking out the updated stuff as the changes don't appear instantly!");
+
 		client.guilds.cache.get(c2sID).channels.cache.find(c => c.name == 'semblance').send(embed);
 		return true;
 	} 
 	return false;
 }
+
+/*
+ * Blacklisted word filtering
+ */
 
 let warnings = new Collection();
 
@@ -216,6 +248,10 @@ function clearBlacklistedWord(message, member) {
 		if (modLog) return modLog.send(new MessageEmbed().setDescription(`${member.user.tag} used the n-word and has been warned.\n message: ${message.content}`)).then(member.user.send(`This is a warning for using an explicit word, continuing this behavior may/will result in a ban. If you received this warning despite not actually using the explicit word (the n-word), please notify SirH#4297, else, please stop using the word.`));
 	}
 }
+
+/*
+ * Where the main magic happens, the message event
+ */
 
 client.on('message', message => {
 	checkForGitHubUpdate(message);
@@ -310,6 +346,16 @@ client.on('message', message => {
      }
 	//commands end here
 });
+
+/*
+ * Reminder check
+ */
+
+setInterval(commands['remindme'].checkReminders(client), 60000 * 5);
+
+/*
+ * message reaction events
+ */
 
 client.on("messageReactionAdd", (reaction, user) => {
 	if(user.id != sembID) {

@@ -1,7 +1,8 @@
 const { MessageEmbed } = require('discord.js'),
 	randomColor = require("../constants/colorRandomizer.js"),
-	msToTime = require('../constants/msToTime.js');
-let alphabet = "abcdefghijklmnopqrstuvwxyz";
+	msToTime = require('../constants/msToTime.js'),
+	Reminder = require('../models/Reminder.js'),
+	alphabet = "abcdefghijklmnopqrstuvwxyz";
 
 module.exports = {
 	description: "Set a reminder for yourself.",
@@ -12,7 +13,20 @@ module.exports = {
 		"exampleOne": "s!remindme 1h20m30s I've got magical stuff to do in 1 hour, 20 minutes, and 30 seconds *precisely!*"
 	},
 	permissionRequired: 0,
-	checkArgs: (args) => args.length >= 2
+	checkArgs: (args) => args.length >= 2,
+	checkReminders: async (client) => {
+		if (!client.readyAt || !Reminder) return;
+		let reminderList = await Reminder.find({});
+		if (!reminderList) return;
+		const userReminders = {};
+		reminderList.filter(async (user) => Date.now() > user.remind).forEach(async (user) => userReminders[user.userID] = user.reminder);
+
+		for (const [key, value] of Object.entries(userReminders)) {
+			let user = await client.users.fetch(key);
+			user.send(`Reminder: ${value}`);
+			await Reminder.findOneAndDelete({ userID: key });
+        }
+    }
 }
 
 module.exports.run = async (client, message, args) => {
@@ -74,8 +88,10 @@ module.exports.run = async (client, message, args) => {
 				.setDescription(`I'll remind you in ${msToTime(timeAmount)} for your reminder \n **Reminder**: ${reminder.join(" ")}`)
 				.setFooter(`Command called by ${message.author.tag}`, userAvatar);
 			message.channel.send(embed);
-			setTimeout(() => { message.author.send(`Reminder: ${reminder.join(" ")}`); }, timeAmount);
-			return;
+			if (reminder.length == 0) var reminderHandler = new Reminder({ userID: message.author.id, remind: Date.now() + timeAmount });
+			else var reminderHandler = new Reminder({ userID: message.author.id, reminder: reminder.join(" "), remind: Date.now() + timeAmount });
+			await reminderHandler.save();
+			//setTimeout(() => { message.author.send(`Reminder: ${reminder.join(" ")}`); }, timeAmount);
 		}
 	}
 }

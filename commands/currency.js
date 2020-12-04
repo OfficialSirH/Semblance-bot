@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'),
+﻿const { MessageEmbed } = require('discord.js'),
 	randomColor = require('../constants/colorRandomizer.js'),
 	{ currentLogo } = require('../config.js'),
 	{ entropy, idea, darwinium, metabit, fossil, mutagen } = require('./emojis.js');
@@ -25,6 +25,7 @@ module.exports.run = async (client, message, args) => {
 			{ name: `${darwinium} Darwinium`, value: "A resource used for boosts and geodes (diamond geode is very useful to build up for)" },
 			{ name: `${fossil} Fossils`, value: "The main resource in the Mesozoic Valley to upgrade dinosaurs" },
 			{ name: `${mutagen} Mutagen`, value: "The resource in the Mesozoic Valley used for upgrading trait cards is gained through opening geodes and upgrading dinosaurs, which you can also purchase with darwinium." },
+			{ name: `👀 Stardust`, value: "A beauitful future yet to come." }
 		);
 	message.channel.send(embed);
 }
