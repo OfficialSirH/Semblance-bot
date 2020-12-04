@@ -140,7 +140,7 @@ client.on('ready', async () => {
 	* Reminder check
 	*/
 
-	setInterval(commands['remindme'].checkReminders(client), 60000 * 5);
+	setInterval(() => { commands['remindme'].checkReminders(client) }, 60000 * 5);
 });
 
 /*
