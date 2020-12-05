@@ -145,7 +145,7 @@ client.on('ready', async () => {
 	setInterval(() => { commands['remindme'].checkReminders(client) }, 60000 * 5);
 
 	Information.findOne({ infoType: "github" })
-		.then(infoHandler => {
+		.then(async (infoHandler) => {
 			if (infoHandler.updated) {
 				await Information.findOneAndUpdate({ infoType: "github" }, { $set: { updated: false } }, { new: true });
 				let embed = new MessageEmbed()
