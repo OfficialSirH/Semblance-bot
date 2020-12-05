@@ -37,19 +37,21 @@ module.exports.run = async (client, message, reasonArray) => {
 
 
 	async function dontDisturb(client, message, mentioned) {
-		for (const user of mentioned) {
-			if (message.author.id == user.id) continue;
-			let afkHandler = Afk.findOne({ userID: user.id });
-			if (!afkHandler) continue;
-			let reason = afkHandler.reason;
-			let embed = new MessageEmbed()
-				.setTitle("Currently Afk")
-				.setColor(randomColor())
-				.setThumbnail(user.avatarURL())
-				.setDescription(`${user.tag} is currently afk`)
-				.addField("Reason", `${reason}`);
-			return message.reply(embed);
-		}
+		mentioned.forEach(user => {
+			if (message.author.id != user.id) {
+				let afkHandler = Afk.findOne({ userID: user.id });
+				if (afkHandler) {
+					let reason = afkHandler.reason;
+					let embed = new MessageEmbed()
+						.setTitle("Currently Afk")
+						.setColor(randomColor())
+						.setThumbnail(user.displayAvatarURL())
+						.setDescription(`${user.tag} is currently afk`)
+						.addField("Reason", `${reason}`);
+					return message.reply(embed);
+				}
+			}
+		});
 	}
 
 	async function removeAfk(client, message, user) {

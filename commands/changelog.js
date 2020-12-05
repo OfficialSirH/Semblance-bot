@@ -12,12 +12,11 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
     let embed = new MessageEmbed()
         .setTitle("Changelog")
-        .setAuthor(message.author.tag, message.author.avatarURL())
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
         .setDescription([`+ Semblance updates now appear *when* Semblance is finished updating.`,
             `+ \`s!metaspeedcalc\` is now up-to-date with the new simulation speed modifications from 7.22 beta.`,
             `+ \`s!afk\` will now keep people afk even after Semblance restarts/cycles.`,
-            `+ Improved efficiency with configuration in \`config.js\``,
-            `+ Updated road map in \`s!beyond\``].join('\n'));
+            `+ Improved efficiency with configuration in \`config.js\``].join('\n'));
     message.channel.send(embed);
 }
