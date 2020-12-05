@@ -135,8 +135,6 @@ client.on('ready', async () => {
 	client.clearCache = setInterval(() => {
 		client.sweepUsers();
 	}, 30000);
-	await commands['game'].updateLeaderboard(client);
-	await commands['leaderboard'].updateLeaderboard(client);
 
 	/*
 	* Reminder check
@@ -157,6 +155,9 @@ client.on('ready', async () => {
 				client.guilds.cache.get(c2sID).channels.cache.find(c => c.name == 'semblance').send(embed);
 			}
 		});
+
+	await commands['game'].updateLeaderboard(client);
+	await commands['leaderboard'].updateLeaderboard(client);
 });
 
 /*
