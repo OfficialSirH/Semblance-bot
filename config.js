@@ -28,6 +28,15 @@ fs.readdir("./images/", (err, files) => {
         mementoMori: attachments['MementoMori']
     }
 })
+
+module.exports = {
+    prefix: "s!",
+    sembID: "668688939888148480",
+    sirhID: "279080959612026880",
+    c2sID: "488478892873744385",
+    sirhGuildID: "643957301425995821"
+}
+
 /*
     currentLogo = new MessageAttachment("./images/Current_Logo.png", `${attachmentURL}Current_Logo.png`),
     sharks = new MessageAttachment("./images/Sharks.jpg", `${attachmentURL}Sharks.jpg`),
