@@ -1,6 +1,8 @@
 ﻿/*
  * Constants
  */
+// Configuration
+const { sembID, sirhID, prefix, currentLogo, c2sID, sirhGuildID } = require('./config.js');
 
 const { Client, MessageEmbed, MessageAttachment, GuildEmoji, Collection } = require('discord.js'), 
 	constants = require("./constants"), { getPermissionLevel, parseArgs } = constants,
@@ -18,12 +20,10 @@ module.exports.client = client;
 const Twitter = require("twitter"), twClient = new Twitter(JSON.parse(process.env.twitter)),
 	fetch = require("node-fetch"),
 	fs = require('fs'),
-	{ sembID, sirhID, prefix, currentLogo, c2sID, sirhGuildID } = require('./config.js'),
 	{ embedCreate } = require('./commands/embed.js'),
 	{ reactionToRole } = require('./commands/rolereact.js'),
 	{ dontDisturb, removeAfk } = require('./commands/afk.js'),
 	{ TurnPage } = require('./commands/gametransfer.js');
-const update = require('./commands/update');
 //keep bot active
 const stayActive = require('./stayActive.js'),
 	twitch = require("./commands/twitch.js");
