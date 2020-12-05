@@ -15,7 +15,7 @@ module.exports.run = async (client, message, args) => {
 		.setTitle("Steam and Mobile Updates")
 		.setColor(randomColor())
 		.attachFiles(currentLogo)
-		.setThumbnail(currentLogo.name);
+		.setThumbnail("attachment://Current_Logo.png");
 	let infoHandler = await Information.find({ infoType: "update" });
 	if (infoHandler.info.length > 0) {
 		embed.setDescription(infoHandler.info);
