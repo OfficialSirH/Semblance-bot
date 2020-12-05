@@ -48,9 +48,9 @@ module.exports.run = async (client, message, args) => {
     else {
         num += metabits * 0.009999999776482582;
     }
-    let dinoranksMulti = 1 + dinoRanks * 0.02;
+    let dinoranksMulti = 1 + dinoRanks * 0.05;
     num *= dinoranksMulti;
-    let simspeed = (Math.floor(args[2].replace(/\D/g, '')) > 1400) ? 1400 : Math.floor(args[2].replace(/\D/g, ''));
+    let simspeed = (Math.floor(args[2].replace(/\D/g, '')) > 2475) ? 2475 : Math.floor(args[2].replace(/\D/g, ''));
     num *= ((simspeed / 100) + 1);
     let embed = new MessageEmbed()
         .setTitle("Multiplier Total")
@@ -60,6 +60,6 @@ module.exports.run = async (client, message, args) => {
             `Accumulated Mesozoic Valley Ranks: ${dinoRanks}`,
             `Simulation Speed Upgrades: ${simspeed}%`,
             `Production/Total Multiplier: x${bigToE(num)}`].join('\n'))
-        .setFooter("P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 1400%.");
+        .setFooter("P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2475%.");
     message.channel.send(embed);
 }

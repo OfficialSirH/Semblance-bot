@@ -14,10 +14,10 @@ module.exports.run = async (client, message, args) => {
         .setTitle("Changelog")
         .setAuthor(message.author.tag, message.author.avatarURL())
         .setColor(randomColor())
-        .setDescription([`+ something new is in \`s!currency\`. 👀`,
-            `+ added new code in \`s!codes\``,
-            `+ Reminders in \`s!remindme\` now stay even after Semblance reboots!`,
-            `+ added an argument into \`s!beyond\`: \`s!beyond clips\``,
+        .setDescription([`+ Semblance updates now appear *when* Semblance is finished updating.`,
+            `+ \`s!metaspeedcalc\` is now up-to-date with the new simulation speed modifications from 7.22 beta.`,
+            `+ \`s!afk\` will now keep people afk even after Semblance restarts/cycles.`,
+            `+ Improved efficiency with configuration in \`config.js\``,
             `+ Updated road map in \`s!beyond\``].join('\n'));
     message.channel.send(embed);
 }

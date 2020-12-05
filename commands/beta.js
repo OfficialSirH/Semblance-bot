@@ -1,4 +1,5 @@
-const { MessageEmbed } = require('discord.js'), { currentLogo } = require('../config.js'), randomColor = require('../constants/colorRandomizer.js');
+const { MessageEmbed } = require('discord.js'), { currentLogo } = require('../config.js'), randomColor = require('../constants/colorRandomizer.js'),
+	Information = require('./edit.js').information;
 
 module.exports = {
 	description: "Get info on the latest beta.",
@@ -10,12 +11,13 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
+	let infoHandler = await Information.findOne({ infoType: "beta" });
 	let embed = new MessageEmbed()
-		.setTitle("No Beta")
+		.setTitle("Beta")
 		.setColor(randomColor())
 		.attachFiles(currentLogo)
-		.setThumbnail("attachment://Current_Logo.png")
-		.setDescription(["Currently no beta"].join('\n'))
-		.setFooter("Nope");
+		.setThumbnail(currentLogo.name)
+		.setDescription(infoHandler.info)
+		.setFooter("New stuff do be epicc");
 	message.channel.send(embed);
 }

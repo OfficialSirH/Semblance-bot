@@ -15,14 +15,15 @@ const { Client, MessageEmbed, MessageAttachment, GuildEmoji, Collection } = requ
     		}
 	}), randomColor = require('./constants/colorRandomizer.js');
 module.exports.client = client;
-const Twitter = require("twitter"), twClient = new Twitter(JSON.parse(process.env.twitter));
-const fetch = require("node-fetch");
-const fs = require('fs');
-const { sembID, sirhID, prefix, currentLogo, c2sID, sirhGuildID } = require('./config.js');
-const { embedCreate } = require('./commands/embed.js'),
+const Twitter = require("twitter"), twClient = new Twitter(JSON.parse(process.env.twitter)),
+	fetch = require("node-fetch"),
+	fs = require('fs'),
+	{ sembID, sirhID, prefix, currentLogo, c2sID, sirhGuildID } = require('./config.js'),
+	{ embedCreate } = require('./commands/embed.js'),
 	{ reactionToRole } = require('./commands/rolereact.js'),
 	{ dontDisturb, removeAfk } = require('./commands/afk.js'),
 	{ TurnPage } = require('./commands/gametransfer.js');
+const update = require('./commands/update');
 //keep bot active
 const stayActive = require('./stayActive.js'),
 	twitch = require("./commands/twitch.js");
@@ -98,6 +99,7 @@ setInterval(checkTweet, 2000);
 /*
  * The start of the bot client
  */
+const Information = require('./commands/edit.js').information;
 
 client.on('ready', async () => {
 	console.log(`Logged in as ${client.user.tag}!`);
@@ -141,6 +143,18 @@ client.on('ready', async () => {
 	*/
 
 	setInterval(() => { commands['remindme'].checkReminders(client) }, 60000 * 5);
+
+	let infoHandler = await Information.findOne({ infoType: "github" });
+	if (infoHandler.updated) {
+		updated = false;
+		let embed = new MessageEmbed()
+			.setTitle("Semblance Update")
+			.setColor(randomColor())
+			.setAuthor(client.user.tag, client.user.displayAvatarURL())
+			.setDescription(`**${infoHandler.info}**`);
+
+		client.guilds.cache.get(c2sID).channels.cache.find(c => c.name == 'semblance').send(embed);
+    }
 });
 
 /*
@@ -221,16 +235,9 @@ client.on('messageUpdate', (oldMsg, newMsg) => {
 
 async function checkForGitHubUpdate(message) {
 	if (message.channel.name == 'semblance-updates' && message.guild.id == sirhGuildID && message.author.username == 'GitHub') {
-		let embed = new MessageEmbed()
-			.setTitle("Semblance Update")
-			.setColor(randomColor())
-			.setAuthor(client.user.tag, client.user.avatarURL())
-			.setDescription(`**${message.embeds[0].description.substring(message.embeds[0].description.indexOf(')') + 2)}**`)
-			.setFooter("Wait approximately 1 minute before checking out the updated stuff as the changes don't appear instantly!");
-
-		client.guilds.cache.get(c2sID).channels.cache.find(c => c.name == 'semblance').send(embed);
+		let infoHandler = await Information.findOneAndUpdate({ infoType: "github" }, { $set: { info: message.embeds[0].description.substring(message.embeds[0].description.indexOf(')') + 2), updated: true } }, { new: true });
 		return true;
-	} 
+	}
 	return false;
 }
 

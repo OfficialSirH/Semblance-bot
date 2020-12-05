@@ -1,7 +1,8 @@
 const { MessageEmbed, MessageAttachment, Collection } = require('discord.js'),
 	fs = require("fs"),
 	randomColor = require("../constants/colorRandomizer.js"),
-	{ sembID } = require('../config.js');
+	{ sembID } = require('../config.js'),
+	Afk = require('../models/Afk.js');
 let afkListData = new Collection();
 let afkList = [];
 let reasonList = [];
@@ -19,39 +20,45 @@ module.exports = {
 
 module.exports.run = async (client, message, reasonArray) => {
 	if (message.author.id == sembID) return;
-		let reason = (reasonArray.length > 0) ? reasonArray.join(" "):"Just because";
-	if (!afkListData.has(message.author.id) || !afkListData.get(message.author.id).afk) afkListData.set(message.author.id, {
+	let reason = (reasonArray.length > 0) ? reasonArray.join(" ") : "Just because";
+	/*if (!afkListData.has(message.author.id) || !afkListData.get(message.author.id).afk) afkListData.set(message.author.id, {
 		afk: true,
 		afkReason: reason
-	});
-		let embed = new MessageEmbed()
+	});*/
+	let afkHandler = new Afk({ userID: message.author.id, reason: reason });
+	await afkHandler.save();
+	let embed = new MessageEmbed()
 		.setTitle("AFK")
 		.setColor(randomColor())
-		.setDescription(`You are now afk ${message.author} \n`+
-						`Reason: ${reason}`);
-		message.channel.send(embed);
+		.setDescription(`You are now afk ${message.author} \n` +
+			`Reason: ${reason}`);
+	message.channel.send(embed);
 }
 
 
 	async function dontDisturb(client, message, mentioned) {
-		mentioned.forEach( user => {
-			if(afkListData.has(user.id) && afkListData.get(user.id).afk && message.author.id != user.id) {
-				let reason = afkListData.get(user.id).afkReason;
-				let embed = new MessageEmbed()
-					.setTitle("Currently Afk")
-					.setColor(randomColor())
-					.setThumbnail(user.avatarURL())
-					.setDescription(`${user.tag} is currently afk`)
-					.addField("Reason", `${reason}`);
-				message.reply(embed);
-			}
-		});
+		for (const user of mentioned) {
+			if (message.author.id == user.id) continue;
+			let afkHandler = Afk.findOne({ userID: user.id });
+			if (!afkHandler) continue;
+			let reason = afkHandler.reason;
+			let embed = new MessageEmbed()
+				.setTitle("Currently Afk")
+				.setColor(randomColor())
+				.setThumbnail(user.avatarURL())
+				.setDescription(`${user.tag} is currently afk`)
+				.addField("Reason", `${reason}`);
+			return message.reply(embed);
+		}
 	}
 
 	async function removeAfk(client, message, user) {
 		if (message.author.id == sembID) return;
-		if (!afkListData.has(user)) return;
+		let afkHandler = await Afk.findOne({ userID: message.author.id });
+		if (!afkHandler) return;
+		afkHandler = await Afk.findOneAndDelete({ userID: message.author.id });
+		/*if (!afkListData.has(user)) return;
 		if (afkListData.get(user).afk == false) return;
-		afkListData.delete(user);
+		afkListData.delete(user);*/
 		message.reply("You are no longer AFK");
 	}

@@ -1,4 +1,5 @@
-const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { currentLogo } = require('../config.js');
+const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { currentLogo } = require('../config.js'),
+	Information = require('./edit.js').information;
 
 module.exports = {
 	description: "Get info on the latest update of C2S.",
@@ -14,8 +15,13 @@ module.exports.run = async (client, message, args) => {
 		.setTitle("Steam and Mobile Updates")
 		.setColor(randomColor())
 		.attachFiles(currentLogo)
-		.setThumbnail("attachment://Current_Logo.png")
-		.setDescription(["**Steam(7_19):**",
+		.setThumbnail(currentLogo.name);
+	let infoHandler = await Information.find({ infoType: "update" });
+	if (infoHandler.info.length > 0) {
+		embed.setDescription(infoHandler.info);
+		return message.channel.send(embed);
+	}
+		embed.setDescription(["**Steam(7_19):**",
 
 			"-Fixed bug showing 6 available items in the life notification tab.",
 			"- Fixed Issue Tree line connections were not displaying after buying a item.",
