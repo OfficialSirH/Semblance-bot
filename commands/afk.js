@@ -39,7 +39,7 @@ module.exports.run = async (client, message, reasonArray) => {
 	async function dontDisturb(client, message, mentioned) {
 		mentioned.forEach(user => {
 			if (message.author.id != user.id) {
-				let afkHandler = Afk.findOne({ userID: user.id });
+				let afkHandler = await Afk.findOne({ userID: user.id });
 				if (afkHandler) {
 					let reason = afkHandler.reason;
 					let embed = new MessageEmbed()
