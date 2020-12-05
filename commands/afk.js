@@ -37,7 +37,7 @@ module.exports.run = async (client, message, reasonArray) => {
 
 
 	async function dontDisturb(client, message, mentioned) {
-		mentioned.forEach(user => {
+		mentioned.forEach(async (user) => {
 			if (message.author.id != user.id) {
 				let afkHandler = await Afk.findOne({ userID: user.id });
 				if (afkHandler != null) {
