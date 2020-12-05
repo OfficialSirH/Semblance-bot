@@ -25,7 +25,7 @@ module.exports.run = async (client, message, reasonArray) => {
 		afk: true,
 		afkReason: reason
 	});*/
-	var afkHandler = Afk.findOne({ userID: message.author.id });
+	var afkHandler = await Afk.findOne({ userID: message.author.id });
 	if (afkHandler == null) {
 		afkHandler = new Afk({ userID: message.author.id, reason: reason });
 		await afkHandler.save();
