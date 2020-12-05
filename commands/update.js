@@ -17,7 +17,7 @@ module.exports.run = async (client, message, args) => {
 		.attachFiles(currentLogo)
 		.setThumbnail("attachment://Current_Logo.png");
 	let infoHandler = await Information.find({ infoType: "update" });
-	if (infoHandler.info.length > 0) {
+	if (infoHandler.info && infoHandler.info.length > 0) {
 		embed.setDescription(infoHandler.info);
 		return message.channel.send(embed);
 	}
