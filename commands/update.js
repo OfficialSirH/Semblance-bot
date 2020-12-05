@@ -11,14 +11,12 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
+	let infoHandler = await Information.findOne({ infoType: "update" });
 	let embed = new MessageEmbed()
 		.setTitle("Steam and Mobile Updates")
 		.setColor(randomColor())
 		.attachFiles(currentLogo)
-		.setThumbnail("attachment://Current_Logo.png");
-
-	let infoHandler = await Information.find({ infoType: "update" });
-
-		embed.setDescription(infoHandler.info);
+		.setThumbnail("attachment://Current_Logo.png")
+		.setDescription(infoHandler.info);
 		message.channel.send(embed);
 }
