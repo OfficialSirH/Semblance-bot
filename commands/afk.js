@@ -40,7 +40,7 @@ module.exports.run = async (client, message, reasonArray) => {
 		mentioned.forEach(user => {
 			if (message.author.id != user.id) {
 				let afkHandler = await Afk.findOne({ userID: user.id });
-				if (afkHandler) {
+				if (afkHandler != null) {
 					let reason = afkHandler.reason;
 					let embed = new MessageEmbed()
 						.setTitle("Currently Afk")
@@ -57,7 +57,7 @@ module.exports.run = async (client, message, reasonArray) => {
 	async function removeAfk(client, message, user) {
 		if (message.author.id == sembID) return;
 		let afkHandler = await Afk.findOne({ userID: message.author.id });
-		if (!afkHandler) return;
+		if (afkHandler == null) return;
 		afkHandler = await Afk.findOneAndDelete({ userID: message.author.id });
 		/*if (!afkListData.has(user)) return;
 		if (afkListData.get(user).afk == false) return;
