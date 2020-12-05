@@ -25,8 +25,12 @@ module.exports.run = async (client, message, reasonArray) => {
 		afk: true,
 		afkReason: reason
 	});*/
-	let afkHandler = new Afk({ userID: message.author.id, reason: reason });
-	await afkHandler.save();
+	var afkHandler = Afk.findOne({ userID: message.author.id });
+	if (afkHandler == null) {
+		afkHandler = new Afk({ userID: message.author.id, reason: reason });
+		await afkHandler.save();
+	} else afkHandler = await Afk.findOneAndUpdate({ userID: message.author.id }, { $set: { reason: reason } }, { new: true });
+	
 	let embed = new MessageEmbed()
 		.setTitle("AFK")
 		.setColor(randomColor())

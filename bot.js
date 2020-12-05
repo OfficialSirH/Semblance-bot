@@ -279,7 +279,7 @@ client.on('message', message => {
 		}
 	}
 
-	removeAfk(client, message, message.author.id);
+	if (!message.content.startsWith(`${prefix}afk `)) removeAfk(client, message, message.author.id);
 	//Cell to Singularity Exclusive Code
 	if (message.guild) {
 		let chName = message.channel.name;
