@@ -13,7 +13,7 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
     if (!args[1] || args[1].length == 0) return message.reply("Why are you trying to put nothing for the information? Come on!");
     if (args[0] == 'beta') {
-        let infoHandler = await Information.findOneAndUpdate({ infoType: "beta" }, { $set: { info: args.join(" ") } }, { new: true });
+        let infoHandler = await Information.findOneAndUpdate({ infoType: "beta" }, { $set: { info: args.slice(1).join(" ") } }, { new: true });
         let embed = new MessageEmbed()
             .setTitle("Beta Info Changed!")
             .setAuthor(message.author.tag, message.author.displayAvatarURL())
@@ -21,7 +21,7 @@ module.exports.run = async (client, message, args) => {
             .setDescription(infoHandler.info);
         message.channel.send(embed);
     } else if (args[0] == 'update') {
-        let infoHandler = await Information.findOneAndUpdate({ infoType: "update" }, { $set: { info: args.join(" ") } }, { new: true });
+        let infoHandler = await Information.findOneAndUpdate({ infoType: "update" }, { $set: { info: args.slice(1).join(" ") } }, { new: true });
         let embed = new MessageEmbed()
             .setTitle("Update Info Changed!")
             .setAuthor(message.author.tag, message.author.displayAvatarURL())
