@@ -1,6 +1,5 @@
 ﻿const { MessageEmbed, MessageAttachment } = require('discord.js'),
 	randomColor = require("../constants/colorRandomizer.js"),
-	{ currentLogo } = require('../config.js'),
 	pages = ["https://i.imgur.com/BsjMAu6.png",
 		"https://i.imgur.com/QbDAOkF.png",
 		"https://i.imgur.com/w1jEuzh.png",
@@ -18,6 +17,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
+	const { currentLogo } = require('../config.js');
 	let embed = new MessageEmbed()
 		.setTitle("Game Transfer")
 		.setColor(randomColor())
@@ -35,7 +35,7 @@ module.exports.run = async (client, message, args) => {
 
 async function TurnPage(client, reaction, user) {
 	let embed = reaction.message.embeds[0];
-	if (reaction.message.embeds.length == 0 || user.tag != embed.author.name || !embed.image || !pages.includes(embed.image.url)) return;
+	if (reaction.message.embeds.length == 0 || !embed.author || user.tag != embed.author.name || !embed.image || !pages.includes(embed.image.url)) return;
 
 	let currentPage = pages.indexOf(embed.image.url);
 
