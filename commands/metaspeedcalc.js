@@ -20,24 +20,23 @@ module.exports.run = async (client, message, args) => {
     let num = 1.0;
 
     if (metabits > 1000.0) {
-        let num2 = metabits - 1000.0;
+        var num2 = metabits - 1000.0;
         num += 10.0;
 
         if (num2 > 100000.0) {
-            let num3 = num2 - 100000.0;
+            var num3 = num2 - 100000.0;
             num += 10.0;
-            num += num3 * 0.009999999776482582 / 10000.0;
 
             if (num3 > 300000000.0) {
-                let num4 = num3 - 300000000.0;
+                var num4 = num3 - 300000000.0;
                 num += 300;
 
-                let num5 = num4 * 0.009999999776482582 / 1000000.0;
+                var num5 = num4 * 0.009999999776482582 / 1000000.0;
                 num += num5;
 
             }
             else {
-                num += num4 * 0.009999999776482582 / 10000.0;
+                num += num3 * 0.009999999776482582 / 10000.0;
             }
 
         }
