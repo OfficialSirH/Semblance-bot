@@ -38,6 +38,7 @@ async function TurnPage(client, reaction, user) {
 	if (reaction.message.embeds.length == 0 || !embed.author || user.tag != embed.author.name || !embed.image || !pages.includes(embed.image.url)) return;
 
 	let currentPage = pages.indexOf(embed.image.url);
+	const { currentLogo } = require('../config.js');
 
 	if (reaction.emoji.name == "➡️") {
 		currentPage = (currentPage == 4) ? 0 : ++currentPage;
