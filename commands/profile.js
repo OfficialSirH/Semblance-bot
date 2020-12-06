@@ -13,18 +13,14 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
 	let chosenUser = args[0];
 	if (args.length == 0) return guildProfileEmbed(message, message.member);
-	chosenUser = chosenUser.replace(/^<@/, "").replace(/!/, "").replace(/>/, "");
-	let isMember = false;
-	let guildMember = await message.guild.members.fetch(chosenUser, {cache: false})
-		.then(member => {
-			isMember = true;
-        })
-		.catch(async (err) => {
-			let clientUser = await client.users.fetch(chosenUser);
-			if (clientUser) return userProfileEmbed(message, clientUser);
-			else message.reply("Sorry, that user couldn't be found in my database.");
-		})
-	if (isMember) return guildProfileEmbed(message, guildMember);
+	chosenUser = chosenUser.match(/\d/g).join('');
+
+	let guildMember = await message.guild.members.fetch(chosenUser, { cache: false });
+	if (guildMember) return guildProfileEmbed(message, guildMember);
+
+	let clientUser = await client.users.fetch(chosenUser);
+	if (clientUser) return userProfileEmbed(message, clientUser);
+	else message.reply("Sorry, that user couldn't be found in Discord at all");
 }
 
 async function guildProfileEmbed(message, member) {
