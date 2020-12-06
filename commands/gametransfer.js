@@ -47,7 +47,7 @@ async function TurnPage(client, reaction, user) {
 			.setAuthor(user.tag, user.displayAvatarURL())
 			.setColor(randomColor())
 			.attachFiles(currentLogo)
-			.setThumbnail("atachment://Current_Logo.png")
+			.setThumbnail("attachment://Current_Logo.png")
 			.setImage(pages[currentPage])
 			.setDescription(`Step ${currentPage + 1}:`);
 		reaction.message.edit(embed);
@@ -60,7 +60,7 @@ async function TurnPage(client, reaction, user) {
 			.setAuthor(user.tag, user.displayAvatarURL())
 			.setColor(randomColor())
 			.attachFiles(currentLogo)
-			.setThumbnail("atachment://Current_Logo.png")
+			.setThumbnail("attachment://Current_Logo.png")
 			.setImage(pages[currentPage])
 			.setDescription(`Step ${currentPage + 1}:`);
 		reaction.message.edit(embed);
