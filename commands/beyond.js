@@ -6,6 +6,7 @@ module.exports = {
 	usage: {
 		"": ""
 	},
+	aliases: ["roadmap"],
 	permissionRequired: 0,
 	checkArgs: (args) => args.length >= 0
 }
@@ -13,12 +14,12 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
 	if (args[0] == 'clips' || args.join(" ") == 'sneak peaks' || args[0] == 'sneakpeaks') return clips(message);
 	let embed = new MessageEmbed()
-		.setTitle("Beyond")
+		.setTitle("Beyond/Road Map")
 		.setColor(randomColor())
 		.attachFiles([currentLogo, roadMap])
 		.setThumbnail("attachment://Current_Logo.png")
 		.setImage("attachment://roadMap.png")
-		.setDescription("The Beyond hasn't been released yet, but I know when it will be released, which will be- ***ERROR... data corruption, can't compile***");
+		.setDescription("The Beyond has been estimated to be released around February, 2021. Anyone who wants to give any complaints about the length of the release date can email their complaint to ImAWhinyKaren@gmail.com");
 	message.channel.send(embed);
 }
 

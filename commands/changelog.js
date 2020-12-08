@@ -14,9 +14,7 @@ module.exports.run = async (client, message, args) => {
         .setTitle("Changelog")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
-        .setDescription([`+ Semblance updates now appear *when* Semblance is finished updating.`,
-            `+ \`s!metaspeedcalc\` is now up-to-date with the new simulation speed modifications from 7.22 beta.`,
-            `+ \`s!afk\` will now keep people afk even after Semblance restarts/cycles.`,
-            `+ Improved efficiency with configuration in \`config.js\``].join('\n'));
+        .setDescription([`+ \`s!beyond\`'s description has been changed`,
+            `+ \`s!roles\` has been updated to include Server Events role`].join('\n'));
     message.channel.send(embed);
 }
