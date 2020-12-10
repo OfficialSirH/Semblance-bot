@@ -14,7 +14,6 @@ module.exports.run = async (client, message, args) => {
         .setTitle("Changelog")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
-        .setDescription([`+ \`s!beyond\`'s description has been changed`,
-            `+ \`s!roles\` has been updated to include Server Events role`].join('\n'));
+        .setDescription([`+ both the voting and game leaderboard will now update every minute instead of 10 due to a significantly improved sorting algorithm being implemented.`].join('\n'));
     message.channel.send(embed);
 }

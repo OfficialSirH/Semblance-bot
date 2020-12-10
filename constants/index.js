@@ -4,6 +4,18 @@ module.exports = {
     embedColor: 0x7289DA,
     hexColor: "7289DA",
     getPermissionLevel: (member) => { return getPermissionLevel(member) },
+    insertionSort: (list) => {
+        for (var i = 0; i < list.length; i++) {
+            curItem = list[i];
+            curIndex = i - 1;
+            while (curIndex >= 0 && curItem[1] > (list[curIndex])[1]) {
+                list[curIndex + 1] = list[curIndex];
+                curIndex--;
+            }
+            list[curIndex + 1] = curItem;
+        }
+        return list;
+    },
     emojis: {
         loading: '<a:loading:572202235342225418>',
         blurple: '<:blurple:673265867840290859>',

@@ -1,6 +1,7 @@
 const { MessageEmbed, Collection } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { prefix } = require('../config.js'),
-    GameModel = require('../models/Game.js');
-let cooldownHandler = new Collection();
+    { insertionSort } = require('../constants/index.js'),
+    GameModel = require('../models/Game.js'),
+    cooldownHandler = new Collection();
 module.exports = {
     description: "An idle-game within Semblance",
     usage: {
@@ -82,10 +83,10 @@ async function updateLeaderboard(client) {
         let user = await client.users.fetch(key, { cache: false });
         list.push([user.tag, value]);
     }
-    list = await list.sort((a, b) => b[1] - a[1]).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - level ${cur[1]}\n`, '');
+    list = insertionSort(list).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - level ${cur[1]}\n`, '');
     if (!list) leaderboardList = 'There is currently no one who has upgraded their income.';
     else leaderboardList = list;
-    setTimeout(() => module.exports.updateLeaderboard(client), (60000 * 10));
+    setTimeout(() => module.exports.updateLeaderboard(client), 60000);
 }
 
 let leaderboardList = 'There is currently no one who has upgraded their income or the leaderboard hasn\'t updated.';
@@ -97,7 +98,7 @@ async function leaderboard(client, message) {
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
         .setDescription(`${leaderboardList}`)
-        .setFooter("May the odds be with you.\n(Updates every 10 minutes)");
+        .setFooter("May the odds be with you.\n(Updates every minute)");
     message.channel.send(embed);
 }
 
