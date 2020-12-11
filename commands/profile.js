@@ -15,12 +15,21 @@ module.exports.run = async (client, message, args) => {
 	if (args.length == 0) return guildProfileEmbed(message, message.member);
 	chosenUser = chosenUser.match(/\d/g).join('');
 
-	let guildMember = await message.guild.members.fetch(chosenUser, { cache: false });
+	let guildMember;
+	try {
+		guildMember = await message.guild.members.fetch(chosenUser, { cache: false });
+	} catch (e) {
+		guildMember = false;
+    }
 	if (guildMember) return guildProfileEmbed(message, guildMember);
 
-	let clientUser = await client.users.fetch(chosenUser);
-	if (clientUser) return userProfileEmbed(message, clientUser);
-	else message.reply("Sorry, that user couldn't be found in Discord at all");
+	try {
+		let clientUser = await client.users.fetch(chosenUser);
+		if (clientUser) return userProfileEmbed(message, clientUser);
+		else message.reply("Sorry, that user couldn't be found in Discord at all");
+	} catch (e) {
+		
+    }
 }
 
 async function guildProfileEmbed(message, member) {
