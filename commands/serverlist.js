@@ -20,7 +20,8 @@ module.exports.run = async (client, message, args) => {
 
 	for (var i = 0; i < Math.ceil(numOfPages); i++) {
 		guildBook[`page_${i + 1}`] = {};
-		for (var j = client.guilds.cache.size / 50 * i; j <= client.guilds.cache.size / 50 * (i + 1); j++) guildBook[`page_${i + 1}`][`${client.guilds.cache.array()[j].name}`] = `${client.guilds.cache.array()[j].id}`;
+		loopCount = ((client.guilds.cache.size - (50 * i) - 50) >= 0) ? 50 : (client.guilds.cache.size - (50 * i));
+		for (var j = 0; j < loopCount; j++) guildBook[`page_${i + 1}`][`${client.guilds.cache.array()[j].name}`] = `${client.guilds.cache.array()[j].id}`;
 	}
 
 	let pageDetails = "";
