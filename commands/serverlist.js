@@ -16,7 +16,8 @@ module.exports.run = async (client, message, args) => {
 	let numOfPages = client.guilds.cache.size / 50;
 
 	if (!args[0]) var chosenPage = 1;
-	if (args[0] < Math.ceil(numOfPages) || args[0] > Math.ceil(numOfPages)) return message.reply(`You chose a non-existent page, please choose between 1 - ${Math.ceil(numOfPages)}`);
+	else if (args[0] < Math.ceil(numOfPages) || args[0] > Math.ceil(numOfPages)) return message.reply(`You chose a non-existent page, please choose between 1 - ${Math.ceil(numOfPages)}`);
+	else var chosenPage = args[0];
 
 	for (var i = 0; i < Math.ceil(numOfPages); i++) {
 		guildBook[`page_${i + 1}`] = {};
