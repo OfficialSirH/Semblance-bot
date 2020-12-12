@@ -26,7 +26,7 @@ module.exports.run = async (client, message, args) => {
 	}
 
 	let pageDetails = "";
-	for (const [key, value] of guildBook[`page_${chosenPage}`]) {
+	for (const [key, value] of Object.entries(guildBook[`page_${chosenPage}`])) {
 		pageDetails += `${key} : ${value}\n`;
 	}
 
