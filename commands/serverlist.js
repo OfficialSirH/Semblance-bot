@@ -11,7 +11,6 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	let serverCount = client.guilds.cache.reduce((total, cur, ind) => total++, 0);
 	let guildBook = {};
 	let numOfPages = client.guilds.cache.size / 50;
 
@@ -31,7 +30,7 @@ module.exports.run = async (client, message, args) => {
 	}
 
 	let embed = new MessageEmbed()
-		.setTitle(`Server List [${serverCount}] - Page ${chosenPage}`)
+		.setTitle(`Server List [${client.guilds.cache.size}] - Page ${chosenPage}`)
 		.setColor(randomColor())
 		.setThumbnail(client.user.displayAvatarURL())
 		.setDescription(pageDetails)
