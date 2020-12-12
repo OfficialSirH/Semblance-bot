@@ -11,22 +11,28 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	let serverList = [];
-	let serverCount = 0;
-	let semblanceAvatar = client.user.avatarURL();
-	client.guilds.cache.forEach( guild => {
-		serverCount++;
-		try {
-			serverList.push(`${guild.name}(${guild.owner.user.tag})`);
-		} catch(err) {
-			serverList.push(`${guild.name}(*unable to get owner's name*)`);
-		}
-	});
+	let serverCount = client.guilds.cache.reduce((total, cur, ind) => total++, 0);
+	let guildBook = {};
+	let numOfPages = client.guilds.cache.size / 50;
+
+	if (!args[0]) var chosenPage = 1;
+	if (args[0] < Math.ceil(numOfPages) || args[0] > Math.ceil(numOfPages)) return message.reply(`You chose a non-existent page, please choose between 1 - ${Math.ceil(numOfPages)}`);
+
+	for (var i = 0; i < Math.ceil(numOfPages); i++) {
+		guildBook[`page_${i + 1}`] = {};
+		for (var j = client.guilds.cache.size / 50 * i; j <= client.guilds.cache.size / 50 * (i + 1); j++) guildBook[`page_${i + 1}`][`${client.guilds.cache.array()[j].name}`] = `${client.guilds.cache.array()[j].id}`;
+	}
+
+	let pageDetails = "";
+	for (const [key, value] of guildBook[`page_${chosenPage}`]) {
+		pageDetails += `${key} : ${value}\n`;
+	}
+
 	let embed = new MessageEmbed()
-	.setTitle(`Server List [${serverCount}]`)
-	.setColor(randomColor())
-	.setThumbnail(semblanceAvatar)
-	.setDescription(serverList)
-	.setFooter("Server owners' names are inbetween ()");
+		.setTitle(`Server List [${serverCount}] - Page ${chosenPage}`)
+		.setColor(randomColor())
+		.setThumbnail(client.user.displayAvatarURL())
+		.setDescription(pageDetails)
+		.setFooter(`Page ${chosenPage} out of ${Math.ceil(numOfPages)}`);
 	message.channel.send(embed);
 }
