@@ -47,8 +47,8 @@ module.exports.run = async (client, message, args) => {
     else {
         num += metabits * 0.009999999776482582;
     }
-    let dinoPrestigeBonus = (dinoRanks == 550) ? 10 : Math.floor(dinoRanks / 50);
-    let dinoranksMulti = 1 + dinoRanks * 0.05 + dinoPrestigeBonus * 0.5;
+    //let dinoPrestigeBonus = (dinoRanks == 550) ? 10 : Math.floor(dinoRanks / 50);
+    let dinoranksMulti = 1 + dinoRanks * 0.1;
     num *= dinoranksMulti;
     let simspeed = (Math.floor(args[2].replace(/\D/g, '')) > 2475) ? 2475 : Math.floor(args[2].replace(/\D/g, ''));
     num *= ((simspeed / 100) + 1);
