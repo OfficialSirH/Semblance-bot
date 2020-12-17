@@ -99,7 +99,7 @@ setInterval(checkTweet, 2000);
 /*
  * The start of the bot client
  */
-const Information = require('./commands/edit.js').information;
+const { Information } = require('./commands/edit.js');
 
 client.on('ready', async () => {
 	console.log(`Logged in as ${client.user.tag}!`);
