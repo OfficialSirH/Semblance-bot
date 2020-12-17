@@ -20,8 +20,8 @@ module.exports.run = async (client, message, args) => {
         .setColor(randomColor())
         .attachFiles(currentLogo)
         .setThumbnail("attachment://Current_Logo.png")
-        .setDescription(codeHandler.info) //['DARWIN', 'STRIPES', 'FESTIVE', 'EVOLVE (maybe works still)'].join('\n')
-        .addField("Expired Codes", codeHandler.expired) //"Expired(meaning these don't work)", ["MANIA", "TWITCH", "FINALS", "SCALES", 'POEM', 'GLITCH'].join('\n')
+        .setDescription(codeHandler.info) //DARWIN, STRIPES, FESTIVE
+        .addField("Expired Codes", codeHandler.expired) // Expired Codes: MANIA, TWITCH, FINALS, SCALES, POEM, GLITCH, EVOLVE
         .setFooter("Magical Codes!");
     message.channel.send(embed);
 }

@@ -34,7 +34,7 @@ module.exports.run = async (client, message, args) => {
                 .addField("Expired Codes", infoHandler.expired);
             break;
         case 'changelog':
-            infoHandler = await Information.findOneAndUpdate({ infoType: "codes" }, { $set: { info: args.slice(1).join(" ") } }, { new: true });
+            infoHandler = await Information.findOneAndUpdate({ infoType: "changelog" }, { $set: { info: args.slice(1).join(" ") } }, { new: true });
             embed.setDescription(infoHandler.info);
             break;
         default:
