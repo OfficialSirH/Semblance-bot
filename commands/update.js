@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { currentLogo } = require('../config.js'),
-	Information = require('./edit.js').information;
+	{ Information } = require('./edit.js');
 
 module.exports = {
 	description: "Get info on the latest update of C2S.",

@@ -7,7 +7,7 @@ module.exports = {
     },
     permissionRequired: 7,
     checkArgs: (args) => args.length >= 1,
-    information: Information
+    Information: Information
 }
 
 module.exports.run = async (client, message, args) => {
