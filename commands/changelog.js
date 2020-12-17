@@ -1,4 +1,4 @@
-﻿const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js');
+﻿const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { Information } = require('./edit.js');
 
 module.exports = {
     description: "Provides the latest changes to Semblance.",
@@ -10,10 +10,11 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
+    let changelogHandler = await Information.findOne({ infoType: "changelog" });
     let embed = new MessageEmbed()
         .setTitle("Changelog")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor())
-        .setDescription([`+ both the voting and game leaderboard will now update every minute instead of 10 due to a significantly improved sorting algorithm being implemented.`].join('\n'));
+        .setDescription(changelogHandler.info);
     message.channel.send(embed);
 }
