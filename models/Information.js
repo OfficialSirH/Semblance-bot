@@ -9,7 +9,8 @@ const Information = Schema({
     updated: {
         type: Boolean,
         default: false
-    }
+    },
+    expired: String
 });
 
 module.exports = model("Information", Information, "Information");

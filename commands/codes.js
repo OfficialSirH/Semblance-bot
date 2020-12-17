@@ -1,6 +1,7 @@
 const { MessageEmbed } = require('discord.js'),
     randomColor = require('../constants/colorRandomizer.js'),
-    { currentLogo } = require('../config.js');
+    { currentLogo } = require('../config.js'),
+    { Information } = require('./edit.js');
 
 module.exports = {
     description: "get all of the ingame codes",
@@ -12,14 +13,15 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
+    let codeHandler = await Information.findOne({ infoType: 'codes' });
     let embed = new MessageEmbed()
         .setTitle("Darwinium Codes")
         .setAuthor(message.author.tag, message.author.avatarURL())
         .setColor(randomColor())
         .attachFiles(currentLogo)
         .setThumbnail("attachment://Current_Logo.png")
-        .setDescription(['DARWIN', 'STRIPES', 'FESTIVE', 'EVOLVE (maybe works still)'].join('\n'))
-        .addField("Expired(meaning these don't work)", ["MANIA", "TWITCH", "FINALS", "SCALES", 'POEM', 'GLITCH'].join('\n'))
+        .setDescription(codeHandler.info) //['DARWIN', 'STRIPES', 'FESTIVE', 'EVOLVE (maybe works still)'].join('\n')
+        .addField("Expired Codes", codeHandler.expired) //"Expired(meaning these don't work)", ["MANIA", "TWITCH", "FINALS", "SCALES", 'POEM', 'GLITCH'].join('\n')
         .setFooter("Magical Codes!");
     message.channel.send(embed);
 }
