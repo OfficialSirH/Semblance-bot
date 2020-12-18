@@ -23,7 +23,7 @@ module.exports = {
 	raptorBadge: '<:raptor_badge:724883150135885894>',
 	iguanBadge: '<:iguan_badge:724883150504853516>',
 	trexSkull: '<:trex_skull:724883151054176258>',
-	singularity: '<:singularity:744968520693186610>',
+	singularity: '<:singularity:789521337738723358>',
 	nanobotUp: '<:NanobotUp:768745551474589697>',
 	nanobotDown: '<:NanobotDown:768745589625716777>'
 }
