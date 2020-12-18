@@ -60,6 +60,6 @@ module.exports.run = async (client, message, args) => {
             `Accumulated Mesozoic Valley Ranks: ${dinoRanks}`,
             `Simulation Speed Upgrades: ${simspeed}%`,
             `Production/Total Multiplier: x${bigToE(num)}`].join('\n'))
-        .setFooter("P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2475%.");
+        .setFooter("P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2105%.");
     message.channel.send(embed);
 }
