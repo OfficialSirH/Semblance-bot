@@ -47,10 +47,10 @@ module.exports.run = async (client, message, args) => {
     else {
         num += metabits * 0.009999999776482582;
     }
-    //let dinoPrestigeBonus = (dinoRanks == 550) ? 10 : Math.floor(dinoRanks / 50);
-    let dinoranksMulti = 1 + dinoRanks * 0.1;
+    let dinoPrestigeBonus = (dinoRanks == 550) ? 10 : (Math.ceil(dinoRanks / 50) > Math.floor(dinoRanks / 50)) ? Math.floor(dinoRanks / 50) : Math.floor(dinoRanks / 50)-1;
+    let dinoranksMulti = 1 + dinoRanks * 0.1 + dinoPrestigeBonus * 0.5;
     num *= dinoranksMulti;
-    let simspeed = (Math.floor(args[2].replace(/\D/g, '')) > 2475) ? 2475 : Math.floor(args[2].replace(/\D/g, ''));
+    let simspeed = (Math.floor(args[2].replace(/\D/g, '')) > 2105) ? 2105 : Math.floor(args[2].replace(/\D/g, ''));
     num *= ((simspeed / 100) + 1);
     let embed = new MessageEmbed()
         .setTitle("Multiplier Total")
