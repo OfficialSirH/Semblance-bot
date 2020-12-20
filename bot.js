@@ -322,6 +322,7 @@ client.on('message', message => {
 				if (!commandFile.checkArgs(args, permissionLevel, content)) return message.channel.send(`❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage).map(a => " " + a).join("")}\`, for additional help, see \`${prefix}help\`.`)
 				commandFile.run(client, message, args, identifier, { permissionLevel, content });
 				totalCommandsUsed++;
+				commandsCounter[command]++;
 			} catch (e) { }
 		}
 	}
