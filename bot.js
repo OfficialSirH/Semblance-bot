@@ -32,15 +32,18 @@ const stayActive = require('./stayActive.js'),
  * Command setup
  */
 
-const commands = {}, aliases = {} // { "command": require("that_command") }, { "alias": "command" }
+const commands = {}, aliases = {}, commandsCounter = {} // { "command": require("that_command") }, { "alias": "command" }
 fs.readdir("./commands/", (err, files) => {
 	if (err) return console.log(err);
 	for (const file of files) if (file.endsWith(".js")) {
 		const commandFile = require(`./commands/${file}`), fileName = file.replace(".js", "");
 		commands[fileName] = commandFile;
+		commandsCounter[fileName] = 0;
 		if (commandFile.aliases) for (const alias of commandFile.aliases) aliases[alias] = fileName;
 	}
 })
+
+module.exports.commandsCounter = commandsCounter;
 
 const autoCommands = {};
 fs.readdir("./auto_scripts/", (err, files) => {
@@ -166,30 +169,16 @@ client.on('ready', async () => {
 
 const myActivity = setInterval(ShowMyActivity, 10000);
 let alternateActivity = false;
+let totalCommandsUsed = 0;
 
 async function ShowMyActivity() {
-	let SirHActivity;
-	let me = client.users.cache.get(sirhID);
-	if (me == undefined) {
-		return;
-    }
-	if (me.presence.activities.length <= 0) {
-		SirHActivity = "Nothing at the moment";
-	} else if (me.presence.activities[0].name != "Custom Status") {
-		SirHActivity = me.presence.activities[0].name;
-	} else {
-		SirHActivity = me.presence.activities[0].state;
-	}
 	if (!alternateActivity) {
-		client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | SirH: ${SirHActivity}`, { type: "PLAYING" });
+		client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalCommandsUsed} commands used during uptime`, { type: "PLAYING" });
 		alternateActivity = true;
 	} else {
 		alternateActivity = false;
-		let totalUsers = 0;
-		client.guilds.cache.forEach(guild => {
-			totalUsers += guild.memberCount;
-		});
-		client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalUsers} members`, { type: "PLAYING" });
+		let totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
+		client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalMembers} members`, { type: "PLAYING" });
     }
 }
 
@@ -271,8 +260,8 @@ function clearBlacklistedWord(message, member) {
 
 client.on('message', message => {
 	checkForGitHubUpdate(message);
-	if (message.channel.name == "cells-tweets" && message.guild.id == c2sID && message.author.id != sembID) return message.delete();
-	if (message.channel.type == "dm" || message.author.bot) return;
+	if (message.channel.name == "cells-tweets" && message.guild.id == c2sID && message.author.id != sembID && !message.member.roles.cache.get('493796775132528640')) return message.delete();
+	if (message.channel.type == "dm" || message.author.bot || !message.guild) return;
 	clearBlacklistedWord(message, message.member);
 	if (message.member) {
 		if (message.mentions.users && message.member.id != sembID) {
@@ -282,31 +271,29 @@ client.on('message', message => {
 
 	if (!message.content.startsWith(`${prefix}afk `)) removeAfk(client, message, message.author.id);
 	//Cell to Singularity Exclusive Code
-	if (message.guild) {
-		let chName = message.channel.name;
-		if (message.guild.id == c2sID || message.guild.id == sirhGuildID) for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
-		if (message.guild.id == c2sID) {
-			let msg = message.content.toLowerCase(), s1 = "suggestion:", s2 = "suggest:", s3 = `${prefix}suggestion`, s4 = `${prefix}suggest`;
-			if (chName == 'suggestions') {
-				if (msg.startsWith(s1) || msg.startsWith(s2) || msg.startsWith(s3) || msg.startsWith(s4) || getPermissionLevel(message.member) > 0) return;
-				else {
-					message.delete();
-					let embed = new MessageEmbed()
-						.setTitle("Your Suggestion")
-						.setDescription(`\`${message.content}\``);
-					message.author.send(`Your message in ${message.channel} was deleted due to not having the `+
-						      `suggestion-prefix required with suggestions, which means your message `+
-						      `*must* start with \`${s1}\`, \`${s2}\`, \`${s3}\`, or \`${s4}\`. The `+
-						      `reason for the required suggestion-prefixes is to prevent the channel `+
-						      `getting messy due to conversations instead of actual suggestions.`, embed);
-				}
+	let chName = message.channel.name;
+	if (message.guild.id == c2sID || message.guild.id == sirhGuildID) for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
+	if (message.guild.id == c2sID) {
+		let msg = message.content.toLowerCase(), s1 = "suggestion:", s2 = "suggest:", s3 = `${prefix}suggestion`, s4 = `${prefix}suggest`;
+		if (chName == 'suggestions') {
+			if (msg.startsWith(s1) || msg.startsWith(s2) || msg.startsWith(s3) || msg.startsWith(s4) || getPermissionLevel(message.member) > 0) return;
+			else {
+				message.delete();
+				let embed = new MessageEmbed()
+					.setTitle("Your Suggestion")
+					.setDescription(`\`${message.content}\``);
+				message.author.send(`Your message in ${message.channel} was deleted due to not having the ` +
+					`suggestion-prefix required with suggestions, which means your message ` +
+					`*must* start with \`${s1}\`, \`${s2}\`, \`${s3}\`, or \`${s4}\`. The ` +
+					`reason for the required suggestion-prefixes is to prevent the channel ` +
+					`getting messy due to conversations instead of actual suggestions.`, embed);
 			}
-			if (chName == 'share-your-prestige' && message.attachments.size == 0 && getPermissionLevel(message.member) == 0) message.delete();
-			if (chName != 'semblance' && chName != 'mod-chat' && getPermissionLevel(message.member) == 0) return;
 		}
-		if (message.guild.id == sirhGuildID) {
-			if (chName != 'bot-room' && getPermissionLevel(message.member) == 0) return;
-        	}
+		if (chName == 'share-your-prestige' && message.attachments.size == 0 && getPermissionLevel(message.member) == 0) message.delete();
+		if (chName != 'semblance' && chName != 'mod-chat' && getPermissionLevel(message.member) == 0) return;
+	}
+	if (message.guild.id == sirhGuildID) {
+		if (chName != 'bot-room' && getPermissionLevel(message.member) == 0) return;
 	}
 	//End of Cell to Singularity Exclusive Code
 	if (message.mentions) {
@@ -333,7 +320,8 @@ client.on('message', message => {
 			//console.log(`${message.member}: ${permissionLevel}`);
 			try { if (permissionLevel < commandFile.permissionRequired) return message.channel.send("❌ You don't have permission to do this!");
 				if (!commandFile.checkArgs(args, permissionLevel, content)) return message.channel.send(`❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage).map(a => " " + a).join("")}\`, for additional help, see \`${prefix}help\`.`)
-				commandFile.run(client, message, args, identifier, { permissionLevel, content })
+				commandFile.run(client, message, args, identifier, { permissionLevel, content });
+				totalCommandsUsed++;
 			} catch (e) { }
 		}
 	}
@@ -350,12 +338,6 @@ client.on('message', message => {
 		switch (cmd) {
 			case 'ping':
 				message.channel.send(`Pinging me gets you pinged, <@${message.author.id}> :D`);
-				break;
-			case 'changestatus':
-				message.delete();
-				if (message.author.id != sirhID || args.length <= 0) return;
-				clearInterval(myActivity);
-				client.user.setActivity(`${prefix}help in ${client.guilds.cache.size} servers | SirH: ${args.join(" ")}`, { type: "PLAYING" });
 				break;
 			default:
          }

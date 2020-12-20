@@ -31,8 +31,15 @@ module.exports.run = async (client, message, args) => {
 			{ name: "Server Admins", value: `**\`${prefix}ahelp\`**`, inline: true },
 			{ name: "Latest Update info", value: `**\`${prefix}update\`**\n**\`${prefix}beta\`**`, inline: true },
 			{ name: "Miscellaneous Commands", value: `**\`${prefix}mischelp\`**` },
-			{ name: "Semblance Information", value: `**\`${prefix}info\`**\n **\`${prefix}changelog\`**\n **\`${prefix}latency\`**\n **\`${prefix}leaderboard\`**\n`+
-			 ` **\`${prefix}trello\`**\n **\`${prefix}notify <add/remove>\`**`, inline: true }
+			{
+				name: "Semblance Information", value: [`**\`${prefix}info\`**`, 
+					`**\`${prefix}changelog\`**`,
+					`**\`${prefix}latency\`**`,
+					`**\`${prefix}leaderboard\`**`,
+					`**\`${prefix}trello\`**`,
+					`**\`${prefix}notify <add/remove>\`**`,
+					`**\`${prefix}commmandcounter\`**`].join('\n'), inline: true
+			}
 		)
 		.setFooter("Stay Cellular!");
 	message.channel.send(`Here are some lovely commands for you, <@${message.author.id}>`, {embed: embed});
