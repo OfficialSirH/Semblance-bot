@@ -10,7 +10,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-    return message.reply("This command is temporarily disabled to its currently useless design and is being worked on.");
+    return message.reply("This command is temporarily disabled due to its currently useless design and is being worked on.");
     let description = "";
     let list = [];
     for (const [key, value] of Object.entries(commandsCounter)) {
