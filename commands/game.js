@@ -2,6 +2,9 @@ const { MessageEmbed, Collection } = require('discord.js'), randomColor = requir
     { insertionSort } = require('../constants/index.js'),
     GameModel = require('../models/Game.js'),
     cooldownHandler = new Collection();
+
+let leaderboardList = 'There is currently no one who has upgraded their income or the leaderboard hasn\'t updated.';
+
 module.exports = {
     description: "An idle-game within Semblance",
     usage: {
@@ -91,8 +94,6 @@ async function updateLeaderboard(client) {
     module.exports.leaderboardList = leaderboardList;
     setTimeout(() => module.exports.updateLeaderboard(client), 60000);
 }
-
-let leaderboardList = 'There is currently no one who has upgraded their income or the leaderboard hasn\'t updated.';
 
 async function leaderboard(client, message) {
         
