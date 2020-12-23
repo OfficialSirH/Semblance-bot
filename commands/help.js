@@ -38,7 +38,7 @@ module.exports.run = async (client, message, args) => {
 					`**\`${prefix}leaderboard\`**`,
 					`**\`${prefix}trello\`**`,
 					`**\`${prefix}notify <add/remove>\`**`,
-					`**\`${prefix}commmandcounter\`**`].join('\n'), inline: true
+					`**\`${prefix}userstats <user mention/id>\`**`].join('\n'), inline: true
 			}
 		)
 		.setFooter("Stay Cellular!");

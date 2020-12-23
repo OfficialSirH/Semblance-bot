@@ -9,7 +9,9 @@ module.exports = {
     },
     permissionRequired: 0,
     checkArgs: args => args.length >= 0,
-    updateLeaderboard: (client) => updateLeaderboard(client)
+    GameModel: GameModel,
+    updateLeaderboard: (client) => updateLeaderboard(client),
+    leaderboardList: leaderboardList
 }
 
 module.exports.run = async (client, message, args) => {
@@ -86,6 +88,7 @@ async function updateLeaderboard(client) {
     list = insertionSort(list).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - level ${cur[1]}\n`, '');
     if (!list) leaderboardList = 'There is currently no one who has upgraded their income.';
     else leaderboardList = list;
+    module.exports.leaderboardList = leaderboardList;
     setTimeout(() => module.exports.updateLeaderboard(client), 60000);
 }
 
