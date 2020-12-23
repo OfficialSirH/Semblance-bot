@@ -32,7 +32,7 @@ const stayActive = require('./stayActive.js'),
  * Command setup
  */
 
-const commands = {}, aliases = {}, { CommandCounter } = require('./commands/userstats.js'); // { "command": require("that_command") }, { "alias": "command" }
+const commands = {}, aliases = {}//, { CommandCounter } = require('./commands/userstats.js'); // { "command": require("that_command") }, { "alias": "command" }
 fs.readdir("./commands/", (err, files) => {
 	if (err) return console.log(err);
 	for (const file of files) if (file.endsWith(".js")) {
@@ -157,7 +157,7 @@ client.on('ready', async () => {
 				client.guilds.cache.get(c2sID).channels.cache.find(c => c.name == 'semblance').send(embed);
 			}
 		});
-	await CommandCounter.deleteMany({});
+	//await CommandCounter.deleteMany({});
 	await commands['game'].updateLeaderboard(client);
 	await commands['leaderboard'].updateLeaderboard(client);
 });
@@ -321,13 +321,6 @@ client.on('message', async message => {
 				if (!commandFile.checkArgs(args, permissionLevel, content)) return message.channel.send(`❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage).map(a => " " + a).join("")}\`, for additional help, see \`${prefix}help\`.`)
 				commandFile.run(client, message, args, identifier, { permissionLevel, content });
 				totalCommandsUsed++;
-				let commandCounter = await CommandCounter.findOne({ userID: message.author.id });
-				if (commandCounter) await CommandCounter.findOneAndUpdate({ userID: message.author.id }, { $set: { commands: ++commandCounter.commands[command] } }, { new: true });
-				else {
-					let setupCommands = {};
-					setupCommands[command] = 1;
-					commandCounter = new CommandCounter({ userID: message.author.id, commands: setupCommands });
-				}
 			} catch (e) { }
 		}
 	}
