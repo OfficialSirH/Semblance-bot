@@ -42,7 +42,7 @@ fs.readdir("./commands/", (err, files) => {
 	}
 })
 
-module.exports.commandsCounter = commandsCounter;
+//module.exports.commandsCounter = commandsCounter;
 
 const autoCommands = {};
 fs.readdir("./auto_scripts/", (err, files) => {
