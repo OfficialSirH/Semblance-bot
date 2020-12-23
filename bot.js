@@ -257,7 +257,7 @@ function clearBlacklistedWord(message, member) {
  * Where the main magic happens, the message event
  */
 
-client.on('message', message => {
+client.on('message', async message => {
 	checkForGitHubUpdate(message);
 	if (message.channel.name == "cells-tweets" && message.guild.id == c2sID && message.author.id != sembID && !message.member.roles.cache.get('493796775132528640')) return message.delete();
 	if (message.channel.type == "dm" || message.author.bot || !message.guild || !message.guild.me.hasPermission("SEND_MESSAGES")) return;
@@ -321,7 +321,13 @@ client.on('message', message => {
 				if (!commandFile.checkArgs(args, permissionLevel, content)) return message.channel.send(`❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage).map(a => " " + a).join("")}\`, for additional help, see \`${prefix}help\`.`)
 				commandFile.run(client, message, args, identifier, { permissionLevel, content });
 				totalCommandsUsed++;
-				require('./commands/userstats.js').updateCommandCounter(client, message);
+				let commandCounter = await CommandCounter.findOne({ userID: message.author.id });
+				if (commandCounter) await CommandCounter.findOneAndUpdate({ userID: message.author.id }, { $set: { commands: ++commandCounter.commands[command] } }, { new: true });
+				else {
+					let setupCommands = {};
+					setupCommands[command] = 1;
+					commandCounter = new CommandCounter({ userID: message.author.id, commands: setupCommands });
+				}
 			} catch (e) { }
 		}
 	}
