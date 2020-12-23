@@ -8,10 +8,20 @@ module.exports = {
     },
     aliases: ['userstat'],
     checkArgs: (args) => args.length >= 0,
-    CommandCounter: CommandCounter
+    CommandCounter: CommandCounter,
+    updateCommandCounter: async (client, message) => {
+        let commandCounter = await CommandCounter.findOne({ userID: message.author.id });
+        if (commandCounter) await CommandCounter.findOneAndUpdate({ userID: message.author.id }, { $set: { commands: ++commandCounter.commands[command] } }, { new: true });
+        else {
+            let setupCommands = {};
+            setupCommands[command] = 1;
+            commandCounter = new CommandCounter({ userID: message.author.id, commands: setupCommands });
+        }
+    }
 }
 
 module.exports.run = async (client, message, args) => {
+    return message.reply("Broken as heck at the moment.");
     let user = (args[0]) ? (args[0].match(/\d/g)) ? args[0].match(/\d/g).join('') : null : message.author;
     if (!user) user = message.author;
     else if (user != message.author) try { user = await client.users.fetch(user); } catch(e) { }
