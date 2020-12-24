@@ -260,7 +260,7 @@ function clearBlacklistedWord(message, member) {
 client.on('message', message => {
 	checkForGitHubUpdate(message);
 	if (message.channel.name == "cells-tweets" && message.guild.id == c2sID && message.author.id != sembID && !message.member.roles.cache.get('493796775132528640')) return message.delete();
-	if (message.channel.type == "dm" || message.author.bot || !message.guild || !message.guild.me.hasPermission("SEND_MESSAGES")) return;
+	if (message.channel.type == "dm" || message.author.bot) return;
 	clearBlacklistedWord(message, message.member);
 	if (message.member) {
 		if (message.mentions.users && message.member.id != sembID) {
