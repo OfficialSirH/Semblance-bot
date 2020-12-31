@@ -36,11 +36,12 @@ module.exports.run = async (client, message, args) => {
 }
 
 async function mainEmojis(client, message) {
-	fs.readdir('./images/emojis', async (err, files) => {
+	fs.readdir('./images/emojis/', async (err, files) => {
 		let fileNames = [];
 		for (let file of files) fileNames.push(file.replace('.png', '').toLowerCase());
-		for (let fileName of fileNames) if (!message.guild.emojis.cache.array().includes(fileName))
+		for (let fileName of fileNames) if (!message.guild.emojis.cache.array().includes(fileName)) {
 			await message.guild.emojis.create(`./images/emojis/${files[fileNames.indexOf(fileName)]}`, fileName);
+		}
 
 	});
 	message.channel.send(`Emoji setup is complete, ${message.author.username}`);
