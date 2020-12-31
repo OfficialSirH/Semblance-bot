@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), msToTime = require('../constants/msToTime.js'), randomColor = require('../constants/colorRandomizer.js'),
-      dpc = require('../package.json').dependencies, { singularity, entropy, metabit, mutagen, idea } = require('./emojis.js');
+    dpc = require('../package.json').dependencies, { singularity, entropy, metabit, mutagen, idea } = require('./emojis.js'), { sembID } = require('../config.js');
 const botStartTime = Date.now();
 module.exports = {
     description: "Get information about the epic bot, Semblance",
@@ -50,7 +50,7 @@ module.exports.run = async (client, message, args) => {
     if (client.shard) embed.addField(`${metabit} This Shard (${message.guild.shardID})`, `**Guilds:** ${client.guilds.cache.size}\n` +
         `**Users:** ${client.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b)}`);
 
-    embed.addField(`${mutagen} Links`, `- [Semblance Invite](https://discord.com/oauth2/authorize?client_id=668688939888148480&permissions=8&scope=bot)\n` +
+    embed.addField(`${mutagen} Links`, `- [Semblance Invite](https://discord.com/oauth2/authorize?client_id=${sembID}&permissions=8&scope=bot)\n` +
             `- [Semblance Support/Main](https://discord.gg/BVpwZpf)\n` +
             `- [Cell to Singularity](https://discord.gg/celltosingularity)`, true);
     message.channel.send(embed);
