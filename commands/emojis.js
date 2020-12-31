@@ -14,7 +14,7 @@ module.exports = {
 		"": ""
 	},
 	permissionRequired: 6,
-	checkArgs: (args) => args.length >= 1,
+	checkArgs: (args) => args.length >= 0,
 	entropy: '<:entropy:742748357163745413>',
 	idea: '<:idea:775808337303437353>',
 	c2s: '<:CellToSing:498910740200161280>',
