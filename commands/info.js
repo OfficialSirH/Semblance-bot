@@ -51,7 +51,7 @@ module.exports.run = async (client, message, args) => {
         `**Users:** ${client.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b)}`);
 
     embed.addField(`${mutagen} Links`, `- [Semblance Invite](https://discord.com/oauth2/authorize?client_id=${sembID}&permissions=8&scope=bot)\n` +
-            `- [Semblance Support/Main](https://discord.gg/BVpwZpf)\n` +
+            `- [Semblance Support/Main](https://discord.gg/XFMaTn6taf)\n` +
             `- [Cell to Singularity](https://discord.gg/celltosingularity)`, true);
     message.channel.send(embed);
 }

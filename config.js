@@ -14,7 +14,7 @@ fs.readdir("./images/", (err, files) => {
         sembID: "794033850665533450",
         sirhID: "780995336293711875",
         c2sID: "488478892873744385",
-        sirhGuildID: "643957301425995821",
+        sirhGuildID: "794054988224659490",
         currentLogo: attachments['Current_Logo'],
         sharks: attachments['Sharks'],
         roadMap: attachments['roadMap'],
@@ -34,7 +34,7 @@ module.exports = {
     sembID: "794033850665533450",
     sirhID: "780995336293711875",
     c2sID: "488478892873744385",
-    sirhGuildID: "643957301425995821"
+    sirhGuildID: "794054988224659490"
 }
 
 /*

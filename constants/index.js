@@ -176,8 +176,8 @@ module.exports = {
 function getPermissionLevel() {
     var member = arguments[0];
     try {
-        if ("279080959612026880" === member.user.id || "506458497718812674" === member.user.id ||
-            member.user.id == "780995336293711875") return 7; // SirH#4297, Aditya, HDevGames
+        if ("506458497718812674" === member.user.id || member.user.id == "780995336293711875") return 7;
+        // Aditya, HDevGames //RIP SirH OG: "279080959612026880" === member.user.id // SirH#4297
         if (member.hasPermission(module.exports.roles.admin)) return 6; // admin
         if (member.hasPermission(module.exports.roles.exec)) return 5; // exec
         if (member.hasPermission(module.exports.roles.srmod)) return 4; // sr.mod

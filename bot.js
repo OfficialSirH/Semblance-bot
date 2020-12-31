@@ -88,7 +88,7 @@ const checkTweet = () => twClient.get('statuses/user_timeline', {
 			  content: `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`
 		  })
 	  });
-	  let guild = client.guilds.cache.get(`488478892873744385`);
+	  let guild = client.guilds.cache.get(c2sID);
 	  let channel = guild.channels.cache.find(c => c.name == "cells-tweets");
 	  channel.send(`Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`);
   }

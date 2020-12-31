@@ -1,7 +1,8 @@
 const { Client, MessageAttachment, MessageEmbed } = require("discord.js"),
-	VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js');
-var client = new Client();
-const randomColor = require("../../constants/colorRandomizer.js");
+	VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
+	{ sirhGuildID } = require('../../config.js');
+	let client = new Client();
+const randomColor = require("../../constants/colorRandomizer.js"),
 const fs = require("fs");
 //const topGGAuth = ("./topGGAuth.json");
 const DBL = require("dblapi.js");
@@ -19,7 +20,7 @@ var dbl = new DBL(JSON.parse(process.env.topGGAuth).Auth, {
 		}, 1800000);
 	});
 	dbl.webhook.on('vote', vote => {
-		var channel = NameToChannel('semblance-votes', client);
+		var channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes');
 		if (vote.type == 'test') return console.log("Test Vote Completed.");
 		var user = client.users.fetch(vote.user, { cache: false }).then(async (u) => {
 			try {
@@ -32,7 +33,7 @@ var dbl = new DBL(JSON.parse(process.env.topGGAuth).Auth, {
 					playerData = await GameModel.findOneAndUpdate({ player: vote.user }, { $set: { money: playerData.money + (playerData.idleProfit * earningsBoost) } }, { new: true });
 				}
 				var embed = new MessageEmbed()
-					.setAuthor(`${u}`, u.displayAvatarURL())
+					.setAuthor(`${u.tag}`, u.displayAvatarURL())
 					.setThumbnail(u.displayAvatarURL())
 					.setColor(randomColor())
 					.setDescription(description)
@@ -72,8 +73,4 @@ module.exports = {
 	FixClient: (mainClient) => {
 		client = mainClient;
     }
-}
-
-function NameToChannel(channel, theClient) {
-	return theClient.channels.cache.find(c => c.name == channel);
 }
