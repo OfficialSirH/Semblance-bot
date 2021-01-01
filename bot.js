@@ -120,12 +120,14 @@ client.on('ready', async () => {
 	 */
 	const cacheList = await Information.findOne({ infoType: 'cacheList' });
 	let newCachedUsers = [];
-	GameModel.find({}).then(gameList => gameList.forEach(userData => {
+	const gameList = await GameModel.find({});
+	gameList.forEach(userData => {
 		if (!cacheList.list.includes(userData.player)) newCachedUsers.push(userData.player);
-	}));
-	Votes.find({}).then(voteList => voteList.forEach(voteData => {
+	});
+	const voteList = await Votes.find({});
+	voteList.forEach(voteData => {
 		if (!cacheList.list.includes(voteData.user)) newCachedUsers.push(voteData.user);
-	}));
+	});
 	let newCacheList = [...cacheList.list, ...newCachedUsers];
 	let updatedCacheList = await Information.findOneAndUpdate({ infoType: 'cacheList' }, { $set: { list: newCacheList } }, { new: true });
 	console.log(`The cache list has gained ${newCachedUsers.length}, which now makes the cache list have a total of ${updatedCacheList.list.length}.`);
