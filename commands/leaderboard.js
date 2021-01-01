@@ -1,7 +1,8 @@
 const { MessageEmbed } = require('discord.js'),
 	randomColor = require('../constants/colorRandomizer.js'),
 	VoteModel = require('../models/Votes.js'),
-	{ insertionSort } = require('../constants/index.js');
+	{ insertionSort } = require('../constants/index.js'),
+	{ Information } = require('./edit.js');
 
 module.exports = {
 	description: "Get a list of the top voters of the week.",
@@ -29,12 +30,16 @@ module.exports.run = async (client, message, args) => {
 let leaderboardList = 'There is currently no votes for this month.';
 
 async function updateLeaderboard(client) {
-	let users = {};
-	let mappedUsers = await VoteModel.find({});
+	let users = {}, mappedUsers = await VoteModel.find({}), cacheList = await Information.findOne({ infoType: 'cacheList' });
 	await mappedUsers.forEach(async (user, ind) => users[user.user] = user.voteCount);
 	let list = [];
 	for (const [key, value] of Object.entries(users)) {
-		let user = await client.users.fetch(key, { cache: false });
+		let user = (!!client.users.cache.get(key)) ? client.users.cache.get(key) : null;
+		if (!user) {
+			let newList = [...cacheList.list, key];
+			await Information.findOneAndUpdate({ infoType: 'cacheList' }, { $set: { list: newList } }, { new: true });
+			user = await client.users.fetch(key);
+        }
 		list.push([user.tag, value]);
 	}
 	list = insertionSort(list).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - ${cur[1]} vote(s)\n`, '');

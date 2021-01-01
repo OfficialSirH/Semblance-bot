@@ -101,7 +101,9 @@ setInterval(checkTweet, 2000);
 /*
  * The start of the bot client
  */
-const { Information } = require('./commands/edit.js');
+const { Information } = require('./commands/edit.js'),
+	{ GameModel } = require('./commands/game.js'),
+	Votes = require('./models/Votes.js');
 
 client.on('ready', async () => {
 	console.log(`Logged in as ${client.user.tag}!`);
@@ -112,11 +114,29 @@ client.on('ready', async () => {
 		discordBoats(client);
 	}, 500);
 	ShowMyActivity();
-	client.sweepUsers = () => {
+
+	/*
+	 Exclusively cache any users from the game and vote database that aren't already cached
+	 */
+	const cacheList = await Information.findOne({ infoType: 'cacheList' });
+	let newCachedUsers = [];
+	GameModel.find({}).then(gameList => gameList.forEach(userData => {
+		if (!cacheList.list.includes(userData.player)) newCachedUsers.push(userData.player);
+	}));
+	Votes.find({}).then(voteList => voteList.forEach(voteData => {
+		if (!cacheList.list.includes(voteData.user)) newCachedUsers.push(voteData.user);
+	}));
+	let newCacheList = [...cacheList.list, ...newCachedUsers];
+	let updatedCacheList = await Information.findOneAndUpdate({ infoType: 'cacheList' }, { $set: { list: newCacheList } }, { new: true });
+	console.log(`The cache list has gained ${newCachedUsers.length}, which now makes the cache list have a total of ${updatedCacheList.list.length}.`);
+
+	client.sweepUsers = async () => {
+		let cacheList = await Information.findOne({ infoType: 'cacheList' });
 		let now = new Date();
 		let cacheLifetime = 30000;
 		let users = 0;
-     	users += client.users.cache.sweep(user => { 
+		users += client.users.cache.sweep(user => { 
+			if (cacheList.list.includes(user.id)) return false;
 			let channel = client.channels.cache.get(user.lastMessageChannelID);
 			if (!channel || !channel.messages) return true;
 			let lastMessage = channel.messages.cache.get(user.lastMessageID);

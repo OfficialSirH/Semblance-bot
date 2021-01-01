@@ -1,7 +1,8 @@
 const { MessageEmbed, Collection } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { prefix } = require('../config.js'),
     { insertionSort } = require('../constants/index.js'),
     GameModel = require('../models/Game.js'),
-    cooldownHandler = new Collection();
+    cooldownHandler = new Collection(),
+    { Information } = require('./edit.js');
 
 let leaderboardList = 'There is currently no one who has upgraded their income or the leaderboard hasn\'t updated.';
 
@@ -80,19 +81,23 @@ async function help(client, message) {
 }
 
 async function updateLeaderboard(client) {
-    let users = {};
-    let mappedUsers = await GameModel.find({});
+    let users = {}, mappedUsers = await GameModel.find({}), cacheList = await Information.findOne({ infoType: 'cacheList' });
     await mappedUsers.forEach(async (user, ind) => users[user.player] = user.level);
     let list = [];
     for (const [key, value] of Object.entries(users)) {
-        let user = await client.users.fetch(key, { cache: false });
+        let user = (!!client.users.cache.get(key)) ? client.users.cache.get(key) : null;
+        if (!user) {
+            let newList = [...cacheList.list, key];
+            await Information.findOneAndUpdate({ infoType: 'cacheList' }, { $set: { list: newList } }, { new: true });
+            user = await client.users.fetch(key);
+        }
         list.push([user.tag, value]);
     }
     list = insertionSort(list).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - level ${cur[1]}\n`, '');
     if (!list) leaderboardList = 'There is currently no one who has upgraded their income.';
     else leaderboardList = list;
     module.exports.leaderboardList = leaderboardList;
-    setTimeout(() => module.exports.updateLeaderboard(client), 60000);
+    setTimeout(() => module.exports.updateLeaderboard(client), 50000);
 }
 
 async function leaderboard(client, message) {

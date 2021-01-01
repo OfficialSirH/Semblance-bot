@@ -10,7 +10,11 @@ const Information = Schema({
         type: Boolean,
         default: false
     },
-    expired: String
+    expired: String,
+    list: {
+        type: Array,
+        default: []
+    }
 });
 
 module.exports = model("Information", Information, "Information");
