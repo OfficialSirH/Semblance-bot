@@ -16,6 +16,7 @@ module.exports.run = async (client, message, args) => {
 	.setColor(randomColor())
 	.setThumbnail(client.user.avatarURL())
 		.setDescription(["**Websites that provide game boost/is interactible if voted on**",
+				"***Due to a recent issue, the voting page for Semblance on Top.gg will soon be gone temporarily, which I unfortunately have no idea how long the temporary will be, preventing any kind of voting rewards for a while. I'm truly sorry for the inconvenience.***",
 				"[Top.gg](https://top.gg/bot/668688939888148480)\n",
 				"**Extra voting sites/Don't have any type of interactivity yet**",
 				"[Discord.boats](https://discord.boats/bot/668688939888148480)",
