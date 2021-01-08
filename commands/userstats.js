@@ -11,5 +11,5 @@ module.exports = {
 
 module.exports.run = async (client, message, args) => {
     return message.reply(["This command is currently being worked on and was removed a little while ago due to some issues.",
-        "Also, a message to the moderator of Discord Boats who denied my bot, this command won't do anything else for a while so please don't deny Semblance(again) for this command. lol"].join("\n"));
+        "Also, a message to the moderator of Discord Boats who denied my bot, this command won't do anything else for a while as I'm working on a sort of large project with Semblance at the moment and sorry 'bout the unresponsiveness with the command earlier."].join("\n"));
 }
