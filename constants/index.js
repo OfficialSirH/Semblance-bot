@@ -173,8 +173,7 @@ module.exports = {
     ]
 }
 
-function getPermissionLevel() {
-    var member = arguments[0];
+function getPermissionLevel(member) {
     try {
         if ("506458497718812674" === member.user.id || member.user.id == "780995336293711875") return 7;
         // Aditya, HDevGames //RIP SirH OG: "279080959612026880" === member.user.id // SirH#4297
