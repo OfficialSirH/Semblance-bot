@@ -7,19 +7,19 @@ const { MessageEmbed } = require('discord.js'),
 module.exports = {
 	description: "Set a reminder for yourself.",
 	usage: {
-		"<time> <reminder>": ""
+		"<time(minutes)> <reminder>": ""
 	},
 	examples: {
-		"exampleOne": "s!remindme 1h20m30s I've got magical stuff to do in 1 hour, 20 minutes, and 30 seconds *precisely!*"
+		"exampleOne": "s!remindme 60 I've got magical stuff to do in 1 hour!"
 	},
 	permissionRequired: 0,
-	checkArgs: (args) => args.length >= 2,
+	checkArgs: (args) => args.length >= 1,
 	checkReminders: async (client) => {
 		if (!client.readyAt || !Reminder) return;
 		let reminderList = await Reminder.find({});
 		if (!reminderList) return;
 		const userReminders = {};
-		reminderList.filter(async (user) => Date.now() > user.remind).forEach(async (user) => userReminders[user.userID] = user.reminder);
+		reminderList.filter((user) => Date.now() > user.remind).forEach((user) => userReminders[user.userID] = user.reminder);
 
 		for (const [key, value] of Object.entries(userReminders)) {
 			let user = await client.users.fetch(key);
@@ -30,12 +30,13 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-		let time = args[0];
-		let timeAmount = 0;
-		let specifiedTime = false;
-		let h = false, m = false, s = false;
+		//let time = args[0];
+		if (isNaN(args[0])) return message.reply("You must use a number in your reminder's timer.").then(msg => msg.delete({ timeout: 5000 }));
+		let timeAmount = args[0] * 60 * 1000;
+		/*let specifiedTime = false;
+		let h = false, m = false, s = false;*/
 		let reminder = args.splice(1, args.length);
-	for (let i = 0; i < time.length; i++) {
+	/*for (let i = 0; i < time.length; i++) {
 		if (alphabet.indexOf(time[i]) >= 0) {
 			if (time[i] == "h" || time[i] == "m" || time[i] == "s") {
 				specifiedTime = true;
@@ -73,12 +74,7 @@ module.exports.run = async (client, message, args) => {
 			let day = 24 * 60 * 60 * 1000;
 			if (msToTime(timeAmount).indexOf("e") >= 0 || msToTime(timeAmount) == "Infinityd") {
 				message.reply("Even science itself hates the number you specified.");
-				message.delete();
-				return;
-			} else if (timeAmount > day) {
-				message.reply("The max amount of time I can do is 24 hours");
-				message.delete();
-				return;
+				return message.delete();
 			}
 			let userAvatar = message.author.avatarURL();
 			let embed = new MessageEmbed()
@@ -93,5 +89,20 @@ module.exports.run = async (client, message, args) => {
 			await reminderHandler.save();
 			//setTimeout(() => { message.author.send(`Reminder: ${reminder.join(" ")}`); }, timeAmount);
 		}
+	}*/
+	if (msToTime(timeAmount).indexOf("e") >= 0 || msToTime(timeAmount) == "Infinityd") {
+		message.reply("Even science itself hates the number you specified.");
+		return message.delete();
 	}
+	let userAvatar = message.author.avatarURL();
+	let embed = new MessageEmbed()
+		.setTitle("Reminder")
+		.setColor(randomColor())
+		.setThumbnail(userAvatar)
+		.setDescription(`I'll remind you in ${msToTime(timeAmount)} for your reminder \n **Reminder**: ${reminder.join(" ")}`)
+		.setFooter(`Command called by ${message.author.tag}`, userAvatar);
+	message.channel.send(embed);
+	if (reminder.length == 0) var reminderHandler = new Reminder({ userID: message.author.id, reminder: "A random reminder", remind: Date.now() + timeAmount });
+	else var reminderHandler = new Reminder({ userID: message.author.id, reminder: reminder.join(" "), remind: Date.now() + timeAmount });
+	await reminderHandler.save();
 }
