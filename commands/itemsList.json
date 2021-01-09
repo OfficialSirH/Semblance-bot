@@ -49,6 +49,10 @@
 			"price": 67E9
 		},
 		{
+			"name": "glires",
+			"price": 412E9
+		},
+		{
 			"name": "human",
 			"price": 1.77E12
 		},
@@ -57,8 +61,24 @@
 			"price": 61E12
 		},
 		{
+			"name": "ungulates",
+			"price": 80.5E12
+		},
+		{
+			"name": "hippopotamus",
+			"price": 736E12
+		},
+		{
 			"name": "cyborg",
 			"price": 4.42E15
+		},
+		{
+			"name": "Marsupials",
+			"price": 18.7E15
+		},
+		{
+			"name": "rhinoceros",
+			"price": 48.2E15
 		},
 		{
 			"name": "lizard",
@@ -77,20 +97,104 @@
 			"price": 1.32E21
 		},
 		{
+			"name": "zebra",
+			"price": 1.73E21
+		},
+		{
 			"name": "galliformes",
 			"price": 6.67E21
+		},
+		{
+			"name": "kangaroo",
+			"price": 8.82E21
+		},
+		{
+			"name": "north-american-opossum",
+			"price": 48.4E21
+		},
+		{
+			"name": "caniform",
+			"price": 789E21
+		},
+		{
+			"name": "camel",
+			"price": 7.11E24
+		},
+		{
+			"name": "giraffe",
+			"price": 27.7E24
 		},
 		{
 			"name": "anseriformes",
 			"price": 52E24
 		},
 		{
+			"name": "grizzly-bear",
+			"price": 422E24
+		},
+		{
 			"name": "paleognathae",
 			"price": 25.4E27
 		},
 		{
+			"name": "seal",
+			"price": 31.3E27
+		},
+		{
+			"name": "buffalo",
+			"price": 41.4E27
+		},
+		{
+			"name": "fox",
+			"price": 72.9E27
+		},
+		{
+			"name": "polar-bear",
+			"price": 844E27
+		},
+		{
 			"name": "neoaves",
 			"price": 8.35E30
+		},
+		{
+			"name": "monotremes",
+			"price": 400E30
+		},
+		{
+			"name": "honey-badger",
+			"price": 6.89E33
+		},
+		{
+			"name": "feliform",
+			"price": 476E36
+		},
+		{
+			"name": "elephant",
+			"price": 886E36
+		},
+		{
+			"name": "panda",
+			"price": 41.5E39
+		},
+		{
+			"name": "platypus",
+			"price": 48.85E39
+		},
+		{
+			"name": "ibex",
+			"price": 3.34E42
+		},
+		{
+			"name": "puma",
+			"price": 6.22E42
+		},
+		{
+			"name": "snow-leopard",
+			"price": 7.07E42
+		},
+		{
+			"name": "tiger",
+			"price": 23.8E42
 		}
 	],
 	"ideas": [

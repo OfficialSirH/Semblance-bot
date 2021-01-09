@@ -31,10 +31,7 @@ module.exports.run = async (client, message, args) => {
 							`Large User Avatar: **\`${prefix}avatar <userID/userMention>\`**\n`+
 							`Set Reminder: **\`${prefix}remindme <time ex: 1h5m20s> <reminder>\`**\n`+
 				`Magic 8 Ball: **\`${prefix}8ball\`**`
-			},
-			{
-				name: "Memento Mori", value: "00:00:00"
-            }
+			}
 			);
 	message.channel.send(embed);
 }
