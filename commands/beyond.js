@@ -19,7 +19,7 @@ module.exports.run = async (client, message, args) => {
 		.attachFiles([currentLogo, roadMap])
 		.setThumbnail("attachment://Current_Logo.png")
 		.setImage("attachment://roadMap.png")
-		.setDescription("The Beyond has been estimated to be released around February, 2021. Anyone who wants to give any complaints about the length of the release date can email their complaint to ImAWhinyKaren@gmail.com");
+		.setDescription("Spring/Q1 2021. Anyone who wants to give any complaints about the length of the release date can email their complaint to ImAWhinyKaren@gmail.com");
 	message.channel.send(embed);
 }
 
