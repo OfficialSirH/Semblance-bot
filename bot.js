@@ -2,7 +2,8 @@
  * Constants
  */
 // Configuration
-const { sembID, sirhID, prefix, currentLogo, c2sID, sirhGuildID } = require('./config.js');
+const { sembID, sirhID, prefix, currentLogo, c2sID, sirhGuildID } = require('./config.js'),
+	wait = require('util').promisify(setTimeout);
 
 const { Client, MessageEmbed, MessageAttachment, GuildEmoji, Collection } = require('discord.js'), 
 	constants = require("./constants"), { getPermissionLevel, parseArgs } = constants,
