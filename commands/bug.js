@@ -1,6 +1,6 @@
 const { MessageEmbed, MessageAttachment, Collection } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'),
     Report = require('../models/Report.js'), mongoose = require('mongoose'), { prefix, sirhGuildID, c2sID } = require('../config.js'),
-    cooldown = new Collection(), reportChannelList = ["794054989860700172", "794054989860700173"]; // <-- change IDs to the 3 bug report channels in C2S
+    cooldown = new Collection(), reportChannelList = ["798933535255298078", "798933965539901440"]; // <-- change IDs to the 3 bug report channels in C2S
 
 /*
 
@@ -20,7 +20,6 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args, identifier, { permissionLevel, content }) => {
-    return message.reply("This command will be released soon after some proof reading."); // Remove this for the opening of the feature
     if (message.guild.id != c2sID) return;
     let userCooldown = cooldown.get(message.author.id);
     if (userCooldown && Date.now() - userCooldown < (1000 * 60 * 5) && !message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("You're on cooldown with this command, you can use the command again ");
@@ -104,7 +103,7 @@ async function report(message, content, client) {
             }
         }
     }
-    message.guild.channels.cache.find(c => c.name == 'bug-approval-queue').send(embed).then(async (msg) => { // <-- Change to ID for C2S's #bug-approval-queue
+    message.guild.channels.cache.get('798933535255298078').send(embed).then(async (msg) => { // <-- #bug-approval-queue channel in C2S
         let report = new Report({ User: message.author.id, bugID: totalReports + 1, messageID: msg.id, channelID: msg.channel.id });
         await report.save();
     });
@@ -123,7 +122,7 @@ async function bug(client, message, permissionLevel, content, args) {
     else if (args[1] == 'deleterepro' || args[1] == 'reprodelete') deleteReproduce(message, report, args);
 
     else if (permissionLevel >= 1) {
-        var channel = message.guild.channels.cache.find(c => c.name == 'approved-bugs'); // <-- Change to ID of #approved-bugs within C2S server
+        var channel = message.guild.channels.cache.get('798933965539901440'); // <-- #approved-bugs channel in C2S
 
         if (args[1] == 'approve') fixUpReports(message, channel, report, args.slice(2).join(' '), true);
 
@@ -209,13 +208,13 @@ async function addReproduce(message, report, specifications) {
 
 async function fixUpReports(message, channel, report, reason, approved) {
     if (!reason) reason = "None";
-    message.guild.channels.cache.find(c => c.name == 'bug-approval-queue').messages.fetch(report.messageID, { cache: false }) // <-- Change cache.find for name to cache.get for #bug-approval-queue 's id from C2S
+    message.guild.channels.cache.get('798933535255298078').messages.fetch(report.messageID, { cache: false }) // <-- #bug-approval-queue channel from C2S
         .then(msg => {
             let reportHandler;
 
             if (approved) channel.send(msg.embeds[0].setColor("#17DB4A").addField("Approval Message", reason))
                 .then(async (m) => reportHandler = await Report.findOneAndUpdate({ messageID: report.messageID }, { $set: { messageID: m.id, channelID: m.channel.id } }, { new: true }))
-            else message.author.send(msg.embeds[0].setColor("#D72020").addField("Denial Message", reason)) // <-- Change the report to send to the #denied-reports channel within C2S
+            else message.author.send(msg.embeds[0].setColor("#D72020").addField("Denial Message", reason)) // <-- Denied Reports
                 .then(async (m) => reportHandler = await Report.findOneAndDelete({ messageID: report.messageID }));
 
             msg.delete();

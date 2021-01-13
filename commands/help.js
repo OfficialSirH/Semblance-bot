@@ -20,13 +20,14 @@ module.exports.run = async (client, message, args) => {
 		`**\`${prefix}gametransfer\`**, **\`${prefix}prestige\`**, **\`${prefix}nanobots\`**, and/or **\`${prefix}reboot\`** for help on each of these topics.`)
 		.addFields(
 			{
-				name: "Other C2S Things", value: `**\`${prefix}feedback\`**\n` +
-					`**\`${prefix}largenumbers\`**\n` +
-					`**\`${prefix}metahelp\`**\n` +
-					`**\`${prefix}itemhelp\`**\n` +
-					`**\`${prefix}metaspeedcalc\`**\n` +
-					`**\`${prefix}codes\`**\n` +
-					`**\`${prefix}roles\`**`, inline: true
+				name: "Other C2S Things", value: [ `**\`${prefix}report help\`**`,
+					`**\`${prefix}feedback\`**`,
+					`**\`${prefix}largenumbers\`**`,
+					`**\`${prefix}metahelp\`**`,
+					`**\`${prefix}itemhelp\`**`,
+					`**\`${prefix}metaspeedcalc\`**`,
+					`**\`${prefix}codes\`**`,
+					`**\`${prefix}roles\`**`].join('\n'), inline: true
 			},
 			{ name: "Server Admins", value: `**\`${prefix}ahelp\`**`, inline: true },
 			{ name: "Latest Update info", value: `**\`${prefix}update\`**\n**\`${prefix}beta\`**`, inline: true },
