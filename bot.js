@@ -92,7 +92,7 @@ const checkTweet = () => twClient.get('statuses/user_timeline', {
 	  let guild = client.guilds.cache.get(c2sID), channel = guild.channels.cache.find(c => c.name == "cells-tweets");
 	  channel.send(`Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`);
 
-	  guild = client.guilds.cache.get(lunchGuildID), channel = guilds.channels.cache.find(c => c.name == 'tweets');
+	  guild = client.guilds.cache.get(lunchGuildID), channel = guild.channels.cache.find(c => c.name == 'tweets');
 	  channel.send(`Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`);
   }
   } catch (error) {}
