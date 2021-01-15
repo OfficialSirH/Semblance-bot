@@ -163,11 +163,11 @@ async function addAttachment(client, message, report, attachment = null) {
         message.guild.channels.cache.get(report.channelID).messages.fetch(report.messageID)
             .then(msg => {
                 let attachmentsField = msg.embeds[0].fields[5];
-                if (attachmentsField.name == "Approval Message" || attachmentsField.name == "Denial Message") {
+                if (!attachmentsField) {
+                    msg.edit(msg.embeds[0].fields.push({ name: "Attachments", value: `${attachmentsField.value.split('\n').length + 1}. [${attachment.name}](${attachmentURL})` }));
+                } else if (attachmentsField.name == "Approval Message" || attachmentsField.name == "Denial Message") {
                     msg.embeds[0].fields.push(attachmentsField);
                     msg.edit(msg.embeds[0].spliceFields(5, 1, { name: "Attachments", value: `${attachmentsField.value}\n${attachmentsField.value.split('\n').length + 1}. [${attachment.name}](${attachmentURL})` }));
-                } else if (!attachmentsField) {
-                    msg.edit(msg.embeds[0].fields.push({ name: "Attachments", value: `${attachmentsField.value.split('\n').length + 1}. [${attachment.name}](${attachmentURL})` }));
                 } else {
                     msg.edit(msg.embeds[0].spliceFields(5, 1, { name: "Attachments", value: `${attachmentsField.value}\n${attachmentsField.value.split('\n').length + 1}. [${attachment.name}](${attachmentURL})` }));
                 }
