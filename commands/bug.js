@@ -157,7 +157,7 @@ async function addAttachment(client, message, report, attachment = null) {
             }
         }
 
-        client.guilds.cache.get(sirhGuildID).channels.cache.get('794054989860700179').send(attachment) // <== Uses ID of #image-storage from SirH's server
+        await client.guilds.cache.get(sirhGuildID).channels.cache.get('794054989860700179').send(attachment) // <== Uses ID of #image-storage from SirH's server
             .then(msg => attachmentURL = msg.attachments.map(a => a)[0].proxyURL);
 
         message.guild.channels.cache.get(report.channelID).messages.fetch(report.messageID)
