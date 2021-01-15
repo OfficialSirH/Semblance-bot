@@ -142,7 +142,7 @@ async function addAttachment(client, message, report, attachment = null) {
     } else {
         let attachmentURL = attachment.proxyURL;
 
-        let videoType = [".mov", ".mp4", ".mkv", ".webm"], imageType = [".png", ".jpg", ".jpeg", ".gif"],
+        /*let videoType = [".mov", ".mp4", ".mkv", ".webm"], imageType = [".png", ".jpg", ".jpeg", ".gif"],
             foundType = false;
         for (const type of videoType) {
             if (!foundType && attachmentURL.toLowerCase().includes(type)) {
@@ -155,10 +155,10 @@ async function addAttachment(client, message, report, attachment = null) {
                 attachment = new MessageAttachment(attachmentURL, `Image.${type}`);
                 foundType = true;
             }
-        }
+        }*/
 
-        await client.guilds.cache.get(sirhGuildID).channels.cache.get('794054989860700179').send(attachment) // <== Uses ID of #image-storage from SirH's server
-            .then(msg => attachmentURL = msg.attachments.map(a => a)[0].proxyURL);
+        const storedMsg = await client.guilds.cache.get(sirhGuildID).channels.cache.get('794054989860700179').send(attachment); // <== Uses ID of #image-storage from SirH's server
+        attachmentURL = storedMsg.attachments.map(a => a)[0].proxyURL;
 
         message.guild.channels.cache.get(report.channelID).messages.fetch(report.messageID)
             .then(msg => {
