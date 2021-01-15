@@ -164,7 +164,7 @@ async function addAttachment(client, message, report, attachment = null) {
             .then(msg => {
                 let attachmentsField = msg.embeds[0].fields[5];
                 if (!attachmentsField) {
-                    msg.edit(msg.embeds[0].fields.push({ name: "Attachments", value: `1. [${attachment.name}](${attachmentURL})` }));
+                    msg.edit(msg.embeds[0].addField("Attachments", `1. [${attachment.name}](${attachmentURL})` ));
                 } else if (attachmentsField.name == "Approval Message" || attachmentsField.name == "Denial Message") {
                     msg.embeds[0].fields.push(attachmentsField);
                     msg.edit(msg.embeds[0].spliceFields(5, 1, { name: "Attachments", value: `${attachmentsField.value}\n${attachmentsField.value.split('\n').length + 1}. [${attachment.name}](${attachmentURL})` }));
