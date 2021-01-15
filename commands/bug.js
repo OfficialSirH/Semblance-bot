@@ -145,13 +145,13 @@ async function addAttachment(client, message, report, attachment = null) {
         let videoType = [".mov", ".mp4", ".mkv", ".webm"], imageType = [".png", ".jpg", ".jpeg", ".gif"],
             foundType = false;
         for (const type of videoType) {
-            if (!foundType && attachmentURL.includes(type)) {
+            if (!foundType && attachmentURL.toLowerCase().includes(type)) {
                 attachment = new MessageAttachment(attachmentURL, `Video.${type}`);
                 foundType = true;
             }
         }
         if (!foundType) for (const type of imageType) {
-            if (!foundType && attachmentURL.includes(type)) {
+            if (!foundType && attachmentURL.toLowerCase().includes(type)) {
                 attachment = new MessageAttachment(attachmentURL, `Image.${type}`);
                 foundType = true;
             }
