@@ -21,9 +21,6 @@ module.exports = {
 
 module.exports.run = async (client, message, args, identifier, { permissionLevel, content }) => {
     if (message.guild.id != c2sID) return;
-    let userCooldown = cooldown.get(message.author.id);
-    if (userCooldown && Date.now() - userCooldown < (1000 * 60 * 5) && !message.member.hasPermission("MANAGE_MESSAGES")) return message.reply("You're on cooldown with this command, you can use the command again ");
-    else if (!userCooldown || Date.now() - userCooldown > (1000 * 60 * 5)) cooldown.set(message.author.id, Date.now());
     if ((identifier == 'report' || identifier == 'bug' || identifier == 'bugreport') && args[0] == 'help') return help(message, permissionLevel);
     else if (identifier == 'report' || identifier == 'bugreport') return report(message, content, client);
     else if (identifier == 'bug') return bug(client, message, permissionLevel, content, args);
@@ -69,6 +66,11 @@ async function report(message, content, client) {
         }
     } else content = difcontent;
     if (content[0].length < 1 || content[1].length < 1 || content[2].length < 1 || content[3].length < 1 || content[4].length < 1) return message.reply("You missed some content in your report, please don't leave fields empty.").then(msg => msg.delete({ timeout: 10000 }));
+
+    let userCooldown = cooldown.get(message.author.id);
+    if (userCooldown && Date.now() - userCooldown < (1000 * 60 * 5) && !message.member.hasPermission("MANAGE_MESSAGES")) return message.reply(`You're on cooldown with this command, you can use the command again in ${(Date.now() - userCooldown - (1000 * 60 * 5)) / 1000 / 60} minutes.`);
+    else if (!userCooldown || Date.now() - userCooldown > (1000 * 60 * 5)) cooldown.set(message.author.id, Date.now());
+
     let reportHandler = await Report.find({}), totalReports = reportHandler.map(r => r).length;
     var embed = new MessageEmbed()
         .setAuthor(`${message.author.tag} (${message.author.id})\nBug ID: #${totalReports + 1}`, message.author.displayAvatarURL())
