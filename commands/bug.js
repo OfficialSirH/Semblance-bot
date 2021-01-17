@@ -211,12 +211,12 @@ async function addReproduce(message, report, specifications) {
 async function fixUpReports(message, channel, report, reason, approved) {
     if (!reason) reason = "None";
     message.guild.channels.cache.get('798933535255298078').messages.fetch(report.messageID, { cache: false }) // <-- #bug-approval-queue channel from C2S
-        .then(msg => {
+        .then(async msg => {
             let reportHandler;
-
+            let user = await client.users.fetch(report.User);
             if (approved) channel.send(msg.embeds[0].setColor("#17DB4A").addField("Approval Message", reason))
                 .then(async (m) => reportHandler = await Report.findOneAndUpdate({ messageID: report.messageID }, { $set: { messageID: m.id, channelID: m.channel.id } }, { new: true }))
-            else message.author.send(msg.embeds[0].setColor("#D72020").addField("Denial Message", reason)) // <-- Denied Reports
+            else user.send(msg.embeds[0].setColor("#D72020").addField("Denial Message", reason)) // <-- Denied Reports
                 .then(async (m) => reportHandler = await Report.findOneAndDelete({ messageID: report.messageID }));
 
             msg.delete();
