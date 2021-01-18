@@ -209,18 +209,20 @@ async function addReproduce(message, report, specifications) {
 }
 
 async function fixUpReports(message, channel, report, reason, approved) {
-    if (!reason) reason = "None";
+    if (!reason) reason = "unspecified";
     message.guild.channels.cache.get('798933535255298078').messages.fetch(report.messageID, { cache: false }) // <-- #bug-approval-queue channel from C2S
         .then(async msg => {
-            let reportHandler;
             let user = await client.users.fetch(report.User);
-            if (approved) channel.send(msg.embeds[0].setColor("#17DB4A").addField("Approval Message", reason))
-                .then(async (m) => reportHandler = await Report.findOneAndUpdate({ messageID: report.messageID }, { $set: { messageID: m.id, channelID: m.channel.id } }, { new: true }))
-            else user.send(msg.embeds[0].setColor("#D72020").addField("Denial Message", reason)) // <-- Denied Reports
-                .then(async (m) => reportHandler = await Report.findOneAndDelete({ messageID: report.messageID }));
-
+            if (approved) {
+                let m = await channel.send(msg.embeds[0].setColor("#17DB4A").addField("Approval Message", reason));
+                await Report.findOneAndUpdate({ messageID: report.messageID }, { $set: { messageID: m.id, channelID: m.channel.id } }, { new: true });
+            }
+            else {
+                let m = await user.send(msg.embeds[0].setColor("#D72020").addField("Denial Message", reason)) // <-- Denied Reports
+                await Report.findOneAndDelete({ messageID: report.messageID });
+            }
             msg.delete();
-        }).catch(err => console.log(`${report.messageID} is the ID by the way`));
+        }).catch(err => console.log(`Approval/Denial had an issue due to:\n${err}`));
 }
 
 async function attachmentFieldCorrection(client, message, report, item) {
