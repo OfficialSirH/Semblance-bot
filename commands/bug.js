@@ -126,9 +126,9 @@ async function bug(client, message, permissionLevel, content, args) {
     else if (permissionLevel >= 1) {
         var channel = message.guild.channels.cache.get('798933965539901440'); // <-- #approved-bugs channel in C2S
 
-        if (args[1] == 'approve') fixUpReports(message, channel, report, args.slice(2).join(' '), true);
+        if (args[1] == 'approve') fixUpReports(client, message, channel, report, args.slice(2).join(' '), true);
 
-        else if (args[1] == 'deny') fixUpReports(message, channel, report, args.slice(2).join(' '), false);
+        else if (args[1] == 'deny') fixUpReports(client, message, channel, report, args.slice(2).join(' '), false);
 
     } else if (args[1] == 'approve' || args[1] == 'deny') message.reply("You do not have permission to use this.").then(msg => msg.delete({ timeout: 5000 }));
     message.delete();
@@ -208,7 +208,7 @@ async function addReproduce(message, report, specifications) {
         .catch(err => err);
 }
 
-async function fixUpReports(message, channel, report, reason, approved) {
+async function fixUpReports(client, message, channel, report, reason, approved) {
     if (!reason) reason = "unspecified";
     message.guild.channels.cache.get('798933535255298078').messages.fetch(report.messageID, { cache: false }) // <-- #bug-approval-queue channel from C2S
         .then(async msg => {
