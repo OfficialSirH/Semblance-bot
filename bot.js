@@ -224,7 +224,7 @@ async function ShowMyActivity() {
  */
 
 client.on('messageUpdate', (oldMsg, newMsg) => {
-	if (!newMsg.guild) return;
+	if (!newMsg.guild || !newMsg.content) return;
 	let chName = newMsg.channel.name;
 	if (newMsg.guild.id == c2sID) {
 		let msg = newMsg.content.toLowerCase(), s1 = "suggestion:", s2 = "suggest:", s3 = `${prefix}suggestion`, s4 = `${prefix}suggest`;
