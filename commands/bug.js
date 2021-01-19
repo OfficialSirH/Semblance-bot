@@ -1,5 +1,6 @@
 const { MessageEmbed, MessageAttachment, Collection } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'),
     Report = require('../models/Report.js'), mongoose = require('mongoose'), { prefix, sirhGuildID, c2sID } = require('../config.js'),
+    { getPermissionLevel } = require('../constants/index.js'),
     cooldown = new Collection(), reportChannelList = ["798933535255298078", "798933965539901440"]; // <-- change IDs to the 3 bug report channels in C2S
 
 /*
@@ -135,7 +136,7 @@ async function bug(client, message, permissionLevel, content, args) {
 }
 
 async function addAttachment(client, message, report, attachment = null) {
-    if (report.User != message.author.id) return message.reply("You're not the owner of this report... what are you doing??");
+    if (getPermissionLevel(message.member) == 0 && report.User != message.author.id) return message.reply("You don't have permission to add attachments to other people's reports.");
     if (attachment == null) return message.reply("You didn't send any attachment nor a link");
     else if (typeof attachment == 'string') {
         attachmentFieldCorrection(client, message, report, attachment);
