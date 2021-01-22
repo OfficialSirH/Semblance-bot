@@ -11,10 +11,11 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
+	let guild = await message.guild.fetch();
 	let embed = new MessageEmbed()
 	.setTitle("Members")
 	.setColor(randomColor())
-	.setDescription(message.guild.memberCount)
+	.setDescription(guild.approximateMemberCount)
 	.setFooter(`Called upon by ${message.author.tag}`);
 	message.channel.send(embed);
 }
