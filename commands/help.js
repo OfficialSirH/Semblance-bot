@@ -35,6 +35,7 @@ module.exports.run = async (client, message, args) => {
 			{
 				name: "Semblance Information", value: [`**\`${prefix}info\`**`, 
 					`**\`${prefix}changelog\`**`,
+					`**\`${prefix}privacypolicy\`**`,
 					`**\`${prefix}latency\`**`,
 					`**\`${prefix}leaderboard\`**`,
 					`**\`${prefix}trello\`**`,
