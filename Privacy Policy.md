@@ -1,4 +1,4 @@
-**Privacy Policy** 
+**__Privacy Policy__**
  
 SirH built the Semblance app as a Free app. This SERVICE is provided by SirH at no cost and is intended for use as is.
  
@@ -13,8 +13,11 @@ For a better experience, while using our Service, I may require you to provide u
 **Log Data**
  
  • If you were to use the `jump` command in your server, your Discord Guild’s id will be stored for the proper functioning of the command’s feature. 
+
  • Usage of either the `afk` or `remindme` command will have your optional input, including your user ID, be stored until its use isn’t necessary anymore. 
+
  • Voting for Semblance on bot listing sites(i.e. Top.gg) and usage of Semblance’s idle-game(`game`) will keep your user ID until a future data reset or if requested.
+
  •  The usage of the `report` command is restricted primarily to the official Cell to Singularity Discord server and stores your user ID until the said report you’ve made is deleted or denied.
  
 **Service Providers**
@@ -22,8 +25,11 @@ For a better experience, while using our Service, I may require you to provide u
 I may employ third-party companies and individuals due to the following reasons:
  
 • To facilitate our Service;
+
 • To provide the Service on our behalf;
+
 • To perform Service-related services; or
+
 • To assist us in analyzing how our Service is used.
  
 I want to inform users of this Service that these third parties have access to your Personal Information. The reason is to perform the tasks assigned to them on our behalf. However, they are obligated not to disclose or use the information for any other purpose.
