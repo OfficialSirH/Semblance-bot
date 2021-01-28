@@ -13,6 +13,7 @@ fs.readdir("./images/", (err, files) => {
         prefix: "s!",
         sembID: "794033850665533450",
         sirhID: "780995336293711875",
+        adityaID: '506458497718812674',
         c2sID: "488478892873744385",
         lunchGuildID: '796153726586454077',
         sirhGuildID: "794054988224659490",
@@ -34,6 +35,7 @@ module.exports = {
     prefix: "s!",
     sembID: "794033850665533450",
     sirhID: "780995336293711875",
+    adityaID: '506458497718812674',
     c2sID: "488478892873744385",
     lunchGuildID: '796153726586454077',
     sirhGuildID: "794054988224659490"

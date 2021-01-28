@@ -9,7 +9,7 @@
     "boats.js": "^2.5.0",
     "cron": "^1.8.2",
     "dblapi.js": "^2.4.1",
-    "discord.js": "^12.4.1",
+    "discord.js": "^12.5.1",
     "ffmpeg": "0.0.4",
     "ffmpeg-static": "^4.2.7",
     "mongoose": "^5.10.13",

@@ -3,9 +3,6 @@ const { MessageEmbed, MessageAttachment, Collection } = require('discord.js'),
 	randomColor = require("../constants/colorRandomizer.js"),
 	{ sembID } = require('../config.js'),
 	Afk = require('../models/Afk.js');
-let afkListData = new Collection();
-let afkList = [];
-let reasonList = [];
 
 module.exports = {
 	description: "Set yourself afk so users know you're unavailable when they ping you.",
@@ -21,10 +18,6 @@ module.exports = {
 module.exports.run = async (client, message, reasonArray) => {
 	if (message.author.id == sembID) return;
 	let reason = (reasonArray.length > 0) ? reasonArray.join(" ") : "Just because";
-	/*if (!afkListData.has(message.author.id) || !afkListData.get(message.author.id).afk) afkListData.set(message.author.id, {
-		afk: true,
-		afkReason: reason
-	});*/
 	var afkHandler = await Afk.findOne({ userID: message.author.id });
 	if (afkHandler == null) {
 		afkHandler = new Afk({ userID: message.author.id, reason: reason });
@@ -63,8 +56,5 @@ module.exports.run = async (client, message, reasonArray) => {
 		let afkHandler = await Afk.findOne({ userID: message.author.id });
 		if (afkHandler == null) return;
 		afkHandler = await Afk.findOneAndDelete({ userID: message.author.id });
-		/*if (!afkListData.has(user)) return;
-		if (afkListData.get(user).afk == false) return;
-		afkListData.delete(user);*/
 		message.reply("You are no longer AFK");
 	}
