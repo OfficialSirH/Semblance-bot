@@ -6,6 +6,10 @@ const Information = Schema({
         type: String,
         default: "Nope"
     },
+    count: {
+        type: Number,
+        default: 1
+    },
     updated: {
         type: Boolean,
         default: false

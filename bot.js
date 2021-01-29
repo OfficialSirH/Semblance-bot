@@ -343,6 +343,12 @@ client.on('message', message => {
 	if (message.guild.id == c2sID || message.guild.id == sirhGuildID) for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
 	if (message.guild.id == c2sID) {
 		let msg = message.content.toLowerCase(), s1 = "suggestion:", s2 = "suggest:", s3 = `${prefix}suggestion`, s4 = `${prefix}suggest`;
+		
+		if (msg.includes('beyond') && !msg.includes('s!beyond')) {
+			const beyondCount = await Information.findOne({ infoType: 'beyondcount' });
+			await Information.findOneAndUpdate({ infoType: 'beyondcount' }, { $set: { count: ++beyondCount.count } }, { new: true });
+		}
+		
 		if (chName == 'suggestions') {
 			if (msg.startsWith(s1) || msg.startsWith(s2) || msg.startsWith(s3) || msg.startsWith(s4) || getPermissionLevel(message.member) > 0) return;
 			else {
