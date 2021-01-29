@@ -4,6 +4,10 @@ module.exports = {
     embedColor: 0x7289DA,
     hexColor: "7289DA",
     getPermissionLevel: (member) => { return getPermissionLevel(member) },
+    getAvatar: (user) => { 
+        let avatarType = (user.avatar.startsWith('a_')) ? `${user.avatar}.gif` : `${user.avatar}.png`;
+        return `https://cdn.discordapp.com/avatars/${user.id}/${avatarType}?size=1024` 
+    },
     insertionSort: (list) => {
         for (var i = 0; i < list.length; i++) {
             curItem = list[i];

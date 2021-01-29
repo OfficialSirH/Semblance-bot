@@ -178,8 +178,8 @@ client.on('ready', async () => {
 	}, 30000);
 
 	/* Slash Command setup */
-	let commands = await client.api.applications(client.user.id).commands.get();
-    commands.forEach(command => slashCommands[command.id] = require(`./slash_commands/${command.name}.js`));
+	let slash_commands = await client.api.applications(client.user.id).commands.get();
+    slash_commands.forEach(command => slashCommands[command.id] = require(`./slash_commands/${command.name}.js`));
 
 	/*
 	* Reminder check
