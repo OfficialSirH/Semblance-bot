@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'),
-	{ roadMap, currentLogo } = require('../config.js'), randomColor = require('../constants/colorRandomizer.js'),
+	{ roadMap, currentLogo } = require('../config.js'), 
 	Information = require('./edit').Information;
 
 module.exports = {
