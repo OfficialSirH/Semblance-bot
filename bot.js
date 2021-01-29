@@ -6,7 +6,7 @@ const { sembID, sirhID, prefix, currentLogo, c2sID, sirhGuildID, lunchGuildID } 
 	wait = require('util').promisify(setTimeout);
 
 const { Client, MessageEmbed, MessageAttachment, GuildEmoji, Collection } = require('discord.js'), 
-	constants = require("./constants"), { getPermissionLevel, parseArgs } = constants,
+	constants = require("./constants"), { getPermissionLevel, parseArgs, getAvatar } = constants,
 	{ connect } = require('mongoose'),
 	client = new Client({
 		 disableMentions: "everyone",
