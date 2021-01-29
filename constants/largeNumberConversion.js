@@ -110,5 +110,24 @@ module.exports = {
             if (input < -1) return -1;
         } else if (input < 0) return 0;
         return input;
+    },
+    slash_checkIfAllowedValue: (input, value) => {
+        input = parseFloat(input) ? input : false;
+        if (input !== '0') {
+            if (!input && value != 'current level') return [{ content: `Your input for '${value}' was invalid.`, flags: 1 << 6 }];
+        }
+        if (input.length > 10) return [{ content: 'Your input was too long', flags: 1 << 6 }];
+        try {
+            if (value.indexOf('level') < 0) {
+                input = Number(module.exports.nameToScNo(input.toUpperCase()));
+            } else {
+                input = Number(input);
+            }
+        }
+        catch (e) { input = Number(input); }
+        if (value == 'metabits') {
+            if (input < -1) return -1;
+        } else if (input < 0) return 0;
+        return input;
     }
 }

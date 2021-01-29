@@ -23,7 +23,7 @@ module.exports.run = (client, message, args, identifier) => {
 		.setColor(randomColor())
 		.setThumbnail(semblanceAvatar)
 		.setAuthor(message.author.tag, userAvatar)
-		.setDescription(`Invite me to your server be clicking [here](https://discord.com/oauth2/authorize?client_id=${sembID}&permissions=8&scope=bot).`)
+		.setDescription(`Invite me to your server be clicking [here](https://discord.com/oauth2/authorize?client_id=${sembID}&permissions=8&scope=bot+applications.commands).`)
 		.setFooter(`Spread the word about Semblance!`);
 	user.send(embed);
 }

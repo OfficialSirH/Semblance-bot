@@ -15,7 +15,7 @@ module.exports.run = async (client, message, args) => {
 		.setTitle("Admin Commands")
 		.attachFiles(currentLogo)
 		.setThumbnail("attachment://Current_Logo.png")
-		.setDescription("Here's a list of admin commands")
+		.setDescription("Here's a list of admin commands\n\n**Tip:If you don't have slash commands authorized for Semblance on your server but you'd like to, click [here](https://discord.com/oauth2/authorize?client_id=${sembID}&permissions=8&scope=bot+applications.commands).**")
 		.addFields(
 			{ name: `**\`${prefix}lookup <ids or invite-link>\`**`, value: "Search user, emoji, or channel id, and search server invites.", inline: true},
 			{ name: `**\`${prefix}emojis <main/bonus>\`**`, value: "This will replace 'undefined' with emojis within commands that use emojis from the bot.", inline: true },

@@ -178,11 +178,13 @@ async function upgrade(client, message, max) {
 }
 
 async function gameStats(client, message, args) {
-    if (args[0].match(/\d/g)) var player = (args[0].match(/\d/g).join('').length == 18) ? args[0].match(/\d/g).join('') : message.author.id;
-    else player = message.author.id;
+    let player = (message.mentions.members) ? message.mentions.members[0] : 
+                (args[0].match(/\d/g) != null && args[0].match(/\d/g).join('').length == 18) ? args[0].match(/\d/g).join('') : 
+                    message.author.id;
     let statsHandler = await GameModel.findOne({ player: player });
     if (!statsHandler) return noGame(message);
-    let nxtUpgrade = await currentPrice(message.author.id, statsHandler);
+    let nxtUpgrade = await currentPrice(player, statsHandler);
+    player = await client.users.fetch(player);
     let embed = new MessageEmbed()
         .setTitle(`${message.author.username}'s gamestats`)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())

@@ -30,7 +30,7 @@ module.exports.run = async (client, message, args) => {
 					`**\`${prefix}roles\`**`].join('\n'), inline: true
 			},
 			{ name: "Server Admins", value: `**\`${prefix}ahelp\`**`, inline: true },
-			{ name: "Latest Update info", value: `**\`${prefix}update\`**\n**\`${prefix}beta\`**`, inline: true },
+			{ name: "Latest C2S Update info", value: `**\`${prefix}update\`**\n**\`${prefix}beta\`**`, inline: true },
 			{ name: "Miscellaneous Commands", value: `**\`${prefix}mischelp\`**` },
 			{
 				name: "Semblance Information", value: [`**\`${prefix}info\`**`, 
@@ -39,8 +39,7 @@ module.exports.run = async (client, message, args) => {
 					`**\`${prefix}latency\`**`,
 					`**\`${prefix}leaderboard\`**`,
 					`**\`${prefix}trello\`**`,
-					`**\`${prefix}notify <add/remove>\`**`,
-					`**\`${prefix}userstats <user mention/id>\`**`].join('\n'), inline: true
+					`**\`${prefix}notify <add/remove>\`**`].join('\n'), inline: true
 			}
 		)
 		.setFooter("Stay Cellular!");

@@ -104,6 +104,20 @@ setInterval(checkTweet, 2000);
 /*
  * The start of the bot client
  */
+
+async function send(interaction, { content = null, embeds = [], type = 4, flags = 0 } = {}) {
+    client.api.interactions(interaction.id, interaction.token).callback.post({data: {
+        type: type,
+        data: {
+            content: content,
+            embeds: embeds,
+            flags: flags
+        }
+    }})
+}
+
+const slashCommands = {}; 
+
 const { Information } = require('./commands/edit.js'),
 	{ GameModel } = require('./commands/game.js'),
 	Votes = require('./models/Votes.js');
@@ -163,11 +177,15 @@ client.on('ready', async () => {
 		client.sweepUsers();
 	}, 30000);
 
+	/* Slash Command setup */
+	let commands = await client.api.applications(client.user.id).commands.get();
+    commands.forEach(command => slashCommands[command.id] = require(`./slash_commands/${command.name}.js`));
+
 	/*
 	* Reminder check
 	*/
 
-	setInterval(() => { commands['remindme'].checkReminders(client) }, 60000 * 5);
+	setInterval(() => { commands['remindme'].checkReminders(client) }, 60000);
 
 	Information.findOne({ infoType: "github" })
 		.then(async (infoHandler) => {
@@ -185,6 +203,32 @@ client.on('ready', async () => {
 	//await CommandCounter.deleteMany({});
 	await commands['game'].updateLeaderboard(client);
 	await commands['leaderboard'].updateLeaderboard(client);
+});
+
+/*
+	Slash Command interactions
+*/
+
+client.ws.on('INTERACTION_CREATE', async interaction => {
+
+    const command = slashCommands[interaction.data.id];
+    if (!!command) {
+        let guild = client.guilds.cache.get(interaction.guild_id),
+            member = await guild.members.fetch(interaction.member.user.id),
+            permissionLevel = await getPermissionLevel(member),
+            channel = guild.channels.cache.get(interaction.channel_id);
+        console.log(`${member.user.tag} : ${permissionLevel}`);
+        if ((guild.id == c2sID && channel.name != 'semblance' && permissionLevel == 0) || permissionLevel < command.permissionRequired) 
+            return send(interaction, { content: 'You don\'t have permission to use this slash command.', type: 3, flags: 1 << 6 });
+        
+        interaction.member.user.tag = `${interaction.member.user.username}#${interaction.member.user.discriminator}`;
+        interaction.member.user.avatarURL = getAvatar(interaction.member.user);
+        let result = await command.run(client, interaction);
+        return send(interaction, ...result);
+    }
+
+    console.log(`${interaction.data.name}\n${interaction.data.id}`);
+    //send(interaction, { content: `${interaction.data.id}\n${interaction.data.name}` });
 });
 
 /*
