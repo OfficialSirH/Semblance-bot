@@ -13,9 +13,9 @@ module.exports = {
         else player = await client.users.fetch(player);
         let embed = new MessageEmbed()
             .setTitle(`${player.username}'s gamestats`)
-            .setAuthor(player.tag, player.displayAvatarURL())
+            .setAuthor(player.tag, player.avatarURL || player.displayAvatarURL())
             .setColor(randomColor())
-            .setThumbnail(player.displayAvatarURL())
+            .setThumbnail(player.avatarURL || player.displayAvatarURL())
             .addFields(
                 { name: 'Level', value: statsHandler.level },
                 { name: 'Random-Bucks', value: statsHandler.money },

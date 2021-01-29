@@ -178,9 +178,12 @@ async function upgrade(client, message, max) {
 }
 
 async function gameStats(client, message, args) {
-    let player = (message.mentions.members) ? message.mentions.members[0] : 
+    let player = message.author.id;
+    if (message.mentions.members) player = message.mentions.members[0].id;
+    else if (args[0].match(/\d/g) != null && args[0].match(/\d/g).join('').length == 18) player = args[0].match(/\d/g).join('');
+    /*let player = (message.mentions.members) ? message.mentions.members[0] : 
                 (args[0].match(/\d/g) != null && args[0].match(/\d/g).join('').length == 18) ? args[0].match(/\d/g).join('') : 
-                    message.author.id;
+                    message.author.id;*/
     let statsHandler = await GameModel.findOne({ player: player });
     if (!statsHandler) return noGame(message);
     let nxtUpgrade = await currentPrice(player, statsHandler);
