@@ -344,11 +344,8 @@ client.on('message', message => {
 	if (message.guild.id == c2sID) {
 		let msg = message.content.toLowerCase(), s1 = "suggestion:", s2 = "suggest:", s3 = `${prefix}suggestion`, s4 = `${prefix}suggest`;
 		
-		if (msg.includes('beyond') && !msg.includes('s!beyond')) {
-			const beyondCount = await Information.findOne({ infoType: 'beyondcount' });
-			await Information.findOneAndUpdate({ infoType: 'beyondcount' }, { $set: { count: ++beyondCount.count } }, { new: true });
-		}
-		
+		if (msg.includes('beyond') && !msg.includes('s!beyond')) updateBeyondCount();
+
 		if (chName == 'suggestions') {
 			if (msg.startsWith(s1) || msg.startsWith(s2) || msg.startsWith(s3) || msg.startsWith(s4) || getPermissionLevel(message.member) > 0) return;
 			else {
@@ -418,6 +415,11 @@ client.on('message', message => {
      }
 	//commands end here
 });
+
+async function updateBeyondCount() {
+	const beyondCount = await Information.findOne({ infoType: 'beyondcount' });
+	await Information.findOneAndUpdate({ infoType: 'beyondcount' }, { $set: { count: ++beyondCount.count } }, { new: true });
+}
 
 const { reportChannelList, correctReportList, Report } = require('./commands/bug.js');
 
