@@ -1,6 +1,6 @@
 
 module.exports = {
-    permissionRequired: 7,
+    permissionRequired: 0,
     run: async (client, interaction) => {
         return [{ content: interaction.data.options[0].value }];
     }
