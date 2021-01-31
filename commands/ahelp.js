@@ -15,14 +15,14 @@ module.exports.run = async (client, message, args) => {
 		.setTitle("Admin Commands")
 		.attachFiles(currentLogo)
 		.setThumbnail("attachment://Current_Logo.png")
-		.setDescription("Here's a list of admin commands\n\n**Tip:If you don't have slash commands authorized for Semblance on your server but you'd like to, click [here](https://discord.com/oauth2/authorize?client_id=${sembID}&permissions=8&scope=bot+applications.commands).**")
+		.setDescription("Here's a list of admin commands")
 		.addFields(
 			{ name: `**\`${prefix}lookup <ids or invite-link>\`**`, value: "Search user, emoji, or channel id, and search server invites.", inline: true},
-			{ name: `**\`${prefix}emojis <main/bonus>\`**`, value: "This will replace 'undefined' with emojis within commands that use emojis from the bot.", inline: true },
-			{ name: `**\`${prefix}rolereact <emoji> <role> <message>\`**`, value: "Role react creates a message that will allow users to gain a role you specify(either id or mention) by reacting to the message with the specified emoji.", inline: true },
+			{ name: `**\`${prefix}emojis\`**`, value: "If you'd like to have all C2S related emojis", inline: true },
+			{ name: `**\`${prefix}rolereact <emoji> <role> <message>\`**`, value: "Role react creates a message that will allow users to gain a role you specify(either id or mention) by reacting to the message with the specified emoji.(Wouldn't recommend to use this for any long-term role reacting)", inline: true },
 			{ name: `**\`${prefix}say <channelMention> <message>\`**`, value: `Make announcements to *any* channel with Semblance, also, you can embed the message by adding 'embed' to the end of the message.`, inline: true },
 			{ name: `**\`${prefix}jump <true/t or false/f>\`**`, value: `Enable or disable a feature that automatically converts message links into quoting embeds, which does not work with links outside of the server you're sending in.`, inline: true },
-			{ name: `**\`${prefix}embed help\`**`, value: `Explains the use of the embed creator command, \`${prefix}embed\`.`, inline: true }
+			{ name: `**\`${prefix}embed help\`**`, value: `Explains the use of the embed creator command, \`${prefix}embed\`.(Old and may not work that well)`, inline: true }
 		);
 	message.channel.send(embed);
 }

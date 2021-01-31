@@ -31,7 +31,10 @@ module.exports.run = async (client, message, args) => {
 			},
 			{ name: "Server Admins", value: `**\`${prefix}ahelp\`**`, inline: true },
 			{ name: "Latest C2S Update info", value: `**\`${prefix}update\`**\n**\`${prefix}beta\`**`, inline: true },
-			{ name: "Miscellaneous Commands", value: `**\`${prefix}mischelp\`**` },
+			{ name: "Miscellaneous Commands", value: `**\`${prefix}mischelp\`**`, inline: true },
+			{ name: "Slash Commands", value: ["Semblance's Slash Commands can be listed by typing `/`, which if none are visible,",
+											"that's likely due to Semblance not being authorized on the server and a admin will need to click",
+											 "[here](https://discord.com/oauth2/authorize?client_id=794033850665533450&permissions=8&scope=bot+applications.commands) to authorize Semblance."].join(' ') },
 			{
 				name: "Semblance Information", value: [`**\`${prefix}info\`**`, 
 					`**\`${prefix}changelog\`**`,
