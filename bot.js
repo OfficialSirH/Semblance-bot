@@ -235,7 +235,7 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
  * Setup for alternating activity
  */
 
-const myActivity = setInterval(ShowMyActivity, 10000);
+const myActivity = setInterval(ShowMyActivity, 30000);
 let alternateActivity = false;
 let totalCommandsUsed = 0;
 
@@ -330,7 +330,6 @@ client.on('message', message => {
 	checkForGitHubUpdate(message);
 	if (message.channel.name == "cells-tweets" && message.guild.id == c2sID && message.author.id != sembID && !message.member.roles.cache.get('493796775132528640')) return message.delete();
 	if (message.channel.type == "dm" || message.author.bot) return;
-	clearBlacklistedWord(message, message.member);
 	if (message.member) {
 		if (message.mentions.users && message.member.id != sembID) {
 			dontDisturb(client, message, message.mentions.users);
@@ -342,6 +341,7 @@ client.on('message', message => {
 	let chName = message.channel.name;
 	if (message.guild.id == c2sID || message.guild.id == sirhGuildID) for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
 	if (message.guild.id == c2sID) {
+		clearBlacklistedWord(message, message.member);
 		let msg = message.content.toLowerCase(), s1 = "suggestion:", s2 = "suggest:", s3 = `${prefix}suggestion`, s4 = `${prefix}suggest`;
 		
 		if (msg.includes('beyond') && !msg.includes('s!beyond')) updateBeyondCount();
