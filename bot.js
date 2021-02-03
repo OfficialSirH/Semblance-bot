@@ -223,7 +223,7 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
         
         interaction.member.user.tag = `${interaction.member.user.username}#${interaction.member.user.discriminator}`;
         interaction.member.user.avatarURL = getAvatar(interaction.member.user);
-        let result = await command.run(client, interaction);
+        let result = await command.run(client, interaction, { permissionLevel, options: interaction.data.options });
         return send(interaction, ...result);
     }
 
