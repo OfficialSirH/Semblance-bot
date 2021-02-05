@@ -22,6 +22,6 @@ module.exports.run = async (client, message, args) => {
         .setThumbnail("attachment://Current_Logo.png")
         .setDescription(codeHandler.info) //DARWIN, STRIPES, FESTIVE
         .addField("Expired Codes", codeHandler.expired) // Expired Codes: MANIA, TWITCH, FINALS, SCALES, POEM, GLITCH, EVOLVE
-        .setFooter("Magical Codes!");
+        .setFooter(codeHandler.footer);
     message.channel.send(embed);
 }
