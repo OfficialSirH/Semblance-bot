@@ -34,7 +34,11 @@ async function clips(message) {
 		.setDescription([`[Clip One](https://clips.twitch.tv/CharmingVibrantWatermelonPeoplesChamp)`,
 			`[Clip Two](https://clips.twitch.tv/GracefulSmellyYakDoggo)`,
 			`[Clip Three](https://clips.twitch.tv/BillowingCovertFishFeelsBadMan)`,
-			`[Clip Four](https://clips.twitch.tv/NurturingMushyClintmullinsDuDudu)`].join("\n"))
+			`[Clip Four](https://clips.twitch.tv/NurturingMushyClintmullinsDuDudu)`,
+			`[Clip Five](https://clips.twitch.tv/MistyAgileWrenLitFam)`,
+			`[Clip Six](https://clips.twitch.tv/AffluentDoubtfulPeachDendiFace)`,
+			`[Clip Seven](https://clips.twitch.tv/CarefulUnusualDootResidentSleeper)`,
+			`[Clip Eight](https://clips.twitch.tv/AbstemiousCreativeChoughJKanStyle)`].join("\n"))
 		.setFooter("Patience for The Beyond is key");
 	message.channel.send(embed);
 }
