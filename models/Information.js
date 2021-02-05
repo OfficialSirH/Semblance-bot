@@ -18,6 +18,10 @@ const Information = Schema({
     list: {
         type: Array,
         default: []
+    },
+    footer: {
+        type: String,
+        default: "Much emptiness"
     }
 });
 

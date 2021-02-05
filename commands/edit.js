@@ -29,9 +29,11 @@ module.exports.run = async (client, message, args) => {
             break;
         case 'codes':
             if (args[1] == 'expired') infoHandler = await Information.findOneAndUpdate({ infoType: "codes" }, { $set: { expired: args.slice(2).join(" ") } }, { new: true });
+            else if (args[1] == 'footer') infoHandler = await Information.findOneAndUpdate({ infoType: 'codes' }, { $set: { footer: args.slice(2).join(" ") } }, { new: true });
             else infoHandler = await Information.findOneAndUpdate({ infoType: "codes" }, { $set: { info: args.slice(1).join(" ") } }, { new: true });
             embed.setDescription(infoHandler.info)
-                .addField("Expired Codes", infoHandler.expired);
+                .addField("Expired Codes", infoHandler.expired)
+                .setFooter(infoHandler.footer);
             break;
         case 'changelog':
             infoHandler = await Information.findOneAndUpdate({ infoType: "changelog" }, { $set: { info: args.slice(1).join(" ") } }, { new: true });
