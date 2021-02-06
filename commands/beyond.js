@@ -13,7 +13,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	if (args[0] == 'clips' || args.join(" ") == 'sneak peaks' || args[0] == 'sneakpeaks') return clips(message);
+	if (args[0] == 'clips' || args.join(" ") == 'sneak peeks' || args[0] == 'sneakpeeks') return clips(message);
 	if (args[0] == 'count' || args[0] == 'counter') return beyondCounter(message);
 	let embed = new MessageEmbed()
 		.setTitle("Beyond/Road Map")
@@ -22,7 +22,7 @@ module.exports.run = async (client, message, args) => {
 		.setThumbnail("attachment://Current_Logo.png")
 		.setImage("attachment://roadMap.png")
 		.setDescription("Spring/Q1 2021. Anyone who wants to give any complaints about the length of the release date can email their complaint to ImAWhinyKaren@gmail.com"+
-						"\n\n`s!beyond sneak peaks` for sneak peaks\n\n`s!beyond count` to see the amount of times that The Beyond has been mentioned by the community of C2S.");
+						"\n\n`s!beyond sneak peaks` for sneak peeks\n\n`s!beyond count` to see the amount of times that The Beyond has been mentioned by the community of C2S.");
 	message.channel.send(embed);
 }
 
