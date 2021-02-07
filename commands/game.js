@@ -159,7 +159,13 @@ async function upgrade(client, message, max) {
     if (!upgradeHandler) return noGame(message);
     let previousLevel = upgradeHandler.level;
     let costSubtraction = await currentPrice(message.author.id, upgradeHandler);
-    if (upgradeHandler.money < costSubtraction) return message.reply(`You don't have enough Random-Bucks for this upgrade, your current balance is ${upgradeHandler.money} Random-Bucks and the next upgrade requires ${costSubtraction} Random-Bucks.`);
+    if (upgradeHandler.money < costSubtraction) 
+        return message.channel.send(new MessageEmbed().setTitle("Not Enough Random-Bucks")
+                .setAuthor(message.author.tag, message.author.displayAvatarURL())
+                .setColor(randomColor())
+                .setDescription([`**Current Balance:** ${upgradeHandler.money} Random-Bucks`,
+                                `**Upgrade Cost:** ${costSubtraction} Random-Bucks`,
+                                `**How much more required:** ${costSubtraction - upgradeHandler.money} Random-Bucks`].join('\n')));
     if (max && max.toLowerCase() == 'max') {
         while (upgradeHandler.money > costSubtraction) {
             costSubtraction = await currentPrice(message.author.id, upgradeHandler);
