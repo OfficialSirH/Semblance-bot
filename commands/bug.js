@@ -295,9 +295,17 @@ async function archiveReport(client, message, report) {
     try {
         msg.edit(msg.embeds[0].setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nArchived Report`, author.iconURL).setFooter(`Archived Report`));
         await Report.findOneAndDelete({ bugID: report.bugID });
+
+        let reportList = await Report.find({});
+        reportList = Array.from(reportList.map(r => r.bugID).filter(item => item > report.bugID));
+        await reportList.forEach(async (bugID) => {
+            await Report.findOneAndUpdate({ bugID: bugID }, { $set: { bugID: bugID - 1 } }, { new: true });
+        });
+        
         message.reply("Report successfully archived(This message will delete in 5 seconds)").then(msg => msg.delete({timeout: 5000}));
     }
     catch(e) { 
         console.error(e);
     }
+
 }
