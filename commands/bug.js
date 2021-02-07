@@ -1,6 +1,6 @@
 const { MessageEmbed, MessageAttachment, Collection } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'),
     Report = require('../models/Report.js'), mongoose = require('mongoose'), { prefix, sirhGuildID, c2sID } = require('../config.js'),
-    { getPermissionLevel } = require('../constants/index.js'),
+    { getPermissionLevel } = require('../constants/index.js'), wait = require('util').promisify(setTimeout),
     cooldown = new Collection(), reportChannelList = ["798933535255298078", "798933965539901440"], // <-- change IDs to the 3 bug report channels in C2S
     CHANNELS = {
         QUEUE: '798933535255298078',
@@ -299,9 +299,14 @@ async function archiveReport(client, message, report) {
         let reportList = await Report.find({});
         reportList = Array.from(reportList.map(r => r.bugID).filter(item => item > report.bugID));
         await reportList.forEach(async (bugID) => {
+            message.guild.channels.cache.get(report.channelID).messages.fetch(report.messageID)
+                .then(msg => {
+                    let author = msg.embeds[0].author;
+                    msg.edit(msg.embeds[0].setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nBug ID: #${bugID - 1}`, author.iconURL).setFooter(`#${bugID - 1}`));
+                });
             await Report.findOneAndUpdate({ bugID: bugID }, { $set: { bugID: bugID - 1 } }, { new: true });
         });
-        
+
         message.reply("Report successfully archived(This message will delete in 5 seconds)").then(msg => msg.delete({timeout: 5000}));
     }
     catch(e) { 
