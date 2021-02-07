@@ -1,11 +1,11 @@
 const { MessageEmbed, MessageAttachment, Collection } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'),
     Report = require('../models/Report.js'), mongoose = require('mongoose'), { prefix, sirhGuildID, c2sID } = require('../config.js'),
     { getPermissionLevel } = require('../constants/index.js'),
-    cooldown = new Collection(), reportChannelList = ["798933535255298078", "798933965539901440"]; // <-- change IDs to the 3 bug report channels in C2S
-
-/*
-
-*/
+    cooldown = new Collection(), reportChannelList = ["798933535255298078", "798933965539901440"], // <-- change IDs to the 3 bug report channels in C2S
+    CHANNELS = {
+        QUEUE: '798933535255298078',
+        APPROVED: '798933965539901440'
+    }
 
 module.exports = {
     description: "Big epicc bug reporting feature exclusively for C2S server.",
@@ -16,6 +16,7 @@ module.exports = {
     permissionRequired: 0,
     checkArgs: (args) => args.length > 0,
     reportChannelList: reportChannelList,
+    CHANNELS: CHANNELS,
     correctReportList: (client, message, messageID) => correctReportList(client, message, messageID),
     Report: Report
 }
@@ -106,7 +107,7 @@ async function report(message, content, client) {
             }
         }
     }
-    message.guild.channels.cache.get('798933535255298078').send(embed).then(async (msg) => { // <-- #bug-approval-queue channel in C2S
+    message.guild.channels.cache.get(CHANNELS.QUEUE).send(embed).then(async (msg) => { // <-- #bug-approval-queue channel in C2S
         let report = new Report({ User: message.author.id, bugID: totalReports + 1, messageID: msg.id, channelID: msg.channel.id });
         await report.save();
     });
@@ -125,9 +126,9 @@ async function bug(client, message, permissionLevel, content, args) {
     else if (args[1] == 'deleterepro' || args[1] == 'reprodelete') deleteReproduce(message, report, args);
 
     else if (permissionLevel >= 1) {
-        var channel = message.guild.channels.cache.get('798933965539901440'); // <-- #approved-bugs channel in C2S
-
-        if (args[1] == 'approve') fixUpReports(client, message, channel, report, args.slice(2).join(' '), true);
+        var channel = message.guild.channels.cache.get(CHANNELS.APPROVED); // <-- #approved-bugs channel in C2S
+        if (args[1] == 'archive') archiveReport(client, message, report);
+        else if (args[1] == 'approve') fixUpReports(client, message, channel, report, args.slice(2).join(' '), true);
 
         else if (args[1] == 'deny') fixUpReports(client, message, channel, report, args.slice(2).join(' '), false);
 
@@ -142,21 +143,6 @@ async function addAttachment(client, message, report, attachment = null) {
         attachmentFieldCorrection(client, message, report, attachment);
     } else {
         let attachmentURL = attachment.proxyURL;
-
-        /*let videoType = [".mov", ".mp4", ".mkv", ".webm"], imageType = [".png", ".jpg", ".jpeg", ".gif"],
-            foundType = false;
-        for (const type of videoType) {
-            if (!foundType && attachmentURL.toLowerCase().includes(type)) {
-                attachment = new MessageAttachment(attachmentURL, `Video.${type}`);
-                foundType = true;
-            }
-        }
-        if (!foundType) for (const type of imageType) {
-            if (!foundType && attachmentURL.toLowerCase().includes(type)) {
-                attachment = new MessageAttachment(attachmentURL, `Image.${type}`);
-                foundType = true;
-            }
-        }*/
 
         const storedMsg = await client.guilds.cache.get(sirhGuildID).channels.cache.get('794054989860700179').send(attachment); // <== Uses ID of #image-storage from SirH's server
         attachmentURL = storedMsg.attachments.map(a => a)[0].proxyURL;
@@ -211,7 +197,7 @@ async function addReproduce(message, report, specifications) {
 
 async function fixUpReports(client, message, channel, report, reason, approved) {
     if (!reason) reason = "unspecified";
-    message.guild.channels.cache.get('798933535255298078').messages.fetch(report.messageID, { cache: false }) // <-- #bug-approval-queue channel from C2S
+    message.guild.channels.cache.get(CHANNELS.QUEUE).messages.fetch(report.messageID, { cache: false }) // <-- #bug-approval-queue channel from C2S
         .then(async msg => {
             let user = await client.users.fetch(report.User);
             if (approved) {
@@ -287,9 +273,31 @@ async function correctReportList(client, message, messageID) {
     reportList = Array.from(reportList.map(r => r.bugID).filter(item => item > deletedReport.bugID));
     await reportList.forEach(async (bugID) => {
         let report = await Report.findOneAndUpdate({ bugID: bugID }, { $set: { bugID: bugID - 1 } }, { new: true });
-        let user = await client.users.fetch(report.User);
-        message.guild.channels.cache.get(report.channelID).messages.fetch(report.messageID)
-            .then(msg => msg.edit(msg.embeds[0].setAuthor(`${user.tag} (${user.id})\nBug ID: #${bugID - 1}`, user.displayAvatarURL()).setFooter(`#${bugID - 1}`)))
+        //let user = await client.users.fetch(report.User); //Might remove as it's redundant and is unecessary to fetch
+        try {
+            message.guild.channels.cache.get(report.channelID).messages.fetch(report.messageID)
+                .then(msg => {
+                    let author = msg.embeds[0].author;
+                    msg.edit(msg.embeds[0].setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nBug ID: #${bugID - 1}`, author.iconURL).setFooter(`#${bugID - 1}`))
+                    //msg.edit(msg.embeds[0].setAuthor(`${user.tag} (${user.id})\nBug ID: #${bugID - 1}`, user.displayAvatarURL()).setFooter(`#${bugID - 1}`))
+                });
+        } catch(e) {
+            console.error(e);
+            throw new Error("Apparently there was an issue finding that message...");
+        }
     });
     console.log(`All ${reportList.length} reports have successfully been reorganized!`);
+}
+
+async function archiveReport(client, message, report) {
+    let msg = await message.guild.channels.cache.get(report.channelID).messages.fetch(report.messageID);
+    let author = msg.embeds[0].author;
+    try {
+        msg.edit(msg.embeds[0].setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nArchived Report`, author.iconURL).setFooter(`Archived Report`));
+        await Report.findOneAndDelete({ bugID: report.bugID });
+        message.reply("Report successfully archived(This message will delete in 5 seconds)").then(msg => msg.delete({timeout: 5000}));
+    }
+    catch(e) { 
+        console.error(e);
+    }
 }
