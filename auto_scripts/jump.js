@@ -12,8 +12,8 @@ module.exports = {
     checkArgs: (args) => args.length >= 0
 }
 
-module.exports.run = async (client, message, args) => {
-    if (limitedJump.has(message.id)) {
+module.exports.run = async (client, message, args, recursiveCount = 0) => {
+    /*if (limitedJump.has(message.id)) {
         let theMsg = limitedJump.get(message.id);
         if (limitedJump.get(message.id) == 2) {
             return limitedJump.delete(message.id);
@@ -22,7 +22,9 @@ module.exports.run = async (client, message, args) => {
         const jumpHandler = await JTModel.findOne({ guild: message.guild.id });
         if (!jumpHandler || !jumpHandler.active) return;
         limitedJump.set(message.id, 1);
-    }
+    }*/
+    const jumpHandler = await JTModel.findOne({ guild: message.guild.id });
+    if (!jumpHandler || !jumpHandler.active || recursiveCount == 2) return;
     
     let content = args.join(" ");
     
@@ -57,11 +59,13 @@ module.exports.run = async (client, message, args) => {
             });
         }).catch(err => console.log(err));
     }).catch(err => console.log(err));
-content = content.replace(`https://discordapp.com/channels/${guildID}/${channelID}/${messageID}`, ``);
+content = content.replace(/https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?:@me|\d{17,19}\/)?\d{17,20}\/\d{17,20}/.exec(content)[0], ``);
 args = parseArgs(content);
-if (limitedJump.get(message.id) >= 2) {
+if (recursiveCount < 1)
+    module.exports.run(client, message, args, ++recursiveCount);
+/*if (limitedJump.get(message.id) >= 2) {
     return limitedJump.delete(message.id);
 }
-else module.exports.run(client, message, args);
+else module.exports.run(client, message, args);*/
 }
 
