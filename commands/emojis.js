@@ -21,7 +21,7 @@ module.exports = {
 	darwinium: '<:darwinium:742748359781122169>',
 	//metabitOG: '<:metabitOG:724684027419951177>',
 	metabit: '<:metabit:789526514524880906>',
-	mutagen: '<:mutagen:724684028598419508>',
+	mutagen: '<:mutagen:742748361852977184>',
 	fossil: '<:fossil:742748364625543239>',
 	trexBadge: '<:trex_badge:789336714409803858>',
 	trexSkull: '<:trex_skull:657015647359860767>',
