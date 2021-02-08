@@ -27,7 +27,11 @@ module.exports = {
 	trexSkull: '<:trex_skull:657015647359860767>',
 	singularity: '<:singularity:789526513812504617>',
 	nanobotUp: '<:NanobotUp:764149893937102858>',
-	nanobotDown: '<:NanobotDown:764149995032412180>'
+	nanobotDown: '<:NanobotDown:764149995032412180>',
+	darkMatter: '<:darkMatter:808445570078867496>',
+	stardust: '<:stardust:808445612013518868>',
+	energy: '<:energy:808445587803471922>',
+	sentience: '<:sentience:808445599078809670>'
 }
 
 module.exports.run = async (client, message, args) => {
