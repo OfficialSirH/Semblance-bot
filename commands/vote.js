@@ -21,7 +21,7 @@ module.exports.run = async (client, message, args) => {
 				`[Discord.boats](https://discord.boats/bot/${client.user.id})`,
 				`[Discordbotlist.com](https://discordbotlist.com/bots/semblance)`,
 				`[Discord.bots.gg](https://discord.bots.gg/bots/${client.user.id})`,
-				//`[Bots.ondiscord.xyz](https://bots.ondiscord.xyz/bots/${client.user.id})`,
+				`[Botlist.space](https://botlist.space/bot/${client.user.id})`,
 			`[Botsfordiscord.com](https://botsfordiscord.com/bot/${client.user.id})`].join('\n')) // Old Semblance ID: 668688939888148480
 	.setFooter(`Command called by ${message.author.tag}`, message.author.displayAvatarURL());
 	message.channel.send(embed);

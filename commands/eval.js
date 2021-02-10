@@ -16,7 +16,7 @@ const constants = require("../constants")
 module.exports.run = async (client, message, args, identifier, { permissionLevel, content }) => { // we get all the values so we can use them in the eval-command itself
     let embed = new MessageEmbed().setColor(randomColor()).addField("📥 Input", `\`\`\`js\n${content.substring(0, 1000)}\`\`\``).setFooter("Feed me code!");
     try {
-        let evaled = eval(content);
+        let evaled = eval(`(async () => { ${content} })()`);
         if (typeof evaled != "string") evaled = require("util").inspect(evaled);
         embed.addField("📤 Output", `\`\`\`js\n${evaled}\`\`\``).setTitle("✅ Evaluation Completed");
         message.channel.send(embed);

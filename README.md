@@ -1,3 +1,5 @@
+![status](https://botlist.space/bot/794033850665533450/badge?property=status) ![servers](https://botlist.space/bot/794033850665533450/badge?property=servers) [![chat](https://img.shields.io/discord/794054988224659490?color=%237289DA&logo=discord&logoColor=white)](https://discord.gg/XFMaTn6taf) [![dependencies](https://img.shields.io/david/officialsirh/semblance-bot)](https://david-dm.org/officialsirh/semblance-bot)
+
 ## **Who is Semblance?**
 
 - Semblance is an AI from the educational and epic idle game, Cell to Singularity, to which she runs the Reality Engine and all the simulations.
