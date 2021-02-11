@@ -51,4 +51,5 @@ module.exports.run = async (client, message, args, recursiveCount = 0) => {
     
     if (recursiveCount < 1)
         module.exports.run(client, message, args, ++recursiveCount);
+    else message.delete();
 }
