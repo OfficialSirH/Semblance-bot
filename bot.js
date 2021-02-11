@@ -2,10 +2,10 @@
  * Constants
  */
 // Configuration
-const { sembID, sirhID, prefix, currentLogo, c2sID, sirhGuildID, lunchGuildID } = require('./config.js'),
+const { sembID, sirhID, prefix, currentLogo, c2sID, sirhGuildID, lunchGuildID, ignoredGuilds } = require('./config.js'),
 	wait = require('util').promisify(setTimeout);
 
-const { Client, MessageEmbed, MessageAttachment, GuildEmoji, Collection } = require('discord.js'), 
+const { Client, MessageEmbed, MessageAttachment, GuildEmoji, Collection, Permissions } = require('discord.js'), 
 	constants = require("./constants"), { getPermissionLevel, parseArgs, getAvatar } = constants,
 	{ connect } = require('mongoose'),
 	client = new Client({
@@ -329,7 +329,7 @@ function clearBlacklistedWord(message, member) {
 client.on('message', message => {
 	checkForGitHubUpdate(message);
 	if (message.channel.name == "cells-tweets" && message.guild.id == c2sID && message.author.id != sembID && !message.member.roles.cache.get('493796775132528640')) return message.delete();
-	if (message.channel.type == "dm" || message.author.bot) return;
+	if (message.channel.type == "dm" || message.author.bot || ignoredGuilds.includes(message.guild.id)) return;
 	if (message.member) {
 		if (message.mentions.users && message.member.id != sembID) {
 			dontDisturb(client, message, message.mentions.users);
@@ -339,7 +339,7 @@ client.on('message', message => {
 	if (!message.content.startsWith(`${prefix}afk `) && (!message.content.startsWith('</afk:804778881461911623>') || message.application == null)) removeAfk(client, message, message.author.id);
 	//Cell to Singularity Exclusive Code
 	let chName = message.channel.name;
-	if (message.guild.id == c2sID || message.guild.id == sirhGuildID) for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
+	for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
 	if (message.guild.id == c2sID) {
 		clearBlacklistedWord(message, message.member);
 		let msg = message.content.toLowerCase(), s1 = "suggestion:", s2 = "suggest:", s3 = `${prefix}suggestion`, s4 = `${prefix}suggest`;
