@@ -22,7 +22,7 @@ module.exports.run = async (client, message, args, identifier, { permissionLevel
         message.channel.send(embed);
     } catch (e) {
         if (typeof e == "string") e = e.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203))
-        embed.addField("📤 Output", `\`\`\`fix\n${e.substring(0, 1014)}\`\`\``).setTitle("❌ Evaluation Failed");
+        embed.addField("📤 Output", `\`\`\`fix\n${e.toString().substring(0, 1014)}\`\`\``).setTitle("❌ Evaluation Failed");
         message.channel.send(embed);
     }
 }
