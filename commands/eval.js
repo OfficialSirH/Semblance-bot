@@ -18,11 +18,11 @@ module.exports.run = async (client, message, args, identifier, { permissionLevel
     try {
         let evaled = eval(`try { (async () => { ${content} })() } catch (e) { throw new Error(e) }`);
         if (typeof evaled != "string") evaled = require("util").inspect(evaled);
-        embed.addField("📤 Output", `\`\`\`js\n${evaled}\`\`\``).setTitle("✅ Evaluation Completed");
+        embed.addField("📤 Output", `\`\`\`js\n${evaled.substring(0, 1015)}\`\`\``).setTitle("✅ Evaluation Completed");
         message.channel.send(embed);
     } catch (e) {
         if (typeof e == "string") e = e.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203))
-        embed.addField("📤 Output", `\`\`\`fix\n${e}\`\`\``).setTitle("❌ Evaluation Failed");
+        embed.addField("📤 Output", `\`\`\`fix\n${e.substring(0, 1014)}\`\`\``).setTitle("❌ Evaluation Failed");
         message.channel.send(embed);
     }
 }
