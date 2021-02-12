@@ -6,8 +6,9 @@ module.exports = {
     permissionRequired: 0,
     run: async (client, interaction) => {
         let user = (!!interaction.data.options) ? 
-            (interaction.data.options[0].type == 6) ?
-                interaction.data.options[0].value : await client.users.fetch(interaction.data.options[0].value)
+            (interaction.data.options[0].value == interaction.member.user.id) ?
+            interaction.member.user :
+            await client.users.fetch(interaction.data.options[0].value)
              : interaction.member.user,
             userAvatar = getAvatar(user),
             author = interaction.member.user,
