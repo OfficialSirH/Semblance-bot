@@ -11,6 +11,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args, recursiveCount = 0) => {
+    return;
     const jumpHandler = await JTModel.findOne({ guild: message.guild.id });
     if (!jumpHandler || !jumpHandler.active || recursiveCount == 2) return;
     
