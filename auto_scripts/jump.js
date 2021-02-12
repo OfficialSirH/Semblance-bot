@@ -27,7 +27,8 @@ module.exports.run = async (client, message, args, recursiveCount = 0) => {
 
         channel.messages.fetch(messageID).then(async (msg) => {
             let attachmentLink = /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i.exec(msg.content);
-            msg.content = msg.content.replace(/https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/\w*(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i.exec(msg.content)[0], ``);
+            if (attachmentLink != null)
+                msg.content = msg.content.replace(attachmentLink[0], ``);
 
             let embed = new MessageEmbed()
                 .setAuthor(msg.author.username, msg.author.displayAvatarURL())
