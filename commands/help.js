@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args) => {
 		.attachFiles(currentLogo)
 		.setThumbnail("attachment://Current_Logo.png")
 		.setDescription(`-Type **\`${prefix}dinos\`**, **\`${prefix}singularity\`**, **\`${prefix}trex\`**, **\`${prefix}geodes\`**, **\`${prefix}music\`**, ` +
-		`**\`${prefix}currency\`**, **\`${prefix}beyond\`**, **\`${prefix}sharks\`**, **\`${prefix}simstats\`**, ` +
+		`**\`${prefix}currency\`**, **\`${prefix}metabits\`**, **\`${prefix}beyond\`**, **\`${prefix}sharks\`**, **\`${prefix}simstats\`**, ` +
 		`**\`${prefix}gametransfer\`**, **\`${prefix}prestige\`**, **\`${prefix}nanobots\`**, and/or **\`${prefix}reboot\`** for help on each of these topics.`)
 		.addFields(
 			{

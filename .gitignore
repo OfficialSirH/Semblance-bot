@@ -1,6 +1,2 @@
 node_modules
-commands/twitterCredentials.json
-commands/twitchCredentials.json
-commands/websiteScripts/topGGAuth.json
-commands/websiteScripts/DiscordBoatAuth.json
-/.vs
+/.vs/
