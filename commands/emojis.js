@@ -23,7 +23,7 @@ module.exports = {
 	metabit: '<:metabit:789526514524880906>',
 	mutagen: '<:mutagen:742748361852977184>',
 	fossil: '<:fossil:742748364625543239>',
-	trexBadge: '<:trex_badge:789336714409803858>',
+	trexBadge: '<:Dino_Gold:667471422334959619>',
 	trexSkull: '<:trex_skull:657015647359860767>',
 	singularity: '<:singularity:789526513812504617>',
 	nanobotUp: '<:NanobotUp:764149893937102858>',
