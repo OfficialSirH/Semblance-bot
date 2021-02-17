@@ -219,7 +219,7 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
             channel = guild.channels.cache.get(interaction.channel_id);
         console.log(`${member.user.tag} : ${permissionLevel}`);
         if ((guild.id == c2sID && channel.name != 'semblance' && permissionLevel == 0) || permissionLevel < command.permissionRequired) 
-            return send(interaction, { content: 'You don\'t have permission to use this slash command.', type: 3, flags: 1 << 6 });
+            return send(interaction, { content: 'You don\'t have permission to use this slash command.', flags: 1 << 6 });
         
         interaction.member.user.tag = `${interaction.member.user.username}#${interaction.member.user.discriminator}`;
         interaction.member.user.avatarURL = getAvatar(interaction.member.user);
