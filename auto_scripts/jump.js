@@ -26,7 +26,7 @@ module.exports.run = async (client, message, args, recursiveCount = 0) => {
         if (channel.nsfw || guild.id != message.guild.id) return;
 
         channel.messages.fetch(messageID).then(async (msg) => {
-            let attachmentLink = /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i.exec(msg.content);
+            let attachmentLink = /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i.exec(msg.content);
             if (attachmentLink != null)
                 msg.content = msg.content.replace(attachmentLink[0], ``);
 
