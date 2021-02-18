@@ -30,7 +30,7 @@ module.exports.run = async (client, message, args) => {
 					`**\`${prefix}roles\`**`].join('\n'), inline: true
 			},
 			{ name: "Server Admins", value: `**\`${prefix}ahelp\`**`, inline: true },
-			{ name: "Latest C2S Update info", value: `**\`${prefix}update\`**\n**\`${prefix}beta\`**`, inline: true },
+			{ name: "Latest C2S Update info", value: `**\`${prefix}update\`**\n**\`${prefix}beta\`**\n**\`${prefix}joinbeta\`**`, inline: true },
 			{ name: "Miscellaneous Commands", value: `**\`${prefix}mischelp\`**`, inline: true },
 			{ name: "Slash Commands", value: ["Semblance's Slash Commands can be listed by typing `/`, which if none are visible,",
 											"that's likely due to Semblance not being authorized on the server and a admin will need to click",
