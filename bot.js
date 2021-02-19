@@ -271,9 +271,10 @@ client.on('messageUpdate', (oldMsg, newMsg) => {
 	if (!newMsg.guild || !!newMsg.content || newMsg.content == null) return; // STOP IGNORING THIS YOU DUMB EVENT, YOU'RE SUPPOSED TO RETURN IF IT'S NULL!
 	let chName = newMsg.channel.name;
 	if (newMsg.guild.id == c2sID) {
-		let msg = newMsg.content.toLowerCase(), s1 = "suggestion:", s2 = "suggest:", s3 = `${prefix}suggestion`, s4 = `${prefix}suggest`;
+		let msg = newMsg.content.toLowerCase(), suggestionArray = ["suggestion:", "suggest:", `${prefix}suggestion`, `${prefix}suggest`],
+			suggestionRegex = new RegExp(`(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
 		if (chName == 'suggestions') {
-			if (msg.startsWith(s1) || msg.startsWith(s2) || msg.startsWith(s3) || msg.startsWith(s4) || getPermissionLevel(newMsg.member) > 0) return;
+			if (suggestionRegex.exec(msg) != null || getPermissionLevel(newMsg.member) > 0) return;
 			else {
 				newMsg.delete();
 				let embed = new MessageEmbed()
@@ -281,7 +282,7 @@ client.on('messageUpdate', (oldMsg, newMsg) => {
 					.setDescription(`\`${newMsg.content}\``);
 				newMsg.author.send(`Your message in ${newMsg.channel} was deleted due to not having the `+
 					      `suggestion-prefix required with suggestions, which means your message `+
-					      `*must* start with \`${s1}\`, \`${s2}\`, \`${s3}\`, or \`${s4}\`. The `+
+					      `*must* start with ${suggestionArray.map(t => `\`${t}\``).join(', ')}. The `+
 					      `reason for the required suggestion-prefixes is to prevent the channel `+
 					      `getting messy due to conversations instead of actual suggestions.`, embed);
 			}
@@ -342,12 +343,13 @@ client.on('message', message => {
 	for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
 	if (message.guild.id == c2sID) {
 		clearBlacklistedWord(message, message.member);
-		let msg = message.content.toLowerCase(), s1 = "suggestion:", s2 = "suggest:", s3 = `${prefix}suggestion`, s4 = `${prefix}suggest`;
+		let msg = message.content.toLowerCase(), suggestionArray = ["suggestion:", "suggest:", `${prefix}suggestion`, `${prefix}suggest`],
+			suggestionRegex = new RegExp(`(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
 		
 		if (msg.includes('beyond') && !msg.includes('s!beyond')) updateBeyondCount();
 
 		if (chName == 'suggestions') {
-			if (msg.startsWith(s1) || msg.startsWith(s2) || msg.startsWith(s3) || msg.startsWith(s4) || getPermissionLevel(message.member) > 0) return;
+			if (suggestionRegex.exec(msg) != null || getPermissionLevel(message.member) > 0) return;
 			else {
 				message.delete();
 				let embed = new MessageEmbed()
@@ -355,7 +357,7 @@ client.on('message', message => {
 					.setDescription(`\`${message.content}\``);
 				message.author.send(`Your message in ${message.channel} was deleted due to not having the ` +
 					`suggestion-prefix required with suggestions, which means your message ` +
-					`*must* start with \`${s1}\`, \`${s2}\`, \`${s3}\`, or \`${s4}\`. The ` +
+					`*must* start with ${suggestionArray.map(t => `\`${t}\``).join(', ')}. The ` +
 					`reason for the required suggestion-prefixes is to prevent the channel ` +
 					`getting messy due to conversations instead of actual suggestions.`, embed);
 			}
