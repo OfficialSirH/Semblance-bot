@@ -5,6 +5,7 @@ module.exports = {
 	usage: {
 		"": ""
 	},
+	aliases: ['secrets'],
 	permissionRequired: 0,
 	checkArgs: (args) => args.length >= 0
 }
