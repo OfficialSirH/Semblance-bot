@@ -21,8 +21,7 @@ fs.readdir("./images/", (err, files) => {
             "439866052684283905",
             "450100127256936458",
             "110373943822540800",
-            "374071874222686211",
-            "387812458661937152"],
+            "374071874222686211",], // TODO: Add 387812458661937152 back into list AFTER they verify the bot
         currentLogo: attachments['Current_Logo'],
         sharks: attachments['Sharks'],
         roadMap: attachments['roadMap'],
@@ -49,8 +48,7 @@ module.exports = {
             "439866052684283905",
             "450100127256936458",
             "110373943822540800",
-            "374071874222686211",
-            "387812458661937152"],
+            "374071874222686211",], // TODO: Add 387812458661937152 back into list AFTER they verify the bot
 }
 
 /*
