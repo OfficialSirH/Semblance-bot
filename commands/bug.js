@@ -220,7 +220,7 @@ async function attachmentFieldCorrection(client, message, report, item) {
         attachment = {
             name: "YouTube Link"
         }
-    } else if (/https?:\/\/imgur\.com\/gallery\/\w{5,8}/.exec(item) != null) {
+    } else if (/https?:\/\/(?:i\.)?imgur\.com\/(?:gallery\/)?\w{5,12}/.exec(item) != null) {
         attachmentURL = item;
         attachment = {
             name: "Imgur Link"
