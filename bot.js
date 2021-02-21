@@ -26,14 +26,13 @@ const Twitter = require("twitter"), twClient = new Twitter(JSON.parse(process.en
 	{ dontDisturb, removeAfk } = require('./commands/afk.js'),
 	{ TurnPage } = require('./commands/gametransfer.js');
 //keep bot active
-const stayActive = require('./stayActive.js'),
-	twitch = require("./commands/twitch.js");
+const stayActive = require('./stayActive.js');
 
 /*
  * Command setup
  */
 
-const commands = {}, aliases = {}//, { CommandCounter } = require('./commands/userstats.js'); // { "command": require("that_command") }, { "alias": "command" }
+const commands = {}, aliases = {} // { "command": require("that_command") }, { "alias": "command" }
 fs.readdir("./commands/", (err, files) => {
 	if (err) return console.log(err);
 	for (const file of files) if (file.endsWith(".js")) {
@@ -42,8 +41,6 @@ fs.readdir("./commands/", (err, files) => {
 		if (commandFile.aliases) for (const alias of commandFile.aliases) aliases[alias] = fileName;
 	}
 })
-
-//module.exports.commandsCounter = commandsCounter;
 
 const autoCommands = {};
 fs.readdir("./auto_scripts/", (err, files) => {
@@ -57,9 +54,6 @@ fs.readdir("./auto_scripts/", (err, files) => {
 //Voting API
 let topGG;
 let discordBoats;
-
-//Twitch implementation
-//setInterval( function() { twitch(client); }, 2000);
 
 /*
  * Twitter implementation

@@ -213,20 +213,20 @@ async function fixUpReports(client, message, channel, report, reason, approved) 
 }
 
 async function attachmentFieldCorrection(client, message, report, item) {
-    let attachmentURL, creationFailed = false, youtubeLink = false;
+    let attachmentURL, creationFailed = false, youtubeLink = false, attachment;
 
-    if (item.includes("youtube.com") || item.includes("youtu.be")) {
+    if (/https?:\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)\w{11}/.exec(item) != null) {
         attachmentURL = item;
-        var attachment = {
+        attachment = {
             name: "YouTube Link"
         }
-    } else if (item.includes("imgur.com")) {
+    } else if (/https?:\/\/imgur\.com\/gallery\/\w{5,8}/.exec(item) != null) {
         attachmentURL = item;
-        var attachment = {
+        attachment = {
             name: "Imgur Link"
         }
     } else try {
-        if (item) var attachment = new MessageAttachment(item);
+        attachment = new MessageAttachment(item);
         await client.guilds.cache.get(sirhGuildID).channels.cache.get('794054989860700179').send(attachment) // <== Uses ID of #image-storage from SirH's server
             .then((msg) => attachmentURL = msg.attachments.map(a => a)[0].proxyURL);
 
