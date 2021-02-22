@@ -99,17 +99,6 @@ setInterval(checkTweet, 2000);
  * The start of the bot client
  */
 
-async function send(interaction, { content = null, embeds = [], type = 4, flags = 0 } = {}) {
-    client.api.interactions(interaction.id, interaction.token).callback.post({data: {
-        type: type,
-        data: {
-            content: content,
-            embeds: embeds,
-            flags: flags
-        }
-    }})
-}
-
 const slashCommands = {}; 
 
 const { Information } = require('./commands/edit.js'),
@@ -202,6 +191,16 @@ client.on('ready', async () => {
 /*
 	Slash Command interactions
 */
+async function send(interaction, { content = null, embeds = [], type = 4, flags = 0 } = {}) {
+    client.api.interactions(interaction.id, interaction.token).callback.post({data: {
+        type: type,
+        data: {
+            content: content,
+            embeds: embeds,
+            flags: flags
+        }
+    }})
+}
 
 client.ws.on('INTERACTION_CREATE', async interaction => {
 
@@ -213,7 +212,7 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
             channel = guild.channels.cache.get(interaction.channel_id);
         console.log(`${member.user.tag} : ${permissionLevel}`);
         if ((guild.id == c2sID && channel.name != 'semblance' && permissionLevel == 0) || permissionLevel < command.permissionRequired) 
-            return send(interaction, { content: 'You don\'t have permission to use this slash command.', flags: 1 << 6 });
+            return send(interaction, { content: 'Ah ah ah! You didn\'t say the magic word!'/*'You don\'t have permission to use this slash command.'*/, flags: 1 << 6, type: 3 });
         
         interaction.member.user.tag = `${interaction.member.user.username}#${interaction.member.user.discriminator}`;
         interaction.member.user.avatarURL = getAvatar(interaction.member.user);
