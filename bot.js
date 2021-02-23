@@ -330,7 +330,7 @@ client.on('message', message => {
 		}
 	}
 
-	if (!message.content.startsWith(`${prefix}afk `) && (!message.content.startsWith('</afk:804778881461911623>') || message.application == null)) removeAfk(client, message, message.author.id);
+	if (!message.content.startsWith(`${prefix}afk `) && (!message.content.startsWith('</afk:813628842182311976>') || message.application == null)) removeAfk(client, message, message.author.id);
 	//Cell to Singularity Exclusive Code
 	let chName = message.channel.name;
 	for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
