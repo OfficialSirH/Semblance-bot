@@ -30,79 +30,26 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-		//let time = args[0];
-		if (isNaN(args[0])) return message.reply("You must use a number in your reminder's timer.").then(msg => msg.delete({ timeout: 5000 }));
-		let timeAmount = args[0] * 60 * 1000;
-		/*let specifiedTime = false;
-		let h = false, m = false, s = false;*/
-		let reminder = args.splice(1, args.length);
-	/*for (let i = 0; i < time.length; i++) {
-		if (alphabet.indexOf(time[i]) >= 0) {
-			if (time[i] == "h" || time[i] == "m" || time[i] == "s") {
-				specifiedTime = true;
-				if (time[i] == "h") {
-					timeAmount += parseInt(time.slice(0, time.indexOf("h"))) * 3600000;
-					h = true;
-				}
-				if (time[i] == "m") {
-					if (h) {
-						timeAmount += parseInt(time.slice(time.indexOf("h") + 1, time.indexOf("m"))) * 60000;
-					} else {
-						timeAmount += parseInt(time.slice(0, time.indexOf("m"))) * 60000;
-					}
-					m = true;
-				}
-				if (time[i] == "s") {
-					if (h && !m) {
-						timeAmount += parseInt(time.slice(time.indexOf("h") + 1, time.indexOf("s"))) * 1000;
-					}
-					if (m) {
-						timeAmount += parseInt(time.slice(time.indexOf("m") + 1, time.indexOf("s"))) * 1000;
-					}
-					if (!h && !m) {
-						timeAmount += parseInt(time.slice(0, time.indexOf("s"))) * 1000;
-					}
-				}
-			} else {
-				return message.reply("Sorry, but your time has invalid input.");
-			}
-		}
-		if (i == time.length - 1 && !specifiedTime) {
-			message.reply("You seem to be missing some input for time.");
-			return;
-		} else if (i == time.length - 1 && specifiedTime) {
-			let day = 24 * 60 * 60 * 1000;
-			if (msToTime(timeAmount).indexOf("e") >= 0 || msToTime(timeAmount) == "Infinityd") {
-				message.reply("Even science itself hates the number you specified.");
-				return message.delete();
-			}
-			let userAvatar = message.author.avatarURL();
-			let embed = new MessageEmbed()
-				.setTitle("Reminder")
-				.setColor(randomColor())
-				.setThumbnail(userAvatar)
-				.setDescription(`I'll remind you in ${msToTime(timeAmount)} for your reminder \n **Reminder**: ${reminder.join(" ")}`)
-				.setFooter(`Command called by ${message.author.tag}`, userAvatar);
-			message.channel.send(embed);
-			if (reminder.length == 0) var reminderHandler = new Reminder({ userID: message.author.id, remind: Date.now() + timeAmount });
-			else var reminderHandler = new Reminder({ userID: message.author.id, reminder: reminder.join(" "), remind: Date.now() + timeAmount });
-			await reminderHandler.save();
-			//setTimeout(() => { message.author.send(`Reminder: ${reminder.join(" ")}`); }, timeAmount);
-		}
-	}*/
-	if (msToTime(timeAmount).indexOf("e") >= 0 || msToTime(timeAmount) == "Infinityd") {
-		message.reply("Even science itself hates the number you specified.");
-		return message.delete();
-	}
-	let userAvatar = message.author.avatarURL();
+	let timeAmount = /(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,2})h)?(?:(?<minutes>\d{1,2})m)?/i.exec(args[0]);
+	if (timeAmount == null) return message.reply("Your input for time is invalid, please try again.").then(msg => msg.delete({ timeout:5000 })); 
+	const { groups: { days = 0, hours = 0, minutes = 0 }} = timeAmount;
+	if ([days, hours, minutes].every(time => !time)) return message.reply("Your input for time was invalid, please try again.").then(msg => msg.delete({ timeout: 5000 }));
+
+	let reminder = args.splice(1, args.length);
+	
+	let totalTime = (days * 1000 * 3600 * 24) + (hours * 1000 * 3600) + (minutes * 1000 * 60);
+
+	if (totalTime > 2419200000) return message.reply("You cannot create a reminder for longer than 28 days/a month");
+
+	let userAvatar = message.author.displayAvatarURL();
 	let embed = new MessageEmbed()
 		.setTitle("Reminder")
 		.setColor(randomColor())
 		.setThumbnail(userAvatar)
-		.setDescription(`I'll remind you in ${msToTime(timeAmount)} for your reminder \n **Reminder**: ${reminder.join(" ")}`)
+		.setDescription(`I'll remind you in ${msToTime(totalTime)} for your reminder \n **Reminder**: ${reminder.join(" ")}`)
 		.setFooter(`Command called by ${message.author.tag}`, userAvatar);
 	message.channel.send(embed);
-	if (reminder.length == 0) var reminderHandler = new Reminder({ userID: message.author.id, reminder: "A random reminder", remind: Date.now() + timeAmount });
-	else var reminderHandler = new Reminder({ userID: message.author.id, reminder: reminder.join(" "), remind: Date.now() + timeAmount });
+	if (reminder.length == 0) var reminderHandler = new Reminder({ userID: message.author.id, reminder: "A random reminder", remind: Date.now() + totalTime });
+	else var reminderHandler = new Reminder({ userID: message.author.id, reminder: reminder.join(" "), remind: Date.now() + totalTime });
 	await reminderHandler.save();
 }

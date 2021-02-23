@@ -21,24 +21,28 @@ module.exports = {
     },
 
     run: async (client, interaction) => {
-		let timeAmount = interaction.data.options[0].value * 60 * 1000,
+		let timeAmount = /(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,2})h)?(?:(?<minutes>\d{1,2})m)?/i.exec(interaction.data.options[0].value),
             reminder = interaction.data.options[1].value,
             user = interaction.member.user,
             userAvatar = getAvatar(user);
 
-	if (msToTime(timeAmount).indexOf("e") >= 0 || msToTime(timeAmount) == "Infinityd") {
-		return [{ content: "Even science itself hates the number you specified." }];
-    }
+		if (timeAmount == null) return [{ content: "Your input for time is invalid, please try again." }];
+		const { groups: { days = 0, hours = 0, minutes = 0 }} = timeAmount;
+		if ([days, hours, minutes].every(time => !time)) return [{ content: "Your input for time was invalid, please try again." }];
     
-    const reminderHandler = new Reminder({ userID: user.id, reminder: reminder, remind: Date.now() + timeAmount });
-	await reminderHandler.save();
+		let totalTime = (days * 1000 * 3600 * 24) + (hours * 1000 * 3600) + (minutes * 1000 * 60);
 
-	let embed = new MessageEmbed()
-		.setTitle("Reminder")
-		.setColor(randomColor())
-		.setThumbnail(userAvatar)
-		.setDescription(`I'll remind you in ${msToTime(timeAmount)} for your reminder \n **Reminder**: ${reminder}`)
-		.setFooter(`Command called by ${user.username}#${user.discriminator}`, userAvatar);
-    return [{ embeds: [embed] }];
+		if (totalTime > 2419200000) return [{ content: "You cannot create a reminder for longer than 28 days/a month" }];
+
+		const reminderHandler = new Reminder({ userID: user.id, reminder: reminder, remind: Date.now() + totalTime });
+		await reminderHandler.save();
+
+		let embed = new MessageEmbed()
+			.setTitle("Reminder")
+			.setColor(randomColor())
+			.setThumbnail(userAvatar)
+			.setDescription(`I'll remind you in ${msToTime(totalTime)} for your reminder \n **Reminder**: ${reminder}`)
+			.setFooter(`Command called by ${user.username}#${user.discriminator}`, userAvatar);
+		return [{ embeds: [embed] }];
     }
 }

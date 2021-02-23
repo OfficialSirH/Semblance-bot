@@ -29,7 +29,7 @@ module.exports.run = async (client, message, args) => {
 			{ name: "Fun Commands", value: `Semblance's Idle-Game: **\`${prefix}game\`**\n`+
 							`***PING***: **\`${prefix}ping\`**\n`+
 							`Large User Avatar: **\`${prefix}avatar <userID/userMention>\`**\n`+
-							`Set Reminder: **\`${prefix}remindme <time ex: 50(50 minutes)> <reminder>\`**\n`+
+							`Set Reminder: **\`${prefix}remindme <time ex: 5d13h48m => 5 days, 13 hours, 48 minutes> <reminder>\`**\n`+
 				`Magic 8 Ball: **\`${prefix}8ball\`**`
 			}
 			);
