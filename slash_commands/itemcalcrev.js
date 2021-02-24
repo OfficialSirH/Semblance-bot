@@ -7,7 +7,8 @@ module.exports = {
 }
 
 module.exports.run = async (client, interaction) => {
-    let [itemInput, currentLevel, curAmount] = interaction.data.options;
+    let [itemInput, currentLevel, curAmount] = interaction.data.options.map(o => o.value);
+    
     if (!itemInput) return [{ content: "You forgot input for 'item'.", flags: 1 << 6 }];
     if (!curAmount) return [{ content: "You forgot input for 'Currency Amount'.", flags: 1 << 6 }];
     if (!currentLevel || currentLevel < 0) currentLevel = 0;

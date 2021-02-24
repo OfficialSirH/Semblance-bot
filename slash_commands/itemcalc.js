@@ -8,7 +8,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, interaction) => {
-    let [itemInput, currentLevel, level] = interaction.data.options;
+    let [itemInput, currentLevel, level] = interaction.data.options.map(o => o.value);
 
     if (!itemInput) return [{ content: "You forgot input for 'item'.", flags: 1 << 6 }];
     if (!level) return [{ content: "You forgot input for 'level'.", flags: 1 << 6 }];
