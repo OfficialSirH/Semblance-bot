@@ -22,7 +22,10 @@ module.exports.run = async (client, message, args) => {
 			"4. Click the paradise bird, an all brown bird with a blue face.",
 			"5. While your game camera is still focused on the paradise bird, wait till the bird flies near a small island with the darwin bust statue and click the island.",
 			"6. In the savannah section of the land garden, activate camera mode and point the camera to top down so then you can see the top of the mountain ledges, near the lions and elephants you'll find... *sniff*... Archie's bones :(",
-			"7. Between the savannah and the jungle section where the river splits them apart, you'll find the Amazonian Dolphin."].join("\n"));
+			"7. Between the savannah and the jungle section where the river splits them apart, you'll find the Amazonian Dolphin.",
+			"**Secrets of the speedruns:**",
+			"8. Reach Singularity within 5 minutes.",
+			"9. Reach Singularity within 90 seconds!"].join("\n"));
 	message.author.send(embed);
 }
 

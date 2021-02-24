@@ -1,5 +1,5 @@
 const fs = require('fs'),
-    itemList = JSON.parse(fs.readFileSync('./commands/itemsList.json', "utf8")),
+    itemsList = JSON.parse(fs.readFileSync('./constants/itemsList.json', "utf8")),
     { nameToScNo, bigToE, checkIfAllowedValue } = require('../constants/largeNumberConversion.js');
 
 module.exports = {
@@ -23,7 +23,11 @@ module.exports.run = async (client, message, args) => {
     if (isNaN(currentLevel)) return;
     let itemCost = null;
     let itemCostType;
-    itemList.entropy.forEach(item => {
+    for (const [key, value] of Object.entries(itemsList)) if (itemsList[key][itemInput]) {
+        itemCost = itemsList[key][itemInput].price;
+        itemCostType = key;
+    }
+    /*itemList.entropy.forEach(item => {
         if (item.name == itemInput) {
             itemCost = item.price;
             itemCostType = "entropy";
@@ -49,7 +53,7 @@ module.exports.run = async (client, message, args) => {
                 itemCostType = "fossils";
             }
         });
-    }
+    }*/
     if (!itemCost) return message.reply("Your input for 'item' was invalid.");
     let resultingPrice = 0;
     for (let i = currentLevel; i < (level + currentLevel); i++) {

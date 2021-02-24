@@ -1,5 +1,5 @@
 const fs = require('fs'),
-    itemList = JSON.parse(fs.readFileSync('./commands/itemsList.json', "utf8")),
+    itemList = JSON.parse(fs.readFileSync('./constants/itemsList.json', "utf8")),
     { nameToScNo, bigToE, checkIfAllowedValue } = require('../constants/largeNumberConversion.js');
 
 module.exports = {
@@ -19,35 +19,15 @@ module.exports.run = async (client, message, args) => {
     itemInput = itemInput.toLowerCase();
     curAmount = checkIfAllowedValue(curAmount, message, 'cost');
     if (isNaN(curAmount)) return;
+    
     let itemCost = null;
     let itemCostType;
-    itemList.entropy.forEach(item => {
-        if (item.name == itemInput) {
-            itemCost = item.price;
-            itemCostType = "entropy";
+    
+    for (const [key, value] of Object.entries(itemsList)) if (itemsList[key][itemInput]) {
+        itemCost = itemsList[key][itemInput].price;
+        itemCostType = key;
+    }
 
-        }
-    });
-    if (!itemCost) {
-        itemList.ideas.forEach(item => {
-            if (item.name == itemInput) {
-                itemCost = item.price;
-                itemCostType = "ideas";
-            }
-        });
-    }
-    if (!itemCost) {
-        itemList.fossils.forEach(item => {
-            if (item.name == 'tyrannosaurus-rex' && itemInput == 'trex') {
-                itemCost = item.price;
-                itemCostType = 'fossils';
-            }
-            if (item.name == itemInput) {
-                itemCost = item.price;
-                itemCostType = "fossils";
-            }
-        })
-    }
     if (!itemCost) return message.reply("Your input for 'item' was invalid.");
     let num3 = curAmount * 0.1499999761581421;
     let num5 = itemCost * Math.pow(1.149999976158142, currentLevel);
