@@ -37,5 +37,5 @@ module.exports.run = async (client, interaction) => {
             `Current item level: ${currentLevel}`,
             `currency input: ${bigToE(curAmount)} ${itemCostType}`,
             `Resulting level: ${level}`].join('\n'));
-    return [{ embed: embed.toJSON() }];
+    return [{ embeds: embed.toJSON() }];
 }
