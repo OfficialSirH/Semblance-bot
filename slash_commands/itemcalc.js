@@ -14,9 +14,9 @@ module.exports.run = async (client, interaction) => {
     if (!level) return [{ content: "You forgot input for 'level'.", flags: 1 << 6 }];
     if (!currentLevel || currentLevel < 0) currentLevel = 0;
     itemInput = itemInput.toLowerCase();
-    level = slash_checkIfAllowedValue(level, message, 'level');
+    level = slash_checkIfAllowedValue(level, 'level');
     if (isNaN(level)) return [{ content: "Your input for 'level' was invalid.", flags: 1 << 6 }];
-    currentLevel = slash_checkIfAllowedValue(currentLevel, message, 'current level');
+    currentLevel = slash_checkIfAllowedValue(currentLevel, 'current level');
     if (isNaN(currentLevel)) return [{ content: "Your input for 'current level' was invalid.", flags: 1 << 6 }];;
     
     let itemCost = null;

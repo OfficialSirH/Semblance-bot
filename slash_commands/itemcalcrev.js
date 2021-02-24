@@ -13,7 +13,7 @@ module.exports.run = async (client, interaction) => {
     if (!curAmount) return [{ content: "You forgot input for 'Currency Amount'.", flags: 1 << 6 }];
     if (!currentLevel || currentLevel < 0) currentLevel = 0;
     itemInput = itemInput.toLowerCase();
-    curAmount = slash_checkIfAllowedValue(curAmount, message, 'cost');
+    curAmount = slash_checkIfAllowedValue(curAmount, 'cost');
     if (isNaN(curAmount)) return;
     
     let itemCost = null;
