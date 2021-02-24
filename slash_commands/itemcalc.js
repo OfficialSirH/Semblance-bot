@@ -37,7 +37,7 @@ module.exports.run = async (client, interaction) => {
 
     let embed = new MessageEmbed()
         .setTitle("Item Calculator Results")
-        .setAuthor(interaction.user.tag, interaction.user.avatarURL)
+        .setAuthor(interaction.member.user.tag, interaction.member.user.avatarURL)
         .setColor("RANDOM")
         .setDescription([`Chosen item: ${itemInput}`,
             `Current item level: ${currentLevel}`,
