@@ -1,6 +1,7 @@
 const fs = require('fs'),
     itemsList = JSON.parse(fs.readFileSync('./constants/itemsList.json', "utf8")),
-    { nameToScNo, bigToE, slash_checkIfAllowedValue } = require('../constants/largeNumberConversion.js');
+    { nameToScNo, bigToE, slash_checkIfAllowedValue } = require('../constants/largeNumberConversion.js'),
+    { MessageEmbed } = require('discord.js');
 
 module.exports = {
     permissionRequired: 0
