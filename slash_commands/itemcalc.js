@@ -43,5 +43,5 @@ module.exports.run = async (client, interaction) => {
             `Current item level: ${currentLevel}`,
             `Item level goal: ${level + currentLevel}`,
             `Resulting Price: ${bigToE(resultingPrice)} ${itemCostType}`].join('\n'));
-    return [{ embeds: embed.toJSON() }];
+    return [{ embeds: [embed.toJSON()] }];
 }

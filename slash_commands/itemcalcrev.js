@@ -14,7 +14,7 @@ module.exports.run = async (client, interaction) => {
     if (!currentLevel || currentLevel < 0) currentLevel = 0;
     itemInput = itemInput.toLowerCase();
     curAmount = slash_checkIfAllowedValue(curAmount, 'cost');
-    if (isNaN(curAmount)) return;
+    if (isNaN(curAmount)) return [{ content: "Your input for 'currency' is invalid.", flags: 1 << 6 }];
     
     let itemCost = null;
     let itemCostType;
@@ -37,5 +37,5 @@ module.exports.run = async (client, interaction) => {
             `Current item level: ${currentLevel}`,
             `currency input: ${bigToE(curAmount)} ${itemCostType}`,
             `Resulting level: ${level}`].join('\n'));
-    return [{ embeds: embed.toJSON() }];
+    return [{ embeds: [embed.toJSON()] }];
 }
