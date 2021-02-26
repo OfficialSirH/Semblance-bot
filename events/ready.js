@@ -5,11 +5,10 @@ const { GameModel } = require('../commands/game.js'),
     let topGG;
     let discordBoats;
 
-    const myActivity = setInterval(ShowMyActivity, 30000);
     let alternateActivity = false;
     let totalCommandsUsed = 0;
     
-    async function ShowMyActivity() {
+    async function showMyActivity(client) {
         if (!alternateActivity) {
             client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalCommandsUsed} commands used during uptime`, { type: "PLAYING" });
             alternateActivity = true;
@@ -29,7 +28,8 @@ module.exports = (client) => {
             discordBoats = require("./commands/websiteScripts/DiscordBoat.js");
             discordBoats(client);
         }, 500);
-        ShowMyActivity();
+
+        setInterval(showMyActivity(client), 30000);
 
         const commands = client.commands;
 
