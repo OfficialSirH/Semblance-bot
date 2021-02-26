@@ -7,7 +7,9 @@ const { sembID, sirhID, prefix, currentLogo, c2sID, sirhGuildID, lunchGuildID, i
 	const Semblance = require('./structures/Semblance'),
 		interactionCreate = require('./events/interactionCreate'),
 		message = require('./events/message'),
-		messageDelete = require('./events/messageDelete')
+		messageDelete = require('./events/messageDelete'),
+		messageUpdate = require('./events/messageUpdate'),
+		ready = require('./events/ready');
 
 const { Client, MessageEmbed, MessageAttachment, GuildEmoji, Collection, Permissions } = require('discord.js'), 
 	constants = require("./constants"), { getPermissionLevel, parseArgs, getAvatar } = constants,
@@ -31,6 +33,12 @@ const Twitter = require("twitter"), twClient = new Twitter(JSON.parse(process.en
 	{ TurnPage } = require('./commands/gametransfer.js');
 //keep bot active
 const stayActive = require('./stayActive.js');
+
+ready(client);
+interactionCreate(client);
+message(client);
+messageUpdate(client);
+messageDelete(client);
 
 /*
  * Command setup
