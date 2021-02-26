@@ -29,7 +29,16 @@ module.exports = (client) => {
             discordBoats(client);
         }, 500);
 
-        setInterval(() =>  { showMyActivity(client) }, 30000);
+        setInterval(() => { 
+            if (!alternateActivity) {
+                client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalCommandsUsed} commands used during uptime`, { type: "PLAYING" });
+                alternateActivity = true;
+            } else {
+                alternateActivity = false;
+                let totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
+                client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalMembers} members`, { type: "PLAYING" });
+            }
+         }, 30000);
 
         const commands = client.commands;
 
@@ -52,7 +61,7 @@ module.exports = (client) => {
 
         /* Slash Command setup */
         let slash_commands = await client.api.applications(client.user.id).commands.get();
-        slash_commands.forEach(command => client.addSlash(command.id, require(`./slash_commands/${command.name}.js`)));
+        slash_commands.forEach(command => client.addSlash(command.id, require(`../slash_commands/${command.name}.js`)));
 
         /*
         * Reminder check
