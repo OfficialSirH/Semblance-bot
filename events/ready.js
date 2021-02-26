@@ -1,7 +1,8 @@
 const { GameModel } = require('../commands/game.js'),
     Votes = require('../models/Votes.js'),
     { Information } = require('../commands/edit'),
-    { MessageEmbed } = require('discord.js');
+    { MessageEmbed } = require('discord.js'),
+    { c2sID } = require('../config');
 
     let topGG;
     let discordBoats;
