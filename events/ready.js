@@ -8,7 +8,7 @@ const { GameModel } = require('../commands/game.js'),
     let alternateActivity = false;
     let totalCommandsUsed = 0;
     
-    async function showMyActivity(client) {
+    function showMyActivity(client) {
         if (!alternateActivity) {
             client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalCommandsUsed} commands used during uptime`, { type: "PLAYING" });
             alternateActivity = true;
@@ -23,9 +23,9 @@ module.exports = (client) => {
     client.on("ready", async () => {
         console.log(`Logged in as ${client.user.tag}!`);
         setTimeout(function () {
-            topGG = require("./commands/websiteScripts/topGG.js");
+            topGG = require("../commands/websiteScripts/topGG.js");
             topGG.FixClient(client);
-            discordBoats = require("./commands/websiteScripts/DiscordBoat.js");
+            discordBoats = require("../commands/websiteScripts/DiscordBoat.js");
             discordBoats(client);
         }, 500);
 
