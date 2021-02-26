@@ -4,11 +4,15 @@
 // Configuration
 const { sembID, sirhID, prefix, currentLogo, c2sID, sirhGuildID, lunchGuildID, ignoredGuilds } = require('./config.js'),
 	wait = require('util').promisify(setTimeout);
+	const Semblance = require('./structures/Semblance'),
+		interactionCreate = require('./events/interactionCreate'),
+		message = require('./events/message'),
+		messageDelete = require('./events/messageDelete')
 
 const { Client, MessageEmbed, MessageAttachment, GuildEmoji, Collection, Permissions } = require('discord.js'), 
 	constants = require("./constants"), { getPermissionLevel, parseArgs, getAvatar } = constants,
 	{ connect } = require('mongoose'),
-	client = new Client({
+	client = new Semblance({
 		 disableMentions: "everyone",
     		messageCacheLifetime: 30,
     		messageSweepInterval: 300,
@@ -31,7 +35,7 @@ const stayActive = require('./stayActive.js');
 /*
  * Command setup
  */
-
+/*
 const commands = {}, aliases = {} // { "command": require("that_command") }, { "alias": "command" }
 fs.readdir("./commands/", (err, files) => {
 	if (err) return console.log(err);
@@ -54,7 +58,7 @@ fs.readdir("./auto_scripts/", (err, files) => {
 //Voting API
 let topGG;
 let discordBoats;
-
+*/
 /*
  * Twitter implementation
  * @Return Promise<MagicalTwitterPost>
@@ -98,8 +102,8 @@ setInterval(checkTweet, 2000);
 /*
  * The start of the bot client
  */
-
-const slashCommands = {}; 
+/*
+const slashCommands = {};
 
 const { Information } = require('./commands/edit.js'),
 	{ GameModel } = require('./commands/game.js'),
@@ -115,9 +119,9 @@ client.on('ready', async () => {
 	}, 500);
 	ShowMyActivity();
 
-	/*
-	 Exclusively cache any users from the game and vote database that aren't already cached
-	 */
+	
+	// Exclusively cache any users from the game and vote database that aren't already cached
+	
 	const cacheList = await Information.findOne({ infoType: 'cacheList' });
 	let newCachedUsers = [];
 	const gameList = await GameModel.find({});
@@ -160,13 +164,12 @@ client.on('ready', async () => {
 		client.sweepUsers();
 	}, 30000);
 
-	/* Slash Command setup */
+	// Slash Command setup 
 	let slash_commands = await client.api.applications(client.user.id).commands.get();
     slash_commands.forEach(command => slashCommands[command.id] = require(`./slash_commands/${command.name}.js`));
 
-	/*
-	* Reminder check
-	*/
+	//Reminder check
+	
 
 	setInterval(() => { commands['remindme'].checkReminders(client) }, 60000);
 
@@ -176,7 +179,7 @@ client.on('ready', async () => {
 				await Information.findOneAndUpdate({ infoType: "github" }, { $set: { updated: false } }, { new: true });
 				let embed = new MessageEmbed()
 					.setTitle("Semblance Update")
-					.setColor(randomColor())
+					.setColor("RANDOM")
 					.setAuthor(client.user.tag, client.user.displayAvatarURL())
 					.setDescription(`**${infoHandler.info}**`);
 
@@ -188,9 +191,9 @@ client.on('ready', async () => {
 	await commands['leaderboard'].updateLeaderboard(client);
 });
 
-/*
-	Slash Command interactions
-*/
+
+	// Slash Command interactions
+
 async function send(interaction, { content = null, embeds = [], type = 4, flags = 0 } = {}) {
     client.api.interactions(interaction.id, interaction.token).callback.post({data: {
         type: type,
@@ -212,7 +215,7 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
             channel = guild.channels.cache.get(interaction.channel_id);
         console.log(`${member.user.tag} : ${permissionLevel}`);
         if ((guild.id == c2sID && channel.name != 'semblance' && permissionLevel == 0) || permissionLevel < command.permissionRequired) 
-            return send(interaction, { content: 'Ah ah ah! You didn\'t say the magic word!'/*'You don\'t have permission to use this slash command.'*/, flags: 1 << 6, type: 3 });
+            return send(interaction, { content: 'Ah ah ah! You didn\'t say the magic word!', flags: 1 << 6, type: 3 });
         
         interaction.member.user.tag = `${interaction.member.user.username}#${interaction.member.user.discriminator}`;
         interaction.member.user.avatarURL = getAvatar(interaction.member.user);
@@ -221,8 +224,8 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
     }
 
     console.log(`${interaction.data.name}\n${interaction.data.id}`);
-    //send(interaction, { content: `${interaction.data.id}\n${interaction.data.name}` });
 });
+ */
 
 /*
  * Setup for alternating activity
@@ -259,7 +262,7 @@ async function ShowMyActivity() {
 /*
  * Message updates
  */
-
+/*
 client.on('messageUpdate', (oldMsg, newMsg) => {
 	if (!newMsg.guild || !!newMsg.content || newMsg.content == null) return; // STOP IGNORING THIS YOU DUMB EVENT, YOU'RE SUPPOSED TO RETURN IF IT'S NULL!
 	let chName = newMsg.channel.name;
@@ -283,9 +286,7 @@ client.on('messageUpdate', (oldMsg, newMsg) => {
 	}
 });
 
-/*
- * Check for GitHub updates
- */
+// Check for GitHub updates
 
 async function checkForGitHubUpdate(message) {
 	if (message.channel.name == 'semblance-updates' && message.guild.id == sirhGuildID && message.author.username == 'GitHub') {
@@ -295,9 +296,8 @@ async function checkForGitHubUpdate(message) {
 	return false;
 }
 
-/*
- * Blacklisted word filtering
- */
+// Blacklisted word filtering
+
 
 let warnings = new Collection();
 
@@ -316,9 +316,8 @@ function clearBlacklistedWord(message, member) {
 	}
 }
 
-/*
- * Where the main magic happens, the message event
- */
+// Where the main magic happens, the message event
+
 
 client.on('message', message => {
 	checkForGitHubUpdate(message);
@@ -371,7 +370,6 @@ client.on('message', message => {
 	}
 	embedCreate(client, message);
 	
-	//commands start here
 	if (message.content.toLowerCase().startsWith(prefix) || message.content.match(`^<@!?${client.user.id}> `)) {
 		let content = message.content.split(" ")
 		if (content[0].match(`^<@!?${client.user.id}>`)) content.shift(); else content = message.content.slice(prefix.length).split(" ")
@@ -383,7 +381,6 @@ client.on('message', message => {
 			let permissionLevel;
 			const args = parseArgs(content); try { permissionLevel = getPermissionLevel(message.member);
 			} catch (e) { permissionLevel = (message.author.id == sirhID) ? 7 : 0 }
-			//console.log(`${message.member}: ${permissionLevel}`);
 			try { if (permissionLevel < commandFile.permissionRequired) return message.channel.send("❌ You don't have permission to do this!");
 				if (!commandFile.checkArgs(args, permissionLevel, content)) return message.channel.send(`❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage).map(a => " " + a).join("")}\`, for additional help, see \`${prefix}help\`.`)
 				commandFile.run(client, message, args, identifier, { permissionLevel, content });
@@ -394,12 +391,10 @@ client.on('message', message => {
 
 	if (message.content.substring(0, prefix.length).toLowerCase() == prefix) {
         let args = message.content.substring(prefix.length).split(' ');
-		//console.log(args);
         let cmd = args[0].toLowerCase();
 		console.log(cmd + " Called by " + message.author.username + " in " + message.guild.name);
        
         args = args.splice(1);
-		//console.log(args);
 		let msgs = message.content;
 		switch (cmd) {
 			case 'ping':
@@ -408,7 +403,6 @@ client.on('message', message => {
 			default:
          }
      }
-	//commands end here
 });
 
 async function updateBeyondCount() {
@@ -424,6 +418,7 @@ client.on('messageDelete', async message => {
 	let report = await Report.findOne({ messageID: message.id });
 	if (report) correctReportList(client, message, message.id);
 });
+*/
 
 /*
  * message reaction events
