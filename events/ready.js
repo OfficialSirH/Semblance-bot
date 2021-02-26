@@ -5,6 +5,21 @@ const { GameModel } = require('../commands/game.js'),
     let topGG;
     let discordBoats;
 
+    const myActivity = setInterval(ShowMyActivity, 30000);
+    let alternateActivity = false;
+    let totalCommandsUsed = 0;
+    
+    async function ShowMyActivity() {
+        if (!alternateActivity) {
+            client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalCommandsUsed} commands used during uptime`, { type: "PLAYING" });
+            alternateActivity = true;
+        } else {
+            alternateActivity = false;
+            let totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
+            client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalMembers} members`, { type: "PLAYING" });
+        }
+    }
+
 module.exports = (client) => {
     client.on("ready", async () => {
         console.log(`Logged in as ${client.user.tag}!`);

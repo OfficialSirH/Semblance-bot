@@ -239,20 +239,20 @@ client.ws.on('INTERACTION_CREATE', async interaction => {
  * Setup for alternating activity
  */
 
-const myActivity = setInterval(ShowMyActivity, 30000);
-let alternateActivity = false;
-let totalCommandsUsed = 0;
+// const myActivity = setInterval(ShowMyActivity, 30000);
+// let alternateActivity = false;
+// let totalCommandsUsed = 0;
 
-async function ShowMyActivity() {
-	if (!alternateActivity) {
-		client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalCommandsUsed} commands used during uptime`, { type: "PLAYING" });
-		alternateActivity = true;
-	} else {
-		alternateActivity = false;
-		let totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
-		client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalMembers} members`, { type: "PLAYING" });
-    }
-}
+// async function ShowMyActivity() {
+// 	if (!alternateActivity) {
+// 		client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalCommandsUsed} commands used during uptime`, { type: "PLAYING" });
+// 		alternateActivity = true;
+// 	} else {
+// 		alternateActivity = false;
+// 		let totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
+// 		client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalMembers} members`, { type: "PLAYING" });
+//     }
+// }
 
 /*
  * Bot login and MongoDB connection
