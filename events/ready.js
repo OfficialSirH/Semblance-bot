@@ -29,7 +29,7 @@ module.exports = (client) => {
             discordBoats(client);
         }, 500);
 
-        setInterval(showMyActivity(client), 30000);
+        setInterval(() =>  { showMyActivity(client) }, 30000);
 
         const commands = client.commands;
 
