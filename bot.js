@@ -1,4 +1,5 @@
-﻿// Semblance client
+﻿const config = require('./config');
+// Semblance client
 const Semblance = require('./structures/Semblance'),
 	client = new Semblance({
 		 disableMentions: "everyone",
