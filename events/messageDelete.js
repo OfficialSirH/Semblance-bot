@@ -1,5 +1,5 @@
 const { reportChannelList, correctReportList, Report } = require('../commands/bug.js'),
-    { c2sID } = require('../config');
+    { c2sID } = require('../config'), wait = require('util').promisify(setTimeout);
 
 module.exports = (client) => {
     client.on("messageDelete", async message => {
