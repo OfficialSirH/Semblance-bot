@@ -32,7 +32,7 @@ messageReactionRemove(client);
 messageUpdate(client);
 ready(client);
 // Check for Tweet from ComputerLunch
-setInterval(checkTweet(client), 2000);
+setInterval(() => checkTweet(client), 2000);
 
 (async () => {
 	await connect(process.env.mongoDBKey, {
