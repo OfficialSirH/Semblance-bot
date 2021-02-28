@@ -9,6 +9,8 @@ module.exports = class Semblance extends Client {
             this.sweepUsers();
         }, 30000);
 
+        this.command_counter = 0;
+
         this.slash_commands = {};
 
         this.main_commands = {}, this.main_aliases = {} // { "command": require("that_command") }, { "alias": "command" }
@@ -74,5 +76,13 @@ module.exports = class Semblance extends Client {
 
     get autoCommands() {
         return this.auto_commands;
+    }
+
+    get commandCounter() {
+        return this.command_counter;
+    }
+
+    increaseCommandCount() {
+        this.command_counter++;
     }
 }

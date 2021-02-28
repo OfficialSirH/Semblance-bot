@@ -8,11 +8,10 @@ const { GameModel } = require('../commands/game.js'),
     let discordBoats;
 
     let alternateActivity = false;
-    let totalCommandsUsed = 0;
     
     function showMyActivity(client) {
         if (!alternateActivity) {
-            client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalCommandsUsed} commands used during uptime`, { type: "PLAYING" });
+            client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${client.commandCounter} commands used during uptime`, { type: "PLAYING" });
             alternateActivity = true;
         } else {
             alternateActivity = false;
@@ -31,16 +30,7 @@ module.exports = (client) => {
             discordBoats(client);
         }, 500);
 
-        setInterval(() => { 
-            if (!alternateActivity) {
-                client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalCommandsUsed} commands used during uptime`, { type: "PLAYING" });
-                alternateActivity = true;
-            } else {
-                alternateActivity = false;
-                let totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
-                client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalMembers} members`, { type: "PLAYING" });
-            }
-         }, 30000);
+        setInterval(() => showMyActivity(client), 30000);
 
         const commands = client.commands;
 

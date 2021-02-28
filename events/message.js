@@ -114,7 +114,7 @@ module.exports = (client) => {
 			try { if (permissionLevel < commandFile.permissionRequired) return message.channel.send("❌ You don't have permission to do this!");
 				if (!commandFile.checkArgs(args, permissionLevel, content)) return message.channel.send(`❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage).map(a => " " + a).join("")}\`, for additional help, see \`${prefix}help\`.`)
 				commandFile.run(client, message, args, identifier, { permissionLevel, content });
-				totalCommandsUsed++;
+				client.increaseCommandCount();
 			} catch (e) { }
 		}
 	}
