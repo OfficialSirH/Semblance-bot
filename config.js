@@ -10,12 +10,15 @@ fs.readdir("./images/", (err, files) => {
         attachments[attachmentName] = attachment;
     }
     module.exports = Object.assign(module.exports, {
+        attachments,
         currentLogo: attachments['Current_Logo'],
         sharks: attachments['Sharks'],
         roadMap: attachments['roadMap'],
+        terminusChamber: attachments['TerminusChamber'],
         simStatsLocation: attachments['SimStatsLocation'],
         geodeImage: attachments['GeodeLevelComparison'],
-        prestigeImage: attachments['Prestige'],
+        prestige: attachments['Prestige'],
+        prestigeList: attachments['PrestigeList'],
         archieDance: attachments['ArchieDance'],
         patreon: attachments['Patreon_Mark_Coral'],
         sembcommunist: attachments['CommunistSemblance'],

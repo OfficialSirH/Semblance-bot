@@ -1,25 +1,39 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js'),
-    randomColor = require('../constants/colorRandomizer.js'),
-    { currentLogo, prestigeImage } = require('../config.js');
+    { currentLogo, prestige, prestigeList } = require('../config.js');
 
 module.exports = {
     description: "Get info on the Mesozoic Valley prestige.",
     usage: {
         "": ""
     },
+    aliases: ['prestigelist'],
     permissionRequired: 0,
     checkArgs: (args) => args.length >= 0
 }
 
 module.exports.run = async (client, message, args) => {
+    if (args[0] == 'list') return prestigeList(message);
     let embed = new MessageEmbed()
         .setTitle("Mesozoic Valley Prestige")
         .setAuthor(message.author.tag, message.author.avatarURL())
-        .setColor(randomColor())
-        .attachFiles(prestigeImage, currentLogo)
-        .setImage("attachment://Prestige.png")
-        .setThumbnail("attachment://currentLogo.png")
-        .setDescription("Prestige in the Mesozoic Valley is unlocked at rank 50, which is also the rank that is recommended to purchase the diamond geode. Prestige also allows you to keep your Mutagen.")
+        .setColor("RANDOM")
+        .attachFiles([prestige, currentLogo])
+        .setImage(prestige.name)
+        .setThumbnail(currentLogo.name)
+        .setDescription("Prestige in the Mesozoic Valley is unlocked at rank 50, which is also the rank that is recommended to purchase the diamond geode. " +
+             "Prestige also allows you to keep your Mutagen. Type `s!prestigelist` or `s!prestige list` for a list of all Prestige!")
         .setFooter("Footer goes brrr... I don't understand this meme.");
+    message.channel.send(embed);
+}
+
+function prestigeList(message) {
+    let embed = new MessageEmbed()
+        .setTitle("Mesozoic Valley Prestige List")
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
+        .setColor("RANDOM")
+        .attachFiles([prestigeList, currentLogo])
+        .setThumbnail(currentLogo.name)
+        .setImage(prestigeList.name)
+        .setFooter("Thanks to Hardik for this lovely list of Prestige :D");
     message.channel.send(embed);
 }

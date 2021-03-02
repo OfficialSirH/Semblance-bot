@@ -17,6 +17,6 @@ module.exports.run = async (client, message, args) => {
 		.setURL("https://www.patreon.com/SirHDeveloper")
 		.setColor(randomColor())
 		.attachFiles(patreon)
-		.setThumbnail("attachment://Patreon_Mark_Coral.jpg");
+		.setThumbnail("attachment://Patreon_Mark_Coral.png");
 	message.channel.send(embed);
 }
