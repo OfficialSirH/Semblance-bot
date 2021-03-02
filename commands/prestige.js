@@ -12,7 +12,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-    if (args[0] == 'list') return prestigeList(message);
+    if (args[0] == 'list') return sendPrestigeList(message);
     let embed = new MessageEmbed()
         .setTitle("Mesozoic Valley Prestige")
         .setAuthor(message.author.tag, message.author.avatarURL())
@@ -26,7 +26,7 @@ module.exports.run = async (client, message, args) => {
     message.channel.send(embed);
 }
 
-function prestigeList(message) {
+function sendPrestigeList(message) {
     let embed = new MessageEmbed()
         .setTitle("Mesozoic Valley Prestige List")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
