@@ -12,7 +12,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args, identifier) => {
-    if (args[0] && args[0].toLowerCase() == 'list' || identifier == 'prestigelist') return sendPrestigeList(message);
+    if ((args[0] && args[0].toLowerCase() == 'list') || identifier == 'prestigelist') return sendPrestigeList(message);
     let embed = new MessageEmbed()
         .setTitle("Mesozoic Valley Prestige")
         .setAuthor(message.author.tag, message.author.avatarURL())
