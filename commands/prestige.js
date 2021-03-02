@@ -11,8 +11,8 @@ module.exports = {
     checkArgs: (args) => args.length >= 0
 }
 
-module.exports.run = async (client, message, args) => {
-    if (args[0] == 'list') return sendPrestigeList(message);
+module.exports.run = async (client, message, args, identifier) => {
+    if (args[0] && args[0].toLowerCase() == 'list' || identifier == 'prestigelist') return sendPrestigeList(message);
     let embed = new MessageEmbed()
         .setTitle("Mesozoic Valley Prestige")
         .setAuthor(message.author.tag, message.author.avatarURL())
