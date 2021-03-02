@@ -27,33 +27,6 @@ module.exports.run = async (client, message, args) => {
         itemCost = itemsList[key][itemInput].price;
         itemCostType = key;
     }
-    /*itemList.entropy.forEach(item => {
-        if (item.name == itemInput) {
-            itemCost = item.price;
-            itemCostType = "entropy";
-
-        }
-    });
-    if (!itemCost) {
-        itemList.ideas.forEach(item => {
-            if (item.name == itemInput) {
-                itemCost = item.price;
-                itemCostType = "ideas";
-            }
-        });
-    }
-    if (!itemCost) {
-        itemList.fossils.forEach(item => {
-            if (item.name == 'tyrannosaurus-rex' && itemInput == 'trex') {
-                itemCost = item.price;
-                itemCostType = 'fossils';
-            }
-            if (item.name == itemInput) {
-                itemCost = item.price;
-                itemCostType = "fossils";
-            }
-        });
-    }*/
     if (!itemCost) return message.reply("Your input for 'item' was invalid.");
     let resultingPrice = 0;
     for (let i = currentLevel; i < (level + currentLevel); i++) {

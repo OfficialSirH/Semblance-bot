@@ -95,7 +95,7 @@ module.exports = {
     checkIfAllowedValue: (input, message, value) => {
         input = parseFloat(input) ? input : false;
         if (input !== '0') {
-            if (!input && value != 'current level') return message.reply(`You input for '${value}' was invalid.`);
+            if (!input && value != 'current level') return message.reply(`Your input for '${value}' was invalid.`);
         }
         if (input.length > 10) return message.reply('Your input was too long');
         try {
