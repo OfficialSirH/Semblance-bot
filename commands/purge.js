@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args, identifier, { permissionLevel
 		purgeNum = Number(args[1].replace('-', ''));
 	if (!!!channel) return message.reply("The channel you specified is invalid");
 	channel = channel[0];
-	if (isNan(purgeNum)) return message.reply("That value for purge amount is invalid");
+	if (!!!purgeNum) return message.reply("That value for purge amount is invalid");
 	purgeNum = purgeNum > 100 ? 100 : purgeNum;
 
 	console.log(channel);
