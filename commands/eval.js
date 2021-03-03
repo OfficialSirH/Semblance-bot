@@ -1,4 +1,5 @@
-const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js');
+const { MessageEmbed, MessageAttachment } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'),
+    fetch = require('node-fetch'), config = require('../config'), { attachments } = config;
 
 module.exports = {
     description: "Evaluate some code.",
@@ -7,7 +8,7 @@ module.exports = {
     },
     examples: {},
     aliases: [],
-    permissionRequired: 7, // 0 All, 1 Helper, 2 JR.Mod, 3 Mod, 4 SR.Mod, 5 Exec, 6 Admin, 7 SirH#4297
+    permissionRequired: 7, // 0 All, 1 Helper, 2 JR.Mod, 3 Mod, 4 SR.Mod, 5 Exec, 6 Admin, 7 SirH#4297 (now SirH#7157)
     checkArgs: (args) => args.length >= 1
 }
 
@@ -59,17 +60,3 @@ module.exports.run = async (client, message, args, identifier, { permissionLevel
         message.channel.send(embed);
     }
 }
-    /*let embed = new MessageEmbed().setColor(randomColor()).addField("📥 Input", `\`\`\`js\n${content.substring(0, 1000)}\`\`\``).setFooter("Feed me code!");
-    try {
-        let evaled = eval(`(async () => { ${content} })().catch(e => { return "Error: " + e })`);
-        Promise.resolve(evaled).then((result) => {
-            evaled = result;
-            if (typeof evaled != "string") evaled = require("util").inspect(evaled);
-            embed.addField("📤 Output", `\`\`\`js\n${evaled.substring(0, 1015)}\`\`\``).setTitle("✅ Evaluation Completed");
-            message.channel.send(embed);
-        });
-    } catch (e) {
-        if (typeof e == "string") e = e.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203))
-        embed.addField("📤 Output", `\`\`\`fix\n${e.toString().substring(0, 1014)}\`\`\``).setTitle("❌ Evaluation Failed");
-        message.channel.send(embed);
-    }*/

@@ -15,7 +15,7 @@ module.exports.run = async (client, message, args) => {
         .setAuthor(message.author.tag, message.author.avatarURL())
         .attachFiles(currentLogo)
         .setThumbnail("attachment://Current_Logo.png")
-        .setDescription(["**Reality Expert**: This role is gained upon sending a screenshot of 1 billion accumulated metabits from your stats page to <#496430259114082304>.",
+        .setDescription(["**Reality Expert**: This role is gained upon sending a screenshot of 1 billion accumulated metabits from your ***stats page*** to <#496430259114082304>.",
             "**Paleontologist**: This role is gained once you've unlocked and sent a screenshot of the T-rex to <#496430259114082304>.",
             "**Beta Tester**: This role is gained when you've joined and sent proof of being part of the beta program for C2S to <#496430259114082304>.",
             "**Server Events**: This role can be obtained by typing `-rr` in <#706852533393686581>, which this role means you'll get pinged for events happening in the server.",
