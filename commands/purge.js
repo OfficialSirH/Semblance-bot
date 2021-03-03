@@ -9,46 +9,36 @@ module.exports = {
 	checkArgs: (args) => args.length >= 2
 }
 
-module.exports.run = async (client, message, args) => {
-	let channel = args[0];
-	let purgeNum = args[1];
-	if (!message.member.hasPermission("MANAGE_MESSAGES") && !message.member.hasPermission("MANAGE_CHANNELS")) {
-		message.reply("You lack the permission to use this command. You must be able to manage messages or channels.");
-		return;
-    }
-	if (!channel) {
-		return message.reply("Please specify the channel (by id) that you want to purge.");
-	} else if (!purgeNum) {
-		return message.reply("Please specify the number of messages or input 'all' if you'd like to purge all.");
-	}
+module.exports.run = async (client, message, args, identifier, { permissionLevel }) => {
+	if (!args[0]) return message.reply("Please specify the channel (by id or mention) that you want to purge.");
+	if (!args[1]) return message.reply("Please specify the number of messages or input 'all' if you'd like to purge all.");
+	let channel = /\d{17,20}/.exec(args[0]),
+		purgeNum = Number(args[1].replace('-', ''));
+	if (!!!channel) return message.reply("The channel you specified is invalid");
+	channel = channel[0];
+	if (isNan(purgeNum)) return message.reply("That value for purge amount is invalid");
+	purgeNum = purgeNum > 100 ? 100 : purgeNum;
+
 	console.log(channel);
 	console.log(client.channels.cache.get(channel));
-	channel = IdToChannel(message, channel);
-	if (channel == undefined) return message.reply("That channel doesn't exist in this server");
-	if (purgeNum == "all") {
-		const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === message.author.id
-		message.reply("Are you sure you want to nuke this channel? react to this message with 👌 to confirm.")
-			.then(msg => msg.awaitReactions(filter, { time: 10000 })
-				.then(collected => {
-					if (collected.size == 1) {
-						channel.clone();
-						channel.delete()
-							.catch(console.error);
-					} else {
-						message.reply("Command timed out, do the command again if you want to nuke the channel.");
-                    }
-				})
-				.catch(console.error))
-			.catch(console.error);
-	} else if (parseInt(purgeNum)+1 > 100) {
-		return message.reply("Too many messages to delete, please choose a number under 100");
-	} else {
-		channel.bulkDelete(parseInt(purgeNum)+1)
-			.catch(console.error);
-    }
-}
 
-function IdToChannel(message, channel) {
-    channel = message.guild.channels.cache.get(channel);
-    return channel;
+	channel = message.guild.channels.cache.get(channel);
+	if (channel == undefined) return message.reply("That channel doesn't exist in this server");
+	
+	if (purgeNum != 'all') return channel.bulkDelete(purgeNum).catch(console.error);
+
+	const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === message.author.id
+	message.reply("Are you sure you want to nuke this channel? react to this message with 👌 to confirm.")
+	.then(msg => msg.awaitReactions(filter, { time: 10000 })
+		.then(collected => {
+			if (collected.size == 1) {
+				channel.clone();
+				channel.delete()
+					.catch(console.error);
+			} else {
+				message.reply("Command timed out, do the command again if you want to nuke the channel.");
+			}
+		})
+		.catch(console.error))
+	.catch(console.error);
 }

@@ -1,5 +1,4 @@
 const Twitter = require("twitter"), twClient = new Twitter(JSON.parse(process.env.twitter));
-let current_id = null, backup_id = null;
 
 module.exports = {
 	description: "Get the most recent tweet from any twitter user.",
@@ -24,20 +23,15 @@ module.exports.run = (client, message, args) => {
 			message.reply("Sorry, either your input was invalid or the back-end went haywire.");
 			return console.log(error);
 		}
-	let tweet = tweets[0];
-	try {
-			if(tweet) {
-				setTimeout(() => {message.channel.send(`Here's **${screen_name}'s** most recent Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`); }, 1000);
-				current_id = tweet.id_str;
-				backup_id = current_id;
-			} else {
-				message.reply("Sorry, either your input was invalid or the back-end went haywire.");
-			}
-	} catch (error) {
-		message.reply("Sorry, either your input was invalid or the back-end went haywire.");
-	}
-		if (screen_name == "ComputerLunch") {
-  			backup_id = current_id;
+		let tweet = tweets[0];
+		try {
+				if(tweet) {
+					setTimeout(() => {message.channel.send(`Here's **${screen_name}'s** most recent Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`); }, 1000);
+				} else {
+					message.reply("Sorry, either your input was invalid or the back-end went haywire.");
+				}
+		} catch (error) {
+			message.reply("Sorry, either your input was invalid or the back-end went haywire.");
 		}
-	})
+	});
 }
