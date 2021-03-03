@@ -19,7 +19,7 @@ module.exports.run = async (client, message, args) => {
         .attachFiles([currentLogo, terminusChamber])
         .setThumbnail(currentLogo.name)
         .setImage(terminusChamber.name)
-        .setDescription(['||**Yellow Cube** - Explore the Mesozoic Valley||',
+        .setDescription(['**Yellow Cube** - ||Explore the Mesozoic Valley||',
             '**Purple Cube** - ||Unlock Singularity for the first time||',
             '**Dark Blue Cube** - ||Unlock the human brain||',
             '**Light Blue Cube** - ||Obtain/Evolve Neoaves||',
