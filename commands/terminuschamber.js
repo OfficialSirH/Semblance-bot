@@ -19,11 +19,11 @@ module.exports.run = async (client, message, args) => {
         .attachFiles([currentLogo, terminusChamber])
         .setThumbnail(currentLogo.name)
         .setImage(terminusChamber.name)
-        .setDescription(['**Yellow Cube** - Explore the Mesozoic Valley',
-            '**Purple Cube** - Unlock Singularity for the first time',
-            '**Dark Blue Cube** - Unlock the human brain',
-            '**Light Blue Cube** - Obtain/Evolve Neoaves',
-            '**Orange Cube** - Unlock Feliforms',
-            '**Red Cube** - Terraform Mars'].join('\n'));
+        .setDescription(['||**Yellow Cube** - Explore the Mesozoic Valley||',
+            '||**Purple Cube** - Unlock Singularity for the first time||',
+            '||**Dark Blue Cube** - Unlock the human brain||',
+            '**||Light Blue Cube** - Obtain/Evolve Neoaves||',
+            '**||Orange Cube** - Unlock Feliforms||',
+            '||**Red Cube** - Terraform Mars||'].join('\n'));
     message.channel.send(embed);
 }
