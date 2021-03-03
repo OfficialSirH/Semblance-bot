@@ -24,9 +24,10 @@ module.exports.run = async (client, message, args, identifier, { permissionLevel
 
 	channel = message.guild.channels.cache.get(channel);
 	if (channel == undefined) return message.reply("That channel doesn't exist in this server");
-	
+
 	if (purgeNum != 'all') return channel.bulkDelete(purgeNum).catch(console.error);
 
+	if (permissionLevel < 6) return message.reply("You don't have perms to nuke the channel");
 	const filter = (reaction, user) => reaction.emoji.name === '👌' && user.id === message.author.id
 	message.reply("Are you sure you want to nuke this channel? react to this message with 👌 to confirm.")
 	.then(msg => msg.awaitReactions(filter, { time: 10000 })
