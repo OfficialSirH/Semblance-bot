@@ -1,4 +1,4 @@
-﻿const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { Information } = require('./edit.js');
+﻿const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'), { Information } = require('./edit.js');
 
 module.exports = {
     description: "Provides the latest changes to Semblance.",
@@ -14,7 +14,7 @@ module.exports.run = async (client, message, args) => {
     let embed = new MessageEmbed()
         .setTitle("Changelog")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setDescription(changelogHandler.info);
     message.channel.send(embed);
 }

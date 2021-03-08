@@ -1,11 +1,11 @@
 const { MessageEmbed } = require('discord.js'), { getPermissionLevel } = require('../constants'),
-    { prefix, c2sID } = require('../config');
+    { prefix, c2sGuildID } = require('../config');
 
 module.exports = (client) => {
     client.on("messageUpdate", async (oldMsg, newMsg) => {
         if (!newMsg.guild || !!newMsg.content || newMsg.content == null) return; // STOP IGNORING THIS YOU DUMB EVENT, YOU'RE SUPPOSED TO RETURN IF IT'S NULL!
         let chName = newMsg.channel.name;
-        if (newMsg.guild.id == c2sID) {
+        if (newMsg.guild.id == c2sGuildID) {
             let msg = newMsg.content.toLowerCase(), suggestionArray = ["suggestion:", "suggest:", `${prefix}suggestion`, `${prefix}suggest`],
                 suggestionRegex = new RegExp(`(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
             if (chName == 'suggestions') {

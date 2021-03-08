@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js');
-const randomColor = require("../constants/colorRandomizer.js");
+const {randomColor} = require("../constants");
 
 module.exports = {
 	description: "Provides the number of members in the server.",
@@ -14,7 +14,7 @@ module.exports.run = async (client, message, args) => {
 	let guild = await message.guild.fetch();
 	let embed = new MessageEmbed()
 	.setTitle("Members")
-	.setColor(randomColor())
+	.setColor(randomColor)
 	.setDescription(guild.approximateMemberCount)
 	.setFooter(`Called upon by ${message.author.tag}`);
 	message.channel.send(embed);

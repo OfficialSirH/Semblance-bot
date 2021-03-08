@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'),
-    randomColor = require('../constants/colorRandomizer.js'),
+    {randomColor} = require('../constants'),
     { currentLogo } = require('../config.js');
 
 module.exports = {
@@ -14,9 +14,10 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
     let embed = new MessageEmbed()
         .setTitle("Metabit Calculator Help")
+        .setColor(randomColor)
         .attachFiles(currentLogo)
-        .setThumbnail("attachment://Current_Logo.png")
-        .setAuthor(message.author.tag, message.author.avatarURL())
+        .setThumbnail(currentLogo.name)
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setDescription("The Metabit Calculator supports Scientific Notation, which means you can type numbers like 1E25, as well as names for numbers like million all the way to vigintillion;" +
             " Use s!largenumbers to get more info on large numbers.")
         .addFields(

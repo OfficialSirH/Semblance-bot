@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { currentLogo } = require('../config.js'); 
+const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'), { currentLogo } = require('../config.js'); 
 
 module.exports = {
     description: "Info on how to become a beta tester",
@@ -13,7 +13,7 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
     let embed = new MessageEmbed()
         .setTitle('Steps to join beta')
-        .setColor(randomColor())
+        .setColor(randomColor)
         .attachFiles(currentLogo)
         .setThumbnail("attachment://Current_Logo.png")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())

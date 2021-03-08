@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { currentLogo, prefix } = require('../config.js');
+const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'), { currentLogo, prefix } = require('../config.js');
 
 module.exports = {
 	description: "Gives a list of all available admin commands.",
@@ -11,10 +11,10 @@ module.exports = {
 
 module.exports.run = async (client, message, args) => {
 	let embed = new MessageEmbed()
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.setTitle("Admin Commands")
 		.attachFiles(currentLogo)
-		.setThumbnail("attachment://Current_Logo.png")
+		.setThumbnail(currentLogo.name)
 		.setDescription("Here's a list of admin commands")
 		.addFields(
 			{ name: `**\`${prefix}lookup <ids or invite-link>\`**`, value: "Search user, emoji, or channel id, and search server invites.", inline: true},

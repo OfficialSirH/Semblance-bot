@@ -1,5 +1,5 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js'),
-	randomColor = require('../constants/colorRandomizer.js'),
+	{randomColor} = require('../constants'),
 	{ patreon } = require('../config.js');
 
 module.exports = {
@@ -15,8 +15,8 @@ module.exports.run = async (client, message, args) => {
 	let embed = new MessageEmbed()
 		.setTitle("My Patreon")
 		.setURL("https://www.patreon.com/SirHDeveloper")
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.attachFiles(patreon)
-		.setThumbnail("attachment://Patreon_Mark_Coral.png");
+		.setThumbnail(patreon.name);
 	message.channel.send(embed);
 }

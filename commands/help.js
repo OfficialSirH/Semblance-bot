@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'), { prefix, currentLogo } = require('../config.js'), randomColor = require('../constants/colorRandomizer.js');
+const { MessageEmbed } = require('discord.js'), { prefix, currentLogo } = require('../config.js'), {randomColor} = require('../constants');
 
 module.exports = {
     description: "Lists *all* available commands.",
@@ -11,10 +11,10 @@ module.exports = {
 
 module.exports.run = async (client, message, args) => {
 	let embed = new MessageEmbed()
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.setTitle("Semblance Command List")
 		.attachFiles(currentLogo)
-		.setThumbnail("attachment://Current_Logo.png")
+		.setThumbnail(currentLogo.name)
 		.setDescription(`-Type **\`${prefix}dinos\`**, **\`${prefix}singularity\`**, **\`${prefix}trex\`**, **\`${prefix}geodes\`**, **\`${prefix}music\`**, ` +
 		`**\`${prefix}currency\`**, **\`${prefix}metabits\`**, **\`${prefix}beyond\`**, **\`${prefix}sharks\`**, **\`${prefix}simstats\`**, ` +
 		`**\`${prefix}gametransfer\`**, **\`${prefix}prestige\`**, **\`${prefix}nanobots\`**, and/or **\`${prefix}reboot\`** for help on each of these topics.`)

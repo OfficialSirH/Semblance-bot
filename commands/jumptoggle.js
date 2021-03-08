@@ -1,8 +1,9 @@
 const { MessageEmbed } = require('discord.js'),
+    { randomColor } = require('../constants'),
     JTModel = require('../models/Jump.js');
 
 module.exports = {
-    description: "The command toggles a feature that will convert a user's message that contains a message link to an embed that provides the details of the specified message link",
+    description: "This command toggles a feature that will convert a user's message that contains a message link into an embed that provides the details of the specified message link",
     usage: {
         "<true/t or false/f>": ""
     },
@@ -12,6 +13,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
+    if (!args || args.length == 0) return message.reply(module.exports.description);
     let choice = args[0].toLowerCase();
     let toggleHandler = await JTModel.findOne({ guild: message.guild.id });
     if (choice == 't' || choice == 'true') {

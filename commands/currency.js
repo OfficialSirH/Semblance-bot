@@ -1,7 +1,8 @@
 ﻿const { MessageEmbed } = require('discord.js'),
-	randomColor = require('../constants/colorRandomizer.js'),
-	{ currentLogo } = require('../config.js'),
-	{ entropy, idea, darwinium, metabit, fossil, mutagen, darkMatter, stardust, energy, sentience } = require('./emojis.js');
+	{randomColor} = require('../constants'),
+	{ currentLogo, entropy, idea, darwinium, metabit, 
+		fossil, mutagen, darkMatter, stardust, 
+		energy, sentience } = require('../config.js');
 
 module.exports = {
 	description: "List all of the ingame currency.",
@@ -15,9 +16,9 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
 	let embed = new MessageEmbed()
 		.setTitle("Currency")
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.attachFiles(currentLogo)
-		.setThumbnail("attachment://Current_Logo.png")
+		.setThumbnail(currentLogo.name)
 		.addFields(
 			{ name: `${entropy} Entropy`, value: "The beginning currency in the game, which is used to for evolution upgrades" },
 			{ name: `${idea} Idea`, value: "A resource unlocked further in the game, which is used for technological advancements" },

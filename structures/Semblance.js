@@ -13,13 +13,13 @@ module.exports = class Semblance extends Client {
 
         this.slash_commands = {};
 
-        this.main_commands = {}, this.main_aliases = {} // { "command": require("that_command") }, { "alias": "command" }
+        this._commands = {}, this._aliases = {} // { "command": require("that_command") }, { "alias": "command" }
         fs.readdir("./commands/", (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith(".js")) {
                 const commandFile = require(`../commands/${file}`), fileName = file.replace(".js", "");
-                this.main_commands[fileName] = commandFile;
-                if (commandFile.aliases) for (const alias of commandFile.aliases) this.main_aliases[alias] = fileName;
+                this._commands[fileName] = commandFile;
+                if (commandFile.aliases) for (const alias of commandFile.aliases) this._aliases[alias] = fileName;
             }
         });
 
@@ -67,11 +67,11 @@ module.exports = class Semblance extends Client {
     }
 
     get commands() {
-        return this.main_commands;
+        return this._commands;
     }
 
     get aliases() {
-        return this.main_aliases;
+        return this._aliases;
     }
 
     get autoCommands() {

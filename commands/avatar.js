@@ -1,5 +1,4 @@
-const { MessageEmbed } = require('discord.js');
-const randomColor = require('../constants/colorRandomizer.js');
+const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants');
 
 module.exports = {
 	description: "See a user's avatar.",
@@ -11,19 +10,19 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	if (args.length == 0) {
-		var user = message.author;
-	} else {
-		var user = args[0].match(/\d/g).join('');
+	let user;
+	if (!args || args.length == 0) user = message.author;
+	else {
+		user = args[0].match(/\d{17,20}/).join();
+		if (!!!user) return message.reply("The provided input is invalid");
 		user = await client.users.fetch(user);
 		if (!user) return message.reply('I couldn\'t find that user');
 	}
-	let image = user.displayAvatarURL({ dynamic: true });
-	image = `${image}?size=1024`;
+	let image = `${user.displayAvatarURL({ dynamic: true })}?size=1024`;
 	let embed = new MessageEmbed()
 		.setTitle("Avatar")
 		.setAuthor(user.tag, user.displayAvatarURL())
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.setImage(image)
 	message.channel.send(embed);
 }

@@ -1,12 +1,5 @@
-const { GuildEmoji } = require('discord.js'),
+const { MessageEmbed } = require('discord.js'),
 	fs = require('fs');
-/*
-let mainClient;
-let entropy, idea, darwinium, metabit, mutagen, fossil; //currency
-	let trexBadge, raptorBadge, iguanBadge, skull; //badges
-	let edone, idone, ddone, medone, mudone, fdone, trexdone, raptordone, iguandone, skulldone; //completed emojis
-const clientFE = require('../bot.js').client;
-*/
 
 module.exports = {
 	description: "Setup Semblance's emojis with this.",
@@ -15,28 +8,10 @@ module.exports = {
 	},
 	permissionRequired: 6,
 	checkArgs: (args) => args.length >= 0,
-	entropy: '<:entropy:742748357163745413>',
-	idea: '<:idea:775808337303437353>',
-	c2s: '<:CellToSing:498910740200161280>',
-	darwinium: '<:darwinium:742748359781122169>',
-	//metabitOG: '<:metabitOG:724684027419951177>',
-	metabit: '<:metabit:789526514524880906>',
-	mutagen: '<:mutagen:742748361852977184>',
-	fossil: '<:fossil:742748364625543239>',
-	trexBadge: '<:Dino_Gold:667471422334959619>',
-	trexSkull: '<:trex_skull:657015647359860767>',
-	singularity: '<:singularity:789526513812504617>',
-	nanobotUp: '<:NanobotUp:764149893937102858>',
-	nanobotDown: '<:NanobotDown:764149995032412180>',
-	darkMatter: '<:darkMatter:808445570078867496>',
-	stardust: '<:stardust:808445612013518868>',
-	energy: '<:energy:808445587803471922>',
-	sentience: '<:sentience:808445599078809670>'
 }
 
 module.exports.run = async (client, message, args) => {
-	/*if (args[0] == "main")*/ return mainEmojis(client, message);
-	//if (args[1] == "bonus") return bonusEmojis(client, message);
+	return mainEmojis(client, message);
 }
 
 async function mainEmojis(client, message) {

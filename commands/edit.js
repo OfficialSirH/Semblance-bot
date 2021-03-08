@@ -1,4 +1,5 @@
-const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), Information = require('../models/Information.js');
+const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
+    Information = require('../models/Information.js');
 
 module.exports = {
     description: "Used for editing information on the beta and update commands",
@@ -15,7 +16,7 @@ module.exports.run = async (client, message, args) => {
     let embed = new MessageEmbed()
         .setTitle(`${args[0].charAt(0).toUpperCase() + args[0].slice(1)} Info Changed!`)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor(randomColor());
+        .setColor(randomColor);
     let infoHandler;
 
     switch (args[0]) {

@@ -1,6 +1,5 @@
 const { MessageEmbed } = require('discord.js'),
-    randomColor = require('../constants/colorRandomizer'),
-    { getAvatar } = require('../constants/');
+    { getAvatar, randomColor } = require('../constants');
 
 module.exports = {
     permissionRequired: 0,
@@ -15,7 +14,7 @@ module.exports = {
             embed = new MessageEmbed()
                 .setTitle(`${user.username}'s Avatar`)
                 .setAuthor(`${author.username}#${author.discriminator}`, getAvatar(author))
-                .setColor(randomColor())
+                .setColor(randomColor)
                 .setImage(userAvatar);
         return [{ embeds: [embed.toJSON()] }];
     }

@@ -19,9 +19,6 @@ module.exports.run = async (client, message, args, identifier, { permissionLevel
 	if (!!!purgeNum) return message.reply("That value for purge amount is invalid");
 	purgeNum = purgeNum > 100 ? 100 : purgeNum;
 
-	console.log(channel);
-	console.log(client.channels.cache.get(channel));
-
 	channel = message.guild.channels.cache.get(channel);
 	if (channel == undefined) return message.reply("That channel doesn't exist in this server");
 

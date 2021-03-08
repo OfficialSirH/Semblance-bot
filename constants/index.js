@@ -1,8 +1,9 @@
-﻿const fs = require("fs");
+﻿const fs = require("fs"), { Permissions } = require('discord.js');
 
 module.exports = {
     embedColor: 0x7289DA,
     hexColor: "7289DA",
+    randomColor: RandomColor.randomColor,
     getPermissionLevel: (member) => { return getPermissionLevel(member) },
     getAvatar: (user) => { 
         let avatarType = (user.avatar.startsWith('a_')) ? `${user.avatar}.gif` : `${user.avatar}.png`;
@@ -69,6 +70,8 @@ module.exports = {
     },
     linkRegex: /[-a-zA-Z0-9@:%._\+~#=]{2,}\.[a-zA-Z0-9()]{2,24}\b([-a-zA-Z0-9()@:%_\+.~#?&\/=]*)/gm,
     linkDomainRegex: /[-a-zA-Z0-9@:%._\+~#=]{2,}\.[a-zA-Z0-9()]{2,24}\b/m,
+    messageLinkRegex: /https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?<guildID>@me|\d{17,19})?\/(?<channelID>\d{17,20})\/(?<messageID>\d{17,20})/,
+    attachmentLinkRegex: /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i,
     parseArgs: _arguments => (_arguments.match(/\"[^"]+\"|[^ ]+/g) || []).map(argument => argument.startsWith("\"") && argument.endsWith("\"") ? argument.slice(1).slice(0, -1) : argument),
     lockMessage: user => `👮 👮 ***CHANNEL IS LOCKED BY ${user}*** 👮 👮`,
     msToTime: ms => {
@@ -131,13 +134,13 @@ module.exports = {
     badLinkCategories: [101, 103, 104, 105, 203, 204, 206, 401, 402, 403],
     staffgl: fs.existsSync("./src/constants/staffgl.json") ? require("./staffgl.json") : {},
     roles: {
-        admin: "ADMINISTRATOR",
-        exec: "MANAGE_GUILD",
-        srmod: "MENTION_EVERYONE",
-        mod: "MANAGE_CHANNELS",
-        jrmod: "MANAGE_ROLES",
-        helper: "MANAGE_MESSAGES",
-        duty: "MUTE_MEMBERS",
+        admin: Permissions.FLAGS.ADMINISTRATOR,
+        exec: Permissions.FLAGS.MANAGE_GUILD,
+        srmod: Permissions.FLAGS.MENTION_EVERYONE,
+        mod: Permissions.FLAGS.MANAGE_CHANNELS,
+        jrmod: Permissions.FLAGS.MANAGE_ROLES,
+        helper: Permissions.FLAGS.MANAGE_MESSAGES,
+        duty: Permissions.FLAGS.MUTE_MEMBERS,
     },
     cellChannels: [
         "488478893586645004",
@@ -181,12 +184,35 @@ function getPermissionLevel(member) {
     try {
         if ("506458497718812674" === member.user.id || member.user.id == "780995336293711875") return 7;
         // Aditya, HDevGames //RIP SirH OG: "279080959612026880" === member.user.id // SirH#4297
-        if (member.hasPermission(module.exports.roles.admin)) return 6; // admin
-        if (member.hasPermission(module.exports.roles.exec)) return 5; // exec
-        if (member.hasPermission(module.exports.roles.srmod)) return 4; // sr.mod
-        if (member.hasPermission(module.exports.roles.mod)) return 3; // mod
-        if (member.hasPermission(module.exports.roles.jrmod)) return 2; // jr.mod
-        if (member.hasPermission(module.exports.roles.helper)) return 1; // helper
+        if (member.permissions.has(module.exports.roles.admin)) return 6; // admin
+        if (member.permissions.has(module.exports.roles.exec)) return 5; // exec
+        if (member.permissions.has(module.exports.roles.srmod)) return 4; // sr.mod
+        if (member.permissions.has(module.exports.roles.mod)) return 3; // mod
+        if (member.permissions.has(module.exports.roles.jrmod)) return 2; // jr.mod
+        if (member.permissions.has(module.exports.roles.helper)) return 1; // helper
         return 0; // normal user
     } catch (e) {return 0}
+}
+
+class RandomColor {
+	static get randomColor() {
+		let red = Math.floor(Math.random()*256),
+		green = Math.floor(Math.random()*256),
+		blue = Math.floor(Math.random()*256);
+		while(red < 100 || green < 100 || blue < 100) {
+			if (red < 100) {
+				red += Math.floor(Math.random()*100);
+			}
+			if (green < 100) {
+				green += Math.floor(Math.random()*100);
+			}
+			if (blue < 100) {
+				blue += Math.floor(Math.random()*100);
+			}
+		}
+		red = red.toString(16);
+		green = green.toString(16);
+		blue = blue.toString(16);
+		return "#"+red+green+blue;
+	}
 }

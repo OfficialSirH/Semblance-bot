@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), { bigToE, checkIfAllowedValue } = require('../constants/largeNumberConversion.js'),
-    randomColor = require('../constants/colorRandomizer.js');
+    {randomColor} = require('../constants');
 
 module.exports = {
     description: "Provides the production multiplier when given metabit input.",
@@ -55,7 +55,7 @@ module.exports.run = async (client, message, args) => {
     let embed = new MessageEmbed()
         .setTitle("Multiplier Total")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setDescription([`Total Collected Metabits/Simulation Level: ${bigToE(metabits)}`,
             `Accumulated Mesozoic Valley Ranks: ${dinoRanks}`,
             `Simulation Speed Upgrades: ${simspeed}%`,

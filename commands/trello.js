@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js');
+const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants');
 
 module.exports = {
   description: "Provides link to Semblance's Trello Board",
@@ -12,6 +12,6 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
   let embed = new MessageEmbed()
     .setDescription("[Semblance's Trello board](https://trello.com/b/Zhrs5AaN/semblance-project)")
-    .setColor(randomColor());
+    .setColor(randomColor);
   message.channel.send(embed);
 } 

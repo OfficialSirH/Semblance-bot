@@ -1,6 +1,6 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js'),
-randomColor = require('../constants/colorRandomizer.js'),
-{ patreon } = require('../config.js');
+	{randomColor} = require('../constants'),
+	{ patreon } = require('../config.js');
 
 module.exports = {
 	permissionRequired: 0,
@@ -8,7 +8,7 @@ module.exports = {
 		let embed = new MessageEmbed()
 			.setTitle("My Patreon")
 			.setURL("https://www.patreon.com/SirHDeveloper")
-			.setColor(randomColor())
+			.setColor(randomColor)
 			.attachFiles(patreon)
 			.setThumbnail(patreon.name);
 

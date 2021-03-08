@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'),
+const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
 	{ roadMap, currentLogo } = require('../config.js'), 
 	Information = require('./edit').Information;
 
@@ -17,10 +17,10 @@ module.exports.run = async (client, message, args) => {
 	if (args[0] == 'count' || args[0] == 'counter') return beyondCounter(message);
 	let embed = new MessageEmbed()
 		.setTitle("Beyond/Road Map")
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.attachFiles([currentLogo, roadMap])
-		.setThumbnail("attachment://Current_Logo.png")
-		.setImage("attachment://roadMap.png")
+		.setThumbnail(currentLogo.name)
+		.setImage(roadMap.name)
 		.setDescription("Spring/Q1 2021. Anyone who wants to give any complaints about the length of the release date can email their complaint to ImAWhinyKaren@gmail.com"+
 						"\n\n`s!beyond sneak peeks` for sneak peeks\n\n`s!beyond count` to see the amount of times that The Beyond has been mentioned by the community of C2S.");
 	message.channel.send(embed);
@@ -30,7 +30,7 @@ async function clips(message) {
 	let embed = new MessageEmbed()
 		.setTitle("Beyond Clips")
 		.setAuthor(message.author.tag, message.author.displayAvatarURL())
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.setDescription([`[Clip One](https://clips.twitch.tv/CharmingVibrantWatermelonPeoplesChamp)`,
 			`[Clip Two](https://clips.twitch.tv/GracefulSmellyYakDoggo)`,
 			`[Clip Three](https://clips.twitch.tv/BillowingCovertFishFeelsBadMan)`,
@@ -48,7 +48,7 @@ async function beyondCounter(message) {
 	let embed = new MessageEmbed()
 		.setTitle("Beyond Counter")
 		.setAuthor(message.author.tag, message.author.displayAvatarURL())
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.setDescription(`The Beyond has been mentioned ${beyondCount.count} time(s) since ${new Date(1611959542848)}`)
 		.setFooter("Since")
 		.setTimestamp(1611959542848);

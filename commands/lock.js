@@ -11,25 +11,26 @@
     }
 }
 
-const constants = require("../constants");
+const constants = require("../constants"), { c2sGuildID, sirhGuildID } = require("../config");
 
 module.exports.run = async (client, message, args) => {
     if (args[0] == "-public") {
-        if (message.guild.id == '488478892873744385') {
-            const channels = message.guild.channels.cache.filter(ch => constants.cellChannels.includes(ch.id));
-        } else {
-            const channels = message.guild.channels.cache.filter(ch => constants.sirhChannels.includes(ch.id));
+        let channels;
+        if (message.guild.id == c2sGuildID) {
+            channels = message.guild.channels.cache.filter(ch => constants.cellChannels.includes(ch.id));
+        } else if (message.guild.id == sirhGuildID) {
+            channels = message.guild.channels.cache.filter(ch => constants.sirhChannels.includes(ch.id));
         }
         if (!channels.size) return message.channel.send(`🚫 This server doesnt have any public channels configured, unfortunately.`)
-        else channels.map(ch => lockChannel(ch, message.author, constants))
+        else channels.map(ch => lockChannel(ch, message.author))
     } else {
-        let success = await lockChannel(message.channel, message.author, constants)
+        let success = await lockChannel(message.channel, message.author)
         if (success) message.delete();
         else message.channel.send(`🚫 This channel is already locked!`)
     }
 }
 
-async function lockChannel(channel, author, constants) {
+async function lockChannel(channel, author) {
     let permission = channel.permissionOverwrites.find(po => po.id == channel.guild.roles.everyone);
     if (permission.deny.has("SEND_MESSAGES")) return false;
 

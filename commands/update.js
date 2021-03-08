@@ -1,5 +1,5 @@
-const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { currentLogo } = require('../config.js'),
-	{ Information } = require('./edit.js');
+const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
+ 	{ currentLogo } = require('../config.js'), { Information } = require('./edit.js');
 
 module.exports = {
 	description: "Get info on the latest update of C2S.",
@@ -14,9 +14,9 @@ module.exports.run = async (client, message, args) => {
 	let infoHandler = await Information.findOne({ infoType: "update" });
 	let embed = new MessageEmbed()
 		.setTitle("Steam and Mobile Updates")
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.attachFiles(currentLogo)
-		.setThumbnail("attachment://Current_Logo.png")
+		.setThumbnail(currentLogo.name)
 		.setDescription(infoHandler.info);
 		message.channel.send(embed);
 }

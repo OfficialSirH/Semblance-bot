@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageAttachment } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'),
+const { MessageEmbed, MessageAttachment } = require('discord.js'), {randomColor} = require('../constants'),
     fetch = require('node-fetch'), config = require('../config'), { attachments } = config;
 
 module.exports = {
@@ -15,7 +15,7 @@ module.exports = {
 const constants = require("../constants")
 
 module.exports.run = async (client, message, args, identifier, { permissionLevel, content }) => { // we get all the values so we can use them in the eval-command itself
-    let embed = new MessageEmbed().setColor(randomColor()).addField("📥 Input", `\`\`\`js\n${content.substring(0, 1015)}\`\`\``).setFooter("Feed me code!");
+    let embed = new MessageEmbed().setColor(randomColor).addField("📥 Input", `\`\`\`js\n${content.substring(0, 1015)}\`\`\``).setFooter("Feed me code!");
     try {
         let evaled = eval(`(async () => { ${content} })().catch(e => { return "Error: " + e })`);
         Promise.resolve(evaled).then((result) => {
@@ -30,7 +30,7 @@ module.exports.run = async (client, message, args, identifier, { permissionLevel
                     return [...acc, {
                         "title": `📤 Output (${ind+1}/${arr.length})`,
                         "description": cur,
-                        "color": randomColor()
+                        "color": randomColor
                     }];
                 },[]);
                 splittedOutput = splittedOutput.slice(0, 10);

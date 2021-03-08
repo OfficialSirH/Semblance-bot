@@ -1,7 +1,7 @@
-const { MessageEmbed, MessageAttachment, Collection } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'),
-    Report = require('../models/Report.js'), mongoose = require('mongoose'), { prefix, sirhGuildID, c2sID } = require('../config.js'),
-    { getPermissionLevel } = require('../constants/index.js'), wait = require('util').promisify(setTimeout),
-    cooldown = new Collection(), reportChannelList = ["798933535255298078", "798933965539901440"], // <-- change IDs to the 3 bug report channels in C2S
+const { MessageEmbed, MessageAttachment, Collection, Permissions } = require('discord.js'), Report = require('../models/Report.js'), 
+    mongoose = require('mongoose'), { prefix, sirhGuildID, c2sGuildID } = require('../config.js'),
+    { getPermissionLevel, randomColor } = require('../constants'), wait = require('util').promisify(setTimeout),
+    cooldown = new Collection(),
     CHANNELS = {
         QUEUE: '798933535255298078',
         APPROVED: '798933965539901440'
@@ -15,14 +15,13 @@ module.exports = {
     aliases: ['report', 'bugreport'],
     permissionRequired: 0,
     checkArgs: (args) => args.length > 0,
-    reportChannelList: reportChannelList,
     CHANNELS: CHANNELS,
     correctReportList: (client, message, messageID) => correctReportList(client, message, messageID),
     Report: Report
 }
 
 module.exports.run = async (client, message, args, identifier, { permissionLevel, content }) => {
-    if (message.guild.id != c2sID) return;
+    if (message.guild.id != c2sGuildID) return;
     if ((identifier == 'report' || identifier == 'bug' || identifier == 'bugreport') && args[0] == 'help') return help(message, permissionLevel);
     else if (identifier == 'report' || identifier == 'bugreport') return report(message, content, client);
     else if (identifier == 'bug') return bug(client, message, permissionLevel, content, args);
@@ -42,7 +41,7 @@ async function help(message, permissionLevel) {
         `You can approve/deny a person's report with \`${prefix}bug <bugID or messageID> <"approve" or "deny"> <optional: reason>\``]);
     let embed = new MessageEmbed()
         .setTitle("Reporting Help")
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setDescription(description.join('\n'))
         .setFooter("That's a feature, not a bug!");
@@ -67,10 +66,10 @@ async function report(message, content, client) {
             return message.delete();
         }
     } else content = difcontent;
-    if (content[0].length < 1 || content[1].length < 1 || content[2].length < 1 || content[3].length < 1 || content[4].length < 1) return message.reply("You missed some content in your report, please don't leave fields empty.").then(msg => msg.delete({ timeout: 10000 }));
+    if (content[0].length < 1 || content[1].length < 1 || content[2].length < 1 || content[3].length < 1 || content[4].length < 1) return message.reply("You missed some content in your report, please don't leave fields empty.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 10000));
 
     let userCooldown = cooldown.get(message.author.id);
-    if (userCooldown && Date.now() - userCooldown < (1000 * 60 * 5) && !message.member.hasPermission("MANAGE_MESSAGES")) return message.reply(`You're on cooldown with this command, you can use the command again in ${(Date.now() - userCooldown - (1000 * 60 * 5)) / 1000 / 60} minutes.`);
+    if (userCooldown && Date.now() - userCooldown < (1000 * 60 * 5) && !message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return message.reply(`You're on cooldown with this command, you can use the command again in ${(Date.now() - userCooldown - (1000 * 60 * 5)) / 1000 / 60} minutes.`);
     else if (!userCooldown || Date.now() - userCooldown > (1000 * 60 * 5)) cooldown.set(message.author.id, Date.now());
 
     let reportHandler = await Report.find({}), totalReports = reportHandler.map(r => r).length;
@@ -117,7 +116,7 @@ async function report(message, content, client) {
 async function bug(client, message, permissionLevel, content, args) {
     let report = await Report.findOne({ bugID: args[0] });
     if (!report) report = await Report.findOne({ messageID: args[0] });
-    if (!report) return message.reply("The ID you specified doesn't exist.").then(msg => { msg.delete({ timeout: 5000 }); message.delete() });
+    if (!report) return message.reply("The ID you specified doesn't exist.").then(msg => { setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000); message.delete() });
 
     if (args[1] == 'attach') addAttachment(client, message, report, message.attachments.map(a => a)[0] || args.slice(2)[0]);
 
@@ -132,7 +131,7 @@ async function bug(client, message, permissionLevel, content, args) {
 
         else if (args[1] == 'deny') fixUpReports(client, message, channel, report, args.slice(2).join(' '), false);
 
-    } else if (args[1] == 'approve' || args[1] == 'deny') message.reply("You do not have permission to use this.").then(msg => msg.delete({ timeout: 5000 }));
+    } else if (args[1] == 'approve' || args[1] == 'deny') message.reply("You do not have permission to use this.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000));
     message.delete();
 }
 
@@ -167,7 +166,7 @@ async function deleteReproduce(message, report, args) {
         .then(msg => {
             let reproduceField = msg.embeds[0].fields[4].value.split('\n');
             let itemIndex = reproduceField.findIndex(item => item.includes(args.join(' ')));
-            if (itemIndex == -1) return message.reply("That reproduce item doesn't exist.").then(m => m.delete({ timeout: 20000 }));
+            if (itemIndex == -1) return message.reply("That reproduce item doesn't exist.").then(m => setTimeout(() =>{ if(!m.deleted) m.delete() }, 20000));
             else reproduceField.splice(itemIndex, 1);
             let editedResponse = msg.embeds[0].spliceFields(4, 1, { name: "Can Reproduce", value: (reproduceField || `no one has marked this report has reproducable.`) });
             msg.edit(editedResponse);
@@ -180,8 +179,8 @@ async function addReproduce(message, report, specifications) {
     if (specifications.length < 2) specifications = specifications.join(' ').split('\n');
     let sysInfo = specifications[0], gameVersion = specifications[1];
 
-    if (!sysInfo) return message.reply("You forgot to provide system information and game version.").then(msg => msg.delete({ timeout: 5000 }));
-    if (!gameVersion) return message.reply("You forgot to provide the game version.").then(msg => msg.delete({ timeout: 5000 }));
+    if (!sysInfo) return message.reply("You forgot to provide system information and game version.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000));
+    if (!gameVersion) return message.reply("You forgot to provide the game version.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000));
 
     message.guild.channels.cache.get(report.channelID).messages.fetch(report.messageID, { cache: false })
         .then(msg => {

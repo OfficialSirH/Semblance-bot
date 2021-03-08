@@ -12,7 +12,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-    return message.reply("This command has been disabled temporarily due to many problems with it currently, this will be fixed soon.");
+    return message.reply("**Command is disabled**\n\nReason: Not designed for practical use");
     let emoji = args[0];
     let role = args[1];
     let reactMessage = args.slice(2, args.length).join(" ");
@@ -22,7 +22,7 @@ module.exports.run = async (client, message, args) => {
         let data = findReactionData(mainRole, false);
         let embed = new MessageEmbed()
             .setTitle("React Me")
-            .setThumbnail(client.user.avatarURL())
+            .setThumbnail(client.user.displayAvatarURL())
             .setDescription(reactMessage);
             Promise.resolve(message.channel.send(embed))
                 .then(function(msg) {

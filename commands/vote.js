@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'),
-	randomColor = require("../constants/colorRandomizer.js");
+	{randomColor} = require("../constants");
 
 module.exports = {
 	description: "Lists websites where you can vote for Semblance.",
@@ -13,8 +13,8 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
 	let embed = new MessageEmbed()
 	.setTitle("Vote")
-	.setColor(randomColor())
-	.setThumbnail(client.user.avatarURL())
+	.setColor(randomColor)
+	.setThumbnail(client.user.displayAvatarURL())
 		.setDescription(["**Websites that provide game boost/is interactible if voted on**",
 				`[Top.gg](https://top.gg/bot/${client.user.id})\n`,
 				"**Extra voting sites/Don't have any type of interactivity yet**",

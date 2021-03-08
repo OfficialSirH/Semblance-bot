@@ -1,7 +1,7 @@
 const fs = require('fs'),
     itemsList = JSON.parse(fs.readFileSync('./constants/itemsList.json', "utf8")),
     { nameToScNo, bigToE, slash_checkIfAllowedValue } = require('../constants/largeNumberConversion.js'),
-    { MessageEmbed } = require('discord.js');
+    { MessageEmbed } = require('discord.js'), { randomColor } = require('../constants');
 
 module.exports = {
     permissionRequired: 0
@@ -33,7 +33,7 @@ module.exports.run = async (client, interaction) => {
     let embed = new MessageEmbed()
         .setTitle("Item Calculator Results")
         .setAuthor(interaction.member.user.tag, interaction.member.user.avatarURL)
-        .setColor("RANDOM")
+        .setColor(randomColor)
         .setDescription([`Chosen item: ${itemInput}`,
             `Current item level: ${currentLevel}`,
             `currency input: ${bigToE(curAmount)} ${itemCostType}`,

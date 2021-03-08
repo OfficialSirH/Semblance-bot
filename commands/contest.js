@@ -1,19 +1,31 @@
-const { MessageEmbed } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { currentLogo } = require('../config.js'), { darwinium } = require('./emojis.js'); 
+const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
+    { currentLogo, prefix, darwinium } = require('../config.js'); 
 
 module.exports = {
     description: "Info on limericks winners",
     usage: {
         "": ""
     },
-    aliases: ['limericks', 'contest'],
+    aliases: ['limericks', 'limerick'],
     permissionRequired: 0,
     checkArgs: (args) => args.length >= 0
 }
 
-module.exports.run = async (client, message, args) => {
+module.exports.run = async (client, message, args, identifier) => {
+    switch (identifier) {
+        case 'limerick':
+        case 'limericks':
+            return limericks(message);
+        default: 
+            message.channel.send(new MessageEmbed().setTitle("Contests").setColor(randomColor)
+            .setDescription(`All of the available contest-related commands are: \n${module.exports.aliases.map(i => `\`${prefix}${i}\``).join('\n')}`));
+    }
+}
+
+function limericks(message) {
     let embed = new MessageEmbed()
         .setTitle('Limericks Contest winners')
-        .setColor(randomColor())
+        .setColor(randomColor)
         .attachFiles(currentLogo)
         .setThumbnail("attachment://Current_Logo.png")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
@@ -44,5 +56,4 @@ module.exports.run = async (client, message, args) => {
             )
         .setFooter('Let the hunger gam-- I mean Limericks Contest- begin!');
     message.channel.send(embed);
-
 }

@@ -1,5 +1,5 @@
 ﻿const { MessageEmbed, MessageAttachment } = require('discord.js'),
-	randomColor = require("../constants/colorRandomizer.js"),
+	{randomColor} = require("../constants"),
 	pages = ["https://i.imgur.com/BsjMAu6.png",
 		"https://i.imgur.com/QbDAOkF.png",
 		"https://i.imgur.com/w1jEuzh.png",
@@ -20,7 +20,7 @@ module.exports.run = async (client, message, args) => {
 	const { currentLogo } = require('../config.js');
 	let embed = new MessageEmbed()
 		.setTitle("Game Transfer")
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.setAuthor(message.author.tag, message.author.displayAvatarURL())
 		.attachFiles(currentLogo)
 		.setThumbnail("attachment://Current_Logo.png")
@@ -45,7 +45,7 @@ async function TurnPage(client, reaction, user) {
 		embed = new MessageEmbed()
 			.setTitle("Game Transfer")
 			.setAuthor(user.tag, user.displayAvatarURL())
-			.setColor(randomColor())
+			.setColor(randomColor)
 			.attachFiles(currentLogo)
 			.setThumbnail("attachment://Current_Logo.png")
 			.setImage(pages[currentPage])
@@ -58,7 +58,7 @@ async function TurnPage(client, reaction, user) {
 		embed = new MessageEmbed()
 			.setTitle("Game Transfer")
 			.setAuthor(user.tag, user.displayAvatarURL())
-			.setColor(randomColor())
+			.setColor(randomColor)
 			.attachFiles(currentLogo)
 			.setThumbnail("attachment://Current_Logo.png")
 			.setImage(pages[currentPage])

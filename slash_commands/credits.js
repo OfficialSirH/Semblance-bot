@@ -1,6 +1,5 @@
 const { MessageEmbed } = require('discord.js'),
-    randomColor = require('../constants/colorRandomizer'),
-    { getAvatar } = require('../constants/');
+    { getAvatar, randomColor } = require('../constants');
 
 module.exports = {
     permissionRequired: 0,
@@ -9,7 +8,7 @@ module.exports = {
             embed = new MessageEmbed()
                 .setTitle("Credits")
                 .setAuthor(user.tag, user.avatarURL)
-                .setColor(randomColor())
+                .setColor(randomColor)
                 .setDescription("Special Thanks to Aditya for motivating me from the very beginning to work on this bot. " +
                     "If it weren't for him, my bot wouldn't even be at this point right now; running on an actual server, " +
                     "built with a better Discord module than previously, and have this many features. He even convinced Hype " +

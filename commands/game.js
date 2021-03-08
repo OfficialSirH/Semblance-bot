@@ -1,5 +1,5 @@
-const { MessageEmbed, Collection } = require('discord.js'), randomColor = require('../constants/colorRandomizer.js'), { prefix } = require('../config.js'),
-    { insertionSort } = require('../constants/index.js'),
+const { MessageEmbed, Collection, Permissions } = require('discord.js'), { prefix } = require('../config.js'),
+    { insertionSort, randomColor } = require('../constants'),
     GameModel = require('../models/Game.js'),
     cooldownHandler = new Collection(),
     { Information } = require('./edit.js');
@@ -19,10 +19,10 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-    if (!cooldownHandler.get(message.author.id) && !message.member.hasPermission("MANAGE_MESSAGES")) cooldownHandler.set(message.author.id, new Date());
+    if (!cooldownHandler.get(message.author.id) && !message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) cooldownHandler.set(message.author.id, new Date());
     else if (((new Date() - cooldownHandler.get(message.author.id)) / 1000) < 5) {
         return message.reply("You're on cooldown with this command.");
-    } else if (!message.member.hasPermission("MANAGE_MESSAGES")) {
+    } else if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
         cooldownHandler.set(message.author.id, new Date());
     }
     if (args.length == 0) return message.reply(`Start with \`${prefix}game help\` to get more info on Semblance's idle game.`);
@@ -44,7 +44,7 @@ async function noGame(message) {
 async function graphs(client, message) {
     let embed = new MessageEmbed()
         .setTitle("Graphed Data of Semblance's Idle Game")
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setDescription("[Click Here for Game Data Graphs](https://charts.mongodb.com/charts-semblance-xnkqg/public/dashboards/5f9e8f7f-59c6-4a87-8563-0d68faed8515)");
     message.channel.send(embed);
 }
@@ -53,7 +53,7 @@ async function about(client, message) {
     let embed = new MessageEmbed()
         .setTitle("What's Semblance's Idle-Game about?")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setDescription("SIG, AKA Semblance's Idle-Game, is an RNG idle-game that uses a currency called Random-Bucks \n"+
                         "which yes, I asked Semblance whether or not I should use Random-Bucks as the name by using `s!8ball`. "+
                        "If you're confused by the acronym RNG, it's an acronym for \"Random Number Generation/Generator\", which "+
@@ -69,7 +69,7 @@ async function help(client, message) {
     let embed = new MessageEmbed()
         .setTitle('game help')
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setDescription(`You can create your own personal idle game by typing \`${prefix}game create\`, which the game will give a random range of price increase for upgrades from 25 - 50%, a starting profit ranging from 0.05 to 0.1, and a profit increase of 5-10% for every upgrade.\n\n` +
             `Typing \`${prefix}game about\` will provide more info on Semblance's Idle-Game.\n\n`+
             `Typing \`${prefix}game collect\` will collect your idle income.\n\n` +
@@ -105,7 +105,7 @@ async function leaderboard(client, message) {
     let embed = new MessageEmbed()
         .setTitle("Semblance's idle-game leaderboard")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setDescription(`${leaderboardList}`)
         .setFooter("May the odds be with you.\n(Updates every minute)");
     message.channel.send(embed);
@@ -131,7 +131,7 @@ async function create(client, message) {
     let embed = new MessageEmbed()
         .setTitle('Game Created')
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setDescription(`Game Successfully created! Now you can start collecting Random-Bucks by typing \`${prefix}game collect\` and upgrade your Random-Bucks with \`${prefix}game upgrade\`\n\n`+
                        `Price Increase: ${(creationHandler.percentIncrease - 1)*100}%\n`+
                        `Starting Profits: ${creationHandler.idleProfit}/sec\n\n`+
@@ -149,7 +149,7 @@ async function collect(client, message) {
     let embed = new MessageEmbed()
         .setTitle("Balance")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setDescription(`You've collected ${collected} Random-Bucks and now your current balance is ${collectionHandler.money} Random-Bucks.`);
     message.channel.send(embed);
 }
@@ -162,7 +162,7 @@ async function upgrade(client, message, max) {
     if (upgradeHandler.money < costSubtraction) 
         return message.channel.send(new MessageEmbed().setTitle("Not Enough Random-Bucks")
                 .setAuthor(message.author.tag, message.author.displayAvatarURL())
-                .setColor(randomColor())
+                .setColor(randomColor)
                 .setDescription([`**Current Balance:** ${upgradeHandler.money} Random-Bucks`,
                                 `**Upgrade Cost:** ${costSubtraction} Random-Bucks`,
                                 `**How much more required:** ${costSubtraction - upgradeHandler.money} Random-Bucks`].join('\n')));
@@ -177,9 +177,9 @@ async function upgrade(client, message, max) {
     let embed = new MessageEmbed()
         .setTitle("Upgrade Stats")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setDescription(`You have successfully upgrade from level ${previousLevel} => ${upgradeHandler.level}.\n\nYour current balance is ${upgradeHandler.money} Random-Bucks.\n\nYour current profit is ${upgradeHandler.idleProfit} Random-Bucks/sec.`)
-        .setFooter(`Upgrades will raise your rank in the \`${prefix}game leaderboard\``);
+        .setFooter(`Upgrades will raise your rank in the \`${prefix}game leaderboard\`, also, \`${prefix}game upgrade max\` will upgrade the max amount you're able to upgrade.`);
     message.channel.send(embed);
 }
 
@@ -197,7 +197,7 @@ async function gameStats(client, message, args) {
     let embed = new MessageEmbed()
         .setTitle(`${message.author.username}'s gamestats`)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setThumbnail(message.author.displayAvatarURL())
         .addFields(
             { name: 'Level', value: statsHandler.level },

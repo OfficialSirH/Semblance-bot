@@ -1,5 +1,5 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js'),
-randomColor = require("../constants/colorRandomizer.js"),
+	{randomColor} = require("../constants"),
 	{ prefix } = require('../config.js');
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
 	let embed = new MessageEmbed()
 		.setTitle("Miscellaneous Commands")
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.addFields(
 			{ name: "Semblance related commands", value: `Support me with: **\`${prefix}patreon\`**\n`+
 			 						`Vote Leaderboard: **\`${prefix}leaderboard\`**\n`+

@@ -15,6 +15,10 @@ module.exports.run = async (client, message, args) => {
     let metabits = args[0];
     metabits = checkIfAllowedValue(metabits, message, 'metabits');
     if (isNaN(metabits)) return;
-    let accumulated = Math.floor(Math.pow((metabits + 1) * 10000, 1 / 0.3333333333333333));
-    message.reply(`You would need an accumulation of ${bigToE(accumulated)} entropy & ideas`);
+    let accumulated = Math.floor(Math.pow((metabits + 1) * 10000, 1 / 0.3333333333333333)),
+        embed = new MessageEmbed()
+            .setTitle("Accumulation Requirements")
+            .setAuthor(message.author.tag, message.author.displayAvatarURL())
+            .setDescription(`Metabit Input: ${metabits}\n\nEntropy/Idea Accumulation Required: ${bigToE(accumulated)}`);
+    message.reply(embed);
 }

@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), { bigToE, slash_checkIfAllowedValue } = require('../constants/largeNumberConversion.js'),
-    randomColor = require('../constants/colorRandomizer.js');
+    {randomColor} = require('../constants');
 
 module.exports.permissionRequired = 0;
 
@@ -57,7 +57,7 @@ module.exports.run = async (client, interaction) => {
     let embed = new MessageEmbed()
         .setTitle("Multiplier Total")
         .setAuthor(interaction.member.user.tag, interaction.member.user.avatarURL)
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setDescription([`Total Collected Metabits/Simulation Level: ${bigToE(metabits)}`,
             `Accumulated Mesozoic Valley Ranks: ${dinoRanks}`,
             `Simulation Speed Upgrades: ${simSpeed}%`,

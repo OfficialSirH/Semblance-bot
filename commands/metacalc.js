@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'),
+const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
     { nameToScNo, bigToE, checkIfAllowedValue } = require('../constants/largeNumberConversion.js');
 
 module.exports = {
@@ -20,12 +20,12 @@ module.exports.run = async (client, message, args) => {
     if (isNaN(ideas)) return;
     //let metabits = Math.sqrt(entropy+(ideas/10E12));
     let metabits = Math.floor(Math.pow(entropy + ideas, 0.3333333333333333) / 10000 - 1);
-    if (metabits < 1) {
-        message.reply("That would produce ***nothing***!");
-        return;
-    }
     // metabits + 1 = Math.floor(Math.pow(entropy+ideas, 0.3333333333333333) / 10000);
     // (metabits + 1) * 10000 = Math.floor(Math.pow(entropy+ideas, 0.3333333333333333));
     // Math.floor(Math.pow((metabits+1) * 10000), 1/0.3333333333333333) = entropy+ideas;
-    message.reply(`That would produce ${bigToE(metabits)} metabit(s)!`);
+    let embed = new MessageEmbed()
+        .setTitle("Metabits Produced")
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
+        .setDescription(`Entropy Input: ${entropy}\nIdea Input: ${ideas}\n\nMetabits Produced: ${(metabits < 1) ? 0 : bigToE(metabits)}`);
+    message.reply(embed);
 }

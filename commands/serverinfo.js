@@ -1,5 +1,5 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js'),
-	randomColor = require("../constants/colorRandomizer.js"), { currentLogo } = require('../config.js');
+	{randomColor} = require("../constants");
 
 module.exports = {
 	description: "Provides info on the current server",
@@ -45,7 +45,7 @@ module.exports.run = async (client, message, args, identifier, { permissionLevel
 
 	let embed = new MessageEmbed()
 		.setAuthor(guildID.name, guildID.iconURL())
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.addFields(
 			{ name: "Owner", value: guildID.owner, inline: true },
 			{ name: "Region", value: guildID.region, inline: true },

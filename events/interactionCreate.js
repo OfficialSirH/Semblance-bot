@@ -1,5 +1,5 @@
 const { getAvatar, getPermissionLevel } = require('../constants'),
-    { c2sID } = require('../config');
+    { c2sGuildID } = require('../config');
 
 async function send(client, interaction, { content = null, embeds = [], type = 4, flags = 0 } = {}) {
     client.api.interactions(interaction.id, interaction.token).callback.post({data: {
@@ -22,7 +22,7 @@ module.exports = (client) => {
                 permissionLevel = await getPermissionLevel(member),
                 channel = guild.channels.cache.get(interaction.channel_id);
             console.log(`${member.user.tag} : ${permissionLevel}`);
-            if ((guild.id == c2sID && channel.name != 'semblance' && permissionLevel == 0) || permissionLevel < command.permissionRequired) 
+            if ((guild.id == c2sGuildID && channel.name != 'semblance' && permissionLevel == 0) || permissionLevel < command.permissionRequired) 
                 return send(client, interaction, { content: 'Ah ah ah! You didn\'t say the magic word!', flags: 1 << 6, type: 3 });
             
             interaction.member.user.tag = `${interaction.member.user.username}#${interaction.member.user.discriminator}`;

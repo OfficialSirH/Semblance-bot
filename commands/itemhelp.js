@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'),
-    randomColor = require('../constants/colorRandomizer.js'),
+    {randomColor} = require('../constants'),
     { currentLogo } = require('../config.js');
 
 module.exports = {
@@ -14,10 +14,10 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
     let embed = new MessageEmbed()
         .setTitle("Item Calculator Help")
-        .setAuthor(message.author.tag, message.author.avatarURL())
-        .setColor(randomColor())
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
+        .setColor(randomColor)
         .attachFiles(currentLogo)
-        .setThumbnail("attachment://Current_Logo.png")
+        .setThumbnail(currentLogo.name)
         .setDescription("The item calculator's command is done by doing s!itemcalc <item name> <item level> <current lvl> or s!itemcalcrev <item name> <currency input> <current lvl>" +
             ", which any name that has more than one word has to include '-', for example: martian-factory.")
         .addFields(

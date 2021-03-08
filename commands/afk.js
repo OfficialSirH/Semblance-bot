@@ -1,7 +1,6 @@
-const { MessageEmbed, MessageAttachment, Collection } = require('discord.js'),
+const { MessageEmbed } = require('discord.js'),
 	fs = require("fs"),
-	randomColor = require("../constants/colorRandomizer.js"),
-	{ sembID } = require('../config.js'),
+	{ randomColor } = require("../constants"),
 	Afk = require('../models/Afk.js');
 
 module.exports = {
@@ -16,7 +15,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, reasonArray) => {
-	if (message.author.id == sembID) return;
+	if (message.author.id == client.user.id) return;
 	let reason = (reasonArray.length > 0) ? reasonArray.join(" ") : "Just because";
 	var afkHandler = await Afk.findOne({ userID: message.author.id });
 	if (afkHandler == null) {
@@ -26,7 +25,7 @@ module.exports.run = async (client, message, reasonArray) => {
 	
 	let embed = new MessageEmbed()
 		.setTitle("AFK")
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.setDescription(`You are now afk ${message.author} \n` +
 			`Reason: ${reason}`);
 	message.channel.send(embed);
@@ -41,7 +40,7 @@ module.exports.run = async (client, message, reasonArray) => {
 					let reason = afkHandler.reason;
 					let embed = new MessageEmbed()
 						.setTitle("Currently Afk")
-						.setColor(randomColor())
+						.setColor(randomColor)
 						.setThumbnail(user.displayAvatarURL())
 						.setDescription(`${user.tag} is currently afk`)
 						.addField("Reason", `${reason}`);
@@ -52,7 +51,7 @@ module.exports.run = async (client, message, reasonArray) => {
 	}
 
 	async function removeAfk(client, message, user) {
-		if (message.author.id == sembID) return;
+		if (message.author.id == client.user.id) return;
 		let afkHandler = await Afk.findOne({ userID: message.author.id });
 		if (afkHandler == null) return;
 		afkHandler = await Afk.findOneAndDelete({ userID: message.author.id });

@@ -1,4 +1,4 @@
-const { sembID, sirhID, prefix, c2sID, sirhGuildID, lunchGuildID, ignoredGuilds } = require('../config.js'),
+const { sirhID, prefix, c2sGuildID, sirhGuildID, lunchGuildID, ignoredGuilds } = require('../config.js'),
     { getPermissionLevel, parseArgs } = require('../constants'), { Collection, MessageEmbed } = require('discord.js'),
     { embedCreate } = require('../commands/embed.js'),
 	{ reactionToRole } = require('../commands/rolereact.js'),
@@ -25,7 +25,7 @@ async function checkForGitHubUpdate(message) {
 let warnings = new Collection();
 
 function clearBlacklistedWord(message, member) {
-	if (message.guild.id != c2sID && message.guild.id != sirhGuildID) return;
+	if (message.guild.id != c2sGuildID && message.guild.id != sirhGuildID) return;
 	let msg = message.content.toLowerCase();
 	if (msg.indexOf('nigger') >= 0 || msg.indexOf('nigga') >= 0) {
 		if (member.user.bot) return;
@@ -47,10 +47,10 @@ async function updateBeyondCount() {
 module.exports = (client) => {
     client.on("message", async message => {
         checkForGitHubUpdate(message);
-	if (message.channel.name == "cells-tweets" && message.guild.id == c2sID && message.author.id != sembID && !message.member.roles.cache.get('493796775132528640')) return message.delete();
+	if (message.channel.name == "cells-tweets" && message.guild.id == c2sGuildID && message.author.id != client.user.id && !message.member.roles.cache.get('493796775132528640')) return message.delete();
 	if (message.channel.type == "dm" || message.author.bot || ignoredGuilds.includes(message.guild.id)) return;
 	if (message.member) {
-		if (message.mentions.users && message.member.id != sembID) {
+		if (message.mentions.users && message.member.id != client.user.id) {
 			dontDisturb(client, message, message.mentions.users);
 		}
 	}
@@ -61,7 +61,7 @@ module.exports = (client) => {
 	//Cell to Singularity Exclusive Code
 	let chName = message.channel.name;
 	for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
-	if (message.guild.id == c2sID) {
+	if (message.guild.id == c2sGuildID) {
 		clearBlacklistedWord(message, message.member);
 		let msg = message.content.toLowerCase(), suggestionArray = ["suggestion:", "suggest:", `${prefix}suggestion`, `${prefix}suggest`],
 			suggestionRegex = new RegExp(`(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
@@ -91,7 +91,7 @@ module.exports = (client) => {
 	//End of Cell to Singularity Exclusive Code
 	if (message.mentions) {
 		let msgMention = message.content.replace(/!/g, "");
-		if ((msgMention == `<@${client.user.id}> ` || msgMention == `<@${client.user.id}>`) && message.member.id != sembID) {
+		if ((msgMention == `<@${client.user.id}> ` || msgMention == `<@${client.user.id}>`) && message.member.id != client.user.id) {
 			message.reply("My command prefix is s!, which you can start off with s!help for all of my commands. :D");
 			return;
 		}

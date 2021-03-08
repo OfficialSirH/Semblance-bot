@@ -1,8 +1,5 @@
-const { MessageEmbed, MessageAttachment, GuildEmoji } = require('discord.js'),
-	randomColor = require("../constants/colorRandomizer.js"),
-	msToTime = require('../constants/msToTime.js');
-let embed = new MessageEmbed();
-const botStartTime = Date.now();
+const { MessageEmbed } = require('discord.js'),
+	{randomColor, msToTime} = require("../constants");
 
 module.exports = {
 	description: "Check the bot's latency.",
@@ -14,15 +11,15 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-		let uptime = Date.now() - botStartTime;
-		let duration = msToTime(uptime);
-		let responseTime = Date.now() - message.createdTimestamp;
-	let userAvatar = message.author.avatarURL({ dynamic: true });
-		let embed = new MessageEmbed()
-		.setTitle("Latency")
-		.setColor(randomColor())
-		.setThumbnail(userAvatar)
-		.setDescription("**Bot Response Time:** `"+responseTime+"ms`\n **API**: `"+Math.round(client.ws.ping)+"ms` \n **Bot Uptime:** `"+duration+"`")
-		.setFooter("Why do this to me "+message.author.tag, userAvatar);
+		let uptime = Date.now() - client.readyTimestamp,
+			duration = msToTime(uptime),
+			responseTime = Date.now() - message.createdTimestamp,
+			userAvatar = message.author.displayAvatarURL({ dynamic: true }),
+			embed = new MessageEmbed()
+			.setTitle("Latency")
+			.setColor(randomColor)
+			.setThumbnail(userAvatar)
+			.setDescription(`**Bot Response Time:** \`${responseTime}ms\`\n **API**: \`${Math.round(client.ws.ping)}ms\` \n **Bot Uptime:** \`${duration}\``)
+			.setFooter(`Why do this to me ${message.author.tag}`, userAvatar);
 		message.channel.send(embed);
-	}
+}

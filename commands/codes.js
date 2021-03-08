@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'),
-    randomColor = require('../constants/colorRandomizer.js'),
+    {randomColor} = require('../constants'),
     { currentLogo } = require('../config.js'),
     { Information } = require('./edit.js');
 
@@ -16,12 +16,12 @@ module.exports.run = async (client, message, args) => {
     let codeHandler = await Information.findOne({ infoType: 'codes' });
     let embed = new MessageEmbed()
         .setTitle("Darwinium Codes")
-        .setAuthor(message.author.tag, message.author.avatarURL())
-        .setColor(randomColor())
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
+        .setColor(randomColor)
         .attachFiles(currentLogo)
-        .setThumbnail("attachment://Current_Logo.png")
-        .setDescription(codeHandler.info) //DARWIN, STRIPES, FESTIVE
-        .addField("Expired Codes", codeHandler.expired) // Expired Codes: MANIA, TWITCH, FINALS, SCALES, POEM, GLITCH, EVOLVE
+        .setThumbnail(currentLogo.name)
+        .setDescription(codeHandler.info)
+        .addField("Expired Codes", codeHandler.expired)
         .setFooter(codeHandler.footer);
     message.channel.send(embed);
 }

@@ -2,7 +2,7 @@ const { GameModel } = require('../commands/game.js'),
     Votes = require('../models/Votes.js'),
     { Information } = require('../commands/edit'),
     { MessageEmbed } = require('discord.js'),
-    { c2sID } = require('../config');
+    { c2sGuildID } = require('../config');
 
     let topGG;
     let discordBoats;
@@ -23,12 +23,6 @@ const { GameModel } = require('../commands/game.js'),
 module.exports = (client) => {
     client.on("ready", async () => {
         console.log(`Logged in as ${client.user.tag}!`);
-        setTimeout(function () {
-            topGG = require("../commands/websiteScripts/topGG.js");
-            topGG.FixClient(client);
-            discordBoats = require("../commands/websiteScripts/DiscordBoat.js");
-            discordBoats(client);
-        }, 500);
 
         setInterval(() => showMyActivity(client), 30000);
 
@@ -71,7 +65,7 @@ module.exports = (client) => {
                         .setAuthor(client.user.tag, client.user.displayAvatarURL())
                         .setDescription(`**${infoHandler.info}**`);
 
-                    client.guilds.cache.get(c2sID).channels.cache.find(c => c.name == 'semblance').send(embed);
+                    client.guilds.cache.get(c2sGuildID).channels.cache.find(c => c.name == 'semblance').send(embed);
                 }
             });
         //await CommandCounter.deleteMany({});

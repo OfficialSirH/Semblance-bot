@@ -1,8 +1,6 @@
-const { Client, MessageEmbed } = require("discord.js");
-var client = new Client();
-//const discordBoatsAuth = require("./DiscordBoatAuth.json");
-const BOATS = require('boats.js');
-const Boats = new BOATS(JSON.parse(process.env.DBoatsAuth).Auth);
+const { MessageEmbed } = require("discord.js"),
+    BOATS = require('boats.js'),
+    Boats = new BOATS(JSON.parse(process.env.DBoatsAuth).Auth);
 
 setInterval(function () {
     Boats.postStats(client.guilds.cache.size, client.user.id).then(() => {
@@ -35,7 +33,3 @@ app.on('vote', vote => {
 app.on('listen', () => console.log('Now listening!'));
 
 app.listen();*/
-
-module.exports = (mainClient) => {
-    client = mainClient;
-}

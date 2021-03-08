@@ -1,7 +1,6 @@
 const { MessageEmbed } = require('discord.js'),
-	randomColor = require('../constants/colorRandomizer.js'),
 	VoteModel = require('../models/Votes.js'),
-	{ insertionSort } = require('../constants/index.js'),
+	{ insertionSort, randomColor } = require('../constants'),
 	{ Information } = require('./edit.js');
 
 module.exports = {
@@ -20,11 +19,11 @@ module.exports.run = async (client, message, args) => {
 		let embed = new MessageEmbed()
 			.setTitle("Voting Leaderboard")
 			.setThumbnail(client.user.displayAvatarURL())
-			.setColor(randomColor())
+			.setColor(randomColor)
 			.setDescription(`${leaderboardList}`)
 			.setFooter("Vote for Semblance on Top.gg\n(Updates every minute)");
 		message.channel.send(embed);
-	} catch (error) { console.log(error); message.reply("Something seemed to have not worked, unfortunately. oopsy"); return; }
+	} catch (error) { console.log(error); return message.reply("Something seemed to have not worked, unfortunately. oopsy"); }
 }
 
 let leaderboardList = 'There is currently no votes for this month.';

@@ -1,5 +1,6 @@
-const { MessageEmbed, MessageAttachment } = require('discord.js'),
-    { currentLogo, prestige, prestigeList } = require('../config.js');
+const { MessageEmbed } = require('discord.js'),
+    { currentLogo, prestige, prestigeList } = require('../config.js'),
+    { randomColor } = require('../constants');
 
 module.exports = {
     description: "Get info on the Mesozoic Valley prestige.",
@@ -15,8 +16,8 @@ module.exports.run = async (client, message, args, identifier) => {
     if ((args[0] && args[0].toLowerCase() == 'list') || identifier == 'prestigelist') return sendPrestigeList(message);
     let embed = new MessageEmbed()
         .setTitle("Mesozoic Valley Prestige")
-        .setAuthor(message.author.tag, message.author.avatarURL())
-        .setColor("RANDOM")
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
+        .setColor(randomColor)
         .attachFiles([prestige, currentLogo])
         .setImage(prestige.name)
         .setThumbnail(currentLogo.name)
@@ -30,7 +31,7 @@ function sendPrestigeList(message) {
     let embed = new MessageEmbed()
         .setTitle("Mesozoic Valley Prestige List")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor("RANDOM")
+        .setColor(randomColor)
         .attachFiles([prestigeList, currentLogo])
         .setThumbnail(currentLogo.name)
         .setImage(prestigeList.name)
