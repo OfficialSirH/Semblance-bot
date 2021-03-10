@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js'), { currentLogo } = require('../co
 
 module.exports = {
     description: "Provides details of shorter ways to using large numbers as input.",
+    category: 'help',
     usage: {
         "": ""
     },

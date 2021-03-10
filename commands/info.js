@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor, msToTime} = requir
     
 module.exports = {
     description: "Get information about the epic bot, Semblance",
+    category: 'semblance',
     usage: {
         "": ""
     },

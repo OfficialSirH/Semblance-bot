@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js'), { bigToE, checkIfAllowedValue } 
 
 module.exports = {
     description: "Provides the production multiplier when given metabit input.",
+    category: 'calculator',
     usage: {
         "<metabits>": "Inputting any number of metabits will output the production multiplier."
     },

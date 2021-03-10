@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js'), { currentLogo } = require('../co
 
 module.exports = {
     description: "",
+    category: 'c2sServer',
     usage: {
         "": ""
     },

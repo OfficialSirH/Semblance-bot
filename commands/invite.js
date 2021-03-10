@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require("../cons
 
 module.exports = {
 	description: "get invite for bot, SirH server, or C2S server",
+	category: 'semblance',
 	usage: {
 		"<support>": "support will retrieve the server link to SirH Stuff."
 	},

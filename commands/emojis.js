@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js'),
 
 module.exports = {
 	description: "Setup Semblance's emojis with this.",
+	category: 'admin',
 	usage: {
 		"": ""
 	},

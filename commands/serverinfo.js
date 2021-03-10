@@ -3,6 +3,7 @@ const { MessageEmbed, MessageAttachment } = require('discord.js'),
 
 module.exports = {
 	description: "Provides info on the current server",
+	category: 'server',
 	usage: {
 		"": ""
 	},

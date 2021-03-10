@@ -2,6 +2,7 @@
 
 module.exports = {
     description: "Provides the latest changes to Semblance.",
+    category: 'semblance',
     usage: {
         "": ""
     },

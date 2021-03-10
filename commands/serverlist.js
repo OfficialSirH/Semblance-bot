@@ -3,6 +3,7 @@ const { MessageEmbed, MessageAttachment } = require('discord.js'),
 
 module.exports = {
 	description: "Lists all servers that Semblance is in.",
+	category: 'developer',
 	usage: {
 		"": ""
 	},

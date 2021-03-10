@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../cons
 
 module.exports = {
 	description: "Get info on the latest update of C2S.",
+	category: 'game',
 	usage: {
 		"": ""
 	},

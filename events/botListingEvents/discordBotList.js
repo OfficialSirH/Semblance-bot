@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'), {randomColor} = require('../../constants'),
     fetch= require('node-fetch');
-
+/* /discordblwebhook */
 module.exports = (client) => {
     const baseURL = 'https://discordbotlist.com/api/v1';
 

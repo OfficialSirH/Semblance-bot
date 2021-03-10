@@ -3,6 +3,7 @@ const {randomColor} = require("../constants");
 
 module.exports = {
 	description: "Provides the number of members in the server.",
+	category: 'server',
 	usage: {
 		"": ""
 	},

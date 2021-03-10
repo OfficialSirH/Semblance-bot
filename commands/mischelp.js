@@ -1,9 +1,10 @@
-const { MessageEmbed, MessageAttachment } = require('discord.js'),
+const { MessageEmbed } = require('discord.js'),
 	{randomColor} = require("../constants"),
 	{ prefix } = require('../config.js');
 
 module.exports = {
 	description: "List all miscelaneous commands",
+	category: 'help',
 	usage: {
 		"": ""
 	},
@@ -12,26 +13,36 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
+	const serverCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'server').map(key => `***\`${prefix}${key}\`***`),
+		funCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'fun').map(key => `***\`${prefix}${key}\`***`),
+		utilityCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'utility').map(key => `***\`${prefix}${key}\`***`),
+		semblanceCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'semblance').map(key => `***\`${prefix}${key}\`***`);
 	let embed = new MessageEmbed()
 		.setTitle("Miscellaneous Commands")
+		.setThumbnail(client.user.displayAvatarURL())
 		.setColor(randomColor)
+		.setAuthor(message.author.tag, message.author.displayAvatarURL())
 		.addFields(
-			{ name: "Semblance related commands", value: `Support me with: **\`${prefix}patreon\`**\n`+
-			 						`Vote Leaderboard: **\`${prefix}leaderboard\`**\n`+
-			 						`Credits: **\`${prefix}credits\`**\n`+
-									`Semblance Invite: **\`${prefix}invite\`**\n` +
-									`Support Invite: **\`${prefix}invite support OR ${prefix}support\`**\n`+
-			 						`Vote for Semblance: **\`${prefix}vote\`**\n`, inline: true },
-			{ name: "Server related commands", value: `Server Information: **\`${prefix}serverinfo\`**\n`+
-			 					`Server Member Count: **\`${prefix}membercount\`**\n`+
-			 					`AFK: **\`${prefix}afk <input reason>\`**\n`+
-			 					`Profile Info: **\`${prefix}profile <user id(optional)>\`**`, inline: true },
-			{ name: "Fun Commands", value: `Semblance's Idle-Game: **\`${prefix}game\`**\n`+
-							`***PING***: **\`${prefix}ping\`**\n`+
-							`Large User Avatar: **\`${prefix}avatar <userID/userMention>\`**\n`+
-							`Set Reminder: **\`${prefix}remindme <time ex: 5d13h48m => 5 days, 13 hours, 48 minutes> <reminder>\`**\n`+
-				`Magic 8 Ball: **\`${prefix}8ball\`**`
+			{
+				name: '**-> Server Commands**',
+				value: serverCommands.join(', '),
+				inline: true
+			},
+			{
+				name: '**-> Fun Commands**',
+				value: funCommands.join(', '),
+				inline: true
+			},
+			{ 
+				name: '**-> Utility Commands**',
+				value: utilityCommands.join(', '),
+				inline: true
+			},
+			{
+				name: '**=> Semblance-related Commands**',
+				value: semblanceCommands.join(', '),
+				inline: true
 			}
-			);
+		);
 	message.channel.send(embed);
 }

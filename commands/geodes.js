@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js'),
 
 module.exports = {
     description: "Get geode comparisons to show the best value.",
+    category: 'game',
     usage: {
         "": ""
     },

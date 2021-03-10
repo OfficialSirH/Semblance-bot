@@ -2,6 +2,7 @@
 
 module.exports = {
 	description: "Purge a specified number of messages within a channel.",
+	category: 'admin',
 	usage: {
 		"<channel> <number of msgs>": ""
 	},

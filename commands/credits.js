@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../cons
 
 module.exports = {
 	description: "Lists everyone that has helped with the project of Semblance, including myself(SirH).",
+	category: 'semblance',
 	usage: {
 		"": ""
 	},

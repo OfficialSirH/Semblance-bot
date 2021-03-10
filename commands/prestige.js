@@ -4,6 +4,7 @@ const { MessageEmbed } = require('discord.js'),
 
 module.exports = {
     description: "Get info on the Mesozoic Valley prestige.",
+    category: 'game',
     usage: {
         "": ""
     },

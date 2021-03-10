@@ -3,6 +3,7 @@ const { MessageEmbed, Util, MessageAttachment } = require('discord.js'),
 
 module.exports = {
     description: "Make announcements through Semblance",
+    category: 'admin',
     usage: {
         "<'!ar' for anonymous msg> <channel> <msg>": ""
     },

@@ -1,5 +1,6 @@
 module.exports = {
     description: "See magical stuff",
+    category: 'fun',
     usage: {
         "": ""
     },

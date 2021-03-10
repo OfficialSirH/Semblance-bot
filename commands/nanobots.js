@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../cons
 
 module.exports = {
   description: "Provides details on nanobots and whatever else about those sexy little dudes",
+  category: 'game',
   aliases: ['nbts', 'nanobot'],
   usage: {
     "": ""

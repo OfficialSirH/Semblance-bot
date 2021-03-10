@@ -8,6 +8,7 @@ let leaderboardList = 'There is currently no one who has upgraded their income o
 
 module.exports = {
     description: "An idle-game within Semblance",
+    category: 'fun',
     usage: {
         "<help, create, collect, upgrade, leaderboard>": ""
     },

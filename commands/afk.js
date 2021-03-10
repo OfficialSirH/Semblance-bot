@@ -5,6 +5,7 @@ const { MessageEmbed } = require('discord.js'),
 
 module.exports = {
 	description: "Set yourself afk so users know you're unavailable when they ping you.",
+	category: 'utility',
 	usage: {
 		"<reason>": "Provide your reason why you're afk, or don't and it'll default 'just because'."
 	},

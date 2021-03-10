@@ -35,7 +35,7 @@ module.exports = class Semblance extends Client {
 
     sweepUsers = async () => {
         let cacheList = await Information.findOne({ infoType: 'cacheList' });
-        let now = new Date();
+        let now = Date.now();
         let cacheLifetime = 30000;
         let users = 0;
         users += this.users.cache.sweep(user => { 

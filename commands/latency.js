@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js'),
 
 module.exports = {
 	description: "Check the bot's latency.",
+	category: 'semblance',
 	usage: {
 		"": ""
 	},

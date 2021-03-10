@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../cons
 
 module.exports = {
     description: "Used for editing information on the beta and update commands",
+    category: 'developer',
     usage: {
         "<beta/update>": "arguments for deciding which information you want to edit"
     },

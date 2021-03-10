@@ -2,7 +2,8 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../cons
 { sirhGuildID } = require('../config.js');
 
 module.exports = {
-  description: "This command will give you the the notification role for Semblance related announcements",
+  description: "This command will give you the the notification role for Semblance related announcements(Only SirH's server)",
+  category: 'utility',
   usage: {
     "<add/remove>": "Gives the notification role or removes it depending on if you typed 'add' or 'remove'"
   },

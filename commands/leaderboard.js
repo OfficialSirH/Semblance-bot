@@ -4,7 +4,8 @@ const { MessageEmbed } = require('discord.js'),
 	{ Information } = require('./edit.js');
 
 module.exports = {
-	description: "Get a list of the top voters of the week.",
+	description: "Get a list of the top voters of the month.",
+	category: 'semblance',
 	usage: {
 		"": ""
 	},

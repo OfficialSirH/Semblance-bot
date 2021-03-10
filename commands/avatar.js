@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../cons
 
 module.exports = {
 	description: "See a user's avatar.",
+	category: 'utility',
 	usage: {
 		"<userID/mention>": ""
 	},

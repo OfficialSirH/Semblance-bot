@@ -3,6 +3,7 @@ const { MessageEmbed, MessageAttachment } = require('discord.js'),
 
 module.exports = {
     description: "View epic videos of Archie dancing.",
+    category: 'fun',
     usage: {
         "": ""
     },

@@ -4,6 +4,7 @@ const { MessageEmbed } = require('discord.js'),
 
 module.exports = {
     description: "",
+    category: 'help',
     usage: {
         "": ""
     },

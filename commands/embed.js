@@ -6,6 +6,7 @@ let embedList = [];
 
 module.exports = {
 	description: "Create an embedded message with this command",
+	category: 'admin',
 	usage: {
 		"<setup or help>": "Specify whether you want to setup an embed or see the help for embed creation."
 	},

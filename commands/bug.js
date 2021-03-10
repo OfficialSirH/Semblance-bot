@@ -9,6 +9,7 @@ const { MessageEmbed, MessageAttachment, Collection, Permissions } = require('di
 
 module.exports = {
     description: "Big epicc bug reporting feature exclusively for C2S server.",
+    category: 'c2sServer',
     usage: {
         "help/report/<bugID>": ""
     },

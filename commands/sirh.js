@@ -2,6 +2,7 @@
 
 module.exports = {
     description: "Secret command about SirH",
+    category: 'secret',
     usage: {
         "": ""
     },

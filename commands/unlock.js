@@ -1,9 +1,10 @@
 ﻿module.exports = {
     description: "Unlock the current channel, or all the public channels.",
+    category: 'admin',
     usage: {},
     examples: {},
     aliases: [],
-    permissionRequired: 2, // 0 All, 1 Helper, 2 JR.Mod, 3 Mod, 4 SR.Mod, 5 Exec, 6 Admin, 7 Promise#0001
+    permissionRequired: 2, // 0 All, 1 Helper, 2 JR.Mod, 3 Mod, 4 SR.Mod, 5 Exec, 6 Admin, 7 SirH#7157
     checkArgs: (args) => {
         if (args[0] == "-public" && args.length == 1) return true;
         else if (!args.length) return true;

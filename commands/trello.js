@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../cons
 
 module.exports = {
   description: "Provides link to Semblance's Trello Board",
+  category: 'semblance',
   usage: {
       "": ""
   },

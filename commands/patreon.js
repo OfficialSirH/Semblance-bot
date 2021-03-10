@@ -4,6 +4,7 @@ const { MessageEmbed, MessageAttachment } = require('discord.js'),
 
 module.exports = {
 	description: "Provides the link to SirH's Patreon page.",
+	category: 'semblance',
 	usage: {
 		"": ""
 	},

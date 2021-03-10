@@ -2,6 +2,7 @@ const { communistSemblance } = require('../config.js'), { MessageEmbed, Util } =
 
 module.exports = {
     description: "",
+    category: 'fun',
     aliases: ['rpsls'],
     usage: {
         "": ""

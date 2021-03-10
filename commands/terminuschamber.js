@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js'),
 
 module.exports = {
     description: "Details on how to obtain each node within the Terminus Chamber",
+    category: 'game',
     usage: {
         "": ""
     },

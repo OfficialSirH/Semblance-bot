@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'), {randomColor} = require('../../constants'),
     fetch = require('node-fetch');
-
+/* /bfdwebhook */
 module.exports = (client) => {
     const baseURL = 'https://botsfordiscord.com/api';
 

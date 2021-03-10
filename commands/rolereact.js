@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
     description: "Create a role reaction message easily with this.",
+    category: 'admin',
     usage: {
         "<emoji> <role> <msg>": "create the role message with this."
     },

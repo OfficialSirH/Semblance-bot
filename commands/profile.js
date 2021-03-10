@@ -3,6 +3,7 @@ const {randomColor} = require("../constants");
 
 module.exports = {
 	description: "Get info on a specified user or yourself by default.",
+	category: 'utility',
 	usage: {
 		"": ""
 	},

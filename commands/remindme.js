@@ -4,6 +4,7 @@ const { MessageEmbed } = require('discord.js'),
 
 module.exports = {
 	description: "Set a reminder for yourself.",
+	category: 'utility',
 	usage: {
 		"<time(minutes)> <reminder>": ""
 	},

@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js'), { currentLogo } = require('../co
 
 module.exports = {
 	description: "Get info on the latest beta.",
+	category: 'game',
 	usage: {
 		"": ""
 	},

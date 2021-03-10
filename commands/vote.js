@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js'),
 
 module.exports = {
 	description: "Lists websites where you can vote for Semblance.",
+	category: 'semblance',
 	usage: {
 		"": ""
 	},

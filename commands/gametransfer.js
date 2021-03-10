@@ -8,6 +8,7 @@
 
 module.exports = {
 	description: "See a step-by-step guide to transfering your game progress into the cloud and onto another device.",
+	category: 'game',
 	usage: {
 		"": ""
 	},

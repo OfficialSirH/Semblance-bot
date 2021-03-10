@@ -5,6 +5,7 @@ const fs = require('fs'),
 
 module.exports = {
     description: "",
+    category: 'calculator',
     usage: {
         "": ""
     },

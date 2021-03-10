@@ -4,6 +4,7 @@ const { MessageEmbed } = require('discord.js'),
 
 module.exports = {
     description: "Get help with the item calculator commands",
+    category: 'help',
     usage: {
         "": ""
     },

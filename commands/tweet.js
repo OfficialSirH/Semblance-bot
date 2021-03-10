@@ -2,6 +2,7 @@ const Twitter = require("twitter"), twClient = new Twitter(JSON.parse(process.en
 
 module.exports = {
 	description: "Get the most recent tweet from any twitter user.",
+	category: 'developer',
 	usage: {
 		"<twitter name>": "input the name of a user from twitter."
 	},
