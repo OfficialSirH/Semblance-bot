@@ -11,8 +11,8 @@ const { sirhID, prefix, c2sGuildID, sirhGuildID, lunchGuildID, ignoredGuilds } =
  */
 
 async function checkForGitHubUpdate(message) {
-	if (message.channel.name == 'semblance-updates' && message.guild.id == sirhGuildID && message.author.username == 'GitHub') {
-		let infoHandler = await Information.findOneAndUpdate({ infoType: "github" }, { $set: { info: message.embeds[0].description.substring(message.embeds[0].description.indexOf(')') + 2), updated: true } }, { new: true });
+	if (message.channel.name == 'semblance-updates' && message.guild.id == sirhGuildID && message.author.username == 'GitHub' && message.embeds[0].title.includes('master')) {
+		let infoHandler = await Information.findOneAndUpdate({ infoType: "github" }, { $set: { info: message.embeds[0].description, updated: true } }, { new: true });
 		return true;
 	}
 	return false;

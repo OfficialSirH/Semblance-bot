@@ -1,5 +1,6 @@
-const { MessageEmbed } = require('discord.js'), {randomColor} = require('../../constants'),
-    { sirhGuildID } = require('../../config'), BotList = require('botlist.space');
+const { MessageEmbed } = require('discord.js'), {randomColor} = require("../../constants"),
+    VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
+    { sirhGuildID } = require('../../config.js'), BotList = require('botlist.space');
  
 
 
@@ -24,13 +25,49 @@ module.exports = (client) => {
     });
      
     botListWebsocket.on('upvote', (event) => {
-        let embed = new MessageEmbed()
-            .setAuthor(event.user.getTag(), event.user.getAvatarURL())
-            .setColor(randomColor)
-            .setThumbnail(event.user.getAvatarURL())
-            .setDescription(`Thanks for voting for Semblance on botlist.space, ${event.user.getTag()}! :D`);
-        client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes').send(embed);
-        console.log(event.user.username + 'has upvoted my bot: ' + event.bot.username);
+        if (!!!client.readyAt) return;
+        const user = event.user;
+		let channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes');
+			try {
+				console.log(`${user.getTag()} just voted!`);
+				let playerData = await GameModel.findOne({ player: user });
+				let earningsBoost = 3600 * 6;
+				let description = `Thanks for voting for Semblance on botlist.space!! :D`;
+				
+                if (playerData)
+					playerData = await GameModel.findOneAndUpdate({ player: user }, { $set: { money: playerData.money + (playerData.idleProfit * earningsBoost) } }, { new: true });
+				
+                let embed = new MessageEmbed()
+					.setAuthor(`${user.getTag()}`, user.getAvatarURL())
+					.setThumbnail(user.getAvatarURL())
+					.setColor(randomColor)
+					.setDescription(description)
+					.setFooter(`${user.getTag()} has voted.`);
+				channel.send(embed);
+
+			} catch (err) {
+
+				console.log(err);
+				try {
+					let embed = new MessageEmbed()
+						.setAuthor(`<@${user}>`)
+						.setColor(randomColor)
+						.setDescription(`Thanks for voting for Semblance on Top.gg!! :D`)
+						.setFooter(`${user} has voted.`);
+					channel.send(embed);
+				} catch (err) {
+					console.log(err);
+				}
+			}
+
+
+			let existingUser = await VoteModel.findOne({ user: user.id });
+			if (existingUser) {
+				existingUser = await VoteModel.findOneAndUpdate({ user: user.id }, { $set: { voteCount: existingUser.voteCount + 1 } }, { new: true });
+			} else {
+				const voteHandler = new VoteModel({ user: user.id });
+				await voteHandler.save();
+			}
     });
      
     botListWebsocket.on('close', (event) => {

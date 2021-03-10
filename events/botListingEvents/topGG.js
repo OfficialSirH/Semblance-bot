@@ -8,7 +8,7 @@ module.exports = (client) => {
 	}, client);
 
 	dbl.webhook.on('ready', hook => {
-		console.log(`Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
+		console.log(`Top.gg Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
 		setInterval(() => {
 			if (client.shard != null && client.shard) {
 				dbl.postStats(client.guilds.cache.size, client.shard.ids, client.shard.count);
