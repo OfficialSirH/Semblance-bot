@@ -9,7 +9,7 @@ module.exports = (client) => {
 	}, client);
 
     discordbl.webhook.on('ready', hook => {
-        console.log(`botsfordiscord.com Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
+        console.log(`discordbotlist.com Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
     });
 
     discordbl.webhook.on('posted', () => { 

@@ -15,6 +15,6 @@ module.exports = (client) => {
             },
             body: JSON.stringify(data)
         })).json();
-        console.log(`discord.bots.gg response: ${r}`);
+        console.log(`discord.bots.gg response: ${r ? `guilds: ${r.guildCount} - shards: ${r.shardCount}` : r}`);
     }, 1800000);
 }
