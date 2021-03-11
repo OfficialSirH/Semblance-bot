@@ -5,12 +5,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require("../../c
 
 
 module.exports = (client) => {
-    const botListClient = new BotList.Client({ id: client.user.id, botToken: JSON.parse(process.env.botListSpaceAuth).Auth }),
-        botListWebsocket = new BotList.WebSocket({ tokens: [JSON.parse(process.env.botListSpaceAuth).Auth], reconnect: true });
-    
-    setInterval(() => 
-    botListClient.postServerCount(client.guilds.cache.size).then((bot) => console.log("Server count post to botlist.space was successful")).catch((err) => console.error(err))
-    , 1800000);
+    const botListWebsocket = new BotList.WebSocket({ tokens: [JSON.parse(process.env.botListSpaceAuth).Auth], reconnect: true });
 
     botListWebsocket.on('connected', () => {
         console.log('Successfully connected to the botlist.space gateway');

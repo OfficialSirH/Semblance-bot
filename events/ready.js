@@ -23,6 +23,11 @@ module.exports = (client) => {
 
         setInterval(() => showMyActivity(client), 30000);
 
+        const botListClient = new BotList.Client({ id: client.user.id, botToken: JSON.parse(process.env.botListSpaceAuth).Auth });
+        client.setInterval(() => 
+        botListClient.postServerCount(client.guilds.cache.size).then((bot) => console.log("Server count post to botlist.space was successful")).catch((err) => console.error(err))
+        , 1800000);
+
         const commands = client.commands;
 
         /*
