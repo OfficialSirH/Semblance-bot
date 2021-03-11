@@ -55,7 +55,8 @@ class DiscordBLWebhook extends EventEmitter {
   }
 
   _handleRequest(req, res) {
-    if (req.url === this.path && req.method === 'OPTIONS') {
+    if (req.url === this.path && req.method === 'OPTIONS') return this._returnTestResponse(res, 200, 'Successful test');
+    if (req.url === this.path && req.method === 'POST') {
       if (this.auth && this.auth !== req.headers.authorization) return this._returnResponse(res, 403);
       if (req.headers['content-type'] !== 'application/json') return this._returnResponse(res, 400);
       let data = '';
@@ -95,6 +96,12 @@ class DiscordBLWebhook extends EventEmitter {
       return this._returnResponse(res, 404);
     }
     return undefined;
+  }
+
+  _returnTestResponse(res, statusCode, data) {
+    console.log('test vote was successful');
+    res.statusCode = statusCode;
+    res.end(data);
   }
 
   _returnResponse(res, statusCode, data) {
