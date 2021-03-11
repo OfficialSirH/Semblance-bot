@@ -1,11 +1,10 @@
 const { MessageEmbed } = require('discord.js'),
-	randomColor = require("../constants/colorRandomizer.js"),
-	msToTime = require('../constants/msToTime.js'),
-	Reminder = require('../models/Reminder.js'),
-	alphabet = "abcdefghijklmnopqrstuvwxyz";
+	{randomColor, msToTime} = require("../constants"),
+	Reminder = require('../models/Reminder.js');
 
 module.exports = {
 	description: "Set a reminder for yourself.",
+	category: 'utility',
 	usage: {
 		"<time(minutes)> <reminder>": ""
 	},
@@ -31,9 +30,9 @@ module.exports = {
 
 module.exports.run = async (client, message, args) => {
 	let timeAmount = /(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,2})h)?(?:(?<minutes>\d{1,2})m)?/i.exec(args[0]);
-	if (timeAmount == null) return message.reply("Your input for time is invalid, please try again.").then(msg => msg.delete({ timeout:5000 })); 
+	if (timeAmount == null) return message.reply("Your input for time is invalid, please try again.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000)); 
 	const { groups: { days = 0, hours = 0, minutes = 0 }} = timeAmount;
-	if ([days, hours, minutes].every(time => !time)) return message.reply("Your input for time was invalid, please try again.").then(msg => msg.delete({ timeout: 5000 }));
+	if ([days, hours, minutes].every(time => !time)) return message.reply("Your input for time was invalid, please try again.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000));
 
 	let reminder = args.splice(1, args.length);
 	
@@ -44,7 +43,7 @@ module.exports.run = async (client, message, args) => {
 	let userAvatar = message.author.displayAvatarURL();
 	let embed = new MessageEmbed()
 		.setTitle("Reminder")
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.setThumbnail(userAvatar)
 		.setDescription(`I'll remind you in ${msToTime(totalTime)} for your reminder \n **Reminder**: ${reminder.join(" ")}`)
 		.setFooter(`Command called by ${message.author.tag}`, userAvatar);

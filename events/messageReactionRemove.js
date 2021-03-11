@@ -1,9 +1,8 @@
-const { sembID } = require('../config'), 
-    { reactionToRole } = require('../commands/rolereact.js');
+const { reactionToRole } = require('../commands/rolereact.js');
 
 module.exports = (client) => {
     client.on("messageReactionRemove", (reaction, user) => {
-        if (user.id == sembID) return;
+        if (user.id == client.user.id) return;
         reactionToRole(reaction, user, false);
     });
 }

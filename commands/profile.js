@@ -1,8 +1,9 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js');
-const randomColor = require("../constants/colorRandomizer.js");
+const {randomColor} = require("../constants");
 
 module.exports = {
 	description: "Get info on a specified user or yourself by default.",
+	category: 'utility',
 	usage: {
 		"": ""
 	},
@@ -40,7 +41,7 @@ async function guildProfileEmbed(message, member) {
 	let embed = new MessageEmbed()
 		.setTitle("Guild User Profile")
 		.setDescription(`User data for ${member}:`)
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
 		.addFields(
 			{ name: "Username", value: member.user.tag, inline: true },
@@ -59,7 +60,7 @@ async function userProfileEmbed(message, user) {
 	let embed = new MessageEmbed()
 		.setTitle("User Profile")
 		.setDescription(`User data for ${user}:`)
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.setThumbnail(user.displayAvatarURL({ dynamic: true }))
 		.addFields(
 			{ name: "Username", value: user.tag, inline: true },

@@ -1,7 +1,8 @@
-const { MessageEmbed, MessageAttachment } = require('discord.js'), { metabit } = require('./emojis');
+const { MessageEmbed, MessageAttachment } = require('discord.js'), { metabit } = require('../config');
 
 module.exports = {
     description: "A detailed explanation of how to obtain Metabits faster",
+    category: 'game',
     usage: {
         "": ""
     },

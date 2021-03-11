@@ -1,41 +1,41 @@
-const { Client, MessageAttachment, MessageEmbed } = require("discord.js"),
+const { MessageEmbed } = require("discord.js"), DBL = require("dblapi.js"),
 	VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
-	{ sirhGuildID } = require('../../config.js');
-	let client = new Client();
-const randomColor = require("../../constants/colorRandomizer.js"),
-	fs = require("fs");
-//const topGGAuth = ("./topGGAuth.json");
-const DBL = require("dblapi.js");
-var dbl = new DBL(JSON.parse(process.env.topGGAuth).Auth, {
-	webhookPort: process.env.PORT, webhookAuth: JSON.parse(process.env.topGGAuth).webAuth
-}, client);
+	{ sirhGuildID } = require('../../config.js'), {randomColor} = require("../../constants");
+
+module.exports = (client) => {
+	const dbl = new DBL(JSON.parse(process.env.topGGAuth).Auth, {
+		webhookPort: process.env.PORT, webhookAuth: JSON.parse(process.env.topGGAuth).webAuth
+	}, client);
+
 	dbl.webhook.on('ready', hook => {
-		console.log(`Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
+		console.log(`Top.gg Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
 		setInterval(() => {
 			if (client.shard != null && client.shard) {
 				dbl.postStats(client.guilds.cache.size, client.shard.ids, client.shard.count);
 			} else {
 				dbl.postStats(client.guilds.cache.size);
-            }
+			}
 		}, 1800000);
 	});
+
 	dbl.webhook.on('vote', vote => {
-		var channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes');
+		if (!!!client.readyAt) return;
+		let channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes');
 		if (vote.type == 'test') return console.log("Test Vote Completed.");
-		var user = client.users.fetch(vote.user, { cache: false }).then(async (u) => {
+		client.users.fetch(vote.user, { cache: false }).then(async (u) => {
 			try {
 				console.log(`${u.tag} just voted!`);
-				var playerData = await GameModel.findOne({ player: vote.user });
-				var earningsBoost = (vote.isWeekend) ? 3600 * 12 : 3600 * 6;
-				var description = `Thanks for voting for Semblance on Top.gg!! :D`;
+				let playerData = await GameModel.findOne({ player: vote.user });
+				let earningsBoost = (vote.isWeekend) ? 3600 * 12 : 3600 * 6;
+				let description = `Thanks for voting for Semblance on Top.gg!! :D`;
 				if (playerData) {
 					description += (vote.isWeekend) ? `\nAs a voting bonus *and* being the weekend, you have earned ***12*** hours of idle profit for Semblance's Idle Game!` : `\nAs a voting bonus, you have earned **6** hours of idle profit for Semblance's Idle Game!`;
 					playerData = await GameModel.findOneAndUpdate({ player: vote.user }, { $set: { money: playerData.money + (playerData.idleProfit * earningsBoost) } }, { new: true });
 				}
-				var embed = new MessageEmbed()
+				let embed = new MessageEmbed()
 					.setAuthor(`${u.tag}`, u.displayAvatarURL())
 					.setThumbnail(u.displayAvatarURL())
-					.setColor(randomColor())
+					.setColor(randomColor)
 					.setDescription(description)
 					.setFooter(`${u.tag} has voted.`);
 				channel.send(embed);
@@ -44,9 +44,9 @@ var dbl = new DBL(JSON.parse(process.env.topGGAuth).Auth, {
 
 				console.log(err);
 				try {
-					var embed = new MessageEmbed()
+					let embed = new MessageEmbed()
 						.setAuthor(`<@${vote.user}>`)
-						.setColor(randomColor())
+						.setColor(randomColor)
 						.setDescription(`Thanks for voting for Semblance on Top.gg!! :D`)
 						.setFooter(`${vote.user} has voted.`);
 					channel.send(embed);
@@ -56,7 +56,7 @@ var dbl = new DBL(JSON.parse(process.env.topGGAuth).Auth, {
 			}
 
 
-			var existingUser = await VoteModel.findOne({ user: u.id });
+			let existingUser = await VoteModel.findOne({ user: u.id });
 			if (existingUser) {
 				existingUser = await VoteModel.findOneAndUpdate({ user: u.id }, { $set: { voteCount: existingUser.voteCount + 1 } }, { new: true });
 			} else {
@@ -67,10 +67,4 @@ var dbl = new DBL(JSON.parse(process.env.topGGAuth).Auth, {
 		});
 			
 	});
-
-
-module.exports = {
-	FixClient: (mainClient) => {
-		client = mainClient;
-    }
 }

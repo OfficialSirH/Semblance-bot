@@ -1,5 +1,5 @@
 const Twitter = require("twitter"), twClient = new Twitter(JSON.parse(process.env.twitter)),
-	fetch = require("node-fetch"), { c2sID, lunchGuildID } = require('../config');
+	fetch = require("node-fetch"), { c2sGuildID, lunchGuildID } = require('../config');
 
 let current_id = null, screen_name = "ComputerLunch";
 
@@ -23,7 +23,7 @@ module.exports = (client) => twClient.get('statuses/user_timeline', {
                 content: `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`
             })
         });
-        let guild = client.guilds.cache.get(c2sID), channel = guild.channels.cache.find(c => c.name == "cells-tweets");
+        let guild = client.guilds.cache.get(c2sGuildID), channel = guild.channels.cache.find(c => c.name == "cells-tweets");
         channel.send(`Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`);
   
         guild = client.guilds.cache.get(lunchGuildID), channel = guild.channels.cache.find(c => c.name == 'tweets');

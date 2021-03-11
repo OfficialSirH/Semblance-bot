@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'),
-    randomColor = require('../constants/colorRandomizer'),
+    {randomColor} = require('../constants'),
     GameModel = require('../models/Game');
 
 module.exports = {
@@ -14,7 +14,7 @@ module.exports = {
         let embed = new MessageEmbed()
             .setTitle(`${player.username}'s gamestats`)
             .setAuthor(player.tag, player.avatarURL || player.displayAvatarURL())
-            .setColor(randomColor())
+            .setColor(randomColor)
             .setThumbnail(player.avatarURL || player.displayAvatarURL())
             .addFields(
                 { name: 'Level', value: statsHandler.level },

@@ -1,11 +1,8 @@
 const { GameModel } = require('../commands/game.js'),
     Votes = require('../models/Votes.js'),
     { Information } = require('../commands/edit'),
-    { MessageEmbed } = require('discord.js'),
-    { c2sID } = require('../config');
-
-    let topGG;
-    let discordBoats;
+    { MessageEmbed, Collection } = require('discord.js'),
+    { c2sGuildID } = require('../config');
 
     let alternateActivity = false;
     
@@ -23,12 +20,6 @@ const { GameModel } = require('../commands/game.js'),
 module.exports = (client) => {
     client.on("ready", async () => {
         console.log(`Logged in as ${client.user.tag}!`);
-        setTimeout(function () {
-            topGG = require("../commands/websiteScripts/topGG.js");
-            topGG.FixClient(client);
-            discordBoats = require("../commands/websiteScripts/DiscordBoat.js");
-            discordBoats(client);
-        }, 500);
 
         setInterval(() => showMyActivity(client), 30000);
 
@@ -38,18 +29,17 @@ module.exports = (client) => {
         Exclusively cache any users from the game and vote database that aren't already cached
         */
         const cacheList = await Information.findOne({ infoType: 'cacheList' });
-        let newCachedUsers = [];
+        const cacheCollection = new Collection(cacheList.list.map(i => [i, 1]));
         const gameList = await GameModel.find({});
         gameList.forEach(userData => {
-            if (!cacheList.list.includes(userData.player)) newCachedUsers.push(userData.player);
+            if (!cacheCollection.has(userData.player)) cacheCollection.set(userData.player);
         });
         const voteList = await Votes.find({});
         voteList.forEach(voteData => {
-            if (!cacheList.list.includes(voteData.user)) newCachedUsers.push(voteData.user);
+            if (!cacheCollection.has(voteData.user)) cacheCollection.set(voteData.user);
         });
-        let newCacheList = [...cacheList.list, ...newCachedUsers];
-        let updatedCacheList = await Information.findOneAndUpdate({ infoType: 'cacheList' }, { $set: { list: newCacheList } }, { new: true });
-        console.log(`The cache list has gained ${newCachedUsers.length}, which now makes the cache list have a total of ${updatedCacheList.list.length}.`);
+        const updatedCacheList = await Information.findOneAndUpdate({ infoType: 'cacheList' }, { $set: { list: cacheCollection.keyArray() } }, { new: true });
+        console.log(`The cache list has gained ${cacheCollection - cacheList.list.length}, which now makes the cache list have a total of ${cacheCollection.size}.`);
 
         /* Slash Command setup */
         let slash_commands = await client.api.applications(client.user.id).commands.get();
@@ -71,7 +61,7 @@ module.exports = (client) => {
                         .setAuthor(client.user.tag, client.user.displayAvatarURL())
                         .setDescription(`**${infoHandler.info}**`);
 
-                    client.guilds.cache.get(c2sID).channels.cache.find(c => c.name == 'semblance').send(embed);
+                    client.guilds.cache.get(c2sGuildID).channels.cache.find(c => c.name == 'semblance').send(embed);
                 }
             });
         //await CommandCounter.deleteMany({});

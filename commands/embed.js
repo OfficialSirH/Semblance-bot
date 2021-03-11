@@ -1,11 +1,12 @@
-const { MessageEmbed, MessageAttachment } = require('discord.js');
-const randomColor = require("../constants/colorRandomizer.js");
+const { MessageEmbed, MessageAttachment, Permissions } = require('discord.js');
+const {randomColor} = require("../constants");
 let embeddingUser = [];
 let sembMessages = [];
 let embedList = [];
 
 module.exports = {
 	description: "Create an embedded message with this command",
+	category: 'admin',
 	usage: {
 		"<setup or help>": "Specify whether you want to setup an embed or see the help for embed creation."
 	},
@@ -15,6 +16,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
+	return message.reply("**Disabled until further notice**\nReason: Needs major changes to functionality for better convenience, performance, and easier understanding.");
 	if (args[0] == "help") return embedCreationHelp(message);
 	if (args[0] == "setup") return embedSetup(client, message);
 }
@@ -56,7 +58,7 @@ module.exports.run = async (client, message, args) => {
 			sembMessages.splice(arrayPos, 1);
 			embedList.splice(arrayPos, 1);
 			message.reply("Embed has been cancelled. This message will delete in 5 seconds.")
-				.then(thisThing => { thisThing.delete({ timeout: 5000 }) })
+				.then(thisThing => { setTimeout(() =>{ if(!thisThing.deleted) thisThing.delete() }, 5000) })
 				.catch(console.log("Something didn't work"));
 			return;
 		}
@@ -83,7 +85,7 @@ module.exports.run = async (client, message, args) => {
 			}
 			let authorIcon;
 			if (msg.indexOf(":me") >= 0) {
-				authorIcon = message.author.avatarURL();
+				authorIcon = message.author.displayAvatarURL();
 				msg = msg.replace(/:me/, "");
 			} else if (msg.indexOf(":server") >= 0) {
 				authorIcon = message.guild.iconURL();
@@ -102,7 +104,7 @@ module.exports.run = async (client, message, args) => {
 				return;
 			}
 			if (msg == "me") {
-				embedEdit.push(message.author.avatarURL());
+				embedEdit.push(message.author.displayAvatarURL());
 			} else if (msg == "server") {
 				embedEdit.push(message.guild.iconURL());
 			} else if (msg.indexOf("https") == 0) {
@@ -131,7 +133,7 @@ module.exports.run = async (client, message, args) => {
 				return;
 			}
 			if (msg == 'random') {
-				embedEdit.push(randomColor());
+				embedEdit.push(randomColor);
 			} else if (msg.length == 7 && msg.indexOf("#") == 0) {
 				embedEdit.push(msg);
 			} else if (msg.length == 6) {
@@ -147,7 +149,7 @@ module.exports.run = async (client, message, args) => {
 				sembMessages[arrayPos].edit("Footer? If you'd like an icon in footer, use :me or :server with your text. Type 'null' to skip");
 				return;
 			} else if (msg == "me") {
-				embedEdit.push(message.author.avatarURL());
+				embedEdit.push(message.author.displayAvatarURL());
 			} else if (msg == "server") {
 				embedEdit.push(message.guild.iconURL());
 			} else if (msg.indexOf("https") == 0) {
@@ -163,7 +165,7 @@ module.exports.run = async (client, message, args) => {
 				return;
 			} else if (msg.indexOf(":me") >= 0) {
 				msg = msg.replace(/:me/, "");
-				embedEdit.push([msg, message.author.avatarURL()]);
+				embedEdit.push([msg, message.author.displayAvatarURL()]);
 			} else if (msg.indexOf(":server") >= 0) {
 				msg = msg.replace(/:server/, "");
 				embedEdit.push([msg, message.guild.iconURL()]);
@@ -235,7 +237,7 @@ module.exports.run = async (client, message, args) => {
 			if (fields.length == 24) {
 				try {
 					sembMessages[arrayPos].edit("You have reached the max amount of fields.")
-						.then(() => message.delete({ timeout: 3000 }))
+						.then(() => setTimeout(() => { if(!message.deleted) message.delete() }, 3000))
 						.catch(console.error);
 				} catch (err) { console.log(err) } 
             }
@@ -243,14 +245,14 @@ module.exports.run = async (client, message, args) => {
 	}
 
 	async function embedCreationHelp(message) {
-		if (!message.member.hasPermission("MANAGE_MESSAGES")) {
+		if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
 			message.reply("You don't have enough permission to use this command. Required Perms: Manage Messages");
 			return;
 		}
 		let embed = new MessageEmbed()
 			.setTitle("Embed Creation Help")
-			.setAuthor(message.author.tag, message.author.avatarURL())
-			.setColor(randomColor())
+			.setAuthor(message.author.tag, message.author.displayAvatarURL())
+			.setColor(randomColor)
 			.setImage("https://i.imgur.com/p5BOm9N.png")
 			.setDescription("The embed creator is simple, you just start with s!embed and just follow what Semblance tells you. " +
 				"If you type :finish in the middle of the steps, it will automatically finish the embed with what you've completed, " +

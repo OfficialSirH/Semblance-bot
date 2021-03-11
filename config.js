@@ -21,7 +21,7 @@ fs.readdir("./images/", (err, files) => {
         prestigeList: attachments['PrestigeList'],
         archieDance: attachments['ArchieDance'],
         patreon: attachments['Patreon_Mark_Coral'],
-        sembcommunist: attachments['CommunistSemblance'],
+        communistSemblance: attachments['CommunistSemblance'],
         nanobots: attachments['Nanobots'],
         mementoMori: attachments['MementoMori']
     });
@@ -29,15 +29,31 @@ fs.readdir("./images/", (err, files) => {
 
 module.exports = {
     prefix: "s!",
-    sembID: "794033850665533450",
     sirhID: "780995336293711875",
     adityaID: '506458497718812674',
-    c2sID: "488478892873744385",
+    c2sGuildID: "488478892873744385",
     lunchGuildID: '796153726586454077',
     sirhGuildID: "794054988224659490",
     ignoredGuilds: ["264445053596991498",
-            "439866052684283905",
-            "450100127256936458",
-            "110373943822540800",
-            "374071874222686211",], // TODO: Add 387812458661937152 back into list AFTER they verify the bot
+        "439866052684283905",
+        "450100127256936458",
+        "110373943822540800",
+        "374071874222686211",],
+    entropy: '<:entropy:742748357163745413>',
+    idea: '<:idea:775808337303437353>',
+    c2s: '<:CellToSing:498910740200161280>',
+    darwinium: '<:darwinium:742748359781122169>',
+    //metabitOG: '<:metabitOG:724684027419951177>',
+    metabit: '<:metabit:789526514524880906>',
+    mutagen: '<:mutagen:742748361852977184>',
+    fossil: '<:fossil:742748364625543239>',
+    trexBadge: '<:Dino_Gold:667471422334959619>',
+    trexSkull: '<:trex_skull:657015647359860767>',
+    singularity: '<:singularity:789526513812504617>',
+    nanobotUp: '<:NanobotUp:764149893937102858>',
+    nanobotDown: '<:NanobotDown:764149995032412180>',
+    darkMatter: '<:darkMatter:808445570078867496>',
+    stardust: '<:stardust:808445612013518868>',
+    energy: '<:energy:808445587803471922>',
+    sentience: '<:sentience:808445599078809670>'
 }

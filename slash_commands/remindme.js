@@ -1,8 +1,6 @@
 const { MessageEmbed } = require('discord.js'),
-    randomColor = require("../constants/colorRandomizer.js"),
-    msToTime = require('../constants/msToTime.js'),
     Reminder = require('../models/Reminder.js'),
-    { getAvatar } = require('../constants');
+    { getAvatar, randomColor, msToTime } = require('../constants');
 
 module.exports = {
     permissionRequired: 0,
@@ -39,7 +37,7 @@ module.exports = {
 
 		let embed = new MessageEmbed()
 			.setTitle("Reminder")
-			.setColor(randomColor())
+			.setColor(randomColor)
 			.setThumbnail(userAvatar)
 			.setDescription(`I'll remind you in ${msToTime(totalTime)} for your reminder \n **Reminder**: ${reminder}`)
 			.setFooter(`Command called by ${user.username}#${user.discriminator}`, userAvatar);

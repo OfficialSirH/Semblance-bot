@@ -1,9 +1,11 @@
 const fs = require('fs'),
     itemsList = JSON.parse(fs.readFileSync('./constants/itemsList.json', "utf8")),
-    { nameToScNo, bigToE, checkIfAllowedValue } = require('../constants/largeNumberConversion.js');
+    { nameToScNo, bigToE, checkIfAllowedValue } = require('../constants/largeNumberConversion.js'),
+    { MessageEmbed } = require('discord.js'), { randomColor } = require('../constants');
 
 module.exports = {
     description: "",
+    category: 'calculator',
     usage: {
         "": ""
     },
@@ -36,5 +38,13 @@ module.exports.run = async (client, message, args) => {
     // Math.floor(Math.log(resultingPrice)) =  itemCost * (level*Math.log(1.15));
     // (Math.floor(Math.log(resultingPrice) / itemCost)) = level*Math.log(1.15);
     // (Math.floor(Math.log(resultingPrice) / itemCost) / Math.log(1.15)) = level;
-    message.reply(`The cost for ${level} levels of ${itemInput} is ${bigToE(resultingPrice)} ${itemCostType} starting at level ${currentLevel}.`);
+    let embed = new MessageEmbed()
+        .setTitle("Item Calculator Results")
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
+        .setColor(randomColor)
+        .setDescription([`Chosen item: ${itemInput}`,
+            `Current item level: ${currentLevel}`,
+            `Item level goal: ${level + currentLevel}`,
+            `Resulting Price: ${bigToE(resultingPrice)} ${itemCostType}`].join('\n'));
+    message.reply(embed);
 }

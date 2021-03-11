@@ -1,7 +1,8 @@
-const { sembcommunist } = require('../config.js'), { MessageEmbed, Util } = require('discord.js');
+const { communistSemblance } = require('../config.js'), { MessageEmbed, Util } = require('discord.js');
 
 module.exports = {
     description: "",
+    category: 'fun',
     aliases: ['rpsls'],
     usage: {
         "": ""
@@ -20,8 +21,8 @@ module.exports.run = async (client, message, args) => {
     if (playerChoice == 'senate') {
         let embed = new MessageEmbed()
             .setDescription('I *am* the senate, which means ***WE*** win this round!')
-            .attachFiles(sembcommunist)
-            .setImage('attachment://CommunistSemblance.jpg');
+            .attachFiles(communistSemblance)
+            .setImage(communistSemblance.name);
         return message.reply(embed);
     }
     if (playerChoice == 'everything') return message.reply(`What the heck dude?! You don't need to use ***everything*** against ${sembChoice}!! You destroyed it after the *first* thing you threw at it, which was a nuclear bomb!!!`);

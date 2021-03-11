@@ -1,9 +1,10 @@
 const { MessageEmbed } = require('discord.js'),
-	randomColor = require('../constants/colorRandomizer.js'),
+	{randomColor} = require('../constants'),
 	{ currentLogo } = require('../config.js');
 
 module.exports = {
 	description: "Provides the links to the ingame music on the Fandom wiki and on Spotify.",
+	category: 'game',
 	usage: {
 		"": ""
 	},
@@ -14,11 +15,11 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
 	let embed = new MessageEmbed()
 		.setTitle("Music")
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.attachFiles(currentLogo)
-		.setThumbnail("attachment://Current_Logo.png")
-		.setDescription("Here's a link to the music <@" + message.author.id + ">\n" +
-			"[Fandom Wiki](https://cell-to-singularity-evolution.fandom.com/wiki/music)\n" +
-			"[Spotify Link](https://open.spotify.com/playlist/6XcJkgtRFpKwoxKleKIOOp?si=uR4gzciYQtKiXGPwY47v6w)");
+		.setThumbnail(currentLogo.name)
+		.setDescription([`Here's a link to the music, ${message.author.tag}`,
+			"[Fandom Wiki](https://cell-to-singularity-evolution.fandom.com/wiki/music)",
+			"[Spotify Link](https://open.spotify.com/playlist/6XcJkgtRFpKwoxKleKIOOp?si=uR4gzciYQtKiXGPwY47v6w)"].join('\n'));
 	message.channel.send(embed);	
 }

@@ -2,6 +2,7 @@ const { MessageEmbed } = require('discord.js');
 
 module.exports = {
 	description: "Secret",
+	category: 'game',
 	usage: {
 		"": ""
 	},
@@ -26,7 +27,7 @@ module.exports.run = async (client, message, args) => {
 			"**Secrets of the speedruns:**",
 			"8. Reach Singularity within 5 minutes.",
 			"9. Reach Singularity within 90 seconds!"].join("\n"));
-	message.author.send(embed);
+	message.author.send(embed).catch(err => message.channel.reply('Something went wrong while trying to send the message, you likely have your DMs closed, preventing you from receiving the message'));
 }
 
 async function fun(message) {

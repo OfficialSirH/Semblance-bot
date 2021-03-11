@@ -1,10 +1,10 @@
 const { MessageEmbed } = require('discord.js'),
-    randomColor = require('../constants/colorRandomizer.js'),
-    { trexBadge } = require('./emojis.js'),
-    { currentLogo } = require('../config.js');
+    {randomColor} = require('../constants'),
+    { currentLogo, trexBadge } = require('../config.js');
 
 module.exports = {
     description: "",
+    category: 'game',
     usage: {
         "": ""
     },
@@ -15,9 +15,9 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
 	let embed = new MessageEmbed()
 		.setTitle(`${trexBadge}Tyrannosaurus Rex`)
-		.setColor(randomColor())
+		.setColor(randomColor)
 		.attachFiles(currentLogo)
-		.setThumbnail("attachment://Current_Logo.png")
+		.setThumbnail(currentLogo.name)
 		.setDescription('The T-Rex, the rightful king of the Mesozoic Valley, can be unlocked at Rank 26 in the Mesozoic Valley, which will also earn you an achievement called, "Birth of a Tyrant".');
 	message.channel.send(embed);
 }
