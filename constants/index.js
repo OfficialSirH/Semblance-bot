@@ -3,7 +3,6 @@
 module.exports = {
     embedColor: 0x7289DA,
     hexColor: "7289DA",
-    randomColor: RandomColor.randomColor,
     getPermissionLevel: (member) => { return getPermissionLevel(member) },
     getAvatar: (user) => { 
         let avatarType = (user.avatar.startsWith('a_')) ? `${user.avatar}.gif` : `${user.avatar}.png`;
@@ -216,3 +215,5 @@ class RandomColor {
 		return "#"+red+green+blue;
 	}
 }
+
+module.exports.randomColor = RandomColor.randomColor;
