@@ -160,7 +160,7 @@ class DiscordBLAPI extends EventEmitter {
       //   data.shard_count = this.client.shards.size;
       // }
     }
-    const response = await this._request('post', `bots/${client.user.id}/stats`, data, true);
+    const response = await this._request('post', `bots/${this.client.user.id}/stats`, data, true);
     return response.body;
   }
 
