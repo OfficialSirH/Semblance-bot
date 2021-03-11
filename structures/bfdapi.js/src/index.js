@@ -158,7 +158,7 @@ class BFDAPI extends EventEmitter {
       //   data.shard_count = this.client.shards.size;
       // }
     }
-    const response = await this._request('post', `bot/${client.user.id}`, data, true);
+    const response = await this._request('post', `bot/${this.client.user.id}`, data, true);
     return response.body;
   }
 
