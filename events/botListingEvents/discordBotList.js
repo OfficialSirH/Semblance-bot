@@ -5,7 +5,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../../c
 /* /discordblwebhook */
 module.exports = (client) => {
     const discordbl = new DiscordBL(JSON.parse(process.env.discordBotListAuth).Auth, {
-		webhookPort: 8020, webhookAuth: JSON.parse(process.env.discordBotListAuth).webAuth
+		webhookPort: (Number(process.env.PORT)+2).toString(), webhookAuth: JSON.parse(process.env.discordBotListAuth).webAuth
 	}, client);
 
     discordbl.webhook.on('ready', hook => {

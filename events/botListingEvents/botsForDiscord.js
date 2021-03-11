@@ -5,7 +5,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../../c
 /* /bfdwebhook */
 module.exports = (client) => {
     const bfd = new BFD(JSON.parse(process.env.botsForDiscordAuth).Auth, {
-		webhookPort: 8040, webhookAuth: JSON.parse(process.env.botsForDiscordAuth).webAuth
+		webhookPort: (Number(process.env.PORT)+1).toString(), webhookAuth: JSON.parse(process.env.botsForDiscordAuth).webAuth
 	}, client);
 
     bfd.webhook.on('ready', hook => {
