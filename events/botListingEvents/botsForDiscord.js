@@ -16,7 +16,7 @@ module.exports = (client) => {
         console.log(`successfully posted stats to botsfordiscord.com`);
     });
 
-    bfd.webhook.on('vote', vote => {
+    bfd.webhook.on('vote', async vote => {
         if (!!!client.readyAt) return;
         if (vote.type == 'test') return console.log("Test Vote Completed.");
 		let channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes');

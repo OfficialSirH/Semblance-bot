@@ -24,7 +24,7 @@ module.exports = (client) => {
         console.log('Someone has invited my bot: ' + event.bot.username);
     });
      
-    botListWebsocket.on('upvote', (event) => {
+    botListWebsocket.on('upvote', async (event) => {
         if (!!!client.readyAt) return;
         const user = event.user;
 		let channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes');

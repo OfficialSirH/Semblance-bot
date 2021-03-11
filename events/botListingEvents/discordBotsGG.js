@@ -5,7 +5,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../../c
 module.exports = (client) => {
     const baseURL = 'https://discord.bots.gg/api/v1';
 
-    setInterval(() => {
+    setInterval(async function() {
         const data = { guildCount: client.guilds.cache.size };
         const r = await (await fetch(baseURL + '/bots/' + client.user.id + '/stats', {
             method: 'post',

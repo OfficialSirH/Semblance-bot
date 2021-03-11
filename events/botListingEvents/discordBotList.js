@@ -16,7 +16,7 @@ module.exports = (client) => {
         console.log(`successfully posted stats to botsfordiscord.com`);
     });
 
-    discordbl.webhook.on('vote', vote => {
+    discordbl.webhook.on('vote', async vote => {
         if (!!!client.readyAt) return;
 		let channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes');
 		client.users.fetch(vote.id, { cache: false }).then(async (u) => {
