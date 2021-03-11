@@ -8,7 +8,7 @@ module.exports = (client) => {
     const botListWebsocket = new BotList.WebSocket({ tokens: [JSON.parse(process.env.botListSpaceAuth).Auth], reconnect: true });
 
     botListWebsocket.on('connected', () => {
-        console.log('Successfully connected to the botlist.space gateway');
+
     });
      
     botListWebsocket.on('view', (event) => {
