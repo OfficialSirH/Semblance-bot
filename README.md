@@ -114,8 +114,6 @@
 
 - **s!emojis <main/bonus>** - Adds emojis to the server that the bot uses in its commands.
 
-- **s!rolereact <emoji> <role> <message>** - Role react creates a message that will allow users to gain a role you specify(either id or mention) by reacting to the message with the specified emoji. **Disclaimer: The role-react message will stop working when the bot either updates or restarts, so only use this for temporary use.**.
-
 - **s!say <channelMention> <message>** - Make announcements to any channel with Semblance, also, you can embed the message by adding 'embed' to the end of the message.
 
 - **s!embed <optional: help>** - starts the embed creator setup and adding 'help' as an argument in the command will show how to use the embed command properly.
