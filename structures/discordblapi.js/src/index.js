@@ -141,7 +141,7 @@ class DiscordBLAPI extends EventEmitter {
   async postStats(serverCount, shardId, shardCount) {
     if (!serverCount && !this.client) throw new Error('postStats requires 1 argument');
     const data = {};
-    data.users = client.guilds.cache.reduce((total, cur, ind) => total += cur.memberCount, 0);
+    data.users = this.client.guilds.cache.reduce((total, cur, ind) => total += cur.memberCount, 0);
     if (serverCount) {
       data.guilds = serverCount;
       // data.shard_id = shardId;

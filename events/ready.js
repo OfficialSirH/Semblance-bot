@@ -2,7 +2,8 @@ const { GameModel } = require('../commands/game.js'),
     Votes = require('../models/Votes.js'),
     { Information } = require('../commands/edit'),
     { MessageEmbed, Collection } = require('discord.js'),
-    { c2sGuildID } = require('../config');
+    { c2sGuildID } = require('../config'),
+    BotList = require('botlist.space');
 
     let alternateActivity = false;
     
