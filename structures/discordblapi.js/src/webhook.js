@@ -6,7 +6,7 @@ class DiscordBLWebhook extends EventEmitter {
   /**
    * Creates a new DBLWebhook Instance.
    * @param {number} port The port to run the webhook on.
-   * @param {string} [path='/dblwebhook'] The path for the webhook request.
+   * @param {string} [path='/discordblwebhook'] The path for the webhook request.
    * @param {string} [auth] The string for Authorization you set on the site for verification.
    * @param {http.Server} [server] An existing http server to connect with.
    */
