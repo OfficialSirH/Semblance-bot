@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
-    { currentLogo } = require('../config.js');
+    { currentLogo, prefix } = require('../config.js');
 
 module.exports = {
     description: "List of all Cell to Singularity related commands",
