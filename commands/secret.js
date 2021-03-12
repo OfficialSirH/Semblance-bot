@@ -26,7 +26,7 @@ module.exports.run = async (client, message, args) => {
 			"7. Between the savannah and the jungle section where the river splits them apart, you'll find the Amazonian Dolphin.",
 			"**Secrets of the speedruns:**",
 			"8. Reach Singularity within 5 minutes.",
-			"9. Reach Singularity within 90 seconds!"].join("\n"));
+			"9. Reach Singularity within 120 seconds!"].join("\n"));
 	message.author.send(embed).catch(err => message.channel.reply('Something went wrong while trying to send the message, you likely have your DMs closed, preventing you from receiving the message'));
 }
 
