@@ -11,7 +11,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	const adminCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'admin').map(key => `***\`${prefix}${key}\`***`)
+	const adminCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'admin').map(key => `**\`${prefix}${key}\`**`)
 	let embed = new MessageEmbed()
 		.setColor(randomColor)
 		.setTitle("**-> Admin Commands**")

@@ -13,10 +13,10 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	const serverCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'server').map(key => `***\`${prefix}${key}\`***`),
-		funCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'fun').map(key => `***\`${prefix}${key}\`***`),
-		utilityCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'utility').map(key => `***\`${prefix}${key}\`***`),
-		semblanceCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'semblance').map(key => `***\`${prefix}${key}\`***`);
+	const serverCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'server').map(key => `**\`${prefix}${key}\`**`),
+		funCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'fun').map(key => `**\`${prefix}${key}\`**`),
+		utilityCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'utility').map(key => `**\`${prefix}${key}\`**`),
+		semblanceCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'semblance').map(key => `**\`${prefix}${key}\`**`);
 	let embed = new MessageEmbed()
 		.setTitle("Miscellaneous Commands")
 		.setThumbnail(client.user.displayAvatarURL())

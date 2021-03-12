@@ -11,10 +11,9 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	const helpCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'help').map(key => `***\`${prefix}${key}\`***`), 
-		c2sCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'game').map(key => `***\`${prefix}${key}\`***`),
-		calculatorCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'calculator').map(key => `***\`${prefix}${key}\`***`),
-		c2sServerCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'c2sServer').map(key => `***\`${prefix}${key}\`***`);
+	const helpCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'help').map(key => `**\`${prefix}${key}\`**`), 
+		calculatorCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'calculator').map(key => `**\`${prefix}${key}\`**`),
+		c2sServerCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'c2sServer').map(key => `**\`${prefix}${key}\`**`);
 	let embed = new MessageEmbed()
 		.setTitle("Semblance Command List")
 		.setColor(randomColor)
@@ -23,11 +22,6 @@ module.exports.run = async (client, message, args) => {
 		.setThumbnail(currentLogo.name)
 		.setDescription(`**-> Help Commands**\n${helpCommands.join(', ')}`)
 		.addFields(
-			{
-				name: '**-> Cell to Singularity Commands**',
-				value: c2sCommands.join(', '),
-				inline: true
-			},
 			{
 				name: '**-> Cell to Singularity Server Commands**',
 				value: c2sServerCommands.join(', '),
