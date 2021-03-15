@@ -4,8 +4,9 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require("../../c
  
 
 
-module.exports = (client) => {
+module.exports.run = (client) => {
     const botListWebsocket = new BotList.WebSocket({ tokens: [JSON.parse(process.env.botListSpaceAuth).Auth], reconnect: true });
+	module.exports.bls = botListWebsocket;
 
     botListWebsocket.on('connected', () => {
 

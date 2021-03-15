@@ -10,6 +10,9 @@ const Semblance = require('./structures/Semblance'),
     	 	 	intents: [ "GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS" ]
     		}
 	}),
+	// express routing
+	express = require('express'),
+	app = express(),
 	// Database connection import
 	{ connect } = require('mongoose'),
 	// Client event handlers
@@ -31,6 +34,9 @@ const Semblance = require('./structures/Semblance'),
 	// Ping web host (Heroku)
 	stayActive = require('./stayActive.js');
 
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 // Listen to client events
 interactionCreate(client);
 message(client);
@@ -40,12 +46,24 @@ messageReactionRemove(client);
 messageUpdate(client);
 ready(client);
 // Listen to bot listing events
-botListSpace(client);
-botsForDiscord(client);
+botListSpace.run(client);
+botsForDiscord.run(client);
 discordBoat(client);
-discordBotList(client);
+discordBotList.run(client);
 discordBotsGG(client);
 topGG(client);
+
+app.route('/bfdwebhook')
+	.post(botsForDiscord.bfd.webhook._handleRequest);
+
+app.route('/discordblwebhook')
+	.post(discordBotList.dbl.webhook._handleRequest);
+
+app.get((req, res)=>{
+    res.status(404).send({url: req.originalUrl + ' not found'})
+});
+
+app.listen(process.env.PORT || 3000);
 // Check for Tweet from ComputerLunch
 setInterval(() => checkTweet(client), 2000);
 

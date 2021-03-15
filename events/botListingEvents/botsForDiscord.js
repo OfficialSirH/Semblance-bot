@@ -3,10 +3,11 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../../c
     VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
 	{ sirhGuildID } = require('../../config.js');
 /* /bfdwebhook */
-module.exports = (client) => {
+module.exports.run = (client) => {
     const bfd = new BFD(JSON.parse(process.env.botsForDiscordAuth).Auth, {
 		webhookPort: (Number(process.env.PORT)+1).toString(), webhookAuth: JSON.parse(process.env.botsForDiscordAuth).webAuth
 	}, client);
+	module.exports.bfd = bfd;
 
     bfd.webhook.on('ready', hook => {
         console.log(`botsfordiscord.com Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);

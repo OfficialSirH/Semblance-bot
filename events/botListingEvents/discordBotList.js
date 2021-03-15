@@ -3,10 +3,11 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../../c
     VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
 	{ sirhGuildID } = require('../../config.js');
 /* /discordblwebhook */
-module.exports = (client) => {
+module.exports.run = (client) => {
     const discordbl = new DiscordBL(JSON.parse(process.env.discordBotListAuth).Auth, {
 		webhookPort: (Number(process.env.PORT)+2).toString(), webhookAuth: JSON.parse(process.env.discordBotListAuth).webAuth
 	}, client);
+	module.exports.dbl = discordbl;
 
     discordbl.webhook.on('ready', hook => {
         console.log(`discordbotlist.com Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
