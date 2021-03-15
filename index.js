@@ -63,7 +63,7 @@ app.get((req, res)=>{
     res.status(404).send({url: req.originalUrl + ' not found'})
 });
 
-app.listen(process.env.PORT || 3000);
+app.listen(3000);
 // Check for Tweet from ComputerLunch
 setInterval(() => checkTweet(client), 2000);
 

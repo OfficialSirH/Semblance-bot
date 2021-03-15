@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'),
+const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
     { currentLogo, terminusChamber } = require('../config.js');
 
 module.exports = {
@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args) => {
     let embed = new MessageEmbed()
         .setTitle("Terminus Chamber")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor("RANDOM")
+        .setColor(randomColor)
         .attachFiles([currentLogo, terminusChamber])
         .setThumbnail(currentLogo.name)
         .setImage(terminusChamber.name)
