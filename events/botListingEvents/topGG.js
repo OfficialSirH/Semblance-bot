@@ -4,7 +4,7 @@ const { MessageEmbed } = require("discord.js"), DBL = require("dblapi.js"),
 
 module.exports.run = (client) => {
 	const dbl = new DBL(JSON.parse(process.env.topGGAuth).Auth, {
-		webhookPort: process.env.PORT, webhookAuth: JSON.parse(process.env.topGGAuth).webAuth
+		/*webhookPort: process.env.PORT,*/ webhookAuth: JSON.parse(process.env.topGGAuth).webAuth
 	}, client);
 
 	module.exports.dbl = dbl;
