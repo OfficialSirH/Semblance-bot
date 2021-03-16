@@ -60,7 +60,9 @@ app.route('/bfdwebhook')
 	.post(botsForDiscord.bfd.webhook._handleRequest);
 
 app.route('/discordblwebhook')
-	.options(discordBotList.dbl.webhook._returnTestResponse(res, 200, 'Successful test'))
+	.options(function (req, res) { 
+		discordBotList.dbl.webhook._returnTestResponse(res, 200, 'Successful test');
+	})
 	.post(discordBotList.dbl.webhook._handleRequest);
 
 app.get((req, res)=>{
