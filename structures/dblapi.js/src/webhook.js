@@ -55,9 +55,10 @@ class DBLWebhook extends EventEmitter {
   }
 
   _handleRequest(req, res) {
-    if (req.url === this.path && req.method === 'POST') {
-      if (this.auth && this.auth !== req.headers.authorization) return this._returnResponse(res, 403);
-      if (req.headers['content-type'] !== 'application/json') return this._returnResponse(res, 400);
+    if (req.url === '/dblwebhook' && req.method === 'POST') {
+      const auth = JSON.parse(process.env.discordBotListAuth).webAuth;
+      if (auth && auth !== req.headers.authorization) return _returnResponse(res, 403);
+      if (req.headers['content-type'] !== 'application/json') return _returnResponse(res, 400);
       let data = '';
       req.on('data', chunk => {
         data += chunk;
@@ -69,7 +70,7 @@ class DBLWebhook extends EventEmitter {
             if (data.query === '') data.query = undefined;
             if (data.query) data.query = querystring.parse(data.query.substr(1));
           } catch (e) {
-            return this._returnResponse(res, 400);
+            return _returnResponse(res, 400);
           }
           /**
            * Event that fires when the webhook has received a vote.
@@ -80,20 +81,20 @@ class DBLWebhook extends EventEmitter {
            * @param {boolean} isWeekend Whether the weekend multiplier is in effect, meaning users votes count as two.
            * @param {object} [query] The possible querystring parameters from the vote page.
            */
-          this.emit('vote', data);
-          return this._returnResponse(res, 200, 'Webhook successfully received');
+          emit('vote', data);
+          return _returnResponse(res, 200, 'Webhook successfully received');
         } else {
-          return this._returnResponse(res, 400);
+          return _returnResponse(res, 400);
         }
       });
     } else {
-      if (this.attached) {
+      /*if (this.attached) {
         for (const listener of this._listeners) {
           listener.call(this._server, req, res);
         }
         return undefined;
-      }
-      return this._returnResponse(res, 404);
+      }*/
+      return _returnResponse(res, 404);
     }
     return undefined;
   }
