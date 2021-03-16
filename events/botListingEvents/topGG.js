@@ -2,21 +2,25 @@ const { MessageEmbed } = require("discord.js"), DBL = require("dblapi.js"),
 	VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
 	{ sirhGuildID } = require('../../config.js'), {randomColor} = require("../../constants");
 
-module.exports = (client) => {
+module.exports.run = (client) => {
 	const dbl = new DBL(JSON.parse(process.env.topGGAuth).Auth, {
 		webhookPort: process.env.PORT, webhookAuth: JSON.parse(process.env.topGGAuth).webAuth
 	}, client);
 
+	module.exports.dbl = dbl;
+
 	dbl.webhook.on('ready', hook => {
 		console.log(`Top.gg Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
-		setInterval(() => {
-			if (client.shard != null && client.shard) {
-				dbl.postStats(client.guilds.cache.size, client.shard.ids, client.shard.count);
-			} else {
-				dbl.postStats(client.guilds.cache.size);
-			}
-		}, 1800000);
+		
 	});
+
+	setInterval(() => {
+		if (client.shard != null && client.shard) {
+			dbl.postStats(client.guilds.cache.size, client.shard.ids, client.shard.count);
+		} else {
+			dbl.postStats(client.guilds.cache.size);
+		}
+	}, 1800000);
 
 	dbl.webhook.on('vote', vote => {
 		if (!!!client.readyAt) return;

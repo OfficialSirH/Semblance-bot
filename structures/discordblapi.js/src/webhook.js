@@ -55,7 +55,6 @@ class DiscordBLWebhook extends EventEmitter {
   }
 
   _handleRequest(req, res) {
-    if (req.url === this.path && req.method === 'OPTIONS') return this._returnTestResponse(res, 200, 'Successful test');
     if (req.url === this.path && req.method === 'POST') {
       if (this.auth && this.auth !== req.headers.authorization) return this._returnResponse(res, 403);
       if (req.headers['content-type'] !== 'application/json') return this._returnResponse(res, 400);

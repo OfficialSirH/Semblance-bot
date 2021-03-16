@@ -51,19 +51,23 @@ botsForDiscord.run(client);
 discordBoat(client);
 discordBotList.run(client);
 discordBotsGG(client);
-topGG(client);
+topGG.run(client);
+
+app.route('/dblwebhook')
+	.post(topGG.dbl.webhook._handleRequest);
 
 app.route('/bfdwebhook')
 	.post(botsForDiscord.bfd.webhook._handleRequest);
 
 app.route('/discordblwebhook')
+	.options(discordBotList.dbl.webhook._returnTestResponse(res, 200, 'Successful test'))
 	.post(discordBotList.dbl.webhook._handleRequest);
 
 app.get((req, res)=>{
     res.status(404).send({url: req.originalUrl + ' not found'})
 });
 
-app.listen(3000);
+app.listen(process.env.PORT);
 // Check for Tweet from ComputerLunch
 setInterval(() => checkTweet(client), 2000);
 
