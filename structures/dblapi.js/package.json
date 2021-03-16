@@ -1,0 +1,21 @@
+{
+  "name": "dblapi.js",
+  "version": "2.4.1",
+  "description": "An official module for interacting with the top.gg API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "list",
+    "api",
+    "javascript"
+  ],
+  "author": "Discord Bot List <support@top.gg> (https://top.gg)",
+  "repository": "top-gg/dblapi.js",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "typings": "./typings/index.d.ts"
+}

@@ -1,4 +1,4 @@
-const { MessageEmbed } = require("discord.js"), DBL = require("dblapi.js"),
+const { MessageEmbed } = require("discord.js"), DBL = require("../../structures/dblapi.js"),
 	VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
 	{ sirhGuildID } = require('../../config.js'), {randomColor} = require("../../constants");
 
