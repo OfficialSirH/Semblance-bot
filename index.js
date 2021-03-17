@@ -58,6 +58,9 @@ const dblWebhook = new TopggSDK.Webhook(JSON.parse(process.env.topGGAuth).webAut
 app.route('/dblwebhook')
 	.post(dblWebhook.middleware(), topGG.voteHandler);
 
+/**
+ * MAIN PRIORITY: transfer the botsfordiscord and discordbotlist broken handlers to the new modified version of Top.gg's handler.
+ */
 app.route('/bfdwebhook')
 	.post(botsForDiscord.bfd.webhook._handleRequest);
 
