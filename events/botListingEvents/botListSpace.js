@@ -16,49 +16,53 @@ module.exports.run = (client) => {
     });
      
     module.exports.voteHandler = (req, res) => {
-        if (!!!client.readyAt) return;
         const user = req.vote.user;
+		if (!!!client.readyAt) return;
 		let channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes');
+		if (req.vote.type == 'test') return console.log("Test Vote Completed.");
+		client.users.fetch(user.id, { cache: false }).then(async (u) => {
 			try {
-				console.log(`${user.getTag()} just voted!`);
-				let playerData = await GameModel.findOne({ player: user });
+				console.log(`${u.tag} just voted!`);
+				let playerData = await GameModel.findOne({ player: user.id });
 				let earningsBoost = 3600 * 6;
-				let description = `Thanks for voting for Semblance on botlist.space!! :D`;
-				
-                if (playerData)
-					playerData = await GameModel.findOneAndUpdate({ player: user }, { $set: { money: playerData.money + (playerData.idleProfit * earningsBoost) } }, { new: true });
-				
-                let embed = new MessageEmbed()
-					.setAuthor(`${user.getTag()}`, user.getAvatarURL())
-					.setThumbnail(user.getAvatarURL())
+				let description = `Thanks for voting for Semblance on Top.gg!! :D`;
+				if (playerData) {
+					description += `\nAs a voting bonus, you have earned **6** hours of idle profit for Semblance's Idle Game!`;
+					playerData = await GameModel.findOneAndUpdate({ player: user.id }, { $set: { money: playerData.money + (playerData.idleProfit * earningsBoost) } }, { new: true });
+				}
+				let embed = new MessageEmbed()
+					.setAuthor(`${u.tag}`, u.displayAvatarURL())
+					.setThumbnail(u.displayAvatarURL())
 					.setColor(randomColor)
 					.setDescription(description)
-					.setFooter(`${user.getTag()} has voted.`);
+					.setFooter(`${u.tag} has voted.`);
 				channel.send(embed);
-
+	
 			} catch (err) {
-
+	
 				console.log(err);
 				try {
 					let embed = new MessageEmbed()
-						.setAuthor(`<@${user}>`)
+						.setAuthor(`<@${user.id}>`)
 						.setColor(randomColor)
 						.setDescription(`Thanks for voting for Semblance on Top.gg!! :D`)
-						.setFooter(`${user} has voted.`);
+						.setFooter(`${user.id} has voted.`);
 					channel.send(embed);
 				} catch (err) {
 					console.log(err);
 				}
 			}
-
-
-			let existingUser = await VoteModel.findOne({ user: user.id });
+	
+	
+			let existingUser = await VoteModel.findOne({ user: u.id });
 			if (existingUser) {
-				existingUser = await VoteModel.findOneAndUpdate({ user: user.id }, { $set: { voteCount: existingUser.voteCount + 1 } }, { new: true });
+				existingUser = await VoteModel.findOneAndUpdate({ user: u.id }, { $set: { voteCount: existingUser.voteCount + 1 } }, { new: true });
 			} else {
-				const voteHandler = new VoteModel({ user: user.id });
+				const voteHandler = new VoteModel({ user: u.id });
 				await voteHandler.save();
 			}
+			
+		});
     };
      
     botListWebsocket.on('close', (event) => {
