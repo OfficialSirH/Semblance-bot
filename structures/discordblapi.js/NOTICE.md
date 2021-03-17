@@ -1,1 +1,0 @@
-## This is a modified version of dblapi.js for the intention of creating a package intended for Discord Bot List's API

@@ -1,23 +1,16 @@
-const { MessageEmbed } = require('discord.js'), {randomColor} = require('../../constants'),
-    fetch = require('node-fetch'), BFD = require('../../structures/bfdapi.js'),
+const { MessageEmbed } = require('discord.js'), BfdSDK = require('../../structures/@bots-for-discord/sdk'),
     VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
-	{ sirhGuildID } = require('../../config.js');
+	{ sirhGuildID } = require('../../config.js'), {randomColor} = require('../../constants');
 /* /bfdwebhook */
 module.exports.run = (client) => {
-    const bfd = new BFD(JSON.parse(process.env.botsForDiscordAuth).Auth, {
-		webhookPort: (Number(process.env.PORT)+1).toString(), webhookAuth: JSON.parse(process.env.botsForDiscordAuth).webAuth
-	}, client);
-	module.exports.bfd = bfd;
+    const bfd = new BfdSDK.Api(JSON.parse(process.env.botsForDiscordAuth).Auth);
 
-    bfd.webhook.on('ready', hook => {
-        console.log(`botsfordiscord.com Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
-    });
+	setInterval(() => {
+		bfd.postStats(client.guilds.cache.size);
+	}, 1800000);
 
-    bfd.webhook.on('posted', () => { 
-        console.log(`successfully posted stats to botsfordiscord.com`);
-    });
-
-    bfd.webhook.on('vote', async vote => {
+    module.exports.voteHandler = (req, res) => {
+		const vote = req.vote;
         if (!!!client.readyAt) return;
         if (vote.type == 'test') return console.log("Test Vote Completed.");
 		let channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes');
@@ -63,20 +56,5 @@ module.exports.run = (client) => {
 			}
 			
 		});
-    });
-
-    /*const baseURL = 'https://botsfordiscord.com/api';
-
-    setInterval(() => {
-        const data = { server_count: client.guilds.cache.size };
-        const r = await (await fetch(baseURL + '/bot/' + client.user.id, {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': JSON.parse(process.env.botsForDiscordAuth).Auth
-            },
-            body: JSON.stringify(data)
-        })).json();
-        console.log(`botsfordiscord.com: ${r.message}`);
-    }, 1800000);*/
+    };
 }

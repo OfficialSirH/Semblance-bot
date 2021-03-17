@@ -1,23 +1,27 @@
-const { MessageEmbed } = require('discord.js'), {randomColor} = require('../../constants'),
-    fetch = require('node-fetch'), DiscordBL = require('../../structures/discordblapi.js'),
+const { MessageEmbed } = require('discord.js'), DblSDK = require('../../structures/@discord-bot-list/sdk'),
     VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
-	{ sirhGuildID } = require('../../config.js');
+	{ sirhGuildID } = require('../../config.js'), {randomColor} = require('../../constants');
 /* /discordblwebhook */
 module.exports.run = (client) => {
-    const discordbl = new DiscordBL(JSON.parse(process.env.discordBotListAuth).Auth, {
-		webhookPort: (Number(process.env.PORT)+2).toString(), webhookAuth: JSON.parse(process.env.discordBotListAuth).webAuth
-	}, client);
-	module.exports.dbl = discordbl;
+    const dbl = new DblSDK.Api(JSON.parse(process.env.discordBotListAuth).Auth);
 
-    discordbl.webhook.on('ready', hook => {
-        console.log(`discordbotlist.com Webhook running at http://${hook.hostname}:${hook.port}${hook.path}`);
-    });
+	setInterval(() => {
+		if (client.shard != null && client.shard)
+			dbl.postStats({
+				users: client.guilds.cache.reduce((acc, cur, ind) => acc += cur.memberCount, 0),
+				guilds: client.guilds.cache.size,
+				shard_id: client.shard.ids[0]
+			});
+		else 
+			dbl.postStats({
+				users: client.guilds.cache.reduce((acc, cur, ind) => acc += cur.memberCount, 0),
+				guilds: client.guilds.cache.size
+			});
+	}, 1800000);
 
-    discordbl.webhook.on('posted', () => { 
-        console.log(`successfully posted stats to botsfordiscord.com`);
-    });
 
-    discordbl.webhook.on('vote', async vote => {
+    module.exports.voteHandler = (req, res) => {
+		const vote = req.vote;
         if (!!!client.readyAt) return;
 		let channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes');
 		client.users.fetch(vote.id, { cache: false }).then(async (u) => {
@@ -62,20 +66,5 @@ module.exports.run = (client) => {
 			}
 			
 		});
-    });
-
-    /*const baseURL = 'https://discordbotlist.com/api/v1';
-
-    setInterval(() => {
-        const data = { guilds: client.guilds.cache.size };
-        const r = await (await fetch(baseURL + '/bots/' + client.user.id + '/stats', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': JSON.parse(process.env.botsForDiscordAuth).Auth
-            },
-            body: JSON.stringify(data)
-        })).json();
-        console.log(`discordbotlist.com Stat Post Succeeded: ${r.success}`);
-    }, 1800000);*/
+    };
 }

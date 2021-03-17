@@ -1,4 +1,4 @@
-const config = require('./config'), TopggSDK = require('@top-gg/sdk');
+const config = require('./config');
 // Semblance client
 const Semblance = require('./structures/Semblance'),
 	client = new Semblance({
@@ -13,6 +13,10 @@ const Semblance = require('./structures/Semblance'),
 	// express routing
 	express = require('express'),
 	app = express(),
+	// Bot listing SDKs
+	TopggSDK = require('@top-gg/sdk'),
+	BfdSDK = require('./structures/@bots-for-discord/sdk'),
+	DblSDK = require('./structures/@discord-bot-list/sdk'),
 	// Database connection import
 	{ connect } = require('mongoose'),
 	// Client event handlers
@@ -53,22 +57,23 @@ discordBotList.run(client);
 discordBotsGG(client);
 topGG.run(client);
 
-const dblWebhook = new TopggSDK.Webhook(JSON.parse(process.env.topGGAuth).webAuth);
+const topggWebhook = new TopggSDK.Webhook(JSON.parse(process.env.topGGAuth).webAuth),
+	bfdWebhook = new BfdSDK.Webhook(JSON.parse(process.env.botsForDiscordAuth).webAuth),
+	dblWebhook = new DblSDK.Webhook(JSON.parse(process.env.discordBotListAuth).webAuth);
 
 app.route('/dblwebhook')
-	.post(dblWebhook.middleware(), topGG.voteHandler);
+	.post(topggWebhook.middleware(), topGG.voteHandler);
 
 /**
  * MAIN PRIORITY: transfer the botsfordiscord and discordbotlist broken handlers to the new modified version of Top.gg's handler.
+ * TASK IS HOPEFULLY DONE
  */
 app.route('/bfdwebhook')
-	.post(botsForDiscord.bfd.webhook._handleRequest);
+	.post(bfdWebhook.middleware(), botsForDiscord.voteHandler);
 
 app.route('/discordblwebhook')
-	.options(function (req, res) { 
-		discordBotList.dbl.webhook._returnTestResponse(res, 200, 'Successful test');
-	})
-	.post(discordBotList.dbl.webhook._handleRequest);
+	.options(dblWebhook.middleware(), () => console.log(`Test vote was successful`))
+	.post(dblWebhook.middleware(), discordBotList.voteHandler);
 
 /*app.route('/blswebhook')
 	.post();*/

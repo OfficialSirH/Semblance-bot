@@ -1,9 +1,9 @@
-const { MessageEmbed } = require("discord.js"), Topgg = require('@top-gg/sdk'),
+const { MessageEmbed } = require("discord.js"), TopggSDK = require('@top-gg/sdk'),
 	VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
 	{ sirhGuildID } = require('../../config.js'), {randomColor} = require("../../constants");
 
 module.exports.run = (client) => {
-	const dbl = new Topgg.Api(JSON.parse(process.env.topGGAuth).Auth);
+	const dbl = new TopggSDK.Api(JSON.parse(process.env.topGGAuth).Auth);
 
 	setInterval(() => {
 		if (client.shard != null && client.shard) {

@@ -28,15 +28,15 @@ const ApiError_1 = __importDefault(require("../utils/ApiError"));
 const querystring_1 = __importDefault(require("querystring"));
 const events_1 = require("events");
 /**
- * botsfordiscord.com API Client for Posting stats or Fetching data
+ * discordbotlist.com API Client for Posting stats or Fetching data
  * @example
- * const Botsfordiscord = require(`./structures/@bots-for-discord/sdk`)
+ * const Discordbotlist = require(`./structures/@bots-for-discord/sdk`)
  *
- * const api = new Botsfordiscord.Api('Your botsfordiscord.com token')
+ * const api = new Discordbotlist.Api('Your discordbotlist.com token')
  */
 class Api extends events_1.EventEmitter {
     /**
-     * Create botsfordiscord.com API instance
+     * Create discordbotlist.com API instance
      * @param {string} token Token or options
      * @param {object?} options API Options
      */
@@ -54,7 +54,7 @@ class Api extends events_1.EventEmitter {
             headers.set('Authorization', this.options.token);
         if (method !== 'GET')
             headers.set('Content-Type', 'application/json');
-        let url = `https://botsfordiscord.com/api/${path}`;
+        let url = `https://discordbotlist.com/api/v1/${path}`;
         // @ts-ignore querystring typings are messed
         if (body && method === 'GET')
             url += `?${querystring_1.default.stringify(body)}`;
@@ -76,87 +76,26 @@ class Api extends events_1.EventEmitter {
         return responseBody;
     }
     /**
-     * @param {number} serverCount Server count
-     * @returns {number} Passed server count
+     * @param {Object} stats bot stats
+     * @param {number} stats.voice_connections number of voice connections
+     * @param {number} stats.users number of users
+     * @param {number} stats.guilds guild count
+     * @param {number} stats.shard_id shard ID
+     * @returns {Object} Passed stats
      * @example
      * await client.postStats({
-     *   serverCount: 28199
+     *   guilds: 28199
      * })
      */
-    async postStats(serverCount) {
-        if (!serverCount) throw new Error('Missing Server Count');
-        await this._request('POST', `/bot/794033850665533450`, {
-            server_count: serverCount
+    async postStats(stats) {
+        if (!stats || !stats.guilds) throw new Error('Missing guilds');
+        await this._request('POST', `/bots/794033850665533450/stats`, {
+            voice_connections: stats.voice_connections,
+            users: stats.users,
+            guilds: stats.guilds,
+            shard_id: stats.shard_id
         });
-        return serverCount;
-    }
-    /**
-     * Get bot info
-     * @param {Snowflake} id Bot ID
-     * @returns {BotInfo} Info for bot
-     * @example
-     * await client.getBot('794033850665533450') // returns bot info
-     */
-    async getBot(id) {
-        if (!id)
-            throw new Error('ID Missing');
-        return this._request('GET', `/bot/${id}`);
-    }
-    /**
-     * Get bot's vote info
-     * @returns {BotVotes} bot's vote info
-     * @example
-     * await client.getVotes() // returns bot's vote info
-     */
-    async getVotes() {
-        return this._request('GET', `/bot/794033850665533450/votes`);
-    }
-    /**
-     * Get bot's widget
-     * @param {Snowflake} id Bot ID
-     * @param {Number} width The width of the widget
-     * @param {String} theme The theme of the widget
-     * @returns {Widget} the bot's widget
-     * @example
-     * await client.getBotWidget('794033850665533450', 480, 'dark') // returns bot's widget
-     */
-    async getBotWidget(id, width, theme) {
-        if (!id) throw new Error('ID Missing');
-        if (!width && !theme)
-            return this._request('GET', `/bot/${id}/widget`);
-        if (!width)
-            return this._request('GET', `/bot/${id}/widget`, { theme });
-        if (!theme)
-            return this._request('GET', `/bot/${id}/widget`, { width });
-        
-    }
-    /**
-     * Get user info
-     * @param {Snowflake} id User ID
-     * @returns {UserInfo} Info for user
-     * @example
-     * await client.getUser('780995336293711875')
-     * // =>
-     * user.username // SirH
-     */
-    async getUser(id) {
-        if (!id)
-            throw new Error('ID Missing');
-        return this._request('GET', `/user/${id}`);
-    }
-
-    /**
-     * Get user's bots
-     * @param {Snowflake} id User ID
-     * @returns {UserBots} user's bots
-     * @example
-     * await client.getUserBots('780995336293711875')
-     * // =>
-     * 
-     */
-    async getUserBots(id) {
-        if (!id) throw new Error('ID Missing');
-        return this._request('GET', `/user/${id}/bots`);
+        return stats;
     }
 }
 exports.Api = Api;

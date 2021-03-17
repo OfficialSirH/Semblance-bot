@@ -1,7 +1,7 @@
 /**
  * API Error
  */
-export default class TopGGAPIError extends Error {
+export default class DiscordBotListAPIError extends Error {
     /**
      * Possible response from Request
      */

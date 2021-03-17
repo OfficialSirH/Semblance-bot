@@ -7,11 +7,11 @@ const tips = {
 /**
  * API Error
  */
-class BotsForDiscordAPIError extends Error {
+class DiscordBotListAPIError extends Error {
     constructor(code, text, response) {
         super(`${code} ${text}${tips[code] ? ` (${tips[code]})` : ''}`);
-        this.name = 'Botsfordiscord.com API Error';
+        this.name = 'discordbotlist.com API Error';
         this.response = response;
     }
 }
-exports.default = BotsForDiscordAPIError;
+exports.default = DiscordBotListAPIError;
