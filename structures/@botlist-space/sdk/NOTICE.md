@@ -1,0 +1,1 @@
+# This is a modified version of `@top-gg/sdk` for the purpose of only receiving vote requests from botlist.space. 

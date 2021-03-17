@@ -6,11 +6,6 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require("../../c
 
 module.exports.run = (client) => {
     const botListWebsocket = new BotList.WebSocket({ tokens: [JSON.parse(process.env.botListSpaceAuth).Auth], reconnect: true });
-	module.exports.bls = botListWebsocket;
-
-    botListWebsocket.on('connected', () => {
-
-    });
      
     botListWebsocket.on('view', (event) => {
         console.log('Someone has viewed my bot: ' + event.bot.username);
@@ -20,9 +15,9 @@ module.exports.run = (client) => {
         console.log('Someone has invited my bot: ' + event.bot.username);
     });
      
-    botListWebsocket.on('upvote', async (event) => {
+    module.exports.voteHandler = (req, res) => {
         if (!!!client.readyAt) return;
-        const user = event.user;
+        const user = req.vote.user;
 		let channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes');
 			try {
 				console.log(`${user.getTag()} just voted!`);
@@ -64,7 +59,7 @@ module.exports.run = (client) => {
 				const voteHandler = new VoteModel({ user: user.id });
 				await voteHandler.save();
 			}
-    });
+    };
      
     botListWebsocket.on('close', (event) => {
         console.log('The gateway was closed', event);
