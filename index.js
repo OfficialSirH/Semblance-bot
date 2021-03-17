@@ -1,4 +1,4 @@
-const config = require('./config');
+const config = require('./config'), TopggSDK = require('@top-gg/sdk');
 // Semblance client
 const Semblance = require('./structures/Semblance'),
 	client = new Semblance({
@@ -53,8 +53,10 @@ discordBotList.run(client);
 discordBotsGG(client);
 topGG.run(client);
 
+const dblWebhook = new TopggSDK.Webhook(JSON.parse(process.env.topGGAuth).webAuth);
+
 app.route('/dblwebhook')
-	.post(topGG.dbl.webhook._handleRequest);
+	.post(dblWebhook.middleware(), topGG.voteHandler);
 
 app.route('/bfdwebhook')
 	.post(botsForDiscord.bfd.webhook._handleRequest);
@@ -64,6 +66,9 @@ app.route('/discordblwebhook')
 		discordBotList.dbl.webhook._returnTestResponse(res, 200, 'Successful test');
 	})
 	.post(discordBotList.dbl.webhook._handleRequest);
+
+/*app.route('/blswebhook')
+	.post();*/
 
 app.get((req, res)=>{
     res.status(404).send({url: req.originalUrl + ' not found'})

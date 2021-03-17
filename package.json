@@ -5,6 +5,7 @@
   "main": "index.js",
   "author": "SirH",
   "dependencies": {
+    "@top-gg/sdk": "^3.0.9",
     "boats.js": "^2.5.1",
     "botlist.space": "^3.3.1",
     "cron": "^1.8.2",
