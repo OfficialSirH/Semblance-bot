@@ -15,8 +15,8 @@ const Semblance = require('./structures/Semblance'),
 	app = express(),
 	// Bot listing SDKs
 	TopggSDK = require('@top-gg/sdk'),
-	BfdSDK = require('./structures/@bots-for-discord/sdk'),
-	DblSDK = require('./structures/@discord-bot-list/sdk'),
+	BfdSDK = require('./structures/@bots-for-discord/sdk/dist'),
+	DblSDK = require('./structures/@discord-bot-list/sdk/dist'),
 	// Database connection import
 	{ connect } = require('mongoose'),
 	// Client event handlers
