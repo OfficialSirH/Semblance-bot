@@ -22,9 +22,9 @@ module.exports.run = async (client, message, args) => {
         .setImage(terminusChamber.name)
         .setDescription(['**Yellow Cube** - ||Explore the Mesozoic Valley||',
             '**Purple Cube** - ||Unlock Singularity for the first time||',
-            '**Dark Blue Cube** - ||Unlock the human brain||',
-            '**Bright Blue Cube** - ||Obtain/Evolve Neoaves||',
-            '**Light Blue Cube** - ||Unlock Cetaceans||',
+            '**Light Pink Cube** - ||Unlock the human brain||',
+            '**Light Blue Cube** - ||Obtain/Evolve Neoaves||',
+            '**Blue Cube** - ||Unlock Cetaceans||',
             '**Lime Green Cube** - ||Unlock Crocodilians||',
             '**Orange Cube** - ||Unlock Feliforms||',
             '**Red Cube** - ||Terraform Mars||'].join('\n'));
