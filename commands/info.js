@@ -33,7 +33,7 @@ module.exports.run = async (client, message, args) => {
         .setColor(randomColor)
         .setThumbnail(client.user.displayAvatarURL())
         .addFields(
-            { name: `${singularity} Host`, value: ['**OS:** [`Heroku`](https://heroku.com) `(web server)`',
+            { name: `${singularity} Host`, value: ['**OS:** [`Heroku`](https://semblance-bot.herokuapp.com/) `(web server)`',
                                     `**Library:** \`discord.js${dpc['discord.js']}\``,
                                    `**Memory Usage:** \`${usage} MB (${Math.round(usage/512 * 10000)/100}%)\``].join('\n'), inline: true },
                                    

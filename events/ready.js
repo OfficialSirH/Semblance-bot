@@ -45,7 +45,7 @@ module.exports = (client) => {
             if (!cacheCollection.has(voteData.user)) cacheCollection.set(voteData.user);
         });
         const updatedCacheList = await Information.findOneAndUpdate({ infoType: 'cacheList' }, { $set: { list: cacheCollection.keyArray() } }, { new: true });
-        console.log(`The cache list has gained ${cacheCollection - cacheList.list.length}, which now makes the cache list have a total of ${cacheCollection.size}.`);
+        console.log(`The cache list has gained ${cacheCollection.size - cacheList.list.length}, which now makes the cache list have a total of ${cacheCollection.size}.`);
 
         /* Slash Command setup */
         let slash_commands = await client.api.applications(client.user.id).commands.get();
