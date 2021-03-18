@@ -76,9 +76,10 @@ app.route('/discordblwebhook')
 app.route('/blswebhook')
 	.post(blsWebhook.middleware(), botListSpace.voteHandler);
 
-app.get((req, res)=>{
-    res.status(404).send({url: req.originalUrl + ' not found'})
-});
+app.use((req, res)=>res.status(404).send({
+	url: req.originalUrl + ' not found',
+	epicc_site: `officialsirh.github.io`,
+}));
 
 app.listen(process.env.PORT);
 // Check for Tweet from ComputerLunch
