@@ -66,13 +66,13 @@ async function help(message, permissionLevel) {
         
         '\nREPRODUCE EXAMPLE:',
             `\t${prefix}bug 360 reproduce Android 420 | 4_69` 
-    ].join('\n');
+    ];
     if (permissionLevel > 0) description = description.concat(['\nAPPROVING AND DENYING BUGS:',
         `+ 'approve' or 'deny'`,
         '+ reason(optional)',
         'EXAMPLE: s!bug 69 approve nice'
     ]);
-    description += '```';
+    description.push('```');
     let embed = new MessageEmbed()
         .setTitle("Reporting Help")
         .setColor(randomColor)
