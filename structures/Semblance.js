@@ -1,11 +1,10 @@
-const { Client } = require('discord.js'), fs = require('fs'), { Information } = require('../commands/edit.js');
+const { Client, Collection } = require('discord.js'), fs = require('fs'), { Information } = require('../commands/edit.js');
 
 module.exports = class Semblance extends Client {
     constructor(options) {
         super(options);
 
         this.clear_cache = setInterval(() => {
-            if (!!super.readyAt)
             this.sweepUsers();
         }, 30000);
 
@@ -35,11 +34,12 @@ module.exports = class Semblance extends Client {
 
     sweepUsers = async () => {
         let cacheList = await Information.findOne({ infoType: 'cacheList' });
+        const cacheCollection = new Collection(cacheList.list.map(i => [i, 1]));
         let now = Date.now();
         let cacheLifetime = 30000;
         let users = 0;
         users += this.users.cache.sweep(user => { 
-            if (cacheList.list.includes(user.id)) return false;
+            if (cacheCollection.has(user.id)) return false;
             let channel = this.channels.cache.get(user.lastMessageChannelID);
             if (!channel || !channel.messages) return true;
             let lastMessage = channel.messages.cache.get(user.lastMessageID);

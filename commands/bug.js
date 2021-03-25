@@ -29,17 +29,50 @@ module.exports.run = async (client, message, args, identifier, { permissionLevel
 }
 
 async function help(message, permissionLevel) {
-    let description = [`**Reporting a bug!**`,
-        `To report a bug, you would use \`${prefix}report\` then type out the 5 requirements for a report, which all 5 can be separated with new lines or |.`,
-        `The 5 requirements are(in this order):`,
-        `**Title** - A title for the bug, just something simple`,
-        `**"Actual Result"** - What actually happens in the situation`,
-        `**"Expected Result"** - What you expect the game to do in the situation`,
-        `**"Operating System"** - The type of system/device you use(i.e. Windows 10, Android 7, Iphone 300 and whatever "the best innovated Iphone we've ever made(again)" - Apple)`,
-        `**"Game Version"** - What version of C2S you're playing(i.e. 7_00)\n`,
-        `You can also use \`${prefix}bug <bugID/messageID> reproduce <system info and game version>\`, which for system info and game version you can separate them with new lines or |.`];
-    if (permissionLevel > 0) description = description.concat([`\n**Are you an epicc dev(i.e. ComputerLunch Team)?? Then here's some commands for you specifically for approving or denying people's reports!**`,
-        `You can approve/deny a person's report with \`${prefix}bug <bugID or messageID> <"approve" or "deny"> <optional: reason>\``]);
+    let description = ['```diff',
+        'REQUIREMENTS:',
+        '+ Title',
+            '\tThis is the title of the bug, just a quick description basically',
+        '+ Actual Result',
+            '\tWhat occurs in this bug that shouldn\'t be occuring normally?',
+        '+ Expected Result',
+            '\tWhat do you think or know should be happening in this situation instead of the actual result?',
+        '+ Operating System',
+            '\tWhat system are you playing the game on? For example: Windows 10, Android 9, Iphone 12',
+        '+ Game Version',
+            '\tWhat is the game\'s version that you\'re playing during the cause of this bug?(i.e. 8.06)',
+        '+ FORMAT',
+            `\t${prefix}bug report TITLE`,
+            '\tACTUAL_RESULT',
+            '\tEXPECTED_RESULT',
+            '\tSYSTEM_INFO',
+            '\tGAME_VERSION',
+        '- OR',
+            `\t${prefix}bug report TITLE | ACTUAL_RESULT | EXPECTED_RESULT | SYSTEM_INFO | GAME_VERSION`,
+        
+        '\nREPORT EXAMPLE:',
+            `\t${prefix}bug report Bad Bug`,
+            '\tIt does something bad',
+            '\tIt shouldn\'t do something bad',
+            '\tWindows 69',
+            '\t4_20',
+        
+        '\nWHAT IF I HAVE THE SAME BUG OCCURING AS ANOTHER USER WHO HAS ALREADY REPORTED IT?',
+        '+ FORMAT:',
+            `\t${prefix}bug BUG_ID reproduce SYSTEM_INFO | GAME_VERSION`,
+        '- OR',
+            `\t${prefix}bug BUG_ID reproduce SYSTEM_INFO`,
+            '\tGAME_VERSION',
+        
+        '\nREPRODUCE EXAMPLE:',
+            `\t${prefix}bug 360 reproduce Android 420 | 4_69` 
+    ];
+    if (permissionLevel > 0) description = description.concat(['\nAPPROVING AND DENYING BUGS:',
+        `+ 'approve' or 'deny'`,
+        '+ reason(optional)',
+        'EXAMPLE: s!bug 69 approve nice'
+    ]);
+    description.push('```');
     let embed = new MessageEmbed()
         .setTitle("Reporting Help")
         .setColor(randomColor)
