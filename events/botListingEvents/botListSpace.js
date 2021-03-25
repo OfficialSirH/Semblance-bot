@@ -64,8 +64,4 @@ module.exports.run = (client) => {
 			
 		});
     };
-     
-    botListWebsocket.on('close', (event) => {
-        console.log('The gateway was closed', event);
-    });
 }
