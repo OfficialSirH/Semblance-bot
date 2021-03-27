@@ -1,4 +1,5 @@
 const config = require('./config');
+require('dotenv').config();
 // Semblance client
 const Semblance = require('./structures/Semblance'),
 	client = new Semblance({
@@ -35,9 +36,7 @@ const Semblance = require('./structures/Semblance'),
 	discordBoat = require('./events/botListingEvents/discordBoat'),
 	discordBotList = require('./events/botListingEvents/discordBotList'),
 	discordBotsGG = require('./events/botListingEvents/discordBotsGG'),
-	topGG = require('./events/botListingEvents/topGG'),
-	// Ping web host (Heroku)
-	stayActive = require('./stayActive.js');
+	topGG = require('./events/botListingEvents/topGG');
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -78,7 +77,7 @@ app.route('/blswebhook')
 
 app.use((req, res)=>res.redirect('https://officialsirh.github.io/'));
 
-app.listen(process.env.PORT);
+app.listen(80);
 // Check for Tweet from ComputerLunch
 setInterval(() => checkTweet(client), 2000);
 
