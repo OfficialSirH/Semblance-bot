@@ -77,7 +77,7 @@ app.route('/blswebhook')
 
 app.use((req, res)=>res.redirect('https://officialsirh.github.io/'));
 
-app.listen(8080);
+app.listen(8079);
 // Check for Tweet from ComputerLunch
 setInterval(() => checkTweet(client), 2000);
 
