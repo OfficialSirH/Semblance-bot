@@ -33,7 +33,7 @@ module.exports.run = async (client, message, args) => {
         .setColor(randomColor)
         .setThumbnail(client.user.displayAvatarURL())
         .addFields(
-            { name: `${singularity} Host`, value: ['**OS:** `Ubuntu`',
+            { name: `${singularity} Host`, value: [`**OS:** \`Ubuntu ${require('os').release()}\``,
                                     `**Library:** \`discord.js${dpc['discord.js']}\``,
                                    `**Memory Usage:** \`${usage} MB (${Math.round(usage/512 * 10000)/100}%)\``].join('\n'), inline: true },
                                    
