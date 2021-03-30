@@ -63,7 +63,7 @@ module.exports = (client) => {
 	if (message.guild.id == c2sGuildID) {
 		clearBlacklistedWord(message, message.member);
 		let msg = message.content.toLowerCase(), suggestionArray = ["suggestion:", "suggest:", `${prefix}suggestion`, `${prefix}suggest`],
-			suggestionRegex = new RegExp(`(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
+			suggestionRegex = new RegExp(`^(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
 		
 		if (msg.includes('beyond') && !msg.includes('s!beyond')) updateBeyondCount();
 
