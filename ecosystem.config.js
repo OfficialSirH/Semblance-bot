@@ -16,7 +16,7 @@ module.exports = {
     production : {
       user : 'SSH_USERNAME',
       host : 'SSH_HOSTMACHINE',
-      ref  : 'origin/awstransfer',
+      ref  : 'origin/master',
       repo : 'https://github.com/OfficialSirH/Semblance-bot.git',
       path : './',
       'pre-deploy-local': '',
