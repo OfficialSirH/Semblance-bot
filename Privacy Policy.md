@@ -8,7 +8,7 @@ If you choose to use my Service, then you agree to the collection and use of inf
  
 ## **Information Collection and Use**
  
-For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information, including but not limited to Discord User IDs. Users are cached for approximately 30 seconds if they use any command before being removed from cache unless the user is required for the proper functioning of certain commands. All of the User data that is collected by the bot is stored on [MongoDB](https://www.mongodb.com/), which uses AES256-CBC via OpenSSL for data encryption and AES-256 uses a symmetric key; i.e. the same key to encrypt and decrypt text. The bot is hosted on [Heroku](https://heroku.com/).
+For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information, including but not limited to Discord User IDs. Users are cached for approximately 30 seconds if they use any command before being removed from cache unless the user is required for the proper functioning of certain commands. All of the User data that is collected by the bot is stored on [MongoDB](https://www.mongodb.com/), which uses AES256-CBC via OpenSSL for data encryption and AES-256 uses a symmetric key; i.e. the same key to encrypt and decrypt text. The bot is hosted on [AWS](https://aws.amazon.com).
  
 ## **Log Data**
  

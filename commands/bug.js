@@ -83,15 +83,15 @@ async function help(message, permissionLevel) {
 }
 
 async function report(message, content, client) {
-    let difcontent = content.replace(/\|\|/g, '').split('|');
+    let difcontent = content.replace(/\|\|/g, '').split('|').filter(c => c.trim() != '');
 
     if (difcontent.length < 5) {
-        content = content.split('\n');
+        content = content.split('\n').filter(c => c.trim() != '');
         if (content.length < 5) {
 
             let missingContent = () => {
-                if (content.length > difcontent.length) for (let i = content.length; i < 5; i++) content.push(`+ Need info for this line.`); return content.join('\n');
-                if (difcontent.length > content.length) for (let i = difcontent.length; i < 5; i++) difcontent.push(`+ Need info for this line.`); return difcontent.join('\n');
+                if (content.length > difcontent.length) for (let i = content.length; i < 5; i++) { content.push(`+ Need info for this line.`); return content.join('\n'); }
+                if (difcontent.length > content.length) for (let i = difcontent.length; i < 5; i++) { difcontent.push(`+ Need info for this line.`); return difcontent.join('\n'); }
                 for (let i = difcontent.length; i < 5; i++) difcontent.push(`+ Need info for this line.`); return difcontent.join('\n');
             }
             message.author.send([`You're missing some input for the report, remember that each subject is separated through new lines,`,
@@ -140,17 +140,30 @@ async function report(message, content, client) {
             }
         }
     }
+    let reportURL;
     message.guild.channels.cache.get(CHANNELS.QUEUE).send(embed).then(async (msg) => { // <-- #bug-approval-queue channel in C2S
         let report = new Report({ User: message.author.id, bugID: totalReports + 1, messageID: msg.id, channelID: msg.channel.id });
         await report.save();
+        reportURL = msg.url;
     });
     message.delete();
+    message.channel.send(new MessageEmbed().setTitle(`Report Successfully Sent!`)
+        .setURL(reportURL)
+        .setAuthor(message.author.tag)
+        .setColor(randomColor())
+        .setDescription([`Your report's ID: ${totalReports + 1}`
+            `Attaching an attachment: \`${prefix}bug ${totalReports + 1} attach (YouTube, Imgur, or Discord attachment link here if you don't have attachment)\`(NOTE: You *don't* need to place the parentheses around the link)`
+            `**attach either an image or video(must be under 50 MB) with your attach command if the optional choices aren't available**`].join('\n'))
+        .setFooter('Thank you for your considerable help towards Cell to Singularity, we appreciate it. :)'));
 }
 
 async function bug(client, message, permissionLevel, content, args) {
-    let report = await Report.findOne({ bugID: args[0] });
-    if (!report) report = await Report.findOne({ messageID: args[0] });
+    let providedID = args[0].replace(/\D/g, ''), report;
+    if (!providedID) return message.reply("The ID you specified is invalid").then(msg => { setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000); message.delete() });
+    report = await Report.findOne({ bugID: providedID });
+    if (!report && report.length >= 17 && report.length <= 21) report = await Report.findOne({ messageID: providedID });
     if (!report) return message.reply("The ID you specified doesn't exist.").then(msg => { setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000); message.delete() });
+
 
     if (args[1] == 'attach') addAttachment(client, message, report, message.attachments.map(a => a)[0] || args.slice(2)[0]);
 
@@ -209,8 +222,8 @@ async function deleteReproduce(message, report, args) {
 }
 
 async function addReproduce(message, report, specifications) {
-    specifications = specifications.slice(2).join(' ').replace(/\|\|/g, '').split('|');
-    if (specifications.length < 2) specifications = specifications.join(' ').split('\n');
+    specifications = specifications.slice(2).join(' ').replace(/\|\|/g, '').split('|').filter(c => c.trim() != '');
+    if (specifications.length < 2) specifications = specifications.join(' ').split('\n').filter(c => c.trim() != '');
     let sysInfo = specifications[0], gameVersion = specifications[1];
 
     if (!sysInfo) return message.reply("You forgot to provide system information and game version.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000));

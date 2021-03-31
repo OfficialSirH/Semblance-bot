@@ -7,7 +7,7 @@ module.exports = (client) => {
         let chName = newMsg.channel.name;
         if (newMsg.guild.id == c2sGuildID) {
             let msg = newMsg.content.toLowerCase(), suggestionArray = ["suggestion:", "suggest:", `${prefix}suggestion`, `${prefix}suggest`],
-                suggestionRegex = new RegExp(`(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
+                suggestionRegex = new RegExp(`^(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
             if (chName == 'suggestions') {
                 if (suggestionRegex.exec(msg) != null || getPermissionLevel(newMsg.member) > 0) return;
                 else {
