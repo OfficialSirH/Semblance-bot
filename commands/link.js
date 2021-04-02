@@ -22,7 +22,7 @@ module.exports.run = async (client, message, args) => {
     if (dataAlreadyExists) return message.channel.send(`The provided data seems to already exist, which means this data is already link to a discord account, if you feel this is false, please DM the owner(SirH).`);
     UserData.findOneAndUpdate({ discordId: message.author.id }, { $set: { playerId, playerToken, edited_timestamp: Date.now() } }, {new: true}, function(err, entry) {
         if (err) {
-            const newUser = new UserData({ playerId, playerToken })
+            const newUser = new UserData({ playerId, playerToken, discordId: message.author.id })
             newUser.save(function(err, entry) {
                 if (err) return message.channel.send(`An error occured, either you provided wrong incorrect input or something randomly didn't want to work.`);
                 message.channel.send(`The link was successful, now you can use the Discord button in-game to upload your metabit progress.`);

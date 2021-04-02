@@ -46,9 +46,9 @@ async function updateBeyondCount() {
 module.exports = (client) => {
     client.on("message", async message => {
         checkForGitHubUpdate(message);
+	if (message.channel.type == 'dm') return require('./messageDM')(client, message);
 	if (message.channel.name == "cells-tweets" && message.guild.id == c2sGuildID && message.author.id != client.user.id && !message.member.roles.cache.get('493796775132528640')) return message.delete();
 	if (message.author.bot || ignoredGuilds.includes(message.guild.id)) return;
-	if (message.channel.type == 'dm') return require('./messageDM')(client, message);
 	if (message.member) {
 		if (message.mentions.users && message.member.id != client.user.id) {
 			dontDisturb(client, message, message.mentions.users);
