@@ -21,6 +21,7 @@ const Semblance = require('./structures/Semblance'),
 	interactionCreate = require('./events/interactionCreate'),
 	message = require('./events/message'),
 	messageDelete = require('./events/messageDelete'),
+	messageDM = require('./events/messageDM'),
 	messageReactionAdd = require('./events/messageReactionAdd'),
 	messageReactionRemove = require('./events/messageReactionRemove'),
 	messageUpdate = require('./events/messageUpdate'),
@@ -40,6 +41,7 @@ app.use(express.json());
 interactionCreate(client);
 message(client);
 messageDelete(client);
+messageDM(client);
 messageReactionAdd(client);
 messageReactionRemove(client);
 messageUpdate(client);
