@@ -15,7 +15,7 @@ module.exports = (client, message) => {
             const args = parseArgs(content);
             try {
                 if (!commandFile.checkArgs(args, content)) return message.channel.send(`❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage).map(a => " " + a).join("")}\`, for additional help, see \`${prefix}help\`.`)
-                commandFile.run(client, message, args, identifier, { permissionLevel, content });
+                commandFile.run(client, message, args, identifier, { content });
                 client.increaseCommandCount();
             } catch (e) { }
         }
