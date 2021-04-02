@@ -1,7 +1,8 @@
 'use strict';
 
 const mongoose = require('mongoose'),
-  UserData = mongoose.model('UserData');
+    UserDataLoad = require('../../../models/UserData'),
+    UserData = mongoose.model('UserData');
 
 exports.list_userdata = function(req, res) {
   UserData.find({}, function(err, entry) {
