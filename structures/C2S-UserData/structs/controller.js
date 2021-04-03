@@ -7,7 +7,7 @@ const mongoose = require('mongoose'),
 exports.list_userdata = function(req, res) {
   UserData.find({}, function(err, entry) {
     if (err) return res.send(err);
-    res.json(entry);
+    res.status(200).json(entry);
   });
 };
 
@@ -16,7 +16,7 @@ exports.write_userdata = function(req, res) {
   const new_entry = new UserData(req.body);
   new_entry.save(function(err, entry) {
     if (err) return res.send(err);
-    res.json(entry);
+    res.status(200).json(entry);
   });
 };
 
@@ -43,6 +43,6 @@ exports.delete_userdata = function(req, res) {
     playerToken: req.body.playerToken
   }, function(err, entry) {
     if (err) return res.send(err);
-    res.json({ message: 'User Data successfully deleted', discordId: entry.discordId });
+    res.status(200).json({ message: 'User Data successfully deleted', discordId: entry.discordId });
   });
 };
