@@ -3,7 +3,6 @@ const { prefix } = require('../config.js'),
 
 module.exports = (client, message) => {
     const { commands, aliases } = client;
-    console.log(`received DM from ${message.author.tag}\nContent: ${message.content}`);
     if (message.content.toLowerCase().startsWith(prefix) || message.content.match(`^<@!?${client.user.id}> `)) {
         let content = message.content.split(" ")
         if (content[0].match(`^<@!?${client.user.id}>`)) content.shift(); else content = message.content.slice(prefix.length).split(" ")

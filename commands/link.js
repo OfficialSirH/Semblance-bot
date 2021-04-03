@@ -34,6 +34,7 @@ module.exports.run = async (client, message, args) => {
             });
             return;
         }
+        console.log(`${message.author.tag}(${message.author.id}) successfully linked their C2S data.`); 
         message.channel.send(`The link was successful, now you can use the Discord button in-game to upload your metabit progress.`);
     });
 }
