@@ -1,14 +1,14 @@
 const config = require('./config');
 require('dotenv').config();
 // Semblance client
-const Semblance = require('./structures/Semblance'),
+const Semblance = require('./structures/Semblance'), { Intents } = require('discord.js'),
 	client = new Semblance({
 		 disableMentions: "everyone", // V13 Release replacement: disableMentions: { parse: ['users', 'roles'], repliedUser: true }
     		messageCacheLifetime: 30,
     		messageSweepInterval: 300,
 		partials: [ "USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION" ],
 		ws: {
-    	 	 	intents: [ "GUILDS", "GUILD_MESSAGES", "GUILD_MESSAGE_REACTIONS" ]
+    	 	 	intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES ]
     		}
 	}),
 	// express routing
