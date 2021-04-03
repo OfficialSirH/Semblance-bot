@@ -2,7 +2,7 @@ module.exports = {
     apps: [{
         name: 'Semblance',
         script: './index.js',
-        watch: 'true',
+        watch: true,
         instances: '1',
         env: {
             NODE_ENV: "development"
