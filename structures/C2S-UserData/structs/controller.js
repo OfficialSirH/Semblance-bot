@@ -30,9 +30,9 @@ exports.read_userdata = function(req, res) {
 
 
 exports.update_userdata = function(req, res) {
-  UserData.findOneAndUpdate({ playerId: req.params.playerId, playerToken: req.body.playerToken }, { ...req.body, edited_timestamp: Date.now() }, {new: true}, function(err, entry) {
+  UserData.findOneAndUpdate({ playerId: req.params.playerId, playerToken: req.body.playerToken }, { metabits: req.body.metabits, edited_timestamp: Date.now() }, {new: true}, function(err, entry) {
     if (err) res.send(err);
-    res.json(entry);
+    else res.json(entry);
   });
 };
 
