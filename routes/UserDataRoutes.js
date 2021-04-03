@@ -11,6 +11,6 @@ module.exports = function(app) {
 
     app.route('/userdata/:playerId')
         // .get(UserData.read_userdata)
-        .post(UserData.update_userdata)
+        .post(UserDataHook.middleware(), UserData.update_userdata)
         // .delete(UserData.delete_userdata);
 }
