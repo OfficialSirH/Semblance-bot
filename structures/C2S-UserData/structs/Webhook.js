@@ -50,7 +50,6 @@ class Webhook {
             const response = await this._parseRequest(req, res);
             if (!response)
                 return;
-            res.sendStatus(200);
             next();
         };
     }
