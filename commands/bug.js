@@ -42,16 +42,16 @@ async function help(message, permissionLevel) {
         '+ Game Version',
             '\tWhat is the game\'s version that you\'re playing during the cause of this bug?(i.e. 8.06)',
         '+ FORMAT',
-            `\t${prefix}bug report TITLE`,
+            `\t${prefix}report TITLE`,
             '\tACTUAL_RESULT',
             '\tEXPECTED_RESULT',
             '\tSYSTEM_INFO',
             '\tGAME_VERSION',
         '- OR',
-            `\t${prefix}bug report TITLE | ACTUAL_RESULT | EXPECTED_RESULT | SYSTEM_INFO | GAME_VERSION`,
+            `\t${prefix}report TITLE | ACTUAL_RESULT | EXPECTED_RESULT | SYSTEM_INFO | GAME_VERSION`,
         
         '\nREPORT EXAMPLE:',
-            `\t${prefix}bug report Bad Bug`,
+            `\t${prefix}report Bad Bug`,
             '\tIt does something bad',
             '\tIt shouldn\'t do something bad',
             '\tWindows 69',
@@ -150,7 +150,7 @@ async function report(message, content, client) {
     message.channel.send(new MessageEmbed().setTitle(`Report Successfully Sent!`)
         .setURL(reportURL)
         .setAuthor(message.author.tag)
-        .setColor(randomColor())
+        .setColor(randomColor)
         .setDescription([`Your report's ID: ${totalReports + 1}`
             `Attaching an attachment: \`${prefix}bug ${totalReports + 1} attach (YouTube, Imgur, or Discord attachment link here if you don't have attachment)\`(NOTE: You *don't* need to place the parentheses around the link)`
             `**attach either an image or video(must be under 50 MB) with your attach command if the optional choices aren't available**`].join('\n'))
