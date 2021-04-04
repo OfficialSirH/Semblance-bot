@@ -15,7 +15,7 @@ const Semblance = require('./structures/Semblance'), { Intents } = require('disc
 	express = require('express'),
 	app = express(),
 	// Database connection import
-	{ connect } = require('mongoose'),
+	{ connect } = require('mongoose'), UserDataLoad = require('./models/UserData'),
 	// Client event handlers
 	checkTweet = require('./events/checkTweet'),
 	interactionCreate = require('./events/interactionCreate'),

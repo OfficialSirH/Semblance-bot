@@ -1,4 +1,4 @@
-const { GameModel } = require('../commands/game.js'),
+const { GameModel } = require('../commands/game.js'), mongoose = require('mongoose'),
     Votes = require('../models/Votes.js'),
     { Information } = require('../commands/edit'),
     { MessageEmbed, Collection } = require('discord.js'),
@@ -73,5 +73,23 @@ module.exports = (client) => {
         //await CommandCounter.deleteMany({});
         await commands['game'].updateLeaderboard(client);
         await commands['leaderboard'].updateLeaderboard(client);
-        });
+    
+        client.setInterval(() => {
+            const UserData = mongoose.model('UserData'), month = (28*24*3600) * 1000;
+            UserData.find({}, function(err, entries) {
+                if (err) return console.log(err);
+                const userdataCollection = new Collection(entries.map(i => [i.discordId, i]));
+                const removedCount = userdataCollection.sweep(userdata => {
+                    return Date.now() < userdata.created_timestamp + month;
+                });
+                const listOfFailedRemovals = [];
+                userdataCollection.each(userdata => {
+                    UserData.findOneAndDelete({ discordId: userdata.discordId }, (err, entry) => {
+                        if (err) return listOfFailedRemovals.push(userdata.discordId);
+                    });
+                });
+                console.log(`Removed ${removedCount} entries from the UserData API with a total of ${listOfFailedRemovals.length} that failed to be removed.\n\nFailed List: ${listOfFailedRemovals}`);
+            });
+        }, 3600000);
+    });
 }

@@ -11,7 +11,7 @@ module.exports = {
     description: "Big epicc bug reporting feature exclusively for C2S server.",
     category: 'c2sServer',
     usage: {
-        "help/report/<bugID>": ""
+        "help/<bugID>": ""
     },
     aliases: ['report', 'bugreport'],
     permissionRequired: 0,
@@ -107,8 +107,9 @@ async function report(message, content, client) {
     else if (!userCooldown || Date.now() - userCooldown > (1000 * 60 * 5)) cooldown.set(message.author.id, Date.now());
 
     let reportHandler = await Report.find({}), totalReports = reportHandler.map(r => r).length;
+    const currentBugID = totalReports + 1;
     var embed = new MessageEmbed()
-        .setAuthor(`${message.author.tag} (${message.author.id})\nBug ID: #${totalReports + 1}`, message.author.displayAvatarURL())
+        .setAuthor(`${message.author.tag} (${message.author.id})\nBug ID: #${currentBugID}`, message.author.displayAvatarURL())
         .setColor("#9512E8")
         .setTitle(content[0])
         .addFields(
@@ -118,7 +119,7 @@ async function report(message, content, client) {
             { name: "Game Version", value: content[4] },
             { name: "Can Reproduce", value: "Currently no one else has reproduced this bug." }
         )
-        .setFooter(`#${totalReports + 1}`)
+        .setFooter(`#${currentBugID}`)
         .setTimestamp(Date.now());
     let attachmentURL = "none";
     if (message.attachments.size > 0) {
@@ -142,7 +143,7 @@ async function report(message, content, client) {
     }
     let reportURL;
     message.guild.channels.cache.get(CHANNELS.QUEUE).send(embed).then(async (msg) => { // <-- #bug-approval-queue channel in C2S
-        let report = new Report({ User: message.author.id, bugID: totalReports + 1, messageID: msg.id, channelID: msg.channel.id });
+        let report = new Report({ User: message.author.id, bugID: currentBugID, messageID: msg.id, channelID: msg.channel.id });
         await report.save();
         reportURL = msg.url;
     });
@@ -151,8 +152,8 @@ async function report(message, content, client) {
         .setURL(reportURL)
         .setAuthor(message.author.tag)
         .setColor(randomColor)
-        .setDescription([`Your report's ID: ${totalReports + 1}`
-            `Attaching an attachment: \`${prefix}bug ${totalReports + 1} attach (YouTube, Imgur, or Discord attachment link here if you don't have attachment)\`(NOTE: You *don't* need to place the parentheses around the link)`
+        .setDescription([`Your report's ID: ${currentBugID}`
+            `Attaching an attachment: \`${prefix}bug ${currentBugID} attach (YouTube, Imgur, or Discord attachment link here if you don't have attachment)\`(NOTE: You *don't* need to place the parentheses around the link)`
             `**attach either an image or video(must be under 50 MB) with your attach command if the optional choices aren't available**`].join('\n'))
         .setFooter('Thank you for your considerable help towards Cell to Singularity, we appreciate it. :)'));
 }

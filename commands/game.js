@@ -20,11 +20,11 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-    if (!cooldownHandler.get(message.author.id) && !message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) cooldownHandler.set(message.author.id, new Date());
-    else if (((new Date() - cooldownHandler.get(message.author.id)) / 1000) < 5) {
-        return message.reply("You're on cooldown with this command.");
+    if (!cooldownHandler.get(message.author.id) && !message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) cooldownHandler.set(message.author.id, Date.now());
+    else if (((Date.now() - cooldownHandler.get(message.author.id)) / 1000) < 5) {
+        return message.reply(`You can't use the game command for another ${((Date.now() - cooldownHandler.get(message.author.id)) / 1000)} seconds.`);
     } else if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
-        cooldownHandler.set(message.author.id, new Date());
+        cooldownHandler.set(message.author.id, Date.now());
     }
     if (args.length == 0) return message.reply(`Start with \`${prefix}game help\` to get more info on Semblance's idle game.`);
     let choice = args[0].toLowerCase();
@@ -32,7 +32,7 @@ module.exports.run = async (client, message, args) => {
     if (choice == 'leaderboard') return leaderboard(client, message);
     if (choice == 'stats') return gameStats(client, message, args);
     if (choice == 'create') return create(client, message);
-    if (choice == 'collect') return collect(client, message);
+    if (choice == 'collect' || choice == 'redeem') return collect(client, message);
     if (choice == 'upgrade') return upgrade(client, message, args[1]);
     if (choice == 'about') return about(client, message);
     if (choice == 'graphs') return graphs(client, message);
