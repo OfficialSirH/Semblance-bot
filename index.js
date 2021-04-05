@@ -53,7 +53,7 @@ discordBotsGG(client);
 topGG.run(client);
 
 const routes = require('./routes');
-routes(app);
+routes(app, client);
 
 app.use((req, res)=>res.redirect('https://officialsirh.github.io/'));
 

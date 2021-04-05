@@ -1,7 +1,8 @@
 'use strict';
 
 const mongoose = require('mongoose'),
-    UserData = mongoose.model('UserData');
+    UserData = mongoose.model('UserData'),
+    { c2sGuildID } = require('../../../config');
 
 exports.list_userdata = function(req, res) {
   UserData.find({}, function(err, entry) {
@@ -31,6 +32,12 @@ exports.read_userdata = function(req, res) {
 exports.update_userdata = function(req, res) {
   UserData.findOneAndUpdate({ playerId: req.params.playerId, playerToken: req.body.playerToken }, { metabits: req.body.metabits, edited_timestamp: Date.now() }, {new: true}, function(err, entry) {
     if (err) return res.send(err);
+    if (req.body.metabits >= 1E9) {
+        const member = await req.client.guilds.cache.get(c2sGuildID).members.fetch(entry.discordId);
+        if (member.roles.cache.has('499316778426433538')) return console.log(`${member.user.tag} has reached the Reality Expert requirement but already has the role.`);
+        member.roles.add('499316778426433538')
+          .then(member => console.log(`Successfully given the reality expert role to ${member.user.tag}`));
+    }
     res.status(200).json(entry);
   });
 };

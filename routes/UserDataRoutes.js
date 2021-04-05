@@ -2,7 +2,7 @@
 
 const UserData = require('../structures/C2S-UserData');
 
-module.exports = function(app) {
+module.exports = function(app, client) {
     const UserDataHook = new UserData.Webhook(process.env.USERDATA_AUTH);
 
     // app.route('/userdata')
@@ -11,6 +11,12 @@ module.exports = function(app) {
 
     app.route('/userdata/:playerId')
         // .get(UserData.read_userdata)
-        .post(UserDataHook.middleware(), UserData.update_userdata)
+        .post(UserDataHook.middleware(), (req, res) => {
+            const newReq = {
+                ...req,
+                client
+            };
+            UserData.update_userdata(newReq, res);
+        })
         // .delete(UserData.delete_userdata);
 }
