@@ -29,7 +29,7 @@ exports.read_userdata = function(req, res) {
 };
 
 
-exports.update_userdata = function(req, res) {
+exports.update_userdata = async function(req, res) {
   UserData.findOneAndUpdate({ playerId: req.params.playerId, playerToken: req.body.playerToken }, { metabits: req.body.metabits, edited_timestamp: Date.now() }, {new: true}, function(err, entry) {
     if (err) return res.send(err);
     if (req.body.metabits >= 1E9) {
