@@ -30,17 +30,15 @@ module.exports.run = async (client, message, args) => {
         [playerId, playerToken] = args;
         const dataAlreadyExists = !!(await UserData.findOne({ playerId, playerToken }));
         if (dataAlreadyExists) return message.channel.send(`The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(SirH).`);
-        UserData.findOneAndUpdate({ discordId: message.author.id }, { $set: { playerId, playerToken, edited_timestamp: Date.now() } }, {new: true}, function(err, entry) {
-            if (err) {
-                const newUser = new UserData({ playerId, playerToken, discordId: message.author.id })
-                newUser.save(function(err, entry) {
-                    if (err) return message.channel.send(`An error occured, either you provided incorrect input or something randomly didn't want to work.`);
-                    message.channel.send(`The link was successful, now you can use the Discord button in-game to upload your metabit progress.`);
-                });
-                return;
-            }
+        const updatedUser = !!(await UserData.findOneAndUpdate({ discordId: message.author.id }, { $set: { playerId, playerToken, edited_timestamp: Date.now() } }, {new: true}));
+        if (updatedUser) {
             console.log(`${message.author.tag}(${message.author.id}) successfully linked their C2S data.`); 
+            return message.channel.send(`The link was successful, now you can use the Discord button in-game to upload your metabit progress.`);
+        }
+        const newUser = new UserData({ playerId, playerToken, discordId: message.author.id })
+        newUser.save(function(err, entry) {
+            if (err) return message.channel.send(`An error occured, either you provided incorrect input or something randomly didn't want to work.`);
             message.channel.send(`The link was successful, now you can use the Discord button in-game to upload your metabit progress.`);
-        });
+        });         
     }   
 }
