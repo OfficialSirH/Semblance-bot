@@ -29,14 +29,17 @@ exports.read_userdata = function(req, res) {
 };
 
 
-exports.update_userdata = async function(req, res) {
+exports.update_userdata = function(req, res) {
   UserData.findOneAndUpdate({ playerId: req.params.playerId, playerToken: req.body.playerToken }, { metabits: req.body.metabits, edited_timestamp: Date.now() }, {new: true}, async function(err, entry) {
     if (err) return res.send(err);
-    if (req.body.metabits >= 1E9) {
+    if (req.body.metabits >= 1E9 && !!entry) {
         const member = await req.client.guilds.cache.get(c2sGuildID).members.fetch(entry.discordId);
-        if (member.roles.cache.has('499316778426433538')) return console.log(`${member.user.tag} has reached the Reality Expert requirement but already has the role.`);
-        member.roles.add('499316778426433538')
-          .then(member => console.log(`Successfully given the reality expert role to ${member.user.tag}`));
+        if (member.roles.cache.has('499316778426433538')) console.log(`${member.user.tag} has reached the Reality Expert requirement but already has the role.`);
+        else member.roles.add('499316778426433538')
+          .then(member => {
+            console.log(`Successfully given the reality expert role to ${member.user.tag}`);
+            member.user.send(`You have successfully received the Reality Expert role, congrats!`);
+          });
     }
     res.status(200).json(entry);
   });
