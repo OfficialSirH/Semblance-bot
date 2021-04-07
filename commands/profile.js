@@ -12,26 +12,28 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
-	let chosenUser = args[0];
 	if (args.length == 0) return guildProfileEmbed(message, message.member);
-	const userReg = /\d{17,19}/;
-	if (!userReg.exec(chosenUser)) return message.reply("You've provided invalid input");
-	else chosenUser = userReg.exec(chosenUser)[0];
+
+	let chosenUser = /(?<!\d)(?<id>\d{17,19})(?!\d)/.exec(args[0]);
+	if (!chosenUser) return message.reply("You've provided invalid input");
+	chosenUser = chosenUser.groups.id;
 	let guildMember;
 	try {
 		guildMember = await message.guild.members.fetch(chosenUser, { cache: false });
 	} catch (e) {
+		console.log(e);
 		guildMember = false;
-    }
-	if (guildMember) return guildProfileEmbed(message, guildMember);
+    } finally {
+		if (!!guildMember) return guildProfileEmbed(message, guildMember);
 
-	try {
-		let user = await client.users.fetch(chosenUser, { cache: false });
-		if (user) return userProfileEmbed(message, user);
-		else message.reply("Sorry, that user couldn't be found in Discord at all");
-	} catch (e) {
-		
-    }
+		try {
+			let user = await client.users.fetch(chosenUser, { cache: false });
+			if (user) return userProfileEmbed(message, user);
+			message.reply("Sorry, that user couldn't be found in Discord at all");
+		} catch (e) {
+			console.log(e);
+		}
+	}
 }
 
 async function guildProfileEmbed(message, member) {
