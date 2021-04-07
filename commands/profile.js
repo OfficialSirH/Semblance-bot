@@ -14,7 +14,7 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
 	if (args.length == 0) return guildProfileEmbed(message, message.member);
 
-	let chosenUser = /(?<!\d)(?<id>\d{17,19})(?!\d)/.exec(args[0]);
+	let chosenUser = /(?<![:\d])(?<id>\d{17,19})(?!\d)/.exec(args[0]);
 	if (!chosenUser) return message.reply("You've provided invalid input");
 	chosenUser = chosenUser.groups.id;
 	let guildMember;
