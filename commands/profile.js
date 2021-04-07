@@ -16,7 +16,7 @@ module.exports.run = async (client, message, args) => {
 	if (args.length == 0) return guildProfileEmbed(message, message.member);
 	const userReg = /\d{17,19}/;
 	if (!userReg.exec(chosenUser)) return message.reply("You've provided invalid input");
-
+	else chosenUser = userReg.exec(chosenUser)[0];
 	let guildMember;
 	try {
 		guildMember = await message.guild.members.fetch(chosenUser, { cache: false });
