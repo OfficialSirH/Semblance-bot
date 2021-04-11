@@ -33,5 +33,6 @@ module.exports.run = async (client, interaction) => {
     if (randomizedChoice == 18) description +='My sources say no.';
     if (randomizedChoice == 19) description +='Outlook not so good.';
     if (randomizedChoice == 20) description +='Very doubtful.';
+    embed.setDescription(description);
     return [{ embeds: [embed.toJSON()] }];
 }
