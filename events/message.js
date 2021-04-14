@@ -106,7 +106,7 @@ module.exports = (client) => {
 		content = content.join(" ")
 
 		const commandFile = commands[command]
-		if (commandFile) {
+		if (commandFile && commandFile.category != 'dm') {
 			let permissionLevel;
 			const args = parseArgs(content); try { permissionLevel = getPermissionLevel(message.member);
 			} catch (e) { permissionLevel = (message.author.id == sirhID) ? 7 : 0 }
