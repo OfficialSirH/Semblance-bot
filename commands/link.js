@@ -1,6 +1,6 @@
 const mongoose = require('mongoose'), UserData = mongoose.model('UserData'), 
     { prefix, c2sGuildID } = require('../config.js'), { Collection } = require('discord.js'),
-    cooldown = new Collection();
+    cooldown = new Collection(), { createHmac } = require('crypto');
 
 module.exports = {
     description: 'used for linking the C2S player\'s game with their Discord account.',
@@ -28,6 +28,9 @@ module.exports.run = async (client, message, args) => {
     finally {
         let playerId, playerToken;
         [playerId, playerToken] = args;
+        /** Implement HMAC Key creation within this region
+         *   Example: const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
+        */
         const dataAlreadyExists = !!(await UserData.findOne({ playerId, playerToken }));
         if (dataAlreadyExists) return message.channel.send(`The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(SirH).`);
         const updatedUser = !!(await UserData.findOneAndUpdate({ discordId: message.author.id }, { $set: { playerId, playerToken, edited_timestamp: Date.now() } }, {new: true}));

@@ -106,7 +106,8 @@ module.exports = (client) => {
 		content = content.join(" ")
 
 		const commandFile = commands[command]
-		if (commandFile && commandFile.category != 'dm') {
+		if (commandFile.category == 'dm') return message.reply('DM commands go in **DMs!**(DM = Direct Message)');
+		if (commandFile) {
 			let permissionLevel;
 			const args = parseArgs(content); try { permissionLevel = getPermissionLevel(message.member);
 			} catch (e) { permissionLevel = (message.author.id == sirhID) ? 7 : 0 }

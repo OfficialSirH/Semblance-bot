@@ -15,6 +15,10 @@ const UserData = new Schema({
         type: String,
         required: 'A player token is required to create a saved entry'
     },
+    // token: {
+    //     type: String,
+    //     required: 'An HMAC-SHA Token is required to create a saved entry'
+    // },
     metabits: {
         type: Number,
         default: 0
