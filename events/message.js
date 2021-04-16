@@ -1,5 +1,6 @@
 const { sirhID, prefix, c2sGuildID, sirhGuildID, lunchGuildID, ignoredGuilds } = require('../config.js'),
     { getPermissionLevel, parseArgs } = require('../constants'), { Collection, MessageEmbed } = require('discord.js'),
+	wait = require('util').promisify(setTimeout),
     dms = require('./messageDM'), { embedCreate } = require('../commands/embed.js'),
 	{ dontDisturb, removeAfk } = require('../commands/afk.js'),
     { Information } = require('../commands/edit.js')
@@ -108,7 +109,11 @@ module.exports = (client) => {
 		const commandFile = commands[command]
 		
 		if (commandFile) {
-			if (commandFile.category == 'dm') return message.reply('DM commands go in **DMs!**(DM = Direct Message)');
+			if (commandFile.category == 'dm') { 
+				message.reply('DM commands go in **DMs!**(DM = Direct Message)');
+				await wait(5000);
+				if (message.member.roles.cache.has('718796622867464198')) return message.member.roles.remove('718796622867464198');
+			}
 			let permissionLevel;
 			const args = parseArgs(content); try { permissionLevel = getPermissionLevel(message.member);
 			} catch (e) { permissionLevel = (message.author.id == sirhID) ? 7 : 0 }
