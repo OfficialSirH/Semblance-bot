@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+      "strict": true,
+      "moduleResolution": "node",
+      "declaration": false,
+      "removeComments": false,
+      "alwaysStrict": true,
+      "pretty": false,
+      "module": "commonjs",
+      "target": "es2020",
+      "lib": [
+        "esnext",
+        "esnext.array",
+        "esnext.asynciterable",
+        "esnext.intl",
+        "esnext.symbol"
+      ],
+      "sourceMap": false,
+      "skipDefaultLibCheck": true
+    },
+    "watchOptions": {
+        "watchFile": "useFsEvents",
+        "watchDirectory": "useFsEvents",
+        "fallbackPolling": "dynamicPriority"
+    }
+  }
