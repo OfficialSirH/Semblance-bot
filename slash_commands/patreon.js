@@ -1,6 +1,6 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js'),
 	{randomColor} = require('../constants'),
-	{ patreon } = require('../config.js');
+	{ patreon } = require('../config').default;
 
 module.exports = {
 	permissionRequired: 0,

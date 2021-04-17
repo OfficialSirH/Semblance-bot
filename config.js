@@ -1,15 +1,16 @@
-const { MessageAttachment } = require('discord.js'),
-    attachmentURL = 'attachment://',
-    attachments = {},
-    fs = require('fs');
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const discord_js_1 = require("discord.js");
+const fs = require("fs");
+const attachmentURL = 'attachment://', attachments = {};
 fs.readdir("./images/", (err, files) => {
-    if (err) console.log(err);
+    if (err)
+        console.log(err);
     for (const file of files) {
-        const attachment = new MessageAttachment(`./images/${file}`, `attachment://${file}`), attachmentName = file.substring(0, file.indexOf("."));
+        const attachment = new discord_js_1.MessageAttachment(`./images/${file}`, `attachment://${file}`), attachmentName = file.substring(0, file.indexOf("."));
         attachments[attachmentName] = attachment;
     }
-    module.exports = Object.assign(module.exports, {
+    module.exports.default = Object.assign(module.exports.default, {
         attachments,
         currentLogo: attachments['Current_Logo'],
         sharks: attachments['Sharks'],
@@ -25,9 +26,8 @@ fs.readdir("./images/", (err, files) => {
         nanobots: attachments['Nanobots'],
         mementoMori: attachments['MementoMori']
     });
-})
-
-module.exports = {
+});
+exports.default = {
     prefix: "s!",
     sirhID: "780995336293711875",
     adityaID: '506458497718812674',
@@ -43,7 +43,7 @@ module.exports = {
     idea: '<:idea:775808337303437353>',
     c2s: '<:CellToSing:498910740200161280>',
     darwinium: '<:darwinium:742748359781122169>',
-    //metabitOG: '<:metabitOG:724684027419951177>',
+    metabitOG: '<:metabitOG:724684027419951177>',
     metabit: '<:metabit:789526514524880906>',
     mutagen: '<:mutagen:742748361852977184>',
     fossil: '<:fossil:742748364625543239>',
@@ -56,4 +56,4 @@ module.exports = {
     stardust: '<:stardust:808445612013518868>',
     energy: '<:energy:808445587803471922>',
     sentience: '<:sentience:808445599078809670>'
-}
+};

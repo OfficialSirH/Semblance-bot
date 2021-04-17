@@ -1,4 +1,5 @@
 { 
+    "name": "@discord-bot-list/sdk",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts"
 }

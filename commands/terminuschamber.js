@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
-    { currentLogo, terminusChamber } = require('../config.js');
+    { currentLogo, terminusChamber } = require('../config').default;
 
 module.exports = {
     description: "Details on how to obtain each node within the Terminus Chamber",

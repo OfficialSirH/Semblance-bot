@@ -1,20 +1,10 @@
 const { MessageEmbed } = require('discord.js'), {randomColor} = require("../../constants"),
     VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
-    { sirhGuildID } = require('../../config.js');//, BotList = require('botlist.space');
+    { sirhGuildID } = require('../../config.js');
  
 
 
 module.exports.run = (client) => {
-    // const botListWebsocket = new BotList.WebSocket({ tokens: [JSON.parse(process.env.botListSpaceAuth).Auth], reconnect: true });
-     
-    // botListWebsocket.on('view', (event) => {
-    //     console.log('Someone has viewed my bot: ' + event.bot.username);
-    // });
-     
-    // botListWebsocket.on('invite', (event) => {
-    //     console.log('Someone has invited my bot: ' + event.bot.username);
-    // });
-     
     module.exports.voteHandler = (req, res) => {
         const user = req.vote.user;
 		if (!!!client.readyAt) return;

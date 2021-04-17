@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'), BfdSDK = require('../../structures/@bots-for-discord/sdk/dist'),
+const { MessageEmbed } = require('discord.js'), {BfdSDK} = require('../../structures'),
     VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
 	{ sirhGuildID } = require('../../config.js'), {randomColor} = require('../../constants');
 /* /bfdwebhook */

@@ -21,55 +21,44 @@ module.exports = {
         return list;
     },
     emojis: {
-        loading: '<a:loading:572202235342225418>',
-        blurple: '<:blurple:673265867840290859>',
-        thumbsup: '<:thumbsup:673265868301533194>',
-        birthdayhat: '<:birthdayhat:673265867995217931>',
-        tickyes: '<:tickyes:673265868213452855>',
-        drippingheart: '<:drippingheart:673265868318310401>',
-        pingsock: '<:pingsock:673265868385550376>',
-        hammer: '<:hammer:673265868414910520>',
-        darkblurple: '<:darkblurple:673265868444270602>',
-        tada: '<:tada:673265868188287007>',
-        tickno: '<:tickno:673265868461047828>',
-        star: '<:star:673265868490145825>',
-        wave: '<:wave:673265868498796591>',
-        weewoo: '<a:weewoo:673265868079366155>',
-        sparkle: '<:sparkle:673265868603654183>',
-        love: '<a:love:673265868666437632>',
-        white: '<:white:673265868716638208>',
-        thumbsdown: '<:thumbsdown:673265868662112269>',
-        heart: '<:heart:673265871094939674>'
+        entropy: '<:entropy:742748357163745413>',
+        idea: '<:idea:775808337303437353>',
+        c2s: '<:CellToSing:498910740200161280>',
+        darwinium: '<:darwinium:742748359781122169>',
+        metabitOG: '<:metabitOG:724684027419951177>',
+        metabit: '<:metabit:789526514524880906>',
+        mutagen: '<:mutagen:742748361852977184>',
+        fossil: '<:fossil:742748364625543239>',
+        trexBadge: '<:Dino_Gold:667471422334959619>',
+        trexSkull: '<:trex_skull:657015647359860767>',
+        singularity: '<:singularity:789526513812504617>',
+        nanobotUp: '<:NanobotUp:764149893937102858>',
+        nanobotDown: '<:NanobotDown:764149995032412180>',
+        darkMatter: '<:darkMatter:808445570078867496>',
+        stardust: '<:stardust:808445612013518868>',
+        energy: '<:energy:808445587803471922>',
+        sentience: '<:sentience:808445599078809670>'
     },
     emojiSnowflakes: {
-        loading: '572202235342225418',
-        blurple: '673265867840290859',
-        thumbsup: '673265868301533194',
-        birthdayhat: '673265867995217931',
-        tickyes: '673265868213452855',
-        drippingheart: '673265868318310401',
-        pingsock: '673265868385550376',
-        hammer: '673265868414910520',
-        darkblurple: '673265868444270602',
-        tada: '673265868188287007',
-        tickno: '673265868461047828',
-        star: '673265868490145825',
-        wave: '673265868498796591',
-        weewoo: '673265868079366155',
-        sparkle: '673265868603654183',
-        love: '673265868666437632',
-        white: '673265868716638208',
-        thumbsdown: '673265868662112269',
-        heart: '673265871094939674'
+        entropy: '742748357163745413',
+        idea: '775808337303437353',
+        c2s: '498910740200161280',
+        darwinium: '742748359781122169',
+        metabitOG: '724684027419951177',
+        metabit: '789526514524880906',
+        mutagen: '742748361852977184',
+        fossil: '742748364625543239',
+        trexBadge: '667471422334959619',
+        trexSkull: '657015647359860767',
+        singularity: '789526513812504617',
+        nanobotUp: '764149893937102858',
+        nanobotDown: '764149995032412180',
+        darkMatter: '808445570078867496',
+        stardust: '808445612013518868',
+        energy: '808445587803471922',
+        sentience: '808445599078809670'
     },
     onlyUnique: (value, index, self) => self.indexOf(value) == index,
-    flat: (input, depth = 1, stack = []) => {
-        for (let item of input) if (item instanceof Array && depth > 0) module.exports.flat(item, depth - 1, stack); else stack.push(item);
-        return stack;
-    },
-    linkRegex: /[-a-zA-Z0-9@:%._\+~#=]{2,}\.[a-zA-Z0-9()]{2,24}\b([-a-zA-Z0-9()@:%_\+.~#?&\/=]*)/gm,
-    linkDomainRegex: /[-a-zA-Z0-9@:%._\+~#=]{2,}\.[a-zA-Z0-9()]{2,24}\b/m,
-    messageLinkRegex: /https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?<guildID>@me|\d{17,19})?\/(?<channelID>\d{17,20})\/(?<messageID>\d{17,20})/,
     attachmentLinkRegex: /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i,
     parseArgs: _arguments => (_arguments.match(/\"[^"]+\"|[^ ]+/g) || []).map(argument => argument.startsWith("\"") && argument.endsWith("\"") ? argument.slice(1).slice(0, -1) : argument),
     lockMessage: user => `👮 👮 ***CHANNEL IS LOCKED BY ${user}*** 👮 👮`,
@@ -90,48 +79,6 @@ module.exports = {
 
         return str;
     },
-    linkCategories: {
-        // NEGATIVE
-        101: 'MALWARE_OR_VIRUS',
-        102: 'POOR_CUSTOMER_EXPERIENCE',
-        103: 'PHISHING',
-        104: 'SCAM',
-        105: 'POTENTIALLY_ILLEGAL',
-
-        // QUESTIONABLE
-        201: 'MISLEADING_CLAIMS_OR_UNETHICAL',
-        202: 'PRIVACY_RISKS',
-        203: 'SUSPICIOUS',
-        204: 'HATE_DISCRIMINTATION',
-        205: 'SPAM',
-        206: 'PUP',
-        207: 'ADS_POPUPS',
-
-        // NEUTRAL
-        301: 'ONLINE_TRACKING',
-        302: 'ALTERNATIVE_OR_CONTROVERSIAL_NATURE',
-        303: 'OPINIONS_RELIGION_POLITICS',
-        304: 'OTHER',
-
-        // CHILD_SAFETY
-        401: 'ADULT_CONTENT',
-        402: 'INCIDENTAL_NUDITY',
-        403: 'GRUESOM_OR_SHOCKING',
-        404: 'SITE_FOR_KIDS',
-
-        // POSITIVE
-        501: 'GOOD_SITE',
-
-        Meta: {
-            NEGATIVE: 100,
-            QUESTIONABLE: 200,
-            NEURTAL: 300,
-            CHILD_SAFETY: 400,
-            POSITIVE: 500,
-        },
-    },
-    badLinkCategories: [101, 103, 104, 105, 203, 204, 206, 401, 402, 403],
-    staffgl: fs.existsSync("./src/constants/staffgl.json") ? require("./staffgl.json") : {},
     roles: {
         admin: Permissions.FLAGS.ADMINISTRATOR,
         exec: Permissions.FLAGS.MANAGE_GUILD,
@@ -142,47 +89,39 @@ module.exports = {
         duty: Permissions.FLAGS.MUTE_MEMBERS,
     },
     cellChannels: [
-        "488478893586645004",
-        "496430259114082304",
-        "511658545280712726",
-        "506940509441490947",
-        "567042187443961858",
-        "694901423732686878",
-        "701828451497148566",
-        "545344551095894028",
-        "706852533393686581",
-        "494997744759603201",
-        "583801966191181834",
-        "573912366509457411",
-        "547455179302109186",
-        "547452339179487249",
-        "547456263546601523",
-        "547523244371214336",
-        "575376892895559689",
-        "575377407750438912",
-        "575377775163080765",
-        "575378141321756692",
-        "657381330576998400",
-        "657382421733441589",
-        "657382925050052628",
-        "658077474281881630",
-        "657384128370573346",
-        "657656270651916318",
-        "658077773138493464"
+        '488478893586645004', // cells-chat
+        '496430259114082304', // share-your-prestige
+        '511658545280712726', // suggestions
+        //'822852513001766982', // suggestion-discussion
+        '545344551095894028', // beta
+        '694901423732686878', // cells-art
+        '506940509441490947', // general
+        '567042187443961858', // memes 
+        '751513380413505618', // semblance
+        '706852533393686581', // bot-room
+        '807324470615605308', // international
+        '573912366509457411', // español
+        '547455179302109186', // polski
+        '547452339179487249', // pyccкий
+        '547456263546601523', // deutsch
+        '547523244371214336', // français
+        '575377407750438912', // português
+        '658077773138493464', // türkçe  
     ],
     sirhChannels: [
-        "699819649675821167",
-        "699853949464739881",
-        "644383888503734272",
-        "699854972262678629",
-        "722649613684703285"
+        '794054989529874493', // general
+        '794054989529874494', // memes
+        '794054989529874495', // suggestions
+        '794054989529874496', // bug-reports
+        '794054989529874497', // bot-room
+        '794054989529874500', // voice-chat
     ]
 }
 
 function getPermissionLevel(member) {
     try {
         if ("506458497718812674" === member.user.id || member.user.id == "780995336293711875") return 7;
-        // Aditya, HDevGames //RIP SirH OG: "279080959612026880" === member.user.id // SirH#4297
+        // Aditya, SirH //RIP SirH OG: "279080959612026880" === member.user.id // SirH#4297
         if (member.permissions.has(module.exports.roles.admin)) return 6; // admin
         if (member.permissions.has(module.exports.roles.exec)) return 5; // exec
         if (member.permissions.has(module.exports.roles.srmod)) return 4; // sr.mod

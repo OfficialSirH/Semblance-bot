@@ -13,15 +13,23 @@
     "express": "^4.17.1",
     "ffmpeg": "0.0.4",
     "ffmpeg-static": "^4.2.7",
+    "module-alias": "^2.2.2",
     "mongoose": "^5.11.19",
     "node-fetch": "^2.6.1",
-    "pm2": "^4.5.5",
+    "pm2": "^4.5.6",
     "twitter": "^1.7.1",
     "ytdl-core-discord": "^1.2.5"
+  },
+  "_moduleAliases": {
+    "@semblance/structures": "dist/structures"
   },
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js --env production"
   },
   "keywords": [],
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@types/mongoose": "^5.10.5",
+    "@types/ws": "^7.4.1"
+  }
 }

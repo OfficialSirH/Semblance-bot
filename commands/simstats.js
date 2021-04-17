@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'),
 	{randomColor} = require('../constants'),
-	{ currentLogo, simStatsLocation } = require('../config.js');
+	{ currentLogo, simStatsLocation } = require('../config').default;
 
 module.exports = {
     description: "",

@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
-    { currentLogo, prefix, darwinium } = require('../config.js'); 
+    { currentLogo, prefix, darwinium } = require('../config').default; 
 
 module.exports = {
     description: "Info on limericks winners",

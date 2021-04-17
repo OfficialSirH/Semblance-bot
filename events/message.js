@@ -111,6 +111,7 @@ module.exports = (client) => {
 		if (commandFile) {
 			if (commandFile.category == 'dm') { 
 				message.reply('DM commands go in **DMs!**(DM = Direct Message)');
+				console.log(`a dumbass(${message.author.tag}(${message.author.id})) just used the link command in the server.`);
 				await wait(5000);
 				if (message.member.roles.cache.has('718796622867464198')) return message.member.roles.remove('718796622867464198');
 			}

@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'),
 	{randomColor} = require("../constants"),
-	{ prefix } = require('../config.js');
+	{ prefix } = require('../config').default;
 
 module.exports = {
 	description: "List all miscelaneous commands",

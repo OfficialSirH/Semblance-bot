@@ -21,8 +21,10 @@ class StickerPacks {
     get stickerPacks() {
         return this.sticker_packs;
     }
-}
 
-StickerPacks.storeDirectory = `https://discord.com/api/v8/sticker-packs/directory-v2/758482250722574376?with_store_listings=true`;
+    static get storeDirectory() {
+        return `https://discord.com/api/v8/sticker-packs/directory-v2/758482250722574376?with_store_listings=true`;
+    }
+}
 
 module.exports = StickerPacks;

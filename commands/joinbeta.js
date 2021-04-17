@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'), { currentLogo } = require('../config.js'); 
+const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'), { currentLogo } = require('../config').default; 
 
 module.exports = {
     description: "Info on how to become a beta tester",

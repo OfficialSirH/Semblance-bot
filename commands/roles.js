@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'), { currentLogo } = require('../config.js');
+const { MessageEmbed } = require('discord.js'), { currentLogo } = require('../config').default;
 
 module.exports = {
     description: "",

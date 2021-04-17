@@ -77,7 +77,7 @@ module.exports.run = async (client, message, args) => {
     try {
         let _invite = await client.fetchInvite(args[0]);
         if (_invite) {
-            let invite = await fetch(`https://discordapp.com/api/v6/invites/` + _invite.code + "?with_counts=true").then(res => res.json());
+            let invite = await fetch(`https://discordapp.com/api/v8/invites/` + _invite.code + "?with_counts=true").then(res => res.json());
 
             const fields = [], add = values => { for (const name in values) fields.push({ name, value: values[name], inline: true }) }
 

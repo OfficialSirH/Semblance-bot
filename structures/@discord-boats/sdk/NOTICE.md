@@ -1,0 +1,1 @@
+# This is a modified version of `@top-gg/sdk` for the purpose of receiving webhook posts from discord.boats

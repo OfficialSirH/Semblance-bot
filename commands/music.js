@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'),
 	{randomColor} = require('../constants'),
-	{ currentLogo } = require('../config.js');
+	{ currentLogo } = require('../config').default;
 
 module.exports = {
 	description: "Provides the links to the ingame music on the Fandom wiki and on Spotify.",

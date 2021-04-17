@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'),
-    { geodeImage, currentLogo } = require('../config.js');
+    { geodeImage, currentLogo } = require('../config').default;
 
 module.exports = {
     description: "Get geode comparisons to show the best value.",

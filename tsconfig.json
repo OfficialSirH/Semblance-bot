@@ -7,7 +7,7 @@
       "alwaysStrict": true,
       "pretty": false,
       "module": "commonjs",
-      "target": "es2020",
+      "target": "esNext",
       "lib": [
         "esnext",
         "esnext.array",
@@ -15,6 +15,10 @@
         "esnext.intl",
         "esnext.symbol"
       ],
+      "baseUrl": ".",
+      "paths": {
+        "@semblance/structures/*": ["structures/*"]
+      },
       "sourceMap": false,
       "skipDefaultLibCheck": true
     },

@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'),
 	{randomColor} = require("../constants"),
-	{ currentLogo, sharks } = require('../config.js');
+	{ currentLogo, sharks } = require('../config').default;
 
 module.exports = {
 	description: "Get info on sharks.",

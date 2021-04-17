@@ -1,5 +1,5 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js'),
-    { archieDance } = require('../config.js');
+    { archieDance } = require('../config').default;
 
 module.exports = {
     description: "View epic videos of Archie dancing.",

@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
-      { currentLogo, nanobots } = require('../config.js');
+      { currentLogo, nanobots } = require('../config').default;
 
 module.exports = {
   description: "Provides details on nanobots and whatever else about those sexy little dudes",

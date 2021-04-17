@@ -2,9 +2,7 @@
 
 // Bot listing SDKs
 const TopggSDK = require('@top-gg/sdk'),
-	BfdSDK = require('../structures/@bots-for-discord/sdk/dist'),
-	DblSDK = require('../structures/@discord-bot-list/sdk/dist'),
-	BlsSDK = require('../structures/@botlist-space/sdk/dist'),
+	{BfdSDK, DblSDK, BlsSDK, DboatsSDK} = require('../structures'),
     // Bot listing event handlers
 	botListSpace = require('../events/botListingEvents/botListSpace'),
 	botsForDiscord = require('../events/botListingEvents/botsForDiscord'),
@@ -17,7 +15,8 @@ module.exports = function(app) {
     const topggWebhook = new TopggSDK.Webhook(JSON.parse(process.env.topGGAuth).webAuth),
 	bfdWebhook = new BfdSDK.Webhook(JSON.parse(process.env.botsForDiscordAuth).webAuth),
 	dblWebhook = new DblSDK.Webhook(JSON.parse(process.env.discordBotListAuth).webAuth),
-	blsWebhook = new BlsSDK.Webhook(JSON.parse(process.env.botListSpaceAuth).webAuth);
+	blsWebhook = new BlsSDK.Webhook(JSON.parse(process.env.botListSpaceAuth).webAuth),
+	dboatsWebhook = new DboatsSDK.Webhook(JSON.parse(process.env.DBoatsAuth).webAuth);
 
     app.route('/dblwebhook')
         .post(topggWebhook.middleware(), topGG.voteHandler);
@@ -31,4 +30,7 @@ module.exports = function(app) {
 
     app.route('/blswebhook')
         .post(blsWebhook.middleware(), botListSpace.voteHandler);
+
+	app.route('/dboatswebhook')
+		.post(dboatswebhook.middleware(), discordBoat.voteHandler);
 }

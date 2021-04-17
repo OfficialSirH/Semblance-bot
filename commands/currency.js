@@ -2,7 +2,7 @@
 	{randomColor} = require('../constants'),
 	{ currentLogo, entropy, idea, darwinium, metabit, 
 		fossil, mutagen, darkMatter, stardust, 
-		energy, sentience } = require('../config.js');
+		energy, sentience } = require('../config').default;
 
 module.exports = {
 	description: "List all of the ingame currency.",

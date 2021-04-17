@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
-    { mementoMori } = require('../config.js');
+    { mementoMori } = require('../config').default;
 
 module.exports = {
     description: "Memento Mori",

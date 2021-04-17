@@ -1,7 +1,7 @@
 const config = require('./config');
 require('dotenv').config();
 // Semblance client
-const Semblance = require('./structures/Semblance'), { Intents } = require('discord.js'),
+const { Semblance } = require('./structures'), { Intents } = require('discord.js'),
 	client = new Semblance({
 		 disableMentions: "everyone", // V13 Release replacement: disableMentions: { parse: ['users', 'roles'], repliedUser: true }
     		messageCacheLifetime: 30,

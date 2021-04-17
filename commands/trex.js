@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'),
     {randomColor} = require('../constants'),
-    { currentLogo, trexBadge } = require('../config.js');
+    { currentLogo, trexBadge } = require('../config').default;
 
 module.exports = {
     description: "",

@@ -10,7 +10,7 @@ fs.readdir("./images/", (err, files) => {
         const attachment = new MessageAttachment(`./images/${file}`, `attachment://${file}`), attachmentName = file.substring(0, file.indexOf("."));
         attachments[attachmentName] = attachment;
     }
-    module.exports = Object.assign(module.exports, {
+    module.exports.default = Object.assign(module.exports.default, {
         attachments,
         currentLogo: attachments['Current_Logo'],
         sharks: attachments['Sharks'],
@@ -44,7 +44,7 @@ export default {
     idea: '<:idea:775808337303437353>',
     c2s: '<:CellToSing:498910740200161280>',
     darwinium: '<:darwinium:742748359781122169>',
-    //metabitOG: '<:metabitOG:724684027419951177>',
+    metabitOG: '<:metabitOG:724684027419951177>',
     metabit: '<:metabit:789526514524880906>',
     mutagen: '<:mutagen:742748361852977184>',
     fossil: '<:fossil:742748364625543239>',

@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'),
     {randomColor} = require('../constants'),
-    { currentLogo } = require('../config.js');
+    { currentLogo } = require('../config').default;
 
 module.exports = {
     description: "Get help with the item calculator commands",

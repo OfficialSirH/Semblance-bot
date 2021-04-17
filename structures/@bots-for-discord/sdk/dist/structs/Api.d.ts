@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
-import { Snowflake, BotStats, BotInfo, UserInfo, BotsResponse, ShortUser, BotsQuery } from '../typings';
+import { Snowflake, BotStats, BotInfo, UserInfo, BotsResponse, ShortUser, UserBots } from '../typings';
 interface APIOptions {
     /**
      * Botsfordiscord.com Token

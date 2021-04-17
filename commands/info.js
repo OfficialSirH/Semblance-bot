@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), {randomColor, msToTime} = require('../constants'),
-    dpc = require('../package.json').dependencies, { singularity, entropy, metabit, mutagen, idea } = require('../config.js');
+    dpc = require('../package.json').dependencies, { singularity, entropy, metabit, mutagen, idea } = require('../config').default;
     
 module.exports = {
     description: "Get information about the epic bot, Semblance",
