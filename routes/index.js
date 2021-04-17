@@ -1,6 +1,5 @@
 'use strict';
 
-module.exports = function(app, client) {
-    require('./UserDataRoutes')(app, client);
+exports = function(app, client) {
     require('./BotListingRoutes')(app);
 }
