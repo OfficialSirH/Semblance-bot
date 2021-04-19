@@ -1,4 +1,4 @@
-module.exports = {
+module.exports.MODELS = {
     Afk: require('./Afk').Afk,
     Game: require('./Game').Game,
     Information: require('./Information').Information,
