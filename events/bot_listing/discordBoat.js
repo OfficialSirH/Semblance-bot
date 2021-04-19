@@ -1,9 +1,9 @@
 const { MessageEmbed } = require('discord.js'), 
-    VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
+    VoteModel = require('../../models/Votes.js').Votes, GameModel = require('../../models/Game.js').Game,
 	{ sirhGuildID } = require('../../config.js'), {randomColor} = require('../../constants'),
     BOATS = require('boats.js'), Boats = new BOATS(JSON.parse(process.env.DBoatsAuth).Auth);
 
-module.exports = (client) => {
+module.exports.run = (client) => {
     setInterval(function () {
         Boats.postStats(client.guilds.cache.size, client.user.id).then(() => {
             console.log('Successfully updated server count.');

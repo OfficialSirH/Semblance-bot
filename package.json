@@ -21,7 +21,11 @@
     "ytdl-core-discord": "^1.2.5"
   },
   "_moduleAliases": {
-    "@semblance/structures": "dist/structures"
+    "@semblance/structures": "structures",
+    "@semblance/models": "models",
+    "@semblance/events": "events",
+    "@semblance/constants": "constants",
+    "@semblance": "."
   },
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js --env production"
@@ -29,6 +33,7 @@
   "keywords": [],
   "license": "ISC",
   "devDependencies": {
+    "@types/express": "^4.17.11",
     "@types/mongoose": "^5.10.5",
     "@types/ws": "^7.4.1"
   }

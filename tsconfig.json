@@ -15,9 +15,13 @@
         "esnext.intl",
         "esnext.symbol"
       ],
-      "baseUrl": ".",
+      "baseUrl": "./",
       "paths": {
-        "@semblance/structures/*": ["structures/*"]
+        "@semblance/structures/*": ["structures/*"],
+        "@semblance/models/*": ["models/*"],
+        "@semblance/events/*": ["events/*"],
+        "@semblance/constants/*": ["constants/*"],
+        "@semblance": ["./*"]
       },
       "sourceMap": false,
       "skipDefaultLibCheck": true

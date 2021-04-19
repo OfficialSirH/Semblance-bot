@@ -1,4 +1,4 @@
-const { TurnPage } = require('../commands/gametransfer.js');
+const { TurnPage } = require('../../commands/gametransfer.js');
 
 module.exports = (client) => {
     client.on("messageReactionAdd", (reaction, user) => {

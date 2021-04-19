@@ -2,7 +2,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../../c
     fetch = require('node-fetch');
 
 
-module.exports = (client) => {
+module.exports.run = (client) => {
     const baseURL = 'https://discord.bots.gg/api/v1';
 
     setInterval(async function() {

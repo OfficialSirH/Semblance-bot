@@ -1,7 +1,7 @@
 const { MessageEmbed } = require('discord.js'),
 	fs = require("fs"),
 	{ randomColor } = require("../constants"),
-	Afk = require('../models/Afk.js');
+	Afk = require('../models/Afk.js').Afk;
 
 module.exports = {
 	description: "Set yourself afk so users know you're unavailable when they ping you.",

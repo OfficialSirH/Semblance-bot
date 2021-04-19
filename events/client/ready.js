@@ -1,8 +1,8 @@
-const { GameModel } = require('../commands/game.js'), mongoose = require('mongoose'),
-    Votes = require('../models/Votes.js'),
-    { Information } = require('../commands/edit'),
+const mongoose = require('mongoose'),
+    { MODELS } = require('../../models'),
+    { Votes, Information, Game } = MODELS,
     { MessageEmbed, Collection } = require('discord.js'),
-    { c2sGuildID } = require('../config'),
+    { c2sGuildID } = require('@semblance/config'),
     BotList = require('botlist.space');
 
     let alternateActivity = false;
@@ -36,7 +36,7 @@ module.exports = (client) => {
         */
         const cacheList = await Information.findOne({ infoType: 'cacheList' });
         const cacheCollection = new Collection(cacheList.list.map(i => [i, 1]));
-        const gameList = await GameModel.find({});
+        const gameList = await Game.find({});
         gameList.forEach(userData => {
             if (!cacheCollection.has(userData.player)) cacheCollection.set(userData.player);
         });

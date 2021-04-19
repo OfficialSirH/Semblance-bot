@@ -1,5 +1,6 @@
-const { CHANNELS, correctReportList, Report } = require('../commands/bug.js'),
-    { c2sGuildID } = require('../config'), wait = require('util').promisify(setTimeout);
+const { CHANNELS, correctReportList } = require('../../commands/bug'),
+    Report = require('../../models/report').Report,
+    { c2sGuildID } = require('../../config').default, wait = require('util').promisify(setTimeout);
 
 module.exports = (client) => {
     client.on("messageDelete", async message => {

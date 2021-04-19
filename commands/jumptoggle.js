@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'),
     { randomColor } = require('../constants'),
-    JTModel = require('../models/Jump.js');
+    JTModel = require('../models/Jump.js').Jump;
 
 module.exports = {
     description: "This command toggles a feature that will convert a user's message that contains a message link into an embed that provides the details of the specified message link",

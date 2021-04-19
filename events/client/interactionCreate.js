@@ -1,5 +1,5 @@
-const { getAvatar, getPermissionLevel } = require('../constants'),
-    { c2sGuildID } = require('../config');
+const { getAvatar, getPermissionLevel } = require('@semblance/constants'),
+    { c2sGuildID } = require('@semblance/config');
 
 async function send(client, interaction, { content = null, embeds = [], type = 4, flags = 0 } = {}) {
     client.api.interactions(interaction.id, interaction.token).callback.post({data: {

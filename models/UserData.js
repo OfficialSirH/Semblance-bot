@@ -7,14 +7,6 @@ const UserData = new Schema({
         type: String,
         required: 'A user\'s Discord ID is required to create a saved entry'
     },
-    // playerId: {
-    //     type: String,
-    //     required: 'A player ID is required to create a saved entry'
-    // },
-    // playerToken: {
-    //     type: String,
-    //     required: 'A player token is required to create a saved entry'
-    // },
     token: {
         type: String,
         required: 'An HMAC-SHA Token is required to create a saved entry'

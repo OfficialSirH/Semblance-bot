@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'),
-	VoteModel = require('../models/Votes.js'),
+	VoteModel = require('../models/Votes.js').Votes,
 	{ insertionSort, randomColor } = require('../constants'),
 	{ Information } = require('./edit.js');
 

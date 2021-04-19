@@ -4,12 +4,8 @@
 const TopggSDK = require('@top-gg/sdk'),
 	{BfdSDK, DblSDK, BlsSDK, DboatsSDK} = require('../structures'),
     // Bot listing event handlers
-	botListSpace = require('../events/botListingEvents/botListSpace'),
-	botsForDiscord = require('../events/botListingEvents/botsForDiscord'),
-	discordBoat = require('../events/botListingEvents/discordBoat'),
-	discordBotList = require('../events/botListingEvents/discordBotList'),
-	//discordBotsGG = require('../events/botListingEvents/discordBotsGG'),
-	topGG = require('../events/botListingEvents/topGG');
+	EVENTS = require('../events').EVENTS,
+	{ botListSpace, botsForDiscord, discordBoat, discordBotList, discordBotsGG, topGG } = EVENTS.BOT_LISTING;
 
 module.exports = function(app) {
     const topggWebhook = new TopggSDK.Webhook(JSON.parse(process.env.topGGAuth).webAuth),

@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'),
 	{randomColor, msToTime} = require("../constants"),
-	Reminder = require('../models/Reminder.js');
+	Reminder = require('../models/Reminder.js').Reminder;
 
 module.exports = {
 	description: "Set a reminder for yourself.",

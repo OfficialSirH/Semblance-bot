@@ -1,5 +1,5 @@
-const { prefix } = require('../config.js'),
-    { parseArgs } = require('../constants');
+const { prefix } = require('@semblance/config'),
+    { parseArgs } = require('@semblance/constants');
 
 module.exports = (client, message) => {
     const { commands, aliases } = client;

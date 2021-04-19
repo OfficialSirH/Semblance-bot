@@ -1,7 +1,8 @@
 const config = require('./config');
 require('dotenv').config();
+require('module-alias/register');
 // Semblance client
-const { Semblance } = require('./structures'), { Intents } = require('discord.js'),
+const { Semblance } = require('./structures'), { Intents } = require('discord.js'), EVENTS = require('./events').EVENTS,
 	client = new Semblance({
 		 disableMentions: "everyone", // V13 Release replacement: disableMentions: { parse: ['users', 'roles'], repliedUser: true }
     		messageCacheLifetime: 30,
@@ -15,23 +16,14 @@ const { Semblance } = require('./structures'), { Intents } = require('discord.js
 	express = require('express'),
 	app = express(),
 	// Database connection import
-	{ connect } = require('mongoose'), UserDataLoad = require('./models/UserData'),
+	{ connect } = require('mongoose'), 
+	UserDataLoad = require('./models/UserData').UserData,
 	// Client event handlers
-	checkTweet = require('./events/checkTweet'),
-	interactionCreate = require('./events/interactionCreate'),
-	message = require('./events/message'),
-	messageDelete = require('./events/messageDelete'),
-	messageReactionAdd = require('./events/messageReactionAdd'),
-	messageReactionRemove = require('./events/messageReactionRemove'),
-	messageUpdate = require('./events/messageUpdate'),
-	ready = require('./events/ready'),
+	{ interactionCreate, message, messageDelete, messageReactionAdd, messageReactionRemove, messageUpdate, ready } = EVENTS.CLIENT,
 	// Bot listing event handlers
-	botListSpace = require('./events/botListingEvents/botListSpace'),
-	botsForDiscord = require('./events/botListingEvents/botsForDiscord'),
-	discordBoat = require('./events/botListingEvents/discordBoat'),
-	discordBotList = require('./events/botListingEvents/discordBotList'),
-	discordBotsGG = require('./events/botListingEvents/discordBotsGG'),
-	topGG = require('./events/botListingEvents/topGG');
+	{ botListSpace, botsForDiscord, discordBoat, discordBotList, discordBotsGG, topGG } = EVENTS.BOT_LISTING,
+	// Twitter event check
+	{ checkTweet } = EVENTS.TWITTER;
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -47,9 +39,9 @@ ready(client);
 // Listen to bot listing events
 botListSpace.run(client);
 botsForDiscord.run(client);
-discordBoat(client);
+discordBoat.run(client);
 discordBotList.run(client);
-discordBotsGG(client);
+discordBotsGG.run(client);
 topGG.run(client);
 
 const routes = require('./routes');

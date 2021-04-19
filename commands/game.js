@@ -1,6 +1,6 @@
 const { MessageEmbed, Collection, Permissions } = require('discord.js'), { prefix } = require('../config.js'),
     { insertionSort, randomColor } = require('../constants'),
-    GameModel = require('../models/Game.js'),
+    GameModel = require('../models/Game.js').Game,
     cooldownHandler = new Collection(),
     { Information } = require('./edit.js');
 

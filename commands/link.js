@@ -28,9 +28,6 @@ module.exports.run = async (client, message, args) => {
     finally {
         let playerId, playerToken;
         [playerId, playerToken] = args;
-        /** Implement HMAC Key creation within this region
-         *   Example: const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
-        */
         const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
         const dataAlreadyExists = !!(await UserData.findOne({ token }));
         if (dataAlreadyExists) return message.channel.send(`The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(SirH).`);

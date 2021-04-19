@@ -1,5 +1,5 @@
 const { MessageEmbed, Collection, Util } = require('discord.js'), { parseArgs } = require('../constants'),
-    JTModel = require('../models/Jump.js');
+    JTModel = require('../models/Jump.js').Jump;
 
 module.exports = {
     description: "Converts message links to an embed",

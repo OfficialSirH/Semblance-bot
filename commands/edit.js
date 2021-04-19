@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
-    Information = require('../models/Information.js');
+    Information = require('../models/Information.js').Information;
 
 module.exports = {
     description: "Used for editing information on the beta and update commands",

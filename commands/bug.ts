@@ -5,7 +5,7 @@ import config from '../config';
 import { getPermissionLevel, randomColor } from '../constants';
 import { promisify } from 'util';
 import { Semblance } from '../structures';
-import { BugReport } from '../models/Report';
+import { ReportFormat } from '../models/Report';
 
 const wait = promisify(setTimeout),
     { prefix, sirhGuildID, c2sGuildID } = config,
@@ -191,7 +191,7 @@ async function bug(client: Semblance, message: Message, permissionLevel: number,
     message.delete();
 }
 
-async function addAttachment(client: Semblance, message: Message, report: BugReport, attachment: MessageAttachment | string | null) {
+async function addAttachment(client: Semblance, message: Message, report: ReportFormat, attachment: MessageAttachment | string | null) {
     if (getPermissionLevel(message.member as GuildMember) == 0 && report.User != message.author.id) return message.reply("You don't have permission to add attachments to other people's reports.");
     if (!attachment) return message.reply("You didn't send any attachment nor a link");
     else if (typeof attachment == 'string') {
@@ -217,7 +217,7 @@ async function addAttachment(client: Semblance, message: Message, report: BugRep
     }
 }
 
-async function deleteReproduce(message: Message, report: BugReport, args: string[]) {
+async function deleteReproduce(message: Message, report: ReportFormat, args: string[]) {
     (message.guild!.channels.cache.get(report.channelID) as TextChannel)!.messages.fetch(report.messageID, false)
         .then(msg => {
             let reproduceField = msg.embeds[0].fields[4].value.split('\n');
@@ -230,7 +230,7 @@ async function deleteReproduce(message: Message, report: BugReport, args: string
         }).catch(err => console.log(err));
 }
 
-async function addReproduce(message: Message, report: BugReport, specifications: string[]) {
+async function addReproduce(message: Message, report: ReportFormat, specifications: string[]) {
     specifications = specifications.slice(2).join(' ').replace(/\|\|/g, '').split('|').filter(c => c.trim() != '');
     if (specifications.length < 2) specifications = specifications.join(' ').split('\n').filter(c => c.trim() != '');
     let sysInfo = specifications[0], gameVersion = specifications[1];
@@ -250,7 +250,7 @@ async function addReproduce(message: Message, report: BugReport, specifications:
         .catch(err => err);
 }
 
-async function fixUpReports(client: Semblance, message: Message, channel: TextChannel, report: BugReport, reason: string = 'unspecified', approved: boolean) {
+async function fixUpReports(client: Semblance, message: Message, channel: TextChannel, report: ReportFormat, reason: string = 'unspecified', approved: boolean) {
     (message.guild!.channels.cache.get(CHANNELS.QUEUE) as TextChannel)!.messages.fetch(report.messageID, false) // <-- #bug-approval-queue channel from C2S
         .then(async msg => {
             let user = await client.users.fetch(report.User);
@@ -266,7 +266,7 @@ async function fixUpReports(client: Semblance, message: Message, channel: TextCh
         }).catch((err: Error) => console.log(`Approval/Denial had an issue due to:\n${err}`));
 }
 
-async function attachmentFieldCorrection(client: Semblance, message: Message, report: BugReport, item: string) {
+async function attachmentFieldCorrection(client: Semblance, message: Message, report: ReportFormat, item: string) {
     let attachmentURL: string = '', creationFailed = false, youtubeLink = false, attachment: object | MessageAttachment = {};
 
     if (/https?:\/\/(?:www\.)?youtu(?:be\.com\/watch\?v=|\.be\/)\w{11}/.exec(item) != null) {
@@ -342,7 +342,7 @@ async function correctReportList(client: Semblance, message: Message, messageID:
     console.log(`All ${bugIdList.length} reports have successfully been reorganized!`);
 }
 
-async function archiveReport(client: Semblance, message: Message, report: BugReport) {
+async function archiveReport(client: Semblance, message: Message, report: ReportFormat) {
     let msg = await (message.guild!.channels.cache.get(report.channelID) as TextChannel).messages.fetch(report.messageID);
     let author = msg.embeds[0].author;
     try {

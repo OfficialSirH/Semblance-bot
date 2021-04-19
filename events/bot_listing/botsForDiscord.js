@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), {BfdSDK} = require('../../structures'),
-    VoteModel = require('../../models/Votes.js'), GameModel = require('../../models/Game.js'),
+    VoteModel = require('../../models/Votes.js').Votes, GameModel = require('../../models/Game.js').Game,
 	{ sirhGuildID } = require('../../config.js'), {randomColor} = require('../../constants');
 /* /bfdwebhook */
 module.exports.run = (client) => {

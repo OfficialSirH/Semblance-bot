@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'),
     {randomColor} = require('../constants'),
-    Afk = require('../models/Afk.js');
+    Afk = require('../models/Afk.js').Afk;
 
 module.exports = {
     permissionRequired: 0

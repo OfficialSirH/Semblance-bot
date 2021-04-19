@@ -1,12 +1,12 @@
 const { MessageEmbed } = require('discord.js'),
     {randomColor} = require('../constants'),
-    GameModel = require('../models/Game');
+    Game = require('../models/Game').Game;
 
 module.exports = {
     permissionRequired: 0,
     run: async (client, interaction) => {
         let player = (interaction.data.options) ? interaction.data.options[0].value : interaction.member.user.id;
-        let statsHandler = await GameModel.findOne({ player: player });
+        let statsHandler = await Game.findOne({ player: player });
         if (!statsHandler) return [{ content: "You have not created a game yet; if you'd like to create a game, use `s!game create`" }];
         let nxtUpgrade = await currentPrice(player, statsHandler);
         if (interaction.member.user.id == player) player = interaction.member.user;
@@ -30,7 +30,7 @@ module.exports = {
 
 async function currentPrice(userID, userData) {
     if (userData.level == userData.checkedLevel) {
-        userData = await GameModel.findOneAndUpdate({ player: userID }, {
+        userData = await Game.findOneAndUpdate({ player: userID }, {
             $set: { checkedLevel: userData.checkedLevel+1, cost: userData.cost + userData.baseCost * Math.pow(userData.percentIncrease, userData.level + 1) }
         }, { new: true });
         return userData.cost;
