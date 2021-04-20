@@ -15,7 +15,8 @@ module.exports.EVENTS = {
         botsForDiscord: require("./bot_listing/botsForDiscord"),
         discordBoat: require("./bot_listing/discordBoat"),
         discordBotList: require("./bot_listing/discordBotList"),
-        discordBotsGG: require("./bot_listing/discordBotsGG")
+        discordBotsGG: require("./bot_listing/discordBotsGG"),
+        topGG: require('./bot_listing/topGG')
     },
     TWITTER: {
         checkTweet: require("./checkTweet")
