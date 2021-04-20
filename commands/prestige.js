@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'),
-    { currentLogo, prestige, prestigeList } = require('../config.js'),
+    { currentLogo, prestige, prestigeList } = require('../config.js').default,
     { randomColor } = require('../constants');
 
 module.exports = {

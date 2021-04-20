@@ -1,5 +1,5 @@
 const { MessageEmbed, MessageAttachment } = require('discord.js'), {randomColor} = require('../constants'),
-    fetch = require('node-fetch'), config = require('../config'), { attachments } = config, fs = require('fs');
+    fetch = require('node-fetch'), config = require('../config').default, { attachments } = config, fs = require('fs');
 
 module.exports = {
     description: "Evaluate some code.",

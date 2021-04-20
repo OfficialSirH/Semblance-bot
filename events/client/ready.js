@@ -2,11 +2,11 @@ const mongoose = require('mongoose'),
     { MODELS } = require('../../models'),
     { Votes, Information, Game } = MODELS,
     { MessageEmbed, Collection } = require('discord.js'),
-    { c2sGuildID } = require('@semblance/config'),
+    { c2sGuildID } = require('@semblance/config').default,
     BotList = require('botlist.space');
 
     let alternateActivity = false;
-    
+
     function showMyActivity(client) {
         if (!alternateActivity) {
             client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${client.commandCounter} commands used during uptime`, { type: "PLAYING" });

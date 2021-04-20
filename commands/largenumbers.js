@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'), { currentLogo } = require('../config.js'), {randomColor} = require('../constants');
+const { MessageEmbed } = require('discord.js'), { currentLogo } = require('../config.js').default, {randomColor} = require('../constants');
 
 module.exports = {
     description: "Provides details of shorter ways to using large numbers as input.",

@@ -1,4 +1,4 @@
-const { prefix } = require('@semblance/config'),
+const { prefix } = require('@semblance/config').default,
     { parseArgs } = require('@semblance/constants');
 
 module.exports = (client, message) => {

@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'), {DblSDK} = require('@semblance/structures'),
     VoteModel = require('../../models/Votes.js').Votes, GameModel = require('../../models/Game.js').Game,
-	{ sirhGuildID } = require('../../config.js'), {randomColor} = require('../../constants');
+	{ sirhGuildID } = require('../../config.js').default, {randomColor} = require('../../constants');
 /* /discordblwebhook */
 module.exports.run = (client) => {
     const dbl = new DblSDK.Api(JSON.parse(process.env.discordBotListAuth).Auth);

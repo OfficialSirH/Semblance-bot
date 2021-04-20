@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'), {randomColor} = require("../../constants"),
     VoteModel = require('../../models/Votes.js').Votes, GameModel = require('../../models/Game.js').Game,
-    { sirhGuildID } = require('../../config.js');
+    { sirhGuildID } = require('../../config.js').default;
  
 
 
