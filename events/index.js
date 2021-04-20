@@ -2,13 +2,13 @@
 module.exports.EVENTS = {
     CLIENT: {
         interactionCreate: require("./client/interactionCreate"),
-        message: require("./message"),
-        messageDelete: require("./messageDelete"),
-        messageDM: require("./messageDM"),
-        messageReactionAdd: require("./messageReactionAdd"),
-        messageReactionRemove: require("./messageReactionRemove"),
-        messageUpdate: require("./messageUpdate"),
-        ready: require("./ready")
+        message: require("./client/message"),
+        messageDelete: require("./client/messageDelete"),
+        messageDM: require("./client/messageDM"),
+        messageReactionAdd: require("./client/messageReactionAdd"),
+        messageReactionRemove: require("./client/messageReactionRemove"),
+        messageUpdate: require("./client/messageUpdate"),
+        ready: require("./client/ready")
     },
     BOT_LISTING: {
         botListSpace: require("./bot_listing/botListSpace"),
