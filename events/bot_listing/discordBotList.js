@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'), {DblSDK} = require('../../structures'),
+const { MessageEmbed } = require('discord.js'), {DblSDK} = require('@semblance/structures'),
     VoteModel = require('../../models/Votes.js').Votes, GameModel = require('../../models/Game.js').Game,
 	{ sirhGuildID } = require('../../config.js'), {randomColor} = require('../../constants');
 /* /discordblwebhook */
