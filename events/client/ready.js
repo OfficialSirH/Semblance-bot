@@ -49,7 +49,7 @@ module.exports = (client) => {
 
         /* Slash Command setup */
         let slash_commands = await client.api.applications(client.user.id).commands.get();
-        slash_commands.forEach(command => client.addSlash(command.id, require(`../slash_commands/${command.name}.js`)));
+        slash_commands.forEach(command => client.addSlash(command.id, require(`@semblance/slash_commands/${command.name}.js`)));
 
         /*
         * Reminder check
