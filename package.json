@@ -26,6 +26,7 @@
     "@semblance/models": "models",
     "@semblance/events": "events",
     "@semblance/constants": "constants",
+    "@semblance/config": "config.js",
     "@semblance": "."
   },
   "scripts": {
