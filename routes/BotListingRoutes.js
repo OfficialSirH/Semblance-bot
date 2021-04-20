@@ -28,5 +28,5 @@ module.exports = function(app) {
         .post(blsWebhook.middleware(), botListSpace.voteHandler);
 
 	app.route('/dboatswebhook')
-		.post(dboatswebhook.middleware(), discordBoat.voteHandler);
+		.post(dboatsWebhook.middleware(), discordBoat.voteHandler);
 }
