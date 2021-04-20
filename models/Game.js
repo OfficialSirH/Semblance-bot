@@ -27,4 +27,4 @@ const Game = Schema({
     idleProfit: Number
 });
 
-module.exports = model('Game', Game, 'games');
+module.exports.Game = model('Game', Game, 'games');

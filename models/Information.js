@@ -25,4 +25,4 @@ const Information = Schema({
     }
 });
 
-module.exports = model("Information", Information, "Information");
+module.exports.Information = model("Information", Information, "Information");

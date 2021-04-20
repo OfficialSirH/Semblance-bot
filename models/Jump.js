@@ -8,4 +8,4 @@ const JumpToggle = Schema({
     }
 })
 
-module.exports = model('JumpToggle', JumpToggle, 'JumpToggle');
+module.exports.Jump = model('JumpToggle', JumpToggle, 'JumpToggle');
