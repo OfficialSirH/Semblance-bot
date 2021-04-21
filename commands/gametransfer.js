@@ -1,7 +1,5 @@
 ﻿const { MessageEmbed } = require('discord.js'),
-	{ randomColor } = require('@semblance/constants'),
-	config = require('../config.js').default,
-	{ currentLogo } = config;
+	{ randomColor } = require('@semblance/constants');
 
 const pages = ["https://i.imgur.com/BsjMAu6.png",
 		"https://i.imgur.com/QbDAOkF.png",
@@ -21,6 +19,7 @@ module.exports = {
 }
 
 module.exports.run = async (client, message, args) => {
+	const currentLogo = require(`@semblance/config`).default.currentLogo;
 	let embed = new MessageEmbed()
 		.setTitle("Game Transfer")
 		.setColor(randomColor)
