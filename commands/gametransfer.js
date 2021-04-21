@@ -1,6 +1,8 @@
-﻿const { MessageEmbed, MessageAttachment } = require('discord.js'),
-	{randomColor} = require("../constants"), { currentLogo } = require('../config').default;
-	pages = ["https://i.imgur.com/BsjMAu6.png",
+﻿import { MessageEmbed } from 'discord.js';
+import { randomColor } from "../constants";
+import { currentLogo } from '../config';
+
+const pages = ["https://i.imgur.com/BsjMAu6.png",
 		"https://i.imgur.com/QbDAOkF.png",
 		"https://i.imgur.com/w1jEuzh.png",
 		"https://i.imgur.com/6qTz2Li.png",
@@ -23,7 +25,7 @@ module.exports.run = async (client, message, args) => {
 		.setColor(randomColor)
 		.setAuthor(message.author.tag, message.author.displayAvatarURL())
 		.attachFiles(currentLogo)
-		.setThumbnail("attachment://Current_Logo.png")
+		.setThumbnail(currentLogo.name)
 		.setImage(pages[0])
 		.setDescription("Step 1:");
 	message.channel.send(embed)
