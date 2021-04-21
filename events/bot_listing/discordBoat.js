@@ -1,6 +1,6 @@
 const { MessageEmbed } = require('discord.js'), 
     VoteModel = require('../../models/Votes.js').Votes, GameModel = require('../../models/Game.js').Game,
-	{ sirhGuildID } = require('../../config.js'), {randomColor} = require('../../constants'),
+	{ sirhGuildID } = require('../../config.js').default, {randomColor} = require('../../constants'),
     BOATS = require('boats.js'), Boats = new BOATS(JSON.parse(process.env.DBoatsAuth).Auth);
 
 module.exports.run = (client) => {

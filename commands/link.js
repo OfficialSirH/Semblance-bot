@@ -1,5 +1,5 @@
 const mongoose = require('mongoose'), UserData = mongoose.model('UserData'), 
-    { prefix, c2sGuildID } = require('../config.js'), { Collection } = require('discord.js'),
+    { prefix, c2sGuildID } = require('../config.js').default, { Collection } = require('discord.js'),
     cooldown = new Collection(), { createHmac } = require('crypto');
 
 module.exports = {

@@ -1,6 +1,6 @@
 const { Client, Collection } = require('discord.js'), fs = require('fs'), { Information } = require('../commands/edit.js');
 
-module.exports = class Semblance extends Client {
+module.exports.Semblance = class Semblance extends Client {
     constructor(options) {
         super(options);
 

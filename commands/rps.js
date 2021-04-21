@@ -1,4 +1,4 @@
-const { communistSemblance } = require('../config.js'), { MessageEmbed, Util } = require('discord.js');
+const { communistSemblance } = require('../config.js').default, { MessageEmbed, Util } = require('discord.js');
 
 module.exports = {
     description: "",

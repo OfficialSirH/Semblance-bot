@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
-{ sirhGuildID } = require('../config').default;
+  { sirhGuildID } = require('../config').default;
 
 module.exports = {
   description: "This command will give you the the notification role for Semblance related announcements(Only SirH's server)",

@@ -2,11 +2,11 @@ const mongoose = require('mongoose'),
     { MODELS } = require('../../models'),
     { Votes, Information, Game } = MODELS,
     { MessageEmbed, Collection } = require('discord.js'),
-    { c2sGuildID } = require('@semblance/config'),
+    { c2sGuildID } = require('@semblance/config').default,
     BotList = require('botlist.space');
 
     let alternateActivity = false;
-    
+
     function showMyActivity(client) {
         if (!alternateActivity) {
             client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${client.commandCounter} commands used during uptime`, { type: "PLAYING" });
@@ -49,7 +49,7 @@ module.exports = (client) => {
 
         /* Slash Command setup */
         let slash_commands = await client.api.applications(client.user.id).commands.get();
-        slash_commands.forEach(command => client.addSlash(command.id, require(`../slash_commands/${command.name}.js`)));
+        slash_commands.forEach(command => client.addSlash(command.id, require(`@semblance/slash_commands/${command.name}.js`)));
 
         /*
         * Reminder check

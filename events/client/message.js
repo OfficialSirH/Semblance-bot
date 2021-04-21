@@ -1,9 +1,9 @@
-const { sirhID, prefix, c2sGuildID, sirhGuildID, lunchGuildID, ignoredGuilds } = require('../../config.js').default,
-    { getPermissionLevel, parseArgs } = require('../constants'), { Collection, MessageEmbed } = require('discord.js'),
+const { sirhID, prefix, c2sGuildID, sirhGuildID, lunchGuildID, ignoredGuilds } = require('@semblance/config').default,
+    { getPermissionLevel, parseArgs } = require('@semblance/constants'), { Collection, MessageEmbed } = require('discord.js'),
 	wait = require('util').promisify(setTimeout),
     dms = require('./messageDM'), { embedCreate } = require('../../commands/embed.js'),
 	{ dontDisturb, removeAfk } = require('../../commands/afk.js'),
-    { Information } = require('../../models/Information')
+    { Information } = require('@semblance/models/Information');
 
 
 /*

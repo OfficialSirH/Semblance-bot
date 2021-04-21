@@ -1,5 +1,5 @@
 const Twitter = require("twitter"), twClient = new Twitter(JSON.parse(process.env.twitter)),
-	fetch = require("node-fetch"), { c2sGuildID, lunchGuildID } = require('../config');
+	fetch = require("node-fetch"), { c2sGuildID, lunchGuildID } = require('../config').default;
 
 let current_id = null, screen_name = "ComputerLunch";
 

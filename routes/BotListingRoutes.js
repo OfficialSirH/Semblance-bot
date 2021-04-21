@@ -2,7 +2,7 @@
 
 // Bot listing SDKs
 const TopggSDK = require('@top-gg/sdk'),
-	{BfdSDK, DblSDK, BlsSDK, DboatsSDK} = require('../structures'),
+	{BfdSDK, DblSDK, BlsSDK, DboatsSDK} = require('@semblance/structures'),
     // Bot listing event handlers
 	EVENTS = require('../events').EVENTS,
 	{ botListSpace, botsForDiscord, discordBoat, discordBotList, discordBotsGG, topGG } = EVENTS.BOT_LISTING;
@@ -28,5 +28,5 @@ module.exports = function(app) {
         .post(blsWebhook.middleware(), botListSpace.voteHandler);
 
 	app.route('/dboatswebhook')
-		.post(dboatswebhook.middleware(), discordBoat.voteHandler);
+		.post(dboatsWebhook.middleware(), discordBoat.voteHandler);
 }

@@ -2,7 +2,7 @@ const config = require('./config');
 require('dotenv').config();
 require('module-alias/register');
 // Semblance client
-const { Semblance } = require('./structures'), { Intents } = require('discord.js'), EVENTS = require('./events').EVENTS,
+const { Semblance } = require('@semblance/structures'), { Intents } = require('discord.js'), EVENTS = require('./events').EVENTS,
 	client = new Semblance({
 		 disableMentions: "everyone", // V13 Release replacement: disableMentions: { parse: ['users', 'roles'], repliedUser: true }
     		messageCacheLifetime: 30,

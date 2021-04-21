@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), { getPermissionLevel } = require('@semblance/constants'),
-    { prefix, c2sGuildID } = require('@semblance/config');
+    { prefix, c2sGuildID } = require('@semblance/config').default;
 
 module.exports = (client) => {
     client.on("messageUpdate", async (oldMsg, newMsg) => {

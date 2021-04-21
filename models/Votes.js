@@ -8,4 +8,4 @@ const Votes = Schema({
     }
 })
 
-module.exports = model('Votes', Votes, 'Votes');
+module.exports.Votes = model('Votes', Votes, 'Votes');

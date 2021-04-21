@@ -9,4 +9,4 @@ const Reminder = Schema({
     remind: Number
 })
 
-module.exports = model("Reminder", Reminder, "Reminder");
+module.exports.Reminder = model("Reminder", Reminder, "Reminder");

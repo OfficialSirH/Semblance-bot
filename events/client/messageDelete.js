@@ -1,5 +1,5 @@
 const { CHANNELS, correctReportList } = require('../../commands/bug'),
-    Report = require('../../models/report').Report,
+    Report = require('../../models/Report').Report,
     { c2sGuildID } = require('../../config').default, wait = require('util').promisify(setTimeout);
 
 module.exports = (client) => {

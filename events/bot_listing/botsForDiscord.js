@@ -1,6 +1,6 @@
-const { MessageEmbed } = require('discord.js'), {BfdSDK} = require('../../structures'),
+const { MessageEmbed } = require('discord.js'), {BfdSDK} = require('@semblance/structures'),
     VoteModel = require('../../models/Votes.js').Votes, GameModel = require('../../models/Game.js').Game,
-	{ sirhGuildID } = require('../../config.js'), {randomColor} = require('../../constants');
+	{ sirhGuildID } = require('../../config.js').default, {randomColor} = require('../../constants');
 /* /bfdwebhook */
 module.exports.run = (client) => {
     const bfd = new BfdSDK.Api(JSON.parse(process.env.botsForDiscordAuth).Auth);

@@ -1,4 +1,4 @@
-const { sembcommunist } = require('../config.js'), { MessageEmbed, Util } = require('discord.js'),
+const { sembcommunist } = require('../config.js').default, { MessageEmbed, Util } = require('discord.js'),
     c2sList = ['semblance', 'nuke', 'lunch', 'computerlunch', 'aditya', 'tacocubes', 'beyond', 
                 'trex', 'devs', 'singularity', '0nrd', '0nrd0r4', 'Magneto'];
 

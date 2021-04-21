@@ -8,4 +8,4 @@ const Afk = Schema({
     }
 })
 
-module.exports = model("Afk", Afk, "Afk");
+module.exports.Afk = model("Afk", Afk, "Afk");

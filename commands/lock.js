@@ -12,7 +12,7 @@
     }
 }
 
-const constants = require("../constants"), { c2sGuildID, sirhGuildID } = require("../config");
+const constants = require("../constants"), { c2sGuildID, sirhGuildID } = require("../config").default;
 
 module.exports.run = async (client, message, args) => {
     if (args[0] == "-public") {

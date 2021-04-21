@@ -17,6 +17,7 @@
     "mongoose": "^5.11.19",
     "node-fetch": "^2.6.1",
     "pm2": "^4.5.6",
+    "relative-to-alias": "^2.0.1",
     "twitter": "^1.7.1",
     "ytdl-core-discord": "^1.2.5"
   },
@@ -25,6 +26,7 @@
     "@semblance/models": "models",
     "@semblance/events": "events",
     "@semblance/constants": "constants",
+    "@semblance/config": "config.js",
     "@semblance": "."
   },
   "scripts": {

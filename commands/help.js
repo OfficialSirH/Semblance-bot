@@ -1,4 +1,4 @@
-const { MessageEmbed } = require('discord.js'), { prefix, currentLogo } = require('../config.js'), {randomColor} = require('../constants');
+const { MessageEmbed } = require('discord.js'), { prefix, currentLogo } = require('../config.js').default, {randomColor} = require('../constants');
 
 module.exports = {
     description: "Lists *all* available commands.",
