@@ -1,6 +1,7 @@
 ﻿const { MessageEmbed } = require('discord.js'),
 	{ randomColor } = require('@semblance/constants'),
-	{ currentLogo } = require('../config.js').default;
+	config = require('../config.js').default,
+	{ currentLogo } = config;
 
 const pages = ["https://i.imgur.com/BsjMAu6.png",
 		"https://i.imgur.com/QbDAOkF.png",
