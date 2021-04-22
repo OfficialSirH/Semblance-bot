@@ -5,3 +5,4 @@ export * as DboatsSDK from './@discord-boats/sdk/dist';
 export { Semblance } from './Semblance';
 export { Sticker } from './Sticker';
 export { StickerPacks } from './StickerPacks';
+export { Interaction } from './Interaction';
