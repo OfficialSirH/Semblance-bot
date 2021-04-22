@@ -12,7 +12,7 @@ module.exports.Interaction = class Interaction {
         this.guild = interaction.client.guilds.cache.get(interaction.guild_id);
         this.channel = interaction.client.channels.cache.get(interaction.channel_id);
         this.messageId = interaction.message_id || null;
-        this.member = this.guild.members.cache.get(interaction.user.id) || new GuildMember(interaction.member) || null;
+        this.member = this.guild.members.cache.get(interaction.member.user.id) || new GuildMember(interaction.member) || null;
         this.version = interaction.version;
         this.customId = interaction.custom_id;
     }
