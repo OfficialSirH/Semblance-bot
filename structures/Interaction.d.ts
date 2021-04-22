@@ -18,6 +18,8 @@ export declare class Interaction {
     constructor(interaction: RawInteraction)
 
     public send(content: string, { embeds, ephemeral, type }: SendOptions): MessageInteraction;
+
+    public toJSON(): InteractionJSON;
 }
 
 export interface SendOptions {
@@ -116,4 +118,19 @@ export interface MessageInteraction {
     type: InteractionType;
     name: string;
     user: User;
+}
+
+export interface InteractionJSON {
+    client: string;
+    id: Snowflake;
+    token: string;
+    applicationId: Snowflake;
+    type: number;
+    data: ApplicationCommandInteractionData;
+    guild: string;
+    channel: string;
+    messageId: Snowflake;
+    member: object;
+    version: number;
+    customId: string;
 }

@@ -24,7 +24,7 @@ module.exports.Interaction = class Interaction {
         if (embeds?.constructor?.name != 'Array') embeds = [embeds];
         if (content.length == 0 && embeds.length == 0) throw new Error('Interaction Responses must have content and/or embeds');
         embeds = embeds.map(embed => embed.constructor.name == 'MessageEmbed' ? embed.toJSON() : embed);
-        return this.client.api.interactions(id, token).callback.post({data: {
+        return this.client.api.interactions(this.id, this.token).callback.post({data: {
             type,
             data: {
                 content,
@@ -33,7 +33,7 @@ module.exports.Interaction = class Interaction {
             }
         }})
         .catch(err => {
-            client.api.interactions(id, token).callback.post({data: {
+            client.api.interactions(this.id, this.token).callback.post({data: {
                 type: 4,
                 data: {
                     content: "An error occurred with the slash command, further errors should be reported to the developer(SirH) as soon as possible.",
@@ -43,5 +43,22 @@ module.exports.Interaction = class Interaction {
             }});
             console.log(`An error occured with the slash command named ${this.data.name}.\nError: ${err}`);
         });
+    }
+
+    toJSON() {
+        return {
+            client: this.client.constructor.name,
+            id: this.id,
+            token: this.token,
+            applicationId: this.applicationId,
+            type: this.type,
+            data: this.data,
+            guild: this.guild.name,
+            channel: this.channel.name,
+            messageId: this.messageId,
+            member: this.member,
+            version: this.version,
+            customId: this.customId
+        };
     }
 }
