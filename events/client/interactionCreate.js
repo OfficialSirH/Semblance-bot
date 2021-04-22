@@ -15,7 +15,8 @@ async function send(client, interaction, { content = null, embeds = [], type = 4
 module.exports = (client) => {
     client.ws.on("INTERACTION_CREATE", async rawInteraction => {
         const slashCommands = client.slashCommands;
-        const member = await guild.members.fetch(rawInteraction.member.user.id);
+
+        const member = await client.guilds.cache.get(rawInteraction.guild_id).members.fetch(rawInteraction.member.user.id);
         rawInteraction = {
             ...rawInteraction,
             client,
