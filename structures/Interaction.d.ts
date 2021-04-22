@@ -61,8 +61,8 @@ export interface ApplicationCommandInteractionData {
 }
 
 export enum ComponentType {
-    ComponentArray = 1,
-    Button
+    ACTION_ROW = 1,
+    BUTTON
 } 
 
 export interface ApplicationCommandInteractionDataResolved {
@@ -95,9 +95,39 @@ type OptionType = object | string | number | boolean;
 export interface InteractionApplicationCommandCallbackData {
     tts?: boolean;
     content?: string;
+    components?: Components;
     embeds?: MessageEmbed[];
     allowed_mentions?: AllowedMentions;
     flags?: Flags;
+}
+
+export interface Components {
+    type: number;
+    components: Component[];
+}
+
+export interface Component {
+    type: ComponentType;
+    disabled?: boolean;
+    style: ComponentStyle;
+    custom_id: string;
+    name?: string;
+    label?: string;
+    emoji?: ComponentEmoji;
+}
+
+export enum ComponentStyle {
+    PRIMARY = 1,
+    SECONDARY,
+    SUCCESS,
+    DESTRUCTIVE,
+    LINK
+}
+
+export interface ComponentEmoji {
+    id?: Snowflake;
+    name?: string;
+    animated?: boolean;
 }
 
 export interface AllowedMentions {
