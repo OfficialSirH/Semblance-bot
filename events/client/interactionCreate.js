@@ -15,9 +15,11 @@ async function send(client, interaction, { content = null, embeds = [], type = 4
 module.exports = (client) => {
     client.ws.on("INTERACTION_CREATE", async rawInteraction => {
         const slashCommands = client.slashCommands;
+        const member = await guild.members.fetch(rawInteraction.member.user.id);
         rawInteraction = {
+            ...rawInteraction,
             client,
-            ...rawInteraction
+            member
         };
         const interaction = new Interaction(rawInteraction);
         const command = slashCommands[interaction.data.id];
@@ -26,7 +28,7 @@ module.exports = (client) => {
             //     member = await guild.members.fetch(interaction.member.user.id),
             //     permissionLevel = await getPermissionLevel(member),
             //     channel = guild.channels.cache.get(interaction.channel_id);
-            const { member, guild, channel } = interaction; 
+            const { guild, channel } = interaction; 
             const permissionLevel = await getPermissionLevel(member);
             console.log(interaction.toJSON());
             console.log(`${member?.user?.tag}(${member?.user?.id}) : ${permissionLevel}`);
