@@ -24,7 +24,7 @@ module.exports.Interaction = class Interaction {
         if (embeds?.constructor?.name != 'Array') embeds = [embeds];
         if (content.length == 0 && embeds.length == 0) throw new Error('Interaction Responses must have content and/or embeds');
         embeds = embeds.map(embed => embed.constructor.name == 'MessageEmbed' ? embed.toJSON() : embed);
-        return client.api.interactions(id, token).callback.post({data: {
+        return this.client.api.interactions(id, token).callback.post({data: {
             type,
             data: {
                 content,

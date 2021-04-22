@@ -28,6 +28,7 @@ module.exports = (client) => {
             //     channel = guild.channels.cache.get(interaction.channel_id);
             const { member, guild, channel } = interaction; 
             const permissionLevel = await getPermissionLevel(member);
+            console.log(interaction);
             console.log(`${member?.user?.tag}(${member?.user?.id}) : ${permissionLevel}`);
 
             if ((guild.id == c2sGuildID && channel.name != 'semblance' && permissionLevel == 0) || permissionLevel < command.permissionRequired) 
