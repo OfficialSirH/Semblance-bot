@@ -31,8 +31,8 @@ module.exports = (client) => {
             //     channel = guild.channels.cache.get(interaction.channel_id);
             const { guild, channel } = interaction; 
             const permissionLevel = await getPermissionLevel(member);
-            console.log(interaction.toJSON());
-            console.log(`${member.user.tag}(${member.user.id}) : ${permissionLevel}`);
+            // console.log(interaction.toJSON());
+            console.log(`Slash Command Log:\nUser: ${member.user.tag}(${member.user.id})\nPermission Level: ${permissionLevel}\nCommand: ${interaction.data.name}`);
 
             if ((guild.id == c2sGuildID && channel.name != 'semblance' && permissionLevel == 0) || permissionLevel < command.permissionRequired) 
                 return interaction.send('Ah ah ah! You didn\'t say the magic word!', { ephemeral: true });
