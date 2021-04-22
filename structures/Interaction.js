@@ -12,7 +12,7 @@ module.exports.Interaction = class Interaction {
         this.guild = interaction.client.guilds.cache.get(interaction.guild_id);
         this.channel = interaction.client.channels.cache.get(interaction.channel_id);
         this.messageId = interaction.message_id || null;
-        this.member = guild.members.cache.get(interaction.user.id) || new GuildMember(interaction.member) || null;
+        this.member = this.guild.members.cache.get(interaction.user.id) || new GuildMember(interaction.member) || null;
         this.version = interaction.version;
         this.customId = interaction.custom_id;
     }
@@ -41,7 +41,7 @@ module.exports.Interaction = class Interaction {
                     flags: 64
                 }
             }});
-            console.log(`An error occured with the slash command named ${interaction.data.name}.\nError: ${err}`);
+            console.log(`An error occured with the slash command named ${this.data.name}.\nError: ${err}`);
         });
     }
 }
