@@ -56,7 +56,7 @@ module.exports.Interaction = class Interaction {
             guild: this.guild.name,
             channel: this.channel.name,
             messageId: this.messageId,
-            member: this.member,
+            member: this.member.id,
             version: this.version,
             customId: this.customId
         };
