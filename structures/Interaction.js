@@ -23,15 +23,15 @@ module.exports.Interaction = class Interaction {
             content = undefined; 
         }
         if (!options) {
-            if (options instanceof MessageEmbed) options = { embeds: [options], components: [], ephemeral: false, type: 4 };
-            if (Array.isArray(options) && options.every(option => option instanceof MessageEmbed)) options = { embeds: options, components: [], ephemeral: false, type: 4 };
+            if (options instanceof MessageEmbed) options = { embeds: [options], components: new MessageComponent(), ephemeral: false, type: 4 };
+            if (Array.isArray(options) && options.every(option => option instanceof MessageEmbed)) options = { embeds: options, components: new MessageComponent(), ephemeral: false, type: 4 };
             if (options instanceof MessageComponent) options = { embeds: [], components: options, ephemeral: false, type: 4 };
         }
-        let { embeds = [], components = [], ephemeral = false, type = 4 } = options;
+        let { embeds = [], components = new MessageComponent(), ephemeral = false, type = 4 } = options;
         if (typeof content != 'string' && typeof content != 'object' && !embeds && !components) throw new Error('Interaction Content must be a string or object type');
         if (typeof embeds != 'object') throw new Error('Interaction Embeds must be an object type');
         if (typeof ephemeral != 'boolean') throw new Error('Interaction Ephemeral must be a boolean type');
-        if (!(components instanceof MessageComponent) && !(components instanceof Array)) throw new Error('Interaction Components must be a MessageComponent instance');
+        if (!(components instanceof MessageComponent) && !Array.isArray(components)) throw new Error('Interaction Components must be a MessageComponent instance');
         if (!(embeds instanceof Array)) embeds = [embeds];
         if (content.length == 0 && embeds.length == 0 && components.length == 0) throw new Error('Interaction Responses must have content and/or embeds');
         embeds = embeds.map(embed => embed instanceof MessageEmbed ? embed.toJSON() : embed);
