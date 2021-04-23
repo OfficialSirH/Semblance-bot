@@ -25,7 +25,7 @@ module.exports.MessageComponent = class MessageComponent {
 
     addButton(component) {
         this.components.components.push(this.constructor.normalizeComponent(component));
-        return this.components;
+        return this;
     }
 
     static normalizeComponent(component) {
