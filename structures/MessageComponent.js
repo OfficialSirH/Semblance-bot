@@ -7,7 +7,6 @@ module.exports.MessageComponent = class MessageComponent {
             type: 1,
             components: []
         }];
-        
         if (Array.isArray(data)) {
             data.forEach(function(component, index) {
                 if (typeof component === 'object') {
@@ -25,7 +24,7 @@ module.exports.MessageComponent = class MessageComponent {
     }
 
     addButton(component) {
-        this.components.push(this.constructor.normalizeComponent(component));
+        this.components.components.push(this.constructor.normalizeComponent(component));
         return this.components;
     }
 

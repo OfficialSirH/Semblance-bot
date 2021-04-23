@@ -41,7 +41,7 @@ module.exports.Interaction = class Interaction {
             data: {
                 content,
                 embeds,
-                components: components.components,
+                components,
                 flags: ephemeral ? 64 : 0
             }
         }})
