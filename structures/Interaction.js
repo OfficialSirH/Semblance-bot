@@ -1,4 +1,4 @@
-const { GuildMember, MessageEmbed } = require('discord.js'), { MessageComponent } = require('.');
+const { GuildMember, MessageEmbed } = require('discord.js');
 
 module.exports.Interaction = class Interaction {
 
@@ -18,6 +18,7 @@ module.exports.Interaction = class Interaction {
     }
 
     async send(content, options) {
+        const { MessageComponent } = require('.');
         if (typeof content === 'object') {
             options = content;
             content = undefined; 
