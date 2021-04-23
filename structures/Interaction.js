@@ -46,7 +46,7 @@ module.exports.Interaction = class Interaction {
             }
         }})
         .catch(err => {
-            client.api.interactions(this.id, this.token).callback.post({data: {
+            this.client.api.interactions(this.id, this.token).callback.post({data: {
                 type: 4,
                 data: {
                     content: "An error occurred with the slash command, further errors should be reported to the developer(SirH) as soon as possible.",
