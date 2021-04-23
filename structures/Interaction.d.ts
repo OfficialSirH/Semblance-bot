@@ -1,5 +1,12 @@
 import { Snowflake, Guild, TextChannel, GuildMember, MessageEmbed, User } from 'discord.js';
-import { Semblance } from './Semblance';
+import { MessageComponent, Semblance } from '.';
+import {
+    Components,
+    Component,
+    ComponentType,
+    ComponentStyle,
+    ComponentEmoji
+} from './MessageComponent';
 
 export declare class Interaction {
     public readonly client: Semblance;
@@ -17,13 +24,14 @@ export declare class Interaction {
 
     constructor(interaction: RawInteraction)
 
-    public send(content: string, { embeds, ephemeral, type }: SendOptions): MessageInteraction;
+    public send(content: string, { embeds, components, ephemeral, type }: SendOptions): MessageInteraction;
 
     public toJSON(): InteractionJSON;
 }
 
 export interface SendOptions {
     embeds: MessageEmbed[] | MessageEmbed,
+    components: MessageComponent,
     ephemeral: boolean,
     type: InteractionSendType
 }
@@ -59,11 +67,6 @@ export interface ApplicationCommandInteractionData {
     resolved?: ApplicationCommandInteractionDataResolved;
     options?: ApplicationCommandInteractionDataOption[];
 }
-
-export enum ComponentType {
-    ACTION_ROW = 1,
-    BUTTON
-} 
 
 export interface ApplicationCommandInteractionDataResolved {
     users?: Snowflake[];
@@ -101,34 +104,7 @@ export interface InteractionApplicationCommandCallbackData {
     flags?: Flags;
 }
 
-export interface Components {
-    type: number;
-    components: Component[];
-}
 
-export interface Component {
-    type: ComponentType;
-    disabled?: boolean;
-    style: ComponentStyle;
-    custom_id: string;
-    name?: string;
-    label?: string;
-    emoji?: ComponentEmoji;
-}
-
-export enum ComponentStyle {
-    PRIMARY = 1,
-    SECONDARY,
-    SUCCESS,
-    DESTRUCTIVE,
-    LINK
-}
-
-export interface ComponentEmoji {
-    id?: Snowflake;
-    name?: string;
-    animated?: boolean;
-}
 
 export interface AllowedMentions {
     parse: AllowedMentionsType[];

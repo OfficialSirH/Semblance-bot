@@ -13,3 +13,5 @@ var StickerPacks_1 = require("./StickerPacks");
 Object.defineProperty(exports, "StickerPacks", { enumerable: true, get: function () { return StickerPacks_1.StickerPacks; } });
 var Interaction_1 = require("./Interaction");
 Object.defineProperty(exports, "Interaction", { enumerable: true, get: function () { return Interaction_1.Interaction; } });
+var MessageComponent_1 = require("./MessageComponent");
+Object.defineProperty(exports, "MessageComponent", { enumerable: true, get: function () { return MessageComponent_1.MessageComponent; } });

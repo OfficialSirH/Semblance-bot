@@ -6,3 +6,4 @@ export { Semblance } from './Semblance';
 export { Sticker } from './Sticker';
 export { StickerPacks } from './StickerPacks';
 export { Interaction } from './Interaction';
+export { MessageComponent } from './MessageComponent';
