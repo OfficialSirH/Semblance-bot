@@ -24,24 +24,24 @@ module.exports.Interaction = class Interaction {
             content = undefined; 
         }
         if (!options) {
-            if (options instanceof MessageEmbed) options = { embeds: [options], components: new MessageComponent(), ephemeral: false, type: 4 };
-            if (Array.isArray(options) && options.every(option => option instanceof MessageEmbed)) options = { embeds: options, components: new MessageComponent(), ephemeral: false, type: 4 };
-            if (options instanceof MessageComponent) options = { embeds: [], components: options, ephemeral: false, type: 4 };
+            if (options instanceof MessageEmbed) options = { embeds: [options], components: [], ephemeral: false, type: 4 };
+            if (Array.isArray(options) && options.every(option => option instanceof MessageEmbed)) options = { embeds: options, components: [], ephemeral: false, type: 4 };
+            if (options instanceof MessageComponent) options = { embeds: [], components: options.components, ephemeral: false, type: 4 };
         }
-        let { embeds = [], components = new MessageComponent(), ephemeral = false, type = 4 } = options;
+        let { embeds = [], components = [], ephemeral = false, type = 4 } = options;
         if (typeof content != 'string' && typeof content != 'object' && !embeds && !components) throw new Error('Interaction Content must be a string or object type');
         if (typeof embeds != 'object') throw new Error('Interaction Embeds must be an object type');
         if (typeof ephemeral != 'boolean') throw new Error('Interaction Ephemeral must be a boolean type');
-        if (!(components instanceof MessageComponent) && !Array.isArray(components.components)) throw new Error('Interaction Components must be a MessageComponent instance');
+        if (!(components instanceof MessageComponent) && !Array.isArray(components) && !Array.isArray(components.components)) throw new Error('Interaction Components must be a MessageComponent instance');
         if (!(embeds instanceof Array)) embeds = [embeds];
-        if (content?.length == 0 && embeds.length == 0 && components.components.length == 0) throw new Error('Interaction Responses must have content and/or embeds');
+        if (content?.length == 0 && embeds.length == 0 && components?.components?.length == 0) throw new Error('Interaction Responses must have content and/or embeds');
         embeds = embeds.map(embed => embed instanceof MessageEmbed ? embed.toJSON() : embed);
         return this.client.api.interactions(this.id, this.token).callback.post({data: {
             type,
             data: {
                 content,
                 embeds,
-                components,
+                components: components?.components,
                 flags: ephemeral ? 64 : 0
             }
         }})
