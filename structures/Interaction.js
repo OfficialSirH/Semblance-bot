@@ -32,7 +32,7 @@ module.exports.Interaction = class Interaction {
         if (typeof content != 'string' && typeof content != 'object' && !embeds && !components) throw new Error('Interaction Content must be a string or object type');
         if (typeof embeds != 'object') throw new Error('Interaction Embeds must be an object type');
         if (typeof ephemeral != 'boolean') throw new Error('Interaction Ephemeral must be a boolean type');
-        if (!(components instanceof MessageComponent) && !Array.isArray(components) && !Array.isArray(components.components)) throw new Error('Interaction Components must be a MessageComponent instance');
+        if (!(components instanceof MessageComponent) && !Array.isArray(components) && !Array.isArray(components[0].components)) throw new Error('Interaction Components must be a MessageComponent instance');
         if (!(embeds instanceof Array)) embeds = [embeds];
         if (content?.length == 0 && embeds.length == 0 && components?.components?.length == 0) throw new Error('Interaction Responses must have content and/or embeds');
         embeds = embeds.map(embed => embed instanceof MessageEmbed ? embed.toJSON() : embed);
