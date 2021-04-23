@@ -5,9 +5,11 @@ export declare class MessageComponent {
 
     constructor(data: ComponentData)
     
-    addButton(component: Component): MessageComponent;
+    public addButton(component: Component): MessageComponent;
 
-    normalizeComponent(component: Component): Component;
+    public static normalizeComponent(component: Component): Component;
+
+    public static STYLES(): ComponentStyle;
 }
 
 export type Components = ComponentRow[];

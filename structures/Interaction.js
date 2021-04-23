@@ -34,14 +34,14 @@ module.exports.Interaction = class Interaction {
         if (typeof ephemeral != 'boolean') throw new Error('Interaction Ephemeral must be a boolean type');
         if (!(components instanceof MessageComponent) && !Array.isArray(components) && !Array.isArray(components.components)) throw new Error('Interaction Components must be a MessageComponent instance');
         if (!(embeds instanceof Array)) embeds = [embeds];
-        if (content?.length == 0 && embeds.length == 0 && components?.components?.length == 0) throw new Error('Interaction Responses must have content and/or embeds');
+        if (content?.length == 0 && embeds.length == 0 && (components.length == 0 || components?.components[0]?.components?.length == 0)) throw new Error('Interaction Responses must have content, embeds, and/or components');
         embeds = embeds.map(embed => embed instanceof MessageEmbed ? embed.toJSON() : embed);
         return this.client.api.interactions(this.id, this.token).callback.post({data: {
             type,
             data: {
                 content,
                 embeds,
-                components: components?.components,
+                components: components?.components || [],
                 flags: ephemeral ? 64 : 0
             }
         }})

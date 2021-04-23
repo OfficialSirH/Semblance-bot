@@ -10,7 +10,7 @@ module.exports.MessageComponent = class MessageComponent {
         if (Array.isArray(data)) {
             data.forEach(function(component, index) {
                 if (typeof component === 'object') {
-                    this.components.components.push(this.constructor.normalizeComponent({
+                    this.components[0].components.push(this.constructor.normalizeComponent({
                         type: component.type,
                         disabled: component.disabled,
                         style: component.style,
@@ -24,8 +24,12 @@ module.exports.MessageComponent = class MessageComponent {
     }
 
     addButton(component) {
-        this.components.components.push(this.constructor.normalizeComponent(component));
+        this.components[0].components.push(this.constructor.normalizeComponent(component));
         return this;
+    }
+
+    toJSON() {
+        return this.components;
     }
 
     static normalizeComponent(component) {
@@ -43,6 +47,16 @@ module.exports.MessageComponent = class MessageComponent {
                 (component.emoji.id ||
                 component.emoji.name ||
                 component.emoji.animated)) ? component.emoji : null
+        }
+    }
+
+    static get STYLES() {
+        return {
+            PRIMARY: 1,
+            SECONDARY: 2,
+            SUCCESS: 3,
+            DESTRUCTIVE: 4,
+            LINK: 5
         }
     }
 }

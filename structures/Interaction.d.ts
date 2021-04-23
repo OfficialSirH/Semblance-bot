@@ -24,7 +24,7 @@ export declare class Interaction {
 
     constructor(interaction: RawInteraction)
 
-    public send(content: string, { embeds, components, ephemeral, type }: SendOptions): MessageInteraction;
+    public send(content: string, options: SendOptions | MessageEmbed[] | MessageEmbed | MessageComponent): MessageInteraction;
 
     public toJSON(): InteractionJSON;
 }
