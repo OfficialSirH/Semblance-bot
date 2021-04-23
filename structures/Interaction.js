@@ -23,11 +23,11 @@ module.exports.Interaction = class Interaction {
             content = undefined; 
         }
         if (!options) {
-            if (options instanceof MessageEmbed) options = { embeds = [options], components = [], ephemeral = false, type = 4 };
-            if (Array.isArray(options) && options.every(option => option instanceof MessageEmbed)) options = { embeds = options, components = [], ephemeral = false, type = 4 };
-            if (options instanceof MessageComponent) options = { embeds = [], components = options, ephemeral = false, type = 4 };
+            if (options instanceof MessageEmbed) options = { embeds: [options], components: [], ephemeral: false, type: 4 };
+            if (Array.isArray(options) && options.every(option => option instanceof MessageEmbed)) options = { embeds: options, components: [], ephemeral: false, type: 4 };
+            if (options instanceof MessageComponent) options = { embeds: [], components: options, ephemeral: false, type: 4 };
         }
-        let { embeds, components, ephemeral, type } = options;
+        let { embeds = [], components = [], ephemeral = false, type = 4 } = options;
         if (typeof content != 'string' && typeof content != 'object') throw new Error('Interaction Content must be a string or object type');
         if (typeof embeds != 'object') throw new Error('Interaction Embeds must be an object type');
         if (typeof ephemeral != 'boolean') throw new Error('Interaction Ephemeral must be a boolean type');
