@@ -23,7 +23,7 @@ module.exports.Interaction = class Interaction {
             options = content;
             content = undefined; 
         }
-        if (!options) {
+        if (options) {
             if (options instanceof MessageEmbed) options = { embeds: [options], components: [], ephemeral: false, type: 4 };
             if (Array.isArray(options) && options.every(option => option instanceof MessageEmbed)) options = { embeds: options, components: [], ephemeral: false, type: 4 };
             if (options instanceof MessageComponent) options = { embeds: [], components: options.components, ephemeral: false, type: 4 };
