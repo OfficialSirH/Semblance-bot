@@ -45,6 +45,6 @@ module.exports = (client) => {
             // return interaction.send(content, { embeds, ephemeral: flags == 64, type });
             // return send(client, interaction, ...result);
         }
-        console.log(`${interaction.data.name}\n${interaction.data.id}`);
+        else console.log(`${interaction.data.name}\n${interaction.data.id}`);
     });
 }
