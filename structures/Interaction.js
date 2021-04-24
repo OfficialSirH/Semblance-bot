@@ -19,6 +19,7 @@ module.exports.Interaction = class Interaction {
 
     async send(content, options) {
         const { MessageComponent } = require('.');
+        let embeds, components, ephemeral, type;
         if (typeof content === 'object') {
             options = content;
             content = undefined; 
@@ -27,9 +28,10 @@ module.exports.Interaction = class Interaction {
             if (options instanceof MessageEmbed) options = { embeds: [options], components: [], ephemeral: false, type: 4 };
             if (Array.isArray(options) && options.every(option => option instanceof MessageEmbed)) options = { embeds: options, components: [], ephemeral: false, type: 4 };
             if (options instanceof MessageComponent) options = { embeds: [], components: options.components, ephemeral: false, type: 4 };
-            var { embeds = [], components = [], ephemeral = false, type = 4 } = options;
-        } else var options = { embeds: [], components: [], ephemeral: false, type: 4 };
+            ({ embeds = [], components = [], ephemeral = false, type = 4 } = options);
+        } else ({ embeds, components, ephemeral, type } = { embeds: [], components: [], ephemeral: false, type: 4 });
         
+
         if (typeof content != 'string' && typeof content != 'object' && !embeds && !components) throw new Error('Interaction Content must be a string or object type');
         if (!!embeds && typeof embeds != 'object') throw new Error('Interaction Embeds must be an object type');
         if (!!ephemeral && typeof ephemeral != 'boolean') throw new Error('Interaction Ephemeral must be a boolean type');
