@@ -31,17 +31,17 @@ module.exports.Interaction = class Interaction {
         } else var options = { embeds: [], components: [], ephemeral: false, type: 4 };
         
         if (typeof content != 'string' && typeof content != 'object' && !embeds && !components) throw new Error('Interaction Content must be a string or object type');
-        if (typeof embeds != 'object') throw new Error('Interaction Embeds must be an object type');
-        if (typeof ephemeral != 'boolean') throw new Error('Interaction Ephemeral must be a boolean type');
-        if (!(components instanceof MessageComponent) && !Array.isArray(components) && !Array.isArray(components[0].components)) throw new Error('Interaction Components must be a MessageComponent instance');
-        if (!(embeds instanceof Array)) embeds = [embeds];
+        if (!!embeds && typeof embeds != 'object') throw new Error('Interaction Embeds must be an object type');
+        if (!!ephemeral && typeof ephemeral != 'boolean') throw new Error('Interaction Ephemeral must be a boolean type');
+        if (!!components && !(components instanceof MessageComponent) && !Array.isArray(components) && !Array.isArray(components[0].components)) throw new Error('Interaction Components must be a MessageComponent instance');
+        if (!!embeds && !(embeds instanceof Array)) embeds = [embeds];
         if (content?.length == 0 && embeds.length == 0 && (components.length == 0 || components?.components[0]?.components?.length == 0)) throw new Error('Interaction Responses must have content, embeds, and/or components');
         embeds = embeds.map(embed => embed instanceof MessageEmbed ? embed.toJSON() : embed);
         return this.client.api.interactions(this.id, this.token).callback.post({data: {
             type,
             data: {
                 content,
-                embeds,
+                embeds: embeds || [],
                 components: components || [],
                 flags: ephemeral ? 64 : 0
             }
