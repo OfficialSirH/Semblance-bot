@@ -9,7 +9,7 @@ module.exports = {
         let statsHandler = await Game.findOne({ player: player });
         if (!statsHandler) return interaction.send(!!interaction.data.options[0] ? 
             'This user does not exist' :
-            "You have not created a game yet; if you'd like to create a game, use `s!game create`");
+            "You have not created a game yet; if you'd like to create a game, use `s!game create`", { ephemeral: true });
         let nxtUpgrade = await currentPrice(player, statsHandler);
         if (interaction.member.user.id == player) player = interaction.member.user;
         else player = await client.users.fetch(player);
