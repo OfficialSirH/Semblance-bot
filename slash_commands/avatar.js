@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'),
-    { randomColor } = require('../constants');
+    { randomColor, getAvatar } = require('../constants');
 
 module.exports = {
     permissionRequired: 0,
@@ -14,7 +14,7 @@ module.exports = {
                 .setTitle(`${user.username}'s Avatar`)
                 .setAuthor(`${author.tag}`, author.displayAvatarURL())
                 .setColor(randomColor)
-                .setImage(user.displayAvatarURL());
+                .setImage(getAvatar(user));
         return interaction.send(embed);
     }
 }

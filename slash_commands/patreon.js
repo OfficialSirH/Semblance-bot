@@ -13,7 +13,7 @@ module.exports = {
 		// 	.attachFiles(patreon)
 		// 	.setThumbnail(patreon.name);
 		const component = new MessageComponent().addButton({ 
-			label: 'Support me on Patreon!',
+			label: 'Click Here!',
 			style: MessageComponent.STYLES.LINK, 
 			url: 'https://www.patreon.com/SirHDeveloper',
 			emoji: {
@@ -21,6 +21,6 @@ module.exports = {
 				id: '797148051000000512'
 			}
 		});
-		return interaction.send(component);
+		return interaction.send('Support me on Patreon!', component);
 	}
 }
