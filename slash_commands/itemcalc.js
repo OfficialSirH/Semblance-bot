@@ -10,14 +10,14 @@ module.exports = {
 module.exports.run = async (client, interaction) => {
     let [itemInput, currentLevel, level] = interaction.data.options.map(o => o.value);
 
-    if (!itemInput) return [{ content: "You forgot input for 'item'.", flags: 1 << 6 }];
-    if (!level) return [{ content: "You forgot input for 'level'.", flags: 1 << 6 }];
+    if (!itemInput) return interaction.send("You forgot input for 'item'.", { ephemeral: true });
+    if (!level) return interaction.send("You forgot input for 'level'.", { ephemeral: true });
     if (!currentLevel || currentLevel < 0) currentLevel = 0;
     itemInput = itemInput.toLowerCase();
     level = slash_checkIfAllowedValue(level, 'level');
-    if (isNaN(level)) return [{ content: "Your input for 'level' was invalid.", flags: 1 << 6 }];
+    if (isNaN(level)) return interaction.send("Your input for 'level' was invalid.", { ephemeral: true });
     currentLevel = slash_checkIfAllowedValue(currentLevel, 'current level');
-    if (isNaN(currentLevel)) return [{ content: "Your input for 'current level' was invalid.", flags: 1 << 6 }];;
+    if (isNaN(currentLevel)) return interaction.send("Your input for 'current level' was invalid.", { ephemeral: true });
     
     let itemCost = null;
     let itemCostType;
@@ -27,7 +27,7 @@ module.exports.run = async (client, interaction) => {
         itemCostType = key;
     }
 
-    if (!itemCost) return [{ content: "Your input for 'item' was invalid.", flags: 1 << 6 }];
+    if (!itemCost) return interaction.send("Your input for 'item' was invalid.", { ephemeral: true });
     let resultingPrice = 0;
     
     for (let i = currentLevel; i < (level + currentLevel); i++) {
@@ -37,11 +37,11 @@ module.exports.run = async (client, interaction) => {
 
     let embed = new MessageEmbed()
         .setTitle("Item Calculator Results")
-        .setAuthor(interaction.member.user.tag, interaction.member.user.avatarURL)
+        .setAuthor(interaction.member.user.tag, interaction.member.user.displayAvatarURL())
         .setColor(randomColor)
         .setDescription([`Chosen item: ${itemInput}`,
             `Current item level: ${currentLevel}`,
             `Item level goal: ${level + currentLevel}`,
             `Resulting Price: ${bigToE(resultingPrice)} ${itemCostType}`].join('\n'));
-    return [{ embeds: [embed.toJSON()] }];
+    return interaction.send(embed);
 }

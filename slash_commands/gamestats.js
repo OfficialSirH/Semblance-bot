@@ -5,17 +5,19 @@ const { MessageEmbed } = require('discord.js'),
 module.exports = {
     permissionRequired: 0,
     run: async (client, interaction) => {
-        let player = (interaction.data.options) ? interaction.data.options[0].value : interaction.member.user.id;
+        let player = (!!interaction.data.options[0]) ? interaction.data.options[0].value : interaction.member.user.id;
         let statsHandler = await Game.findOne({ player: player });
-        if (!statsHandler) return [{ content: "You have not created a game yet; if you'd like to create a game, use `s!game create`" }];
+        if (!statsHandler) return interaction.send(!!interaction.data.options[0] ? 
+            'This user does not exist' :
+            "You have not created a game yet; if you'd like to create a game, use `s!game create`");
         let nxtUpgrade = await currentPrice(player, statsHandler);
         if (interaction.member.user.id == player) player = interaction.member.user;
         else player = await client.users.fetch(player);
         let embed = new MessageEmbed()
             .setTitle(`${player.username}'s gamestats`)
-            .setAuthor(player.tag, player.avatarURL || player.displayAvatarURL())
+            .setAuthor(player.tag, player.displayAvatarURL())
             .setColor(randomColor)
-            .setThumbnail(player.avatarURL || player.displayAvatarURL())
+            .setThumbnail(player.displayAvatarURL())
             .addFields(
                 { name: 'Level', value: statsHandler.level },
                 { name: 'Random-Bucks', value: statsHandler.money },
@@ -24,7 +26,7 @@ module.exports = {
                 { name: 'Idle Profit', value: statsHandler.idleProfit }
             )
             .setFooter("Remember to vote for Semblance to gain a production boost!");
-        return [{ embeds: [embed.toJSON()] }];
+        return interaction.send(embed);
     }
 }
 

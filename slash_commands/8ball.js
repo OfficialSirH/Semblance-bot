@@ -6,11 +6,11 @@ module.exports = {
 }
 
 module.exports.run = async (client, interaction) => {
-    if (!interaction.data.options[0]) return [{ content: "Ask any question and Semblance will answer." }];
+    if (!interaction.data.options[0]) return interaction.send('Ask any question with this command and Semblance will answer.');
     let randomizedChoice = Math.ceil(Math.random() * 20);
     const embed = new MessageEmbed()
         .setTitle('8ball')
-        .setAuthor(interaction.member.user.tag, interaction.member.user.avatarURL)
+        .setAuthor(interaction.member.user.tag, interaction.member.user.displayAvatarURL())
         .setColor(randomColor);
     let description = `Question: ${interaction.data.options[0].value}\nAnswer: `;
     if (randomizedChoice == 1) description +='It is certain';
@@ -34,5 +34,5 @@ module.exports.run = async (client, interaction) => {
     if (randomizedChoice == 19) description +='Outlook not so good.';
     if (randomizedChoice == 20) description +='Very doubtful.';
     embed.setDescription(description);
-    return [{ embeds: [embed.toJSON()] }];
+    return interaction.send(embed);
 }

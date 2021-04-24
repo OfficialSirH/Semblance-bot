@@ -40,12 +40,11 @@ module.exports = (client) => {
             
             // interaction.member.user.tag = `${interaction.member.user.username}#${interaction.member.user.discriminator}`;
             // interaction.member.user.avatarURL = getAvatar(interaction.member.user);
-            let result = await command.run(client, interaction, { permissionLevel, options: interaction.data.options });
-            const finalResult = result[0], { content, embeds, flags, type } = finalResult;
-            return interaction.send(content, { embeds, ephemeral: flags == 64, type });
+            const result = await command.run(client, interaction, { permissionLevel, options: interaction.data.options });
+            // const { content, embeds, flags, type } = result;
+            // return interaction.send(content, { embeds, ephemeral: flags == 64, type });
             // return send(client, interaction, ...result);
         }
-
         console.log(`${interaction.data.name}\n${interaction.data.id}`);
     });
 }

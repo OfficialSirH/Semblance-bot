@@ -7,7 +7,7 @@ module.exports = {
         let user = interaction.member.user,
             embed = new MessageEmbed()
                 .setTitle("Credits")
-                .setAuthor(user.tag, user.avatarURL)
+                .setAuthor(user.tag, user.displayAvatarURL())
                 .setColor(randomColor)
                 .setDescription("Special Thanks to Aditya for motivating me from the very beginning to work on this bot. " +
                     "If it weren't for him, my bot wouldn't even be at this point right now; running on an actual server, " +
@@ -21,6 +21,6 @@ module.exports = {
                     { name: "Silly dude who makes up funny ideas", value: "NerdGamer" },
                     { name: "Early Testers", value: "Aditya, Parrot, Diza, 0NrD, and Aure" },
                 );
-        return [{ embeds: [embed.toJSON()] }];
+        return interaction.send(embed);
     }
 }

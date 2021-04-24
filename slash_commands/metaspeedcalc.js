@@ -4,9 +4,6 @@ const { MessageEmbed } = require('discord.js'), { bigToE, slash_checkIfAllowedVa
 module.exports.permissionRequired = 0;
 
 module.exports.run = async (client, interaction) => {
-    //if (args.length == 0) return message.reply(`The usage of this command is metaspeedcalc <metabits> <total meso ranks accumulated> <simulation speed upgrades percentage>`);
-    //if (args.length == 1) return message.reply('You forgot input for `accumulated meso ranks` and `sim speed upgrades percentage`');
-    //if (args.length == 2) return message.reply('You forgot input for `sim speed upgrades percentage`');
     let options = interaction.data.options,
         metabits = 0, dinoRanks = 0, simSpeed = 0;
     for (let i = 0; i < options.length; i++) switch(options[i].name.toLowerCase()) {
@@ -56,12 +53,12 @@ module.exports.run = async (client, interaction) => {
     num *= ((simSpeed / 100) + 1);
     let embed = new MessageEmbed()
         .setTitle("Multiplier Total")
-        .setAuthor(interaction.member.user.tag, interaction.member.user.avatarURL)
+        .setAuthor(interaction.member.user.tag, interaction.member.user.displayAvatarURL())
         .setColor(randomColor)
         .setDescription([`Total Collected Metabits/Simulation Level: ${bigToE(metabits)}`,
             `Accumulated Mesozoic Valley Ranks: ${dinoRanks}`,
             `Simulation Speed Upgrades: ${simSpeed}%`,
             `Production/Total Multiplier: x${bigToE(num)}`].join('\n'))
         .setFooter("P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2105%.");
-    return [{ embeds: [embed.toJSON()] }];
+    return interaction.send(embed);
 }

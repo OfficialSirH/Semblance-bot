@@ -7,6 +7,8 @@ export declare class MessageComponent {
     
     public addButton(component: Component): MessageComponent;
 
+    addButtons(components: Component[]): MessageComponent;
+
     public static normalizeComponent(component: Component): Component;
 
     public static STYLES(): ComponentStyle;
@@ -23,8 +25,9 @@ export interface Component {
     type: ComponentType;
     disabled?: boolean;
     style: ComponentStyle;
-    custom_id: string;
+    custom_id?: string;
     label: string;
+    url?: string;
     emoji?: ComponentEmoji;
 }
 

@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'),
-    { getAvatar, randomColor } = require('../constants');
+    { randomColor } = require('../constants');
 
 module.exports = {
     permissionRequired: 0,
@@ -9,13 +9,12 @@ module.exports = {
             interaction.member.user :
             await client.users.fetch(interaction.data.options[0].value)
              : interaction.member.user,
-            userAvatar = getAvatar(user),
             author = interaction.member.user,
             embed = new MessageEmbed()
                 .setTitle(`${user.username}'s Avatar`)
-                .setAuthor(`${author.username}#${author.discriminator}`, getAvatar(author))
+                .setAuthor(`${author.tag}`, author.displayAvatarURL())
                 .setColor(randomColor)
-                .setImage(userAvatar);
-        return [{ embeds: [embed.toJSON()] }];
+                .setImage(user.displayAvatarURL());
+        return interaction.send(embed);
     }
 }

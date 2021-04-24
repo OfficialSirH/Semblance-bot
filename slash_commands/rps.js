@@ -1,47 +1,47 @@
 const { sembcommunist } = require('../config.js').default, { MessageEmbed, Util } = require('discord.js'),
     c2sList = ['semblance', 'nuke', 'lunch', 'computerlunch', 'aditya', 'tacocubes', 'beyond', 
-                'trex', 'devs', 'singularity', '0nrd', '0nrd0r4', 'Magneto'];
+                'trex', 'devs', 'singularity', '0nrd', '0nrd0r4', 'magneto'];
 
 module.exports.permissionRequired = 0;
 
 module.exports.run = async (client, interaction) => {
     let choice = interaction.data.options[0].value,
         user = interaction.member.user;
-    if (choice.length == 0) return [{ content: 'rps stands for "Rock, Paper, Scissors", which you can play with me by choosing one of the **Five** (Don\'t forget Lizard and Spock) and I\'ll choose one as well and we\'ll see who wins, there\'s also secret bonuses. :D' }];
+    if (choice.length == 0) return interaction.send('rps stands for "Rock, Paper, Scissors", which you can play with me by choosing one of the **Five** (Don\'t forget Lizard and Spock) and I\'ll choose one as well and we\'ll see who wins, there\'s also secret bonuses. :D');
     choice = Util.removeMentions(choice);
     let randomFailure = Math.ceil(Math.random() * 100);
-    if (randomFailure == 100) return [{ content: '***Error Ocurred... rebooting, try again in a moment.***' }];
+    if (randomFailure == 100) return interaction.send('***Error Ocurred... rebooting, try again in a moment.***');
     let sembRandomness = Math.ceil(Math.random() * 5), sembChoice = convertNumberToChoice(sembRandomness);
     let playerChoice = choice.toLowerCase();
     if (playerChoice == 'senate') {
         let embed = new MessageEmbed()
             .setDescription('I *am* the senate, which means ***WE*** win this round!')
             .attachFiles(sembcommunist)
-            .setImage('attachment://CommunistSemblance.jpg');
-        return [{ embeds: [embed] }];
+            .setImage(sembcommunist.name);
+        return interaction.send(embed);
     }
-    if (playerChoice == 'everything') return [{ content: `What the heck dude?! You don't need to use ***everything*** against ${sembChoice}!! You destroyed it after the *first* thing you threw at it, which was a nuclear bomb!!!` }];
-    if (playerChoice == 'logic') return [{ content: `With the power of ***logic***, you ask ${sembChoice} how much wood could a woodchuck chuck wood if a woodchuck could chuck wood, which then the ${sembChoice} vanishes from thinking too hard, ${user.username} wins!` }];
-    if (playerChoice == 'thanos') return [{ content: `Thanos wipes out half of ${sembChoice}, now the ${sembChoice} avengers will get revenge on Thanos in End Game.` }];
-    if (playerChoice == 'rps') return [{ content: `With the power of ***rock, paper, and scissors*** you **obliterate** ${sembChoice}, ${user.username} wins!` }];
-    if (playerChoice == 'sirh') return [{ content: `SirH deletes ${sembChoice}, ${user.username} wins!` }];
-    if (playerChoice == 'hype') return [{ content: `${sembChoice} gets disintegrated by the sight of Hype, ${user.username} wins!` }];
+    if (playerChoice == 'everything') return interaction.send(`What the heck dude?! You don't need to use ***everything*** against ${sembChoice}!! You destroyed it after the *first* thing you threw at it, which was a nuclear bomb!!!`);
+    if (playerChoice == 'logic') return interaction.send(`With the power of ***logic***, you ask ${sembChoice} how much wood could a woodchuck chuck wood if a woodchuck could chuck wood, which then the ${sembChoice} vanishes from thinking too hard, ${user.username} wins!`);
+    if (playerChoice == 'thanos') return interaction.send(`Thanos wipes out half of ${sembChoice}, now the ${sembChoice} avengers will get revenge on Thanos in End Game.`);
+    if (playerChoice == 'rps') return interaction.send(`With the power of ***rock, paper, and scissors*** you **obliterate** ${sembChoice}, ${user.username} wins!`);
+    if (playerChoice == 'sirh') return interaction.send(`SirH deletes ${sembChoice}, ${user.username} wins!`);
+    if (playerChoice == 'hype') return interaction.send(`${sembChoice} gets disintegrated by the sight of Hype, ${user.username} wins!`);
 
-    if (c2sList.includes(playerChoice)) return [{ content: `'${playerChoice}' beats ${sembChoice}, ${user.username} wins!` }];
+    if (c2sList.includes(playerChoice)) return interaction.send(`'${playerChoice}' beats ${sembChoice}, ${user.username} wins!`);
     
-    if (playerChoice == 'c2s' || playerChoice == 'celltosingularity') return [{ content: `The almight idle-game, Cell to Singularity, defeats ${sembChoice}. ${user.username} wins!` }];
+    if (playerChoice == 'c2s' || playerChoice == 'celltosingularity') return interaction.send(`The almight idle-game, Cell to Singularity, defeats ${sembChoice}. ${user.username} wins!`);
     
-    if (playerChoice == 'dyno' || playerChoice == 'mee6') return [{ content: `'${playerChoice}' instantly loses against ${sembChoice}, ${user.username} didn't stand a chance with their choice.` }];
-    if (playerChoice == 'karen') return [{ content: `The ${playerChoice} loses against ${sembChoice} cause entitlement gets you no where in life.` }];
-    if (playerChoice == 'ban') return [{ content: `Ban wipes your existance, ${sembChoice} is now deleted and ${user.username} automatically loses 🔨!` }];
+    if (playerChoice == 'dyno' || playerChoice == 'mee6') return interaction.send(`'${playerChoice}' instantly loses against ${sembChoice}, ${user.username} didn't stand a chance with their choice.`);
+    if (playerChoice == 'karen') return interaction.send(`The ${playerChoice} loses against ${sembChoice} cause entitlement gets you no where in life.`);
+    if (playerChoice == 'ban') return interaction.send(`Ban wipes your existance, ${sembChoice} is now deleted and ${user.username} automatically loses 🔨!`);
     if (choiceToOutcome(playerChoice, sembChoice) === true) {
-        return [{ content: `${playerChoice} beats ${sembChoice}, ${user.username} wins!` }];
+        return interaction.send(`${playerChoice} beats ${sembChoice}, ${user.username} wins!`);
     } else if (choiceToOutcome(playerChoice, sembChoice) === false) {
-        return [{ content: `${sembChoice} beats ${playerChoice}, ${client.user.username} wins!` }];
+        return interaction.send(`${sembChoice} beats ${playerChoice}, ${client.user.username} wins!`);
     } else if (choiceToOutcome(playerChoice, sembChoice) == 'tie') {
-        return [{ content: `We've both chosen ${playerChoice}, so it's a tie!` }];
+        return interaction.send(`We've both chosen ${playerChoice}, so it's a tie!`);
     }
-    return [{ content: `Due to your choice being invalid, I'mma just say that my choice, ${sembChoice}, beats whatever the heck ${playerChoice} is.` }];
+    return interaction.send(`Due to your choice being invalid, I'mma just say that my choice, ${sembChoice}, beats whatever the heck ${playerChoice} is.`);
 }
 
 function convertNumberToChoice(number) {

@@ -20,6 +20,5 @@ module.exports.run = async (client, interaction) => {
 		.setColor(randomColor)
 		.setDescription(`You are now afk <@${user.id}> \n` +
             `Reason: ${reason}`);
-    embed = embed.toJSON();
-    return [{ embeds: [embed] }];
+    return interaction.send(embed);
 }
