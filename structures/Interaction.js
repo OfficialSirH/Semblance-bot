@@ -36,7 +36,7 @@ module.exports.Interaction = class Interaction {
         if (!!components && !(components instanceof MessageComponent) && !Array.isArray(components) && !Array.isArray(components[0].components)) throw new Error('Interaction Components must be a MessageComponent instance');
         if (!!embeds && !(embeds instanceof Array)) embeds = [embeds];
         if (content?.length == 0 && embeds.length == 0 && (components.length == 0 || components?.components[0]?.components?.length == 0)) throw new Error('Interaction Responses must have content, embeds, and/or components');
-        embeds = embeds.map(embed => embed instanceof MessageEmbed ? embed.toJSON() : embed);
+        embeds = embeds?.map(embed => embed instanceof MessageEmbed ? embed.toJSON() : embed);
         return this.client.api.interactions(this.id, this.token).callback.post({data: {
             type,
             data: {
