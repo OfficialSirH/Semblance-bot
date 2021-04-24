@@ -28,6 +28,10 @@ module.exports.MessageComponent = class MessageComponent {
         return this;
     }
 
+    toJSON() {
+        return this.components;
+    }
+
     static normalizeComponent(component) {
         if (typeof component.type != 'number') throw new Error('COMPONENT_FIELD_TYPE');
         if (typeof component.style != 'number') throw new Error('COMPONENT_FIELD_STYLE');
@@ -43,6 +47,16 @@ module.exports.MessageComponent = class MessageComponent {
                 (component.emoji.id ||
                 component.emoji.name ||
                 component.emoji.animated)) ? component.emoji : null
+        }
+    }
+
+    static get STYLES() {
+        return {
+            PRIMARY: 1,
+            SECONDARY: 2,
+            SUCCESS: 3,
+            DESTRUCTIVE: 4,
+            LINK: 5
         }
     }
 }
