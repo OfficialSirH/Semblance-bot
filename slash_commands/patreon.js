@@ -21,6 +21,6 @@ module.exports = {
 				id: '797148051000000512'
 			}
 		});
-		return interaction.send('Support me on Patreon!', component);
+		return interaction.send('Support me on [Patreon](https://www.patreon.com/SirHDeveloper)!', component);
 	}
 }
