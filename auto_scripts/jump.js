@@ -24,7 +24,9 @@ module.exports.run = async (client, message, args, recursiveCount = 0) => {
     client.guilds.fetch(guildID).then(guild => {
         let channel = guild.channels.cache.get(channelID);
         if (channel.nsfw || guild.id != message.guild.id) return;
-        if (recursiveCount == 0) message.channel.send(message.content.replace(link, ''));
+
+        if (recursiveCount == 0) message.content.replace(link, '').length == 0 ? undefined : message.channel.send(message.content.replace(link, ''));
+
         channel.messages.fetch(messageID).then(async (msg) => {
             let attachmentLink = /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i.exec(msg.content);
             if (attachmentLink != null)
