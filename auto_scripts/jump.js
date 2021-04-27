@@ -17,14 +17,14 @@ module.exports.run = async (client, message, args, recursiveCount = 0) => {
     
     let content = args.join(" ");
 
-    const link = /https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?<guildID>@me|\d{17,19})?\/(?<channelID>\d{17,20})\/(?<messageID>\d{17,20})/.exec(content);
+    const link = /https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?<guildID>@me|\d{17,19})?\/(?<channelID>\d{17,20})\/(?<messageID>\d{17,20})/g.exec(content);
     if (link == null) return recursiveCount > 0 ? message.delete() : undefined; 
     const { groups: { guildID, channelID, messageID } } = link;
 
     client.guilds.fetch(guildID).then(guild => {
         let channel = guild.channels.cache.get(channelID);
         if (channel.nsfw || guild.id != message.guild.id) return;
-
+        if (recursiveCount == 0) message.channel.send(message.content.replace(link, ''));
         channel.messages.fetch(messageID).then(async (msg) => {
             let attachmentLink = /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i.exec(msg.content);
             if (attachmentLink != null)
@@ -49,7 +49,7 @@ module.exports.run = async (client, message, args, recursiveCount = 0) => {
             
             message.channel.send(embed);
 
-            content = content.replace(/https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?:@me|\d{17,19}\/)?\d{17,20}\/\d{17,20}/.exec(content)[0], ``);
+            content = content.replace(/https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?:@me|\d{17,19}\/)?\d{17,20}\/\d{17,20}/, ``);
             args = parseArgs(content);
 
             module.exports.run(client, message, args, ++recursiveCount);
