@@ -28,20 +28,21 @@ module.exports.run = async (client, message, args) => {
 			{ name: "Silly dude who makes up funny ideas", value: "NerdGamer2848" },
 			{ name: "Early Testers", value: "Aditya, Parrot, Diza, 0NrD, and Aure" },
 		);
-	const components = new MessageComponent()
-			.addButton({
-				label: 'Show StarLuckArt\'s Work',
-				style: MesageComponent.STYLES.PRIMARY,
-				custom_id: JSON.stringify({
-					id: message.author.id,
-					command: 'credits'
-				})
-			}).components;
-	client.api.channels[message.channel.id].messages.post({ data: {
-		embed,
-		components
-	}});
+	message.channel.send(embed);
+	// const components = new MessageComponent()
+	// 		.addButton({
+	// 			label: 'Show StarLuckArt\'s Work',
+	// 			style: MesageComponent.STYLES.PRIMARY,
+	// 			custom_id: JSON.stringify({
+	// 				id: message.author.id,
+	// 				command: 'credits'
+	// 			})
+	// 		}).components;
+	// client.api.channels[message.channel.id].messages.post({ data: {
+	// 	embed,
+	// 	components
+	// }});
 }
 
-module.exports.pressedButton = async (interaction) => {
-}
+// module.exports.pressedButton = async (interaction) => {
+// }

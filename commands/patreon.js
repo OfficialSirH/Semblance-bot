@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageAttachment } = require('discord.js'),
+const { MessageEmbed } = require('discord.js'),
 	{randomColor} = require('../constants'),
 	{ patreon } = require('../config').default;
 
