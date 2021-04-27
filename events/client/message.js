@@ -1,7 +1,7 @@
 const { sirhID, prefix, c2sGuildID, sirhGuildID, lunchGuildID, ignoredGuilds } = require('@semblance/config').default,
     { getPermissionLevel, parseArgs } = require('@semblance/constants'), { Collection, MessageEmbed } = require('discord.js'),
 	wait = require('util').promisify(setTimeout),
-    dms = require('./messageDM'), { embedCreate } = require('../../commands/embed.js'),
+    dms = require('./messageDM'),
 	{ dontDisturb, removeAfk } = require('../../commands/afk.js'),
     { Information } = require('@semblance/models/Information');
 
@@ -97,7 +97,6 @@ module.exports = (client) => {
 			return;
 		}
 	}
-	embedCreate(client, message);
 	
 	//commands start here
 	if (message.content.toLowerCase().startsWith(prefix) || message.content.match(`^<@!?${client.user.id}> `)) {

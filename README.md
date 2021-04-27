@@ -116,8 +116,6 @@
 
 - **s!say <channelMention> <message>** - Make announcements to any channel with Semblance, also, you can embed the message by adding 'embed' to the end of the message.
 
-- **s!embed <optional: help>** - starts the embed creator setup and adding 'help' as an argument in the command will show how to use the embed command properly.
-
 ### *RNG-Based Idle-Game*
 + All details for the game are explained through **s!game help** and **s!game about**.
 
