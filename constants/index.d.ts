@@ -8,6 +8,8 @@ export function insertionSort(list: number[][]): number[][];
 export const emojis: {[key: string]: string;}
 export const emojiSnowflakes: {[key: string]: Snowflake}
 export function onlyUnique(value: any, index: number, self: any[]): boolean;
+export const messageLinkRegex: RegExp;
+export const attachmentLinkRegex: RegExp;
 export function parseArgs(_arguments: string[]): string[];
 export function lockMessage(user: User): string;
 export function msToTime(ms: number): string;

@@ -1,4 +1,4 @@
-const { MessageEmbed, Collection, Util } = require('discord.js'), { parseArgs } = require('../constants'),
+const { MessageEmbed, Collection, Util } = require('discord.js'), { parseArgs, messageLinkRegex } = require('../constants'),
     JTModel = require('../models/Jump.js').Jump;
 
 module.exports = {
@@ -17,7 +17,7 @@ module.exports.run = async (client, message, args, recursiveCount = 0) => {
     
     let content = args.join(" ");
 
-    const link = /https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?<guildID>@me|\d{17,19})?\/(?<channelID>\d{17,20})\/(?<messageID>\d{17,20})/g.exec(content);
+    const link = messageLinkRegex.exec(content);
     if (link == null) return recursiveCount > 0 ? message.delete() : undefined; 
     const { groups: { guildID, channelID, messageID } } = link;
 
@@ -25,7 +25,8 @@ module.exports.run = async (client, message, args, recursiveCount = 0) => {
         let channel = guild.channels.cache.get(channelID);
         if (channel.nsfw || guild.id != message.guild.id) return;
 
-        if (recursiveCount == 0) console.log(`Message Content: ${message.content}\nContent: ${content}\nResult for MC: ${message.content.replace(link, '')}\nResult for C: ${content.replace(link, '')}`);//message.content.replace(link, '').length == 0 ? undefined : message.channel.send(message.content.replace(link, ''));
+        if (recursiveCount == 0) message.content.replace(messageLinkRegex, '').length == 0 ? 
+            undefined : message.channel.send(Util.removeMentions(message.content.replace(messageLinkRegex, '')));
 
         channel.messages.fetch(messageID).then(async (msg) => {
             let attachmentLink = /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i.exec(msg.content);

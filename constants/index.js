@@ -59,6 +59,7 @@ module.exports = {
         sentience: '808445599078809670'
     },
     onlyUnique: (value, index, self) => self.indexOf(value) == index,
+    messageLinkRegex: /https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?<guildID>@me|\d{17,19})?\/(?<channelID>\d{17,20})\/(?<messageID>\d{17,20})/g,
     attachmentLinkRegex: /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i,
     parseArgs: _arguments => (_arguments.match(/\"[^"]+\"|[^ ]+/g) || []).map(argument => argument.startsWith("\"") && argument.endsWith("\"") ? argument.slice(1).slice(0, -1) : argument),
     lockMessage: user => `👮 👮 ***CHANNEL IS LOCKED BY ${user}*** 👮 👮`,
