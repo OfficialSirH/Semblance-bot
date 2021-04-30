@@ -14,7 +14,7 @@ fs.readdir("./images/", (err, files) => {
         attachments,
         currentLogo: attachments['Current_Logo'],
         sharks: attachments['Sharks'],
-        roadMap: attachments['roadMap'],
+        roadMap: attachments['RoadMap'],
         terminusChamber: attachments['TerminusChamber'],
         simStatsLocation: attachments['SimStatsLocation'],
         geodeImage: attachments['GeodeLevelComparison'],
