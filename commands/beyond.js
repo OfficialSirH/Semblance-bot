@@ -22,7 +22,7 @@ module.exports.run = async (client, message, args) => {
 		.attachFiles([currentLogo, roadMap])
 		.setThumbnail(currentLogo.name)
 		.setImage(roadMap.name)
-		.setDescription("Spring/Q1 2021. Anyone who wants to give any complaints about the length of the release date can email their complaint to ImAWhinyKaren@gmail.com"+
+		.setDescription("Summer 2021. Anyone who wants to give any complaints about the length of the release date can email their complaint to ImAWhinyKaren@gmail.com"+
 						"\n\n`s!beyond sneak peeks` for sneak peeks\n\n`s!beyond count` to see the amount of times that The Beyond has been mentioned by the community of C2S.");
 	message.channel.send(embed);
 }
