@@ -56,7 +56,7 @@ module.exports.run = async (client, message, args) => {
                 
                 `Buying traits is a good way of levelling up the new/lower-level cards on higher stages because the shop always gives you the newest cards that don’t have an upgrade available. Only buy trait cards if you have mutagen left over.`,
                 
-                `The mutagen part of the shop is not needed because completing all the missions should provide you with enough mutagen to get you through the entire mesozoic valley. Of course speeding up your progress with metabits using these offers is possible.\`\`\``].join('\n\n')
+                `The mutagen part of the shop is not needed because completing all the missions should provide you with enough mutagen to get you through the entire mesozoic valley. Of course speeding up your progress with darwinium using these offers is possible.\`\`\``].join('\n\n')
             }
         ])
         .setFooter(`Thanks to Jojoseis#0001 for making this guide! :D`);
