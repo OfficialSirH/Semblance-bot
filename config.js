@@ -24,13 +24,24 @@ fs.readdir("./images/", (err, files) => {
         patreon: attachments['Patreon_Mark_Coral'],
         communistSemblance: attachments['CommunistSemblance'],
         nanobots: attachments['Nanobots'],
+        currency: attachments['Currency'],
         mementoMori: attachments['MementoMori']
     });
 });
 exports.default = {
     prefix: "s!",
     sirhID: "780995336293711875",
+    // organizer
     adityaID: '506458497718812674',
+    // artist
+    cabiieID: '342004536753520651',
+    bloodexID: '297007456461258752',
+    // contributors
+    offpringlesID: '299174026411114497',
+    jojoseisID: '325373529967296513',
+    sampedrakoID: '651370672911679498',
+    hardikID: '552102291616956416',
+    // servers
     c2sGuildID: "488478892873744385",
     lunchGuildID: '796153726586454077',
     sirhGuildID: "794054988224659490",
@@ -39,6 +50,7 @@ exports.default = {
         "450100127256936458",
         "110373943822540800",
         "374071874222686211",],
+    // emojis
     entropy: '<:entropy:742748357163745413>',
     idea: '<:idea:775808337303437353>',
     c2s: '<:CellToSing:498910740200161280>',

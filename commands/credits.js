@@ -24,9 +24,15 @@ module.exports.run = async (client, message, args) => {
 			{ name: "Special Thanks and Organizer", value: "Aditya" },
 			{ name: "Artist", value: ["**Semblance:** cabiie",
 				"**Semblance Beta:** Lemon ([Lemon's Instagram page](https://www.instagram.com/creations_without_limtation/))",
-				"**Semblance Revisioned Art:** StarLuckArt(preview soon:tm:) ([DeviantArt](https://www.deviantart.com/starluckart) and [Personal Site](https://bubblestheprotogen.wixsite.com/starluckart))"] },
+				"**Semblance Revisioned Art:** StarLuckArt(preview soon:tm:) ([DeviantArt](https://www.deviantart.com/starluckart) and [Personal Site](https://bubblestheprotogen.wixsite.com/starluckart))"] 
+			},
 			{ name: "Silly dude who makes up funny ideas", value: "NerdGamer2848" },
 			{ name: "Early Testers", value: "Aditya, Parrot, Diza, 0NrD, and Aure" },
+			{ name: "Contributors", value: ["**Mesozoic Valley Guide:** Jojoseis",
+				"**Image for Prestige List:** Hardik Chavada",
+				"**Image for Nanobots:** SampeDrako",
+				"**Image for Currency:** Off Pringles"]
+			}
 		);
 	message.channel.send(embed);
 	// const components = new MessageComponent()
