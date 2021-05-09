@@ -42,6 +42,6 @@ module.exports.run = async (client, message, args) => {
 					].join(' ')
 			}
 		)
-		.setFooter("Stay Cellular!");
+		.setFooter("Stay Cellular! If you really like the work I've done to Semblance, then check out 's!patreon' :D");
 	message.channel.send(`Here are some lovely commands for you, ${message.author}`, embed);
 }

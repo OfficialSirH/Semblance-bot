@@ -180,7 +180,7 @@ async function upgrade(client, message, max) {
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
         .setDescription(`You have successfully upgrade from level ${previousLevel} => ${upgradeHandler.level}.\n\nYour current balance is ${upgradeHandler.money} Random-Bucks.\n\nYour current profit is ${upgradeHandler.idleProfit} Random-Bucks/sec.`)
-        .setFooter(`Upgrades will raise your rank in the \`${prefix}game leaderboard\`, also, \`${prefix}game upgrade max\` will upgrade the max amount you're able to upgrade.`);
+        .setFooter(`Upgrades will raise your rank in the '${prefix}game leaderboard', also, '${prefix}game upgrade max' will upgrade the max amount you're able to upgrade.`);
     message.channel.send(embed);
 }
 

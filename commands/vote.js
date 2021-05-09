@@ -25,6 +25,6 @@ module.exports.run = async (client, message, args) => {
 				"**Extra voting sites**",
 				`[Discord.bots.gg](https://discord.bots.gg/bots/${client.user.id})`,
 			].join('\n')) // Old Semblance ID: 668688939888148480
-	.setFooter(`Command called by ${message.author.tag}`, message.author.displayAvatarURL());
+	.setFooter(`Thanks, ${message.author.tag}, for considering to support my bot through voting, you may also support me with 's!patreon' :D`, message.author.displayAvatarURL());
 	message.channel.send(embed);
 }
