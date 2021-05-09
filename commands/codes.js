@@ -6,6 +6,7 @@ const { MessageEmbed } = require('discord.js'),
 module.exports = {
     description: "get all of the ingame codes",
     category: 'game',
+    subcategory: 'other',
     usage: {
         "": ""
     },

@@ -5,6 +5,7 @@ const { MessageEmbed } = require('discord.js'),
 module.exports = {
     description: "",
 	category: 'game',
+	subcategory: 'main',
     usage: {
         "": ""
     },

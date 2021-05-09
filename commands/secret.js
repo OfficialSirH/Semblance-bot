@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js');
 module.exports = {
 	description: "Secret",
 	category: 'game',
+	subcategory: 'other',
 	usage: {
 		"": ""
 	},

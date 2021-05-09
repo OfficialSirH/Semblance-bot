@@ -1,21 +1,17 @@
 {
     "compilerOptions": {
-      "strict": true,
+      "module": "CommonJS",
+      "target": "ESNext",
       "moduleResolution": "node",
+      "strict": true,
       "declaration": false,
       "removeComments": false,
       "alwaysStrict": true,
       "pretty": false,
-      "module": "commonjs",
-      "target": "esNext",
-      "lib": [
-        "esnext",
-        "esnext.array",
-        "esnext.asynciterable",
-        "esnext.intl",
-        "esnext.symbol"
-      ],
-      "baseUrl": "./",
+      "skipLibCheck": true,
+      "sourceMap": false,
+      "esModuleInterop": false,
+      "baseUrl": ".",
       "paths": {
         "@semblance/structures/*": ["structures/*"],
         "@semblance/models/*": ["models/*"],
@@ -24,12 +20,16 @@
         "@semblance/config": ["config.js"],
         "@semblance": ["./*"]
       },
-      "sourceMap": false,
-      "skipDefaultLibCheck": true
     },
-    "watchOptions": {
+      "watchOptions": {
         "watchFile": "useFsEvents",
         "watchDirectory": "useFsEvents",
         "fallbackPolling": "dynamicPriority"
-    }
+    },
+    "exclude": [
+      "node_modules",
+      "./node_modules",
+      "./node_modules/*",
+      "./node_modules/@types/node/index.d.ts"
+    ]
   }

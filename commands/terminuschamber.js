@@ -4,6 +4,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../cons
 module.exports = {
     description: "Details on how to obtain each node within the Terminus Chamber",
     category: 'game',
+    subcategory: 'main',
     usage: {
         "": ""
     },

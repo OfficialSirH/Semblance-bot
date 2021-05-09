@@ -3,6 +3,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../cons
 module.exports = {
     description: "Mesozoic Valley Guide",
     category: 'game',
+    subcategory: 'mesozoic',
     usage: {
         "": ""
     },

@@ -4,6 +4,7 @@ const { MessageEmbed, MessageAttachment } = require('discord.js'),
 module.exports = {
 	description: "Provide feedback to the developers of C2S with the given email.",
 	category: 'game',
+	subcategory: 'other',
 	usage: {
 		"": ""
 	},

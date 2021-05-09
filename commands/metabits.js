@@ -3,6 +3,7 @@ const { MessageEmbed, MessageAttachment } = require('discord.js'), { metabit } =
 module.exports = {
     description: "A detailed explanation of how to obtain Metabits faster",
     category: 'game',
+    subcategory: 'main',
     usage: {
         "": ""
     },

@@ -5,6 +5,7 @@ const { MessageEmbed } = require('discord.js'),
 module.exports = {
 	description: "Provides the links to the ingame music on the Fandom wiki and on Spotify.",
 	category: 'game',
+	subcategory: 'other',
 	usage: {
 		"": ""
 	},

@@ -7,6 +7,7 @@
 module.exports = {
 	description: "List all of the ingame currency.",
 	category: 'game',
+	subcategory: 'other',
 	usage: {
 		"": ""
 	},

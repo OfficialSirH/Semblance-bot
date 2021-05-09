@@ -4,6 +4,7 @@ const { MessageEmbed } = require('discord.js'), {randomColor} = require('../cons
 module.exports = {
     description: "Info on how to become a beta tester",
     category: 'game',
+    subcategory: 'other',
     usage: {
         "": ""
     },
