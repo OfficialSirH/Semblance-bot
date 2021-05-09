@@ -27,7 +27,7 @@ module.exports.run = async (client, message, args) => {
             { name: 'Main Simulation', value: mainCommands, inline: true },
             { name: 'Mesozoic Valley', value: mesozoicCommands, inline: true },
             { name: '\u200b', value: '\u200b' },
-            { name: 'Other/Extras', otherCommands: otherCommands, inline: true }
+            { name: 'Other/Extras', value: otherCommands, inline: true }
         ])
         .setFooter("C2S for the win!");
     message.channel.send(embed);
