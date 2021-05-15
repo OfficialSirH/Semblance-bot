@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js'), {randomColor} = require('../constants'),
-	{ roadMap, currentLogo } = require('../config.js').default, 
+	{ roadMap, currentLogo, earlyBeyondTesters } = require('../config.js').default, 
 	Information = require('./edit').Information;
 
 module.exports = {
@@ -17,6 +17,7 @@ module.exports = {
 module.exports.run = async (client, message, args) => {
 	if (args[0] == 'clips' || args.join(" ") == 'sneak peeks' || args[0] == 'sneakpeeks') return clips(message);
 	if (args[0] == 'count' || args[0] == 'counter') return beyondCounter(message);
+	if (args[0] == 'testers') return testerCredits(message);
 	let embed = new MessageEmbed()
 		.setTitle("Beyond/Road Map")
 		.setColor(randomColor)
@@ -57,5 +58,15 @@ async function beyondCounter(message) {
 		.setDescription(`The Beyond has been mentioned ${beyondCount.count} time(s) since ${new Date(1611959542848)}`)
 		.setFooter("Since")
 		.setTimestamp(1611959542848);
+	message.channel.send(embed);
+}
+
+function testerCredits(message) {
+	let embed = new MessageEmbed()
+		.setTitle("Credits to our Early Private Beta Testers!")
+		.setAuthor(message.author.tag, message.author.displayAvatarURL())
+		.setColor(randomColor)
+		.setDescription(earlyBeyondTesters.join('\n'))
+		.setFooter(`Thank you Early Private Beta Testers for helping the ComputerLunch team with testing The Beyond! :D`);
 	message.channel.send(embed);
 }
