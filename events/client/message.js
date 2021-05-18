@@ -58,7 +58,7 @@ module.exports = (client) => {
 
     const { commands, aliases, autoCommands } = client;
 
-	if (!message.content.startsWith(`${prefix}afk `) && (!message.content.startsWith('</afk:813628842182311976>') || message.application == null)) removeAfk(client, message, message.author.id);
+	if (!message.content.toLowerCase().startsWith(`${prefix}afk`) && (!message.content.startsWith('</afk:813628842182311976>') || message.application == null)) removeAfk(client, message, message.author.id);
 	//Cell to Singularity Exclusive Code
 	let chName = message.channel.name;
 	for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));

@@ -50,6 +50,25 @@ exports.default = {
         "450100127256936458",
         "110373943822540800",
         "374071874222686211",],
+    // Early Private Beta Testers of the Beyond
+    earlyBeyondTesters: [
+        'Maxence#6028',
+        'SampeDrako#1063',
+        'aditya20.0#1610',
+        'SirH#7157',
+        'iMTV ?!#9864',
+        'elias la glaçe#6248',
+        'JonesyyBoyy#8247',
+        'xKeepSiLenT#3275',
+        'Hardik Chavada#0844',
+        'C\'s Stuff#0421',
+        'BlackHole-Chan#0273',
+        'The Purple One#9049',
+        'Ektrom#8320',
+        '✨ℭ𝕣𝕪𝕤𝕥𝕒𝕝 𝔊𝕝𝕚𝕟𝕥 ✨#0164',
+        'g4genn#4529',
+        'xXTacocubesXx#6012'
+    ],
     // emojis
     entropy: '<:entropy:742748357163745413>',
     idea: '<:idea:775808337303437353>',
