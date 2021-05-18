@@ -17,9 +17,9 @@ module.exports.run = async (client, message, args) => {
         .setTitle("Reptiles and Birds")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .attachFiles(currentLogo)
-        .setImage(currentLogo.name)
+        .setThumbnail(currentLogo.name)
         .setColor(randomColor)
-        .setDescription('The following generators are unlocked by achieving the following ranks in the Mesozoic Valley'+
+        .setDescription('The following generators are unlocked by achieving the following ranks in the Mesozoic Valley\n'+
         [
             'Rank 3 - [Turtle](https://cell-to-singularity-evolution.fandom.com/wiki/Turtle)',
             'Rank 6 - [Crocodilia](https://cell-to-singularity-evolution.fandom.com/wiki/Crocodilia)',
