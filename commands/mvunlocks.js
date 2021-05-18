@@ -1,11 +1,11 @@
 const { MessageEmbed } = require('discord.js'),
     {randomColor} = require('@semblance/constants'),
-    {currentLogo} = require('../config');
+    {currentLogo} = require('../config').default;
 
 module.exports = {
     description: 'Information about the unlocking of each reptile and bird',
     category: 'main',
-    aliases: ['reptiles', 'birds'],
+    aliases: ['reptiles', 'birds', 'mvunlock'],
     usage: {
         "": ""
     },
