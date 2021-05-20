@@ -40,11 +40,13 @@ module.exports.run = async (client, message, args) => {
                     [`Stage 1-5: lvl 1-2`,
                     `Stage 6-10: lvl 2-3`,
                    `Stage 11-15: lvl 3-4`,
-                    `Stage 16-21: lvl 4-5`,
-                    `Stage 22-27: lvl 5-6`,
-                    `Stage 28-33: lvl 6-7`,
-                    `Stage 34-40: lvl 7-8`,
-                    `Stage 40-50: lvl 8-10`].join('\n'),
+                    `Stage 16-20: lvl 4-5`,
+                    `Stage 21-25: lvl 5-6`,
+                    `Stage 26-30: lvl 6-7`,
+                    `Stage 31-35: lvl 7-8`,
+                    `Stage 36-40: lvl 8-9`,
+                    `Stage 41-45: lvl 9-10`,
+                    `Stage 46-50: lvl 10-11`].join('\n'),
                     `If you have lots of mutagen left, you can of course use that to speed up you progress by upgrading the traits further.\`\`\``
                 ].join('\n\n'),
                 inline: true
