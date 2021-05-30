@@ -87,9 +87,22 @@ export default {
     darkMatter: '<:darkMatter:808445570078867496>',
     stardust: '<:stardust:808445612013518868>',
     energy: '<:energy:808445587803471922>',
-    sentience: '<:sentience:808445599078809670>'
+    sentience: '<:sentience:808445599078809670>',
+    attachments: {} as AttachmentList,
+    currentLogo: {} as MessageAttachment,
+    sharks: {} as MessageAttachment,
+    roadMap: {} as MessageAttachment,
+    terminusChamber: {} as MessageAttachment,
+    simStatsLocation: {} as MessageAttachment,
+    geodeImage: {} as MessageAttachment,
+    prestige: {} as MessageAttachment,
+    prestigeList: {} as MessageAttachment,
+    archieDance: {} as MessageAttachment,
+    patreon: {} as MessageAttachment,
+    communistSemblance: {} as MessageAttachment,
+    nanobots: {} as MessageAttachment,
+    currency: {} as MessageAttachment,
+    mementoMori: {} as MessageAttachment
 }
 
-interface AttachmentList {
-    [key: string]: MessageAttachment
-}
+type AttachmentList = Record<string, MessageAttachment>;

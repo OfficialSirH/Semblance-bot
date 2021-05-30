@@ -2,13 +2,13 @@
   "name": "semblance",
   "version": "1.0.0",
   "description": "The AI that runs the Reality Engine",
-  "main": "index.js",
+  "main": "dist/index",
   "author": "SirH",
   "dependencies": {
     "@top-gg/sdk": "^3.0.9",
     "boats.js": "^2.5.1",
     "botlist.space": "^3.3.1",
-    "discord.js": "^12.5.1",
+    "discord.js": "github:discordjs/discord.js",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "ffmpeg": "0.0.4",
@@ -18,16 +18,22 @@
     "node-fetch": "^2.6.1",
     "pm2": "^4.5.6",
     "relative-to-alias": "^2.0.1",
+    "source-map-support": "^0.5.19",
     "twitter": "^1.7.1",
     "ytdl-core-discord": "^1.2.5"
   },
   "_moduleAliases": {
-    "@semblance/structures": "structures",
-    "@semblance/models": "models",
-    "@semblance/events": "events",
-    "@semblance/constants": "constants",
-    "@semblance/config": "config.js",
-    "@semblance": "."
+    "@semblance/src": [
+      "./dist/src"
+    ],
+    "@semblance/lib": [
+      "./dist/lib"
+    ],
+    "@semblance/structures": "./dist/src/structures/index",
+    "@semblance/models": "./dist/src/models/index",
+    "@semblance/events": "./dist/src/events/index",
+    "@semblance/constants": "./dist/src/constants/index",
+    "@semblance/config": "./dist/config"
   },
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js --env production"
@@ -36,7 +42,11 @@
   "license": "ISC",
   "devDependencies": {
     "@types/express": "^4.17.11",
+    "@types/module-alias": "^2.0.0",
     "@types/mongoose": "^5.10.5",
-    "@types/ws": "^7.4.1"
+    "@types/node-fetch": "^2.5.10",
+    "@types/twitter": "^1.7.0",
+    "@types/ws": "^7.4.1",
+    "typescript": "^4.4.0-dev.20210522"
   }
 }
