@@ -8,6 +8,7 @@ import {
     checkReminders,
     randomColor
 } from '@semblance/constants';
+import { intervalPost } from '..';
 const { c2sGuildID } = config;
 
     let alternateActivity = false;
@@ -29,8 +30,6 @@ export const ready = (client: Semblance) => {
 
         setInterval(() => showMyActivity(client), 30000);
 
-        const commands = client.commands;
-
         /*
         Exclusively cache any users from the game and vote database that aren't already cached
         */
@@ -48,8 +47,8 @@ export const ready = (client: Semblance) => {
         console.log(`The cache list has gained ${cacheCollection.size - cacheList.list.length}, which now makes the cache list have a total of ${cacheCollection.size}.`);
 
         /* Slash Command setup */
-        let slash_commands = await client.call.applications(client.user.id).commands.get();
-        slash_commands.forEach(command => client.addSlash(command.id, require(`@semblance/events/slash_commands/${command.name}.js`)));
+        let slash_commands = await client.application.commands.fetch();
+        slash_commands.forEach(command => client.slashCommands.set(command.id, require(`@semblance/src/slash_commands/${command.name}.js`)));
 
         /*
         * Reminder check
@@ -73,6 +72,7 @@ export const ready = (client: Semblance) => {
         //await CommandCounter.deleteMany({});
         await updateGameLeaderboard(client);
         await updateVoteLeaderboard(client);
+        //intervalPost(client); // TODO: uncomment this after I'm ready for the full release 
     
         // client.setInterval(() => {
         //     const UserData = mongoose.model('UserData'), month = (28*24*3600) * 1000;

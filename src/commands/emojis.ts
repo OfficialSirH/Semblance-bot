@@ -1,7 +1,9 @@
-import { Message, MessageEmbed } from "discord.js";
+import { GuildEmoji, Message, MessageEmbed } from "discord.js";
 import { Semblance } from "../structures";
-import * as fs from 'fs';
-import { randomColor } from "../constants";
+import { promises as fs } from 'fs';
+import { randomColor, addableEmojis } from "../constants";
+import config from '@semblance/config';
+const { prefix } = config;
 
 module.exports = {
 	description: "Setup Semblance's emojis with this.",
@@ -14,18 +16,25 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
-	fs.readdir('./images/emojis/', async (err, files) => {
-		let fileNames = [];
-		for (let file of files) fileNames.push(file.replace('.png', '').toLowerCase());
-		for (let fileName of fileNames) if (!message.guild.emojis.cache.array().includes(fileName)) {
-			await message.guild.emojis.create(`./images/emojis/${files[fileNames.indexOf(fileName)]}`, fileName);
-		}
+	if (args.length == 0 || args[0] != 'add') return message.reply(new MessageEmbed()
+	.setAuthor(message.author.tag, message.author.displayAvatarURL())
+	.setColor(randomColor)
+	.setDescription(`type \`${prefix}emojis add\` to add these emojis:\n${addableEmojis.join(' ')}`));
+	try {
+		const files = await fs.readdir('./src/images/emojis');
+			let fileNames = [], addedEmojis: GuildEmoji[] = [];
+			for (let file of files) fileNames.push(file.replace('.png', '').toLowerCase());
+			for (let fileName of fileNames) if (!message.guild.emojis.cache.array().includes(fileName)) {
+				addedEmojis.push(await message.guild.emojis.create(`./src/images/emojis/${files[fileNames.indexOf(fileName)]}`, fileName));
+			}
 
-	});
-	let embed = new MessageEmbed()
-		.setTitle('New Emojis Added!')
-		.setAuthor(message.author.tag, message.author.displayAvatarURL())
-		.setColor(randomColor)
-		.setDescription(message.guild.emojis.cache.map(e => `<:${e.name}:${e.id}>`).join(' '));
-	message.channel.send(embed);
+		let embed = new MessageEmbed()
+			.setTitle('New Emojis Added!')
+			.setAuthor(message.author.tag, message.author.displayAvatarURL())
+			.setColor(randomColor)
+			.setDescription(addedEmojis.map(e=>e.toString()).join(' '));
+		message.channel.send(embed);
+	} catch(err) {
+		message.reply(`hmmmm, something didn't work properly during the process. If this occurs again, please report this issue in the support server(\`${prefix}support\`)`);
+	}
 }

@@ -17,8 +17,8 @@ const wait = promisify(setTimeout);
 export const message = (client: Semblance) => {
     client.on("message", async message => {
         checkForGitHubUpdate(message);
-	if (message.channel.type == 'dm') return messageDM(client, message);
-	if (message.channel.name == "cells-tweets" && message.guild.id == c2sGuildID && message.author.id != client.user.id && !message.member.roles.cache.get('493796775132528640')) return message.delete();
+	if (message.channel.type == 'dm') return messageDM(client, message) as unknown as void;
+	if (message.channel.name == "cells-tweets" && message.guild.id == c2sGuildID && message.author.id != client.user.id && !message.member.roles.cache.get('493796775132528640')) return message.delete() as unknown as void;
 	if (message.author.bot || ignoredGuilds.includes(message.guild.id)) return;
 	if (message.member) {
 		if (message.mentions.users && message.member.id != client.user.id) {
@@ -57,7 +57,7 @@ export const message = (client: Semblance) => {
 		if (chName != 'semblance' && chName != 'mod-chat' && getPermissionLevel(message.member) == 0) return;
 	}
 	if (message.guild.id == sirhGuildID) {
-		if (chName != 'bot-room' && getPermissionLevel(message.member) == 0) return;
+		if (chName != 'bot-room' && chName != 'semblance-beta-testing' && getPermissionLevel(message.member) == 0) return;
 	}
 	//End of Cell to Singularity Exclusive Code
 	if (message.mentions) {
@@ -74,7 +74,6 @@ export const message = (client: Semblance) => {
 		if (splitContent[0].match(`^<@!?${client.user.id}>`)) splitContent.shift(); else splitContent = message.content.slice(prefix.length).split(" ")
 		const identifier = splitContent.shift().toLowerCase(), command = aliases[identifier] || identifier;
 		let content = splitContent.join(" ")
-
 		const commandFile = commands[command]
 		
 		if (commandFile) {
@@ -82,14 +81,15 @@ export const message = (client: Semblance) => {
 				message.reply('DM commands go in **DMs!**(DM = Direct Message)');
 				console.log(`a dumbass(${message.author.tag}(${message.author.id})) just used the link command in the server.`);
 				await wait(5000);
-				if (message.member.roles.cache.has('718796622867464198')) return message.member.roles.remove('718796622867464198');
+				if (message.member.roles.cache.has('718796622867464198')) return message.member.roles.remove('718796622867464198') as unknown as void;
+				return;
 			}
 			let permissionLevel;
 			const args = parseArgs(content); try { permissionLevel = getPermissionLevel(message.member);
 			} catch (e) { permissionLevel = (message.author.id == sirhID) ? 7 : 0 }
 			//console.log(`${message.member}: ${permissionLevel}`);
-			try { if (permissionLevel < commandFile.permissionRequired) return message.channel.send("❌ You don't have permission to do this!");
-				if (!commandFile.checkArgs(args, permissionLevel, content)) return message.channel.send(`❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage).map(a => " " + a).join("")}\`, for additional help, see \`${prefix}help\`.`)
+			try { if (permissionLevel < commandFile.permissionRequired) return message.channel.send("❌ You don't have permission to do this!") as unknown as void;
+				if (!commandFile.checkArgs(args, permissionLevel, content)) return message.channel.send(`❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage).map(a => " " + a).join("")}\`, for additional help, see \`${prefix}help\`.`) as unknown as void;
 				commandFile.run(client, message, args, identifier, { permissionLevel, content });
 				client.increaseCommandCount();
 			} catch (e) { }
@@ -110,7 +110,8 @@ export const message = (client: Semblance) => {
 			default:
         }
     }
-    });
+});
+}
 
 	/*
 	* Check for GitHub updates
@@ -151,4 +152,3 @@ export const message = (client: Semblance) => {
 		const beyondCount = await Information.findOne({ infoType: 'beyondcount' });
 		await Information.findOneAndUpdate({ infoType: 'beyondcount' }, { $set: { count: ++beyondCount.count } }, { new: true });
 	}
-}

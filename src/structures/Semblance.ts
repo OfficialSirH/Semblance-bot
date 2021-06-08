@@ -1,14 +1,14 @@
 import { Client, ClientOptions, Collection, Snowflake, TextChannel } from 'discord.js';
 import * as fs from 'fs';
 import { Information } from '@semblance/models';
-import { Commands, Aliases, SlashCommands, SlashCommand } from '@semblance/lib/interfaces/Semblance';
+import { Commands, Aliases, SlashCommands, ComponentHandlers } from '@semblance/lib/interfaces/Semblance';
 import { RESTManager } from '@semblance/lib/rest/RESTManager';
 import { Webhook } from '.';
-import { intervalPost } from '@semblance/events';
 
 export class Semblance extends Client {
     private _clearCache: NodeJS.Timeout;
     private _commandCounter: number;
+    private _componentHandlers: ComponentHandlers;
     private _slashCommands: SlashCommands;
     private _commands: Commands;
     private _aliases: Aliases;
@@ -32,10 +32,18 @@ export class Semblance extends Client {
 
         this._autoCommands = {};
 
-        this._slashCommands = {};
+        this._componentHandlers = new Collection();
+        fs.readdir('./dist/src/componentHandlers/', (err, files) => {
+            if (err) return console.log(err);
+            for (const file of files) if (file.endsWith('.js')) {
+                this._componentHandlers.set(file.replace('.js', ''), require(`../componentHandlers/${file}`));
+            }
+        });
+
+        this._slashCommands = new Collection();
 
         this._commands = {}, this._aliases = {} // { "command": require("that_command") }, { "alias": "command" }
-        fs.readdir("./commands/", (err, files) => {
+        fs.readdir("./dist/src/commands/", (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith(".js")) {
                 const commandFile = require(`../commands/${file}`), fileName = file.replace(".js", "");
@@ -45,15 +53,13 @@ export class Semblance extends Client {
         });
 
         this._autoCommands = {};
-        fs.readdir("./auto_scripts/", (err, files) => {
+        fs.readdir("./dist/src/auto_scripts/", (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith(".js")) {
                 const commandFile = require(`../auto_scripts/${file}`), fileName = file.replace(".js", "");
                 this._autoCommands[fileName] = commandFile;
             }
         });
-
-        intervalPost(this);
 
         this._api = new RESTManager(this);
     }
@@ -84,12 +90,12 @@ export class Semblance extends Client {
         return users;
     }
 
-    public get slashCommands() {
-        return this._slashCommands;
+    public get componentHandlers() {
+        return this._componentHandlers;
     }
 
-    public addSlash(id: Snowflake, slashPath: SlashCommand) {
-        this._slashCommands[id] = slashPath;
+    public get slashCommands() {
+        return this._slashCommands;
     }
 
     public get commands() {

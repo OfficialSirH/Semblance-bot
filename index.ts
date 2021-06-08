@@ -1,19 +1,19 @@
-import config from './config';
+// TODO: BUTTONIFY EVERYTHING! (i.e. Help command with button categories, button jump toggle, button this, button that, button the button)
+
 require('dotenv').config();
 import 'source-map-support/register';
 import 'module-alias/register';
+(async () => await require(`@semblance/config`).config())()
 // Semblance client
 import { Semblance } from '@semblance/structures'; 
 import { Intents } from 'discord.js'; 
-import { interactionCreate, message, messageDelete, messageReactionAdd, messageReactionRemove, messageUpdate, ready, checkTweet } from '@semblance/events';
+import { interaction, message, messageDelete, messageReactionAdd, messageReactionRemove, messageUpdate, ready, checkTweet } from '@semblance/events';
 const client = new Semblance({
 	disableMentions: { parse: ['users', 'roles'], repliedUser: true },
 	messageCacheLifetime: 30,
 	messageSweepInterval: 300,
 	partials: [ "USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION" ],
-	ws: {
-		  intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES ]
-	}
+	intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES ]
 });
 // express routing
 import * as express from 'express';
@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Listen to client events
-interactionCreate(client);
+interaction(client);
 message(client);
 messageDelete(client);
 messageReactionAdd(client);
@@ -39,11 +39,11 @@ import router from '@semblance/src/routes';
 router(app, client);
 
 app.use((req: Request, res: Response) => res.redirect('https://officialsirh.github.io/'));
-
-app.listen(8079);
+// TODO: (LAST) uncomment the app listener and tweet checker
+//app.listen(8079);
 
 // Check for Tweet from ComputerLunch
-setInterval(() => checkTweet(client), 2000);
+//setInterval(() => checkTweet(client), 2000);
 
 (async () => {
 	await connect(process.env.mongoDBKey, {

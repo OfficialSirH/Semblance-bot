@@ -1,36 +1,38 @@
 import { MessageAttachment } from 'discord.js';
-import * as fs from 'fs';    
+import { promises as fs } from 'fs';    
+const attachments = {} as AttachmentList;
 
-const attachmentURL = 'attachment://',
-    attachments = {} as AttachmentList;
-
-fs.readdir("./images/", (err, files) => {
-    if (err) console.log(err);
-    for (const file of files) {
-        const attachment = new MessageAttachment(`./images/${file}`, `attachment://${file}`), attachmentName = file.substring(0, file.indexOf("."));
-        attachments[attachmentName] = attachment;
+export const config = async () => {
+    try {
+        const files = await fs.readdir("./src/images/");
+        for (const file of files) if (file.endsWith('.png') || file.endsWith('.mp4')) {
+            const attachment = new MessageAttachment(`./src/images/${file}`, `attachment://${file}`), attachmentName = file.substring(0, file.indexOf("."));
+            attachments[attachmentName] = attachment;
+        }
+        Object.assign(exports.default, {
+            attachments,
+            currentLogo: attachments['Current_Logo'],
+            sharks: attachments['Sharks'],
+            roadMap: attachments['RoadMap'],
+            terminusChamber: attachments['TerminusChamber'],
+            simStatsLocation: attachments['SimStatsLocation'],
+            geodeImage: attachments['GeodeLevelComparison'],
+            prestige: attachments['Prestige'],
+            prestigeList: attachments['PrestigeList'],
+            archieDance: attachments['ArchieDance'],
+            patreon: attachments['Patreon_Mark_Coral'],
+            communistSemblance: attachments['CommunistSemblance'],
+            nanobots: attachments['Nanobots'],
+            currency: attachments['Currency'],
+            mementoMori: attachments['MementoMori']
+        });
     }
-    module.exports.default = Object.assign(module.exports.default, {
-        attachments,
-        currentLogo: attachments['Current_Logo'],
-        sharks: attachments['Sharks'],
-        roadMap: attachments['RoadMap'],
-        terminusChamber: attachments['TerminusChamber'],
-        simStatsLocation: attachments['SimStatsLocation'],
-        geodeImage: attachments['GeodeLevelComparison'],
-        prestige: attachments['Prestige'],
-        prestigeList: attachments['PrestigeList'],
-        archieDance: attachments['ArchieDance'],
-        patreon: attachments['Patreon_Mark_Coral'],
-        communistSemblance: attachments['CommunistSemblance'],
-        nanobots: attachments['Nanobots'],
-        currency: attachments['Currency'],
-        mementoMori: attachments['MementoMori']
-    });
-})
-
+    catch(err) {
+        console.log(err);
+    }
+}
 export default {
-    prefix: "s!",
+    prefix: "s?",
     sirhID: "780995336293711875",
     // organizer
     adityaID: '506458497718812674',
@@ -50,7 +52,7 @@ export default {
         "439866052684283905",
         "450100127256936458",
         "110373943822540800",
-        "374071874222686211",],
+        "374071874222686211"],
     // Early Private Beta Testers of the Beyond
     earlyBeyondTesters: [
         'Maxence#6028',

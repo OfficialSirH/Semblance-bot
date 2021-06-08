@@ -2,7 +2,8 @@ import { readFileSync } from 'fs';
 import { nameToScNo, bigToName, checkValue, randomColor } from '@semblance/constants';
 import { Message, MessageEmbed } from 'discord.js';
 import { Semblance } from '../structures';
-const itemsList = JSON.parse(readFileSync('./constants/itemsList.json', "utf8"));
+import { ItemList } from '@semblance/lib/interfaces/ItemList';
+const itemList = require('@semblance/itemList') as ItemList;
 
 module.exports = {
     description: "",
@@ -16,13 +17,14 @@ module.exports = {
 
 module.exports.run = async (client: Semblance, message: Message, args: any[]) => {
     let itemInput: string, curAmount: string | number, currentLevel: string | number;
+    [itemInput, curAmount, currentLevel] = args;
     if (!currentLevel || currentLevel < 0) currentLevel = 0;
     itemInput = itemInput.toLowerCase();
     if (!checkValue(curAmount as string)) return message.reply('Your input for current amount is invalid'); 
     curAmount = nameToScNo(curAmount as string);
     let itemCost: number, itemCostType: string;   
-    for (const [key, value] of Object.entries(itemsList)) if (itemsList[key][itemInput]) {
-        itemCost = itemsList[key][itemInput].price;
+    for (const [key, value] of Object.entries(itemList)) if (itemList[key][itemInput]) {
+        itemCost = itemList[key][itemInput].price;
         itemCostType = key;
     }
 

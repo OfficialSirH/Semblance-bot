@@ -1,6 +1,5 @@
 import { Collection, Message, MessageEmbed, MessageReaction, PartialMessage, PartialUser, Snowflake, TextChannel, User } from "discord.js";
 import { insertionSort, randomColor } from ".";
-import { leaderboardList } from "../commands/leaderboard";
 import { Afk, Game, Information, Reminder, Report, Votes } from "../models";
 import { Semblance } from "../structures";
 import config from '@semblance/config';
@@ -27,54 +26,16 @@ export const dontDisturb = async function(message: Message, mentioned: Collectio
 export async function removeAfk(client: Semblance, message: Message) {
     if (message.author.id == client.user.id) return;
     let afkHandler = await Afk.findOneAndDelete({ userID: message.author.id });
-    if (!afkHandler) message.reply("You are no longer AFK");
+    if (afkHandler) message.reply("You are no longer AFK");
 }
 
-// gameTransfer functions - turnPage
+// gametransfer pages
 
 export const gameTransferPages = ["https://i.imgur.com/BsjMAu6.png",
 		"https://i.imgur.com/QbDAOkF.png",
 		"https://i.imgur.com/w1jEuzh.png",
 		"https://i.imgur.com/6qTz2Li.png",
 		"https://i.imgur.com/YNBHSw9.png"];
-
-export async function turnPage(reaction: MessageReaction, user: User | PartialUser) {
-	let embed = reaction.message.embeds[0];
-	if (!embed ?? !embed.footer ?? user.id != embed.footer ?? !embed.image ?? !gameTransferPages.includes(embed.image.url)) return;
-
-	let currentPage = gameTransferPages.indexOf(embed.image.url);
-	
-	if (reaction.emoji.name == "➡️") {
-		currentPage = (currentPage == 4) ? 0 : ++currentPage;
-		embed = new MessageEmbed()
-			.setTitle("Game Transfer")
-			.setAuthor(user.tag, user.displayAvatarURL())
-			.setColor(randomColor)
-			.attachFiles([currentLogo])
-			.setThumbnail(currentLogo.name)
-			.setImage(gameTransferPages[currentPage])
-			.setDescription(`Step ${currentPage + 1}:`);
-		reaction.message.edit(embed);
-		RemoveReaction(reaction, user);
-
-	} else if (reaction.emoji.name == "⬅️") {
-		currentPage = (currentPage == 0) ? 4 : --currentPage;
-		embed = new MessageEmbed()
-			.setTitle("Game Transfer")
-			.setAuthor(user.tag, user.displayAvatarURL())
-			.setColor(randomColor)
-			.attachFiles([currentLogo])
-			.setThumbnail(currentLogo.name)
-			.setImage(gameTransferPages[currentPage])
-			.setDescription(`Step ${currentPage + 1}:`);
-		reaction.message.edit(embed);
-		RemoveReaction(reaction, user);
-	}
-}
-
-async function RemoveReaction(reaction: MessageReaction, user: User | PartialUser) {
-	try { await reaction.users.remove(user as User); } catch (error) { console.log("That didn't work D:") }
-} 
 
 // game functions - updateGameLeaderboard
 

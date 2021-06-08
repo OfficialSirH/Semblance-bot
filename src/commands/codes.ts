@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
 import { Information } from '@semblance/models';
@@ -17,7 +17,7 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
-    let codeHandler = await Information.findOne({ infoType: 'codes' });
+    const codeHandler = await Information.findOne({ infoType: 'codes' });
     let embed = new MessageEmbed()
         .setTitle("Darwinium Codes")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
@@ -25,7 +25,16 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .attachFiles([currentLogo])
         .setThumbnail(currentLogo.name)
         .setDescription(codeHandler.info)
-        .addField("Expired Codes", codeHandler.expired)
         .setFooter(codeHandler.footer);
-    message.channel.send(embed);
+    const component = new MessageActionRow()
+    .addComponents([new MessageButton()
+        .setCustomID(JSON.stringify({
+            command: 'codes',
+            action: 'expired',
+            id: message.author.id
+        }))
+        .setLabel('View Expired Codes')
+        .setStyle('PRIMARY')
+    ]);
+    message.channel.send({ embed, components: [component] });
 }

@@ -12,10 +12,10 @@ module.exports = {
     checkArgs: (args: string[]) => args.length >= 0
 }
 
-export async function run(client: Semblance, message: Message, args: string[], recursiveCount = 0) {
-    const jumpHandler = await Jump.findOne({ guild: message!.guild!.id });
+module.exports.run = async function(client: Semblance, message: Message, args: string[], recursiveCount = 0) {
+    const jumpHandler = await Jump.findOne({ guild: message.guild.id });
     if (recursiveCount == 2) return message.delete();
-    if (!jumpHandler ?? !jumpHandler.active) return;
+    if (!jumpHandler || !jumpHandler.active) return;
     
     let content = args.join(" ");
 

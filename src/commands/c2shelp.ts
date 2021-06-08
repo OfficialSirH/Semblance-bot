@@ -1,9 +1,8 @@
 import { Message, MessageEmbed } from 'discord.js'; 
-import { randomColor } from '@semblance/constants';
+import { randomColor, subcategoryList } from '@semblance/constants';
 import config from '@semblance/config';
 import { Semblance } from '../structures';
-import { Subcategory } from '@semblance/lib/interfaces/Semblance';
-const { currentLogo, prefix } = config;
+const { currentLogo } = config;
 
 module.exports = {
     description: "List of all Cell to Singularity related commands",
@@ -16,9 +15,9 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
-    const mainCommands = cmdsToList(client, 'main');
-    const mesozoicCommands = cmdsToList(client, 'mesozoic');
-    const otherCommands = cmdsToList(client, 'other');
+    const mainCommands = subcategoryList(client, 'game', 'main');
+    const mesozoicCommands = subcategoryList(client, 'game', 'mesozoic');
+    const otherCommands = subcategoryList(client, 'game', 'other');
     let embed = new MessageEmbed()
         .setTitle("**-> Cell to Singularity Commands**")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
@@ -33,10 +32,4 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         ])
         .setFooter("C2S for the win!");
     message.channel.send(embed);
-}
-
-function cmdsToList(client: Semblance, subcategory: Subcategory) {
-    return Object.keys(client.commands)
-        .filter(key => client.commands[key].category == 'game' && client.commands[key].subcategory == subcategory)
-        .map(key => `**\`${prefix}${key}\`**`).join(', ');
 }

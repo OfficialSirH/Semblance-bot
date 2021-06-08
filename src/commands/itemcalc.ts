@@ -1,8 +1,8 @@
-import { readFileSync } from 'fs';
 import { bigToName, checkValue, randomColor } from '@semblance/constants';
+import { ItemList } from '@semblance/lib/interfaces/ItemList';
 import { Message, MessageEmbed } from 'discord.js';
 import { Semblance } from '../structures';
-const itemsList = JSON.parse(readFileSync('./constants/itemsList.json', "utf8"));
+const itemList = require('@semblance/itemList') as ItemList;
 
 module.exports = {
     description: "",
@@ -24,8 +24,8 @@ module.exports.run = async (client: Semblance, message: Message, args: any[]) =>
     level = Number.parseInt(level as string);
     currentLevel = Number.parseInt(currentLevel as string);
     let itemCost: number, itemCostType: string;
-    for (const [key, value] of Object.entries(itemsList)) if (itemsList[key][itemInput]) {
-        itemCost = itemsList[key][itemInput].price;
+    for (const [key, value] of Object.entries(itemList)) if (itemList[key][itemInput]) {
+        itemCost = itemList[key][itemInput].price;
         itemCostType = key;
     }
     if (!itemCost) return message.reply("Your input for 'item' was invalid.");

@@ -46,12 +46,12 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
 	serverCreated = serverCreated.substring(0, 16);
 	let canRoleListWork = (roleList.length > 1024) ? "*Too many roles*":roleList;
 	let fetchedGuild = await guild.fetch();
-
+	let owner = await guild.members.fetch(guild.ownerID);
 	let embed = new MessageEmbed()
 		.setAuthor(guild.name, guild.iconURL())
 		.setColor(randomColor)
 		.addFields(
-			{ name: "Owner", value: (guild as any).owner, inline: true },
+			{ name: "Owner", value: owner, inline: true },
 			{ name: "Region", value: guild.region, inline: true },
 			{ name: "Channel Categories", value: categoryChannel, inline: true },
 			{ name: "Text Channels", value: textChannel, inline: true },

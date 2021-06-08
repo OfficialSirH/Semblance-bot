@@ -8,7 +8,7 @@
     "@top-gg/sdk": "^3.0.9",
     "boats.js": "^2.5.1",
     "botlist.space": "^3.3.1",
-    "discord.js": "github:discordjs/discord.js",
+    "discord.js": "github:discordjs/discord.js#9da6f1cd9763fffcc506cfbd7926190365c875c3",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "ffmpeg": "0.0.4",
@@ -23,17 +23,14 @@
     "ytdl-core-discord": "^1.2.5"
   },
   "_moduleAliases": {
-    "@semblance/src": [
-      "./dist/src"
-    ],
-    "@semblance/lib": [
-      "./dist/lib"
-    ],
+    "@semblance/src": "./dist/src",
+    "@semblance/lib": "./dist/lib",
     "@semblance/structures": "./dist/src/structures/index",
     "@semblance/models": "./dist/src/models/index",
     "@semblance/events": "./dist/src/events/index",
     "@semblance/constants": "./dist/src/constants/index",
-    "@semblance/config": "./dist/config"
+    "@semblance/config": "./dist/config",
+    "@semblance/itemList": "./lib/utils/itemList"
   },
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js --env production"

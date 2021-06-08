@@ -1,9 +1,8 @@
 ﻿import { gameTransferPages, randomColor } from "../constants";
 import config from '@semblance/config';
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
 import { Semblance } from "../structures";
 const { currentLogo } = config;
-
 
 module.exports = {
 	description: "See a step-by-step guide to transfering your game progress into the cloud and onto another device.",
@@ -16,8 +15,6 @@ module.exports = {
 	checkArgs: (args: string[]) => args.length >= 0
 }
 
-// TODO: Add button support for turning pages
-
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
 	let embed = new MessageEmbed()
 		.setTitle("Game Transfer")
@@ -26,12 +23,24 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.attachFiles([currentLogo])
 		.setThumbnail(currentLogo.name)
 		.setImage(gameTransferPages[0])
-		.setDescription("Step 1:")
-		.setFooter(message.author.id);
-	message.channel.send(embed)
-		.then(async (msg) => {
-			await msg.react("⬅️");
-			await msg.react("➡️");
-		});
+		.setDescription("Step 1:");
+	const component = new MessageActionRow()
+	.addComponents([new MessageButton()
+		.setCustomID(JSON.stringify({
+			command: 'gametransfer',
+			action: 'left',
+			id: message.author.id
+		}))
+		.setEmoji('⬅️')
+		.setStyle('PRIMARY'),
+		new MessageButton()
+		.setCustomID(JSON.stringify({
+			command: 'gametransfer',
+			action: 'right',
+			id: message.author.id
+		}))
+		.setEmoji('➡️')
+		.setStyle('PRIMARY')
+	])
+	message.channel.send({ embed, components: [component] });
 }
-

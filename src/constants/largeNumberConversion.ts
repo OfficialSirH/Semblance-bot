@@ -35,9 +35,9 @@ export const bigToName = (number: any) => {
 export const nameToScNo = (input: string) => {
     let checkedInput = /((?<value>\d{1,10})(?<name>\w{1,17}))|(?<scientific>\d{1,10}(\.\d{1,10})?(e\+?-?\d{1,3})?)/i.exec(input);
     let { groups: { scientific, value, name } } = checkedInput as unknown as valueGrouping;
-    if (!!scientific) return scientific;
+    if (!!scientific) return Number.parseFloat(scientific);
     value = namedValueSearch(name.toLowerCase());
-    return !!value ? value : input;
+    return !!value ? value : Number.parseFloat(input);
 }
 /** Checks if the given input is a valid named number or scientific notation */
 export const checkValue = (input: string) => !!/((\d{1,10})(\w{1,17}))|(\d{1,10}(\.\d{1,10})?(e\+?-?\d{1,3})?)/i.exec(input);
@@ -136,7 +136,7 @@ interface exponential {
 
 interface valueGrouping {
     groups: {
-        scientific: number;
+        scientific: string;
         name: string;
         value: number;
     }

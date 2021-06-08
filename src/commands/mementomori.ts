@@ -16,8 +16,8 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[], identifier: string) => {
-    if (identifier == 'mementomori' || identifier == 'unusannus') return sendIt(message).then(() => setTimeout(() =>{ if(!message.deleted) message.delete() }, 1000));
-    if ((identifier == 'memento' && args[0] == 'mori') || (identifier == 'unus' && args[0] == 'mori')) return sendIt(message).then(() => setTimeout(() =>{ if(!message.deleted) message.delete() }, 1000));
+    if (identifier == 'mementomori' || identifier == 'unusannus') return sendIt(message);
+    if ((identifier == 'memento' && args[0] == 'mori') || (identifier == 'unus' && args[0] == 'mori')) return sendIt(message);
 }
 
 async function sendIt(message: Message) {

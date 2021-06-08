@@ -6,9 +6,12 @@ const {
   Events: { RATE_LIMIT }
 } = Constants;
 
-const parseResponse = async (res: any) => {
-  if (res.headers['content-type'].includes('application/json')) return await res.json();
-  return res.body.toString();
+const parseResponse = async (res: Response) => {
+    for (const [key, value] of res.headers) if (key == 'content-type') {
+        res.headers[key] = value;
+    }
+    if (res.headers['content-type'].includes('application/json')) return await res.json();
+    return res.body.toString();
 }
 
 function getAPIOffset(serverDate: number) {
@@ -53,7 +56,7 @@ export class RequestHandler {
         return this.queue.remaining === 0 && !this.limited;
     }
 
-    async execute(request) {
+    async execute(request: APIRequest) {
         // After calculations and requests have been done, pre-emptively stop further requests
         if (this.limited) {
         const timeout = this.reset + this.manager.client.options.restTimeOffset - Date.now();

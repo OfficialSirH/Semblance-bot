@@ -6,7 +6,6 @@ import BOATS from 'boats.js';
 import * as TopggSDK from '@top-gg/sdk';
 
 export const intervalPost = (client: Semblance) => {
-
     const baseURL = 'https://discord.bots.gg/api/v1';
     setInterval(async function() {
         const data = { guildCount: client.guilds.cache.size };
@@ -34,15 +33,15 @@ export const intervalPost = (client: Semblance) => {
             botListClient.postServerCount(client.guilds.cache.size).then(() => console.log("Server count post to botlist.space was successful")).catch((err) => console.error(err))
     , 1800000);
     
-    
-    const Boats = new BOATS(JSON.parse(process.env.DBoatsAuth).Auth);
-    setInterval(function () {
-        Boats.postStats(client.guilds.cache.size, client.user.id).then(() => {
-            console.log('Successfully updated server count.');
-        }).catch((err) => {
-            console.error(err);
-        });
-    }, 1800000);
+    // TODO: create custom POST to discord.boats since their package doesn't define their class properly
+    // const Boats = new BOATS(JSON.parse(process.env.DBoatsAuth).Auth);
+    // setInterval(function () {
+    //     Boats.postStats(client.guilds.cache.size, client.user.id).then(() => {
+    //         console.log('Successfully updated server count.');
+    //     }).catch((err) => {
+    //         console.error(err);
+    //     });
+    // }, 1800000);
     
     
     const dbl = new DBLApi(JSON.parse(process.env.discordBotListAuth).Auth);

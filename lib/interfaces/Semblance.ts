@@ -1,17 +1,28 @@
-import { Interaction, Semblance } from "@semblance/structures";
-import { Message } from "discord.js";
-import { ApplicationCommandInteractionDataOption } from "./interaction";
+import { Semblance } from "@semblance/structures";
+import { Collection, CommandInteraction, CommandInteractionOption, Message, MessageComponentInteraction, Snowflake } from "discord.js";
 
-export type SlashCommands = Record<string, SlashCommand>;
+export type ComponentHandlers = Collection<string, ComponentHandler>;
+
+export interface ComponentHandler {
+    run: (interaction: MessageComponentInteraction, data: ButtonData, { permissionLevel }: any) => Promise<void>;
+}
+
+export interface ButtonData {
+    command: string;
+    action: string;
+    id: Snowflake;
+}
+
+export type SlashCommands = Collection<string, SlashCommand>;
 
 export interface SlashCommand {
     permissionRequired: number,
-    run: (client: Semblance, interaction: Interaction, options?: SlashOptions) => void;
+    run: (client: Semblance, interaction: CommandInteraction, options?: SlashOptions) => Promise<void>;
 }
 
 export interface SlashOptions {
     permissionLevel: number;
-    options: ApplicationCommandInteractionDataOption[];
+    options: CommandInteractionOption[];
 }
 
 export type Commands = Record<string, Command>;

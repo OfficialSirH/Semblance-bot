@@ -1,5 +1,5 @@
 // Client events
-export { interactionCreate } from './client/interactionCreate';
+export { interaction } from './client/interaction';
 export { message } from './client/message';
 export { messageDelete } from './client/messageDelete';
 export { messageDM } from './client/messageDM';

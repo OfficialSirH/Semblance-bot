@@ -1,10 +1,10 @@
-import { MessageEmbed } from 'discord.js';
+import { MessageEmbed, CommandInteraction } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Interaction, Semblance } from '../structures';
+import { Semblance } from '../structures';
 
 module.exports = {
     permissionRequired: 0,
-    run: async (client: Semblance, interaction: Interaction) => {
+    run: async (client: Semblance, interaction: CommandInteraction) => {
         let user = interaction.member.user,
             embed = new MessageEmbed()
             .setTitle("Credits")
@@ -30,6 +30,6 @@ module.exports = {
                     "**Image for Currency:** Off Pringles"]
                 }
             );
-        return interaction.send(embed);
+        return interaction.reply(embed);
     }
 }

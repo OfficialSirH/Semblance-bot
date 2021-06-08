@@ -19,7 +19,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		user = message.mentions.users.first();
 		if (!user) user = args[0].match(/\d{17,20}/).join();
 		if (!user) return message.reply("The provided input is invalid");
-		user = await client.users.fetch(user as string, false);
+		user = await client.users.fetch((user as User)?.id, false);
 		if (!user) return message.reply('I couldn\'t find that user');
 	}
 	let image = `${user.displayAvatarURL({ dynamic: true })}?size=4096`;

@@ -11,6 +11,7 @@
       "skipLibCheck": true,
       "sourceMap": true,
       "esModuleInterop": false,
+      "resolveJsonModule": true,
       "rootDir": ".",
       "outDir": "dist/",
       "baseUrl": ".",
@@ -21,7 +22,8 @@
         "@semblance/models": ["./src/models/index"],
         "@semblance/events": ["./src/events/index"],
         "@semblance/constants": ["./src/constants/index"],
-        "@semblance/config": ["./config"]
+        "@semblance/config": ["./config"],
+        "@semblance/itemList": ["./lib/utils/itemList"]
       },
     },
       "watchOptions": {

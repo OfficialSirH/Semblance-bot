@@ -15,7 +15,7 @@ module.exports = {
 }
 
 module.exports.run = async(client: Semblance, message: Message, args: string[]) => {
-    let metabitAttachment = new MessageAttachment("./images/emojis/Metabit.png", "attachment://Metabit.png"),
+    let metabitAttachment = new MessageAttachment("./src/images/emojis/Metabit.png", "attachment://Metabit.png"),
     embed = new MessageEmbed()
         .setTitle("Ways to earn Metabits faster")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())

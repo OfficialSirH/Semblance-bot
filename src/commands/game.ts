@@ -1,4 +1,4 @@
-import { MessageEmbed, Collection, Permissions, Message, User } from 'discord.js'; 
+import { MessageEmbed, Collection, Permissions, Message, User, MessageActionRow, MessageButton } from 'discord.js'; 
 import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
 import { Game, Information } from '@semblance/models';
@@ -6,6 +6,8 @@ import { Semblance } from '../structures';
 import { GameFormat } from '../models/Game';
 const { prefix } = config;
 const cooldownHandler: Collection<string, number> = new Collection();
+
+// TODO: Buttonify Idle-Game
 
 module.exports = {
     description: "An idle-game within Semblance",
@@ -24,8 +26,109 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     } else if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
         cooldownHandler.set(message.author.id, Date.now());
     }
+
+    let statsHandler = await Game.findOne({ player: message.author.id }), embed = new MessageEmbed(), cost: number;
+    if (!statsHandler) embed.setTitle(`Semblance's Idle-Game`)
+    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setDescription('Use the buttons below to play the game. :D');
+    else embed.setTitle(`Welcome back to Semblance's Idle-Game!`)
+        .setAuthor(message.author.tag, message.author.displayAvatarURL())
+        .setColor(randomColor)
+        .setThumbnail(message.author.displayAvatarURL())
+        .addFields(
+            { name: 'Level', value: statsHandler.level },
+            { name: 'Random-Bucks', value: statsHandler.money },
+            { name: 'Percent Increase', value: statsHandler.percentIncrease },
+            { name: 'Next Upgrade Cost', value: await currentPrice(statsHandler) },
+            { name: 'Idle Profit', value: statsHandler.idleProfit }
+        )
+    .setFooter("Remember to vote for Semblance to gain a production boost!"), 
+    cost = await currentPrice(statsHandler);
+    
+    const components = [new MessageActionRow()
+        .addComponents(new MessageButton()
+            .setCustomID(JSON.stringify({
+                command: 'game',
+                action: 'about',
+                id: message.author.id
+            }))
+            .setStyle('PRIMARY')
+            .setEmoji('❔')
+            .setLabel('About'),
+            new MessageButton()
+            .setCustomID(JSON.stringify({
+                command: 'game',
+                action: 'collect',
+                id: message.author.id
+            }))
+            .setDisabled(!Boolean(statsHandler))
+            .setStyle('PRIMARY')
+            .setEmoji('💵')
+            .setLabel('Collect'),
+            new MessageButton()
+            .setCustomID(JSON.stringify({
+                command: 'game',
+                action: 'upgrade',
+                id: message.author.id
+            }))
+            .setDisabled(!Boolean(statsHandler) || statsHandler.money < cost)
+            .setStyle('PRIMARY')
+            .setEmoji('⬆')
+            .setLabel('Upgrade'),
+            new MessageButton()
+            .setCustomID(JSON.stringify({
+                command: 'game',
+                action: 'leaderboard',
+                id: message.author.id
+            }))
+            .setStyle('PRIMARY')
+            .setEmoji('🏅')
+            .setLabel('Leaderboard'),
+            new MessageButton()
+            .setCustomID(JSON.stringify({
+                command: 'game',
+                action: 'stats',
+                id: message.author.id
+            }))
+            .setDisabled(!Boolean(statsHandler))
+            .setStyle('PRIMARY')
+            .setEmoji('🔢')
+            .setLabel('Stats')
+        ), new MessageActionRow()
+        .addComponents(new MessageButton()
+            .setCustomID(JSON.stringify({
+                command: 'game',
+                action: 'graph',
+                id: message.author.id
+            }))
+            .setStyle('PRIMARY')
+            .setEmoji('📈')
+            .setLabel('Graph'),
+            new MessageButton()
+            .setCustomID(JSON.stringify({
+                command: 'game',
+                action: 'create',
+                id: message.author.id
+            }))
+            .setEmoji(Boolean(statsHandler) ?  '⛔' : '🌎')
+            .setLabel(Boolean(statsHandler) ?  'Reset Progress' : 'Create new game')
+            .setStyle(Boolean(statsHandler) ?  'DANGER' : 'SUCCESS'),
+            new MessageButton()
+            .setCustomID(JSON.stringify({
+                command: 'game',
+                action: 'close',
+                id: message.author.id
+            }))
+            .setEmoji('🚫')
+            .setLabel('Close')
+            .setStyle('SECONDARY')
+    )];
+
+    return message.channel.send({ embed, components });
+
     if (args.length == 0) return message.reply(`Start with \`${prefix}game help\` to get more info on Semblance's idle game.`);
     let choice = args[0].toLowerCase();
+    
     if (choice == 'help') return help(message);
     if (choice == 'leaderboard') return leaderboard(message);
     if (choice == 'stats') return gameStats(client, message, args);

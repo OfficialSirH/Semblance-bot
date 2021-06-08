@@ -30,7 +30,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
             if (evaled.length > 1015) {
                 let evalOutputFile = new MessageAttachment(Buffer.from(`${evaled}`), 'evalOutput.js');
                 data.files = [evalOutputFile];
-                embed.addField("📤 Output", `Output is in file preview below`).setTitle("✅ Evaluation Completed");
+                embed.addField("📤 Output", `Output is in file preview above`).setTitle("✅ Evaluation Completed");
             } else embed.addField("📤 Output", `\`\`\`js\n${evaled.substring(0, 1015)}\`\`\``).setTitle("✅ Evaluation Completed");
             data.embed = embed;
             message.channel.send(data);

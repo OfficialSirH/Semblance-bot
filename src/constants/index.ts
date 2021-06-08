@@ -1,4 +1,8 @@
-﻿import { GuildMember, Permissions, User } from 'discord.js';
+﻿import { Subcategory } from '@semblance/lib/interfaces/Semblance';
+import { GuildMember, MessageActionRow, MessageButton, Permissions, User } from 'discord.js';
+import { Semblance } from '../structures';
+import config from '@semblance/config';
+const { prefix } = config;
 
 export const getAvatar = (user: User) => { 
     let avatarType = (user.avatar.startsWith('a_')) ? `${user.avatar}.gif` : `${user.avatar}.png`;
@@ -16,6 +20,13 @@ export const insertionSort = (list: Array<Array<number>>) => {
     }
     return list;
 };
+export const filterAction = (components: MessageActionRow[], action: string) => components.map(c => {
+    c.components = (c.components as MessageButton[]).filter(b => eval(`(${b.customID})`).action != action);
+    return c;
+});
+export const subcategoryList = (client: Semblance, category: string, subcategory: Subcategory) => Object.keys(client.commands)
+        .filter(key => client.commands[key].category == category && client.commands[key].subcategory == subcategory)
+        .map(key => `**\`${prefix}${key}\`**`).join(', ');
 export const emojis = {
     entropy: '<:entropy:742748357163745413>',
     idea: '<:idea:775808337303437353>',
@@ -35,6 +46,25 @@ export const emojis = {
     energy: '<:energy:808445587803471922>',
     sentience: '<:sentience:808445599078809670>'
 };
+export const addableEmojis = [
+    '<:entropy:742748357163745413>',
+    '<:idea:775808337303437353>',
+    '<:darwinium:742748359781122169>',
+    '<:metabit:789526514524880906>',
+    '<:mutagen:742748361852977184>',
+    '<:fossil:742748364625543239>',
+    '<:Dino_Gold:667471422334959619>',
+    '<:Dino_Bronze:667471174766428160>',
+    '<:Dino_Silver:667471406950514688>',
+    '<:trex_skull:657015647359860767>',
+    '<:singularity:789526513812504617>',
+    '<:NanobotUp:764149893937102858>',
+    '<:NanobotDown:764149995032412180>',
+    '<:darkMatter:808445570078867496>',
+    '<:stardust:808445612013518868>',
+    '<:energy:808445587803471922>',
+    '<:sentience:808445599078809670>'
+];
 export const emojiSnowflakes = {
     entropy: '742748357163745413',
     idea: '775808337303437353',
@@ -115,7 +145,7 @@ export const sirhChannels = [
 ];
 export const getPermissionLevel = function(member: GuildMember) {
     try {
-        if ("506458497718812674" === member.user.id ?? member.user.id == "780995336293711875") return 7;
+        if ("506458497718812674" === member.user.id || member.user.id == "780995336293711875") return 7;
         // Aditya, SirH //RIP SirH OG: "279080959612026880" === member.user.id // SirH#4297
         if (member.permissions.has(module.exports.roles.admin)) return 6; // admin
         if (member.permissions.has(module.exports.roles.exec)) return 5; // exec
@@ -154,7 +184,6 @@ export {
     dontDisturb,
     removeAfk,
     gameTransferPages,
-    turnPage,
     updateGameLeaderboard,
     updateVoteLeaderboard,
     checkReminders,

@@ -1,19 +1,19 @@
-import { MessageEmbed } from 'discord.js';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
 import { randomColor }  from '@semblance/constants';
-import { Interaction, Semblance } from '../structures';
+import { Semblance } from '../structures';
 
 module.exports = {
     permissionRequired: 0
 }
 
-module.exports.run = async (client: Semblance, interaction: Interaction) => {
-    if (!interaction.data.options[0]) return interaction.send('Ask any question with this command and Semblance will answer.');
+module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
+    if (!interaction.options[0]) return interaction.reply('Ask any question with this command and Semblance will answer.');
     let randomizedChoice = Math.ceil(Math.random() * 20);
     const embed = new MessageEmbed()
         .setTitle('8ball')
         .setAuthor(interaction.member.user.tag, interaction.member.user.displayAvatarURL())
         .setColor(randomColor);
-    let description = `Question: ${interaction.data.options[0].value}\nAnswer: `;
+    let description = `Question: ${interaction.options[0].value}\nAnswer: `;
     if (randomizedChoice == 1) description +='It is certain';
     if (randomizedChoice == 2) description +='It is decidely so.';
     if (randomizedChoice == 3) description +='Without a doubt';
@@ -35,5 +35,5 @@ module.exports.run = async (client: Semblance, interaction: Interaction) => {
     if (randomizedChoice == 19) description +='Outlook not so good.';
     if (randomizedChoice == 20) description +='Very doubtful.';
     embed.setDescription(description);
-    return interaction.send(embed);
+    return interaction.reply(embed);
 }
