@@ -54,7 +54,7 @@ module.exports.run = async function(client: Semblance, message: Message, args: s
                 .map((a: MessageAttachment) => a.url)
                 .filter((item: string) => item)[0] : attachmentLink![0]);
             
-            message.channel.send(embed);
+            message.channel.send({ embeds: [embed] });
 
             content = content.replace(/https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?:@me|\d{17,19}\/)?\d{17,20}\/\d{17,20}/, ``);
             args = content.trim().split(' ');

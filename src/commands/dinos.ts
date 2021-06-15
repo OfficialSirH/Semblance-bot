@@ -19,7 +19,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     let embed = new MessageEmbed()
         .setTitle(`${trexSkull} Mesozoic Valley`)
         .setColor(randomColor)
-        .attachFiles([currentLogo])
         .setThumbnail(currentLogo.name)
         .setDescription([
             "The Mesozoic Valley is a separate simulation that consists of dinosaurs, which provides insight for Semblance on what the demise of the human species could be",
@@ -28,5 +27,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             "Also, the more you rank up in Mesozoic Valley, the better of a boost you'll gain in the main simulation"
             ].join(' ')
             ].join('\n\n'));
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed], files: [currentLogo] });
 }

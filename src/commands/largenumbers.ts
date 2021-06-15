@@ -18,7 +18,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     let embed = new MessageEmbed()
         .setTitle('Large Numbers')
         .setColor(randomColor)
-        .attachFiles([currentLogo])
         .setThumbnail(currentLogo.name)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setDescription(["the way to use all of the names when using the calculator commands are:\n"+
@@ -36,5 +35,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             " In case someone uses the British format for these names, please note that these are in US format, so they aren't the exact same as yours and if you would like to know what the names are in US format" +
             ", click [here](http://www.thealmightyguru.com/Pointless/BigNumbers.html)")
         .setFooter('Large Numbers go brrrr...');
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed], files: [currentLogo] });
 }

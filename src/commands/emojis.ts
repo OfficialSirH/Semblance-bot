@@ -16,10 +16,10 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
-	if (args.length == 0 || args[0] != 'add') return message.reply(new MessageEmbed()
+	if (args.length == 0 || args[0] != 'add') return message.reply({ embeds: [new MessageEmbed()
 	.setAuthor(message.author.tag, message.author.displayAvatarURL())
 	.setColor(randomColor)
-	.setDescription(`type \`${prefix}emojis add\` to add these emojis:\n${addableEmojis.join(' ')}`));
+	.setDescription(`type \`${prefix}emojis add\` to add these emojis:\n${addableEmojis.join(' ')}`)] });
 	try {
 		const files = await fs.readdir('./src/images/emojis');
 			let fileNames = [], addedEmojis: GuildEmoji[] = [];
@@ -33,7 +33,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 			.setAuthor(message.author.tag, message.author.displayAvatarURL())
 			.setColor(randomColor)
 			.setDescription(addedEmojis.map(e=>e.toString()).join(' '));
-		message.channel.send(embed);
+		message.channel.send({ embeds: [embed] });
 	} catch(err) {
 		message.reply(`hmmmm, something didn't work properly during the process. If this occurs again, please report this issue in the support server(\`${prefix}support\`)`);
 	}

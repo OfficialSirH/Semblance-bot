@@ -1,6 +1,8 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import { Semblance } from '../structures';
+import config from '@semblance/config';
+const { prefix } = config;
 
 module.exports = {
 	description: "Secret",
@@ -22,7 +24,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setColor(randomColor)
 		.setDescription(["1. Make an ape dab by tapping on it numerous times.",
 			"2. Make an archosaur, named Archie, dance by tapping the archosaur with a tuxedo/suit.",
-			"3. Unlock all sharks, *check `s!sharks`*.",
+			`3. Unlock all sharks, *check \`${prefix}sharks\`*.`,
 			"**Secrets in the land garden:**",
 			"4. Click the paradise bird, an all brown bird with a blue face.",
 			"5. While your game camera is still focused on the paradise bird, wait till the bird flies near a small island with the darwin bust statue and click the island.",
@@ -31,12 +33,12 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 			"**Secrets of the speedruns:**",
 			"8. Reach Singularity within 5 minutes.",
 			"9. Reach Singularity within 120 seconds!"].join("\n"));
-	message.author.send(embed).catch(() => message.reply('Something went wrong while trying to send the message, you likely have your DMs closed, preventing you from receiving the message'));
+	message.author.send({ embeds:[embed] }).catch(() => message.reply('Something went wrong while trying to send the message, you likely have your DMs closed, preventing you from receiving the message'));
 }
 
 async function fun(message: Message) {
 	let embed = new MessageEmbed()
 		.setTitle("Secret")
 		.setURL("https://rb.gy/enaq3a");
-	message.author.send(embed);
+	message.author.send({ embeds:[embed] });
 }

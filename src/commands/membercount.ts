@@ -17,7 +17,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 	let embed = new MessageEmbed()
 	.setTitle("Members")
 	.setColor(randomColor)
-	.setDescription(guild.approximateMemberCount)
+	.setDescription(guild.approximateMemberCount.toString())
 	.setFooter(`Called upon by ${message.author.tag}`);
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed] });
 }

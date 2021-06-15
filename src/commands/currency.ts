@@ -20,7 +20,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 	let embed = new MessageEmbed()
 		.setTitle("Currency")
 		.setColor(randomColor)
-		.attachFiles([currentLogo, currency])
 		.setThumbnail(currentLogo.name)
 		.addFields(
 			{ name: `${entropy} Entropy`, value: "The beginning currency in the game, which is used to for evolution upgrades" },
@@ -36,5 +35,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		)
 		.setImage(currency.name)
 		.setFooter(`Thanks to Off Pringles#8141 for making this visual representation of currency`);
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed], files: [currentLogo, currency] });
 }

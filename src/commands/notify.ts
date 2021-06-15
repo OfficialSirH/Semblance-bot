@@ -31,8 +31,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     return message.reply("Your role was successfully added");
   }
 
-  return message.reply(new MessageEmbed().setTitle("Semblance Notifications")
+  return message.reply({ embeds:[new MessageEmbed().setTitle("Semblance Notifications")
           .setColor(randomColor)
           .setDescription(`${module.exports.description}\n`+
-          `**How to use:** type \`add\` at the end to get role or \`remove\` to remove it.`));
+          `**How to use:** type \`add\` at the end to get role or \`remove\` to remove it.`)] });
 }

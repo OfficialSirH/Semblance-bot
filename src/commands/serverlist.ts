@@ -40,5 +40,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setThumbnail(client.user.displayAvatarURL())
 		.setDescription(pageDetails)
 		.setFooter(`Page ${chosenPage} out of ${Math.ceil(numOfPages)}`);
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed] });
 }

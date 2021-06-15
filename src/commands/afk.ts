@@ -24,5 +24,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setColor(randomColor)
 		.setDescription(`You are now afk ${message.author} \n` +
 			`Reason: ${reason}`);
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed] });
 }

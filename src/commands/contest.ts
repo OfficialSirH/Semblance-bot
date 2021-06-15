@@ -18,15 +18,14 @@ module.exports = {
 
 module.exports.run = async (client: Semblance, message: Message, args: string[], identifier: string) => {
     if (identifier == 'limericks') return limericks(message);
-    message.channel.send(new MessageEmbed().setTitle("Contests").setColor(randomColor)
-    .setDescription(`All of the available contest-related commands are: \n${module.exports.aliases.map((i: string) => `\`${prefix}${i}\``).join('\n')}`));
+    message.channel.send({ embeds: [new MessageEmbed().setTitle("Contests").setColor(randomColor)
+    .setDescription(`All of the available contest-related commands are: \n${module.exports.aliases.map((i: string) => `\`${prefix}${i}\``).join('\n')}`)] });
 }
 
 function limericks(message: Message) {
     let embed = new MessageEmbed()
         .setTitle('Limericks Contest winners')
         .setColor(randomColor)
-        .attachFiles([currentLogo])
         .setThumbnail(currentLogo.name)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setDescription(`**1st Place(2000 ${darwinium}):** Jean_Xontric - \n` +
@@ -55,5 +54,5 @@ function limericks(message: Message) {
                             `Playing our parts in the greatest show`
             )
         .setFooter('Let the hunger gam-- I mean Limericks Contest- begin!');
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed], files: [currentLogo] });
 }

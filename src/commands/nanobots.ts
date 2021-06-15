@@ -21,7 +21,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     .setTitle("Nanobots")
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
-    .attachFiles([currentLogo, nanobots])
     .setThumbnail(currentLogo.name)
     .setImage(nanobots.name)
     .setDescription(["Nanobots are little dudes that can help with either auto-upgrading or clicking. These little dudes are obtainable through rebooting and spending metabits for them, which you can buy up to 12(First Image).",
@@ -29,5 +28,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
           "Depending on where your camera is on the tech tree, your nanobots will try to upgrade everything within your camera region, so whether you want your nanobots to upgrade something specific",
           "or you want to speed through the advancements you'll have to make sure your camera is covering the region or item you want upgraded."].join(" "))
     .setFooter('Thanks to SampeDrako for creating this beautifully better designed image representing nanobots!');
-  message.channel.send(embed);
+  message.channel.send({ embeds: [embed], files: [currentLogo, nanobots] });
 }

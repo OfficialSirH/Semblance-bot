@@ -19,5 +19,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
         .setURL("https://github.com/OfficialSirH/Semblance-bot/blob/master/Privacy%20Policy.md");
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }

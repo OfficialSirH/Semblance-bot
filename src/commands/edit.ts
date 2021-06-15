@@ -46,5 +46,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         default:
             return message.channel.send("What are you trying to type? The options are `beta`, `update`, and 'codes'");
     }
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }

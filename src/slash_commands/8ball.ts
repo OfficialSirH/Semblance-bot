@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageEmbed } from 'discord.js';
+import { CommandInteraction, MessageEmbed, User } from 'discord.js';
 import { randomColor }  from '@semblance/constants';
 import { Semblance } from '../structures';
 
@@ -8,10 +8,10 @@ module.exports = {
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
     if (!interaction.options[0]) return interaction.reply('Ask any question with this command and Semblance will answer.');
-    let randomizedChoice = Math.ceil(Math.random() * 20);
+    let randomizedChoice = Math.ceil(Math.random() * 20), user = interaction.member.user as User;
     const embed = new MessageEmbed()
         .setTitle('8ball')
-        .setAuthor(interaction.member.user.tag, interaction.member.user.displayAvatarURL())
+        .setAuthor(user.tag, user.displayAvatarURL())
         .setColor(randomColor);
     let description = `Question: ${interaction.options[0].value}\nAnswer: `;
     if (randomizedChoice == 1) description +='It is certain';
@@ -35,5 +35,5 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
     if (randomizedChoice == 19) description +='Outlook not so good.';
     if (randomizedChoice == 20) description +='Very doubtful.';
     embed.setDescription(description);
-    return interaction.reply(embed);
+    return interaction.reply({ embeds: [embed] });
 }

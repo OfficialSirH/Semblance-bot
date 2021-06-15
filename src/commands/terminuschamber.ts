@@ -21,7 +21,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setTitle("Terminus Chamber")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
-        .attachFiles([currentLogo, terminusChamber])
         .setThumbnail(currentLogo.name)
         .setImage(terminusChamber.name)
         .setDescription(['**Yellow Cube** - ||Explore the Mesozoic Valley||',
@@ -32,5 +31,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             '**Lime Green Cube** - ||Unlock Crocodilians||',
             '**Orange Cube** - ||Unlock Feliforms||',
             '**Red Cube** - ||Terraform Mars||'].join('\n'));
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed], files: [currentLogo, terminusChamber] });
 }

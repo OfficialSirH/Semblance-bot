@@ -47,6 +47,6 @@ async function sendEmbedAnnouncement(channel: TextChannel, message: Message, ann
 
     if (identity) embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
 
-    channel.send(embed)
+    channel.send({ embeds:[embed] })
         .catch(() => message.reply("Something went wrong with the message, you might've typed too many characters.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000)));
 }

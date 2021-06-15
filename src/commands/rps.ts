@@ -24,9 +24,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     if (playerChoice == 'senate') {
         let embed = new MessageEmbed()
             .setDescription('I *am* the senate, which means ***WE*** win this round!')
-            .attachFiles([communistSemblance])
             .setImage(communistSemblance.name);
-        return message.reply(embed);
+        return message.reply({ embeds: [embed], files: [communistSemblance] });
     }
     if (playerChoice == 'everything') return message.reply(`What the heck dude?! You don't need to use ***everything*** against ${sembChoice}!! You destroyed it after the *first* thing you threw at it, which was a nuclear bomb!!!`);
     if (playerChoice == 'logic') return message.reply(`With the power of ***logic***, you ask ${sembChoice} how much wood could a woodchuck chuck wood if a woodchuck could chuck wood, which then the ${sembChoice} vanishes from thinking too hard, ${message.author.username} wins!`);

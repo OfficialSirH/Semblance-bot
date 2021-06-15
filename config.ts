@@ -1,4 +1,4 @@
-import { MessageAttachment } from 'discord.js';
+import { MessageAttachment, Snowflake } from 'discord.js';
 import { promises as fs } from 'fs';    
 const attachments = {} as AttachmentList;
 
@@ -33,26 +33,26 @@ export const config = async () => {
 }
 export default {
     prefix: "s?",
-    sirhID: "780995336293711875",
+    sirhID: "780995336293711875" as Snowflake,
     // organizer
-    adityaID: '506458497718812674',
+    adityaID: '506458497718812674' as Snowflake,
     // artist
-    cabiieID: '342004536753520651',
-    bloodexID: '297007456461258752',
+    cabiieID: '342004536753520651' as Snowflake,
+    bloodexID: '297007456461258752' as Snowflake,
     // contributors
-    offpringlesID: '299174026411114497',
-    jojoseisID: '325373529967296513',
-    sampedrakoID: '651370672911679498',
-    hardikID: '552102291616956416',
+    offpringlesID: '299174026411114497' as Snowflake,
+    jojoseisID: '325373529967296513' as Snowflake,
+    sampedrakoID: '651370672911679498' as Snowflake,
+    hardikID: '552102291616956416' as Snowflake,
     // servers
-    c2sGuildID: "488478892873744385",
-    lunchGuildID: '796153726586454077',
-    sirhGuildID: "794054988224659490",
+    c2sGuildID: "488478892873744385" as Snowflake,
+    lunchGuildID: '796153726586454077' as Snowflake,
+    sirhGuildID: "794054988224659490" as Snowflake,
     ignoredGuilds: ["264445053596991498",
         "439866052684283905",
         "450100127256936458",
         "110373943822540800",
-        "374071874222686211"],
+        "374071874222686211"] as Snowflake[],
     // Early Private Beta Testers of the Beyond
     earlyBeyondTesters: [
         'Maxence#6028',

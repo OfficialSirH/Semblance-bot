@@ -25,9 +25,8 @@ async function sendIt(message: Message) {
         .setTitle("Memento Mori")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
-        .attachFiles([mementoMori])
         .setImage(mementoMori.name)
         .setDescription(`[The Goodbye](https://www.youtube.com/watch?v=aDQ3nfBbPWM)`);
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed], files: [mementoMori] });
     setTimeout(() =>{ if(!message.deleted) message.delete() }, 1000);
 }

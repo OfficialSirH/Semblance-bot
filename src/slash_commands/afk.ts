@@ -19,5 +19,5 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
 		.setColor(randomColor)
 		.setDescription(`You are now afk ${user} \n` +
             `Reason: ${reason}`);
-    interaction.reply(embed);
+    interaction.reply({ embeds: [embed] });
 }

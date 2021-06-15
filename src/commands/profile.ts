@@ -1,4 +1,4 @@
-import { MessageEmbed, Message, GuildMember, User } from 'discord.js';
+import { MessageEmbed, Message, GuildMember, User, Snowflake } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import { Semblance } from '../structures';
 
@@ -17,7 +17,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 
 	let userRegexed = /(?<![:\d])(?<id>\d{17,19})(?!\d)/.exec(args[0]);
 	if (!userRegexed) return message.reply("You've provided invalid input");
-	let userId = userRegexed.groups.id;
+	let userId = userRegexed.groups.id as Snowflake;
 	let member: GuildMember;
 	try {
 		member = await message.guild.members.fetch({ user: userId, cache: false });
@@ -27,7 +27,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		if (!!member) return guildProfileEmbed(message, member);
 
 		try {
-			let user = await client.users.fetch(userId, false);
+			let user = await client.users.fetch(userId, { cache: false });
 			if (!!user) return userProfileEmbed(message, user);
 			message.reply("Sorry, that user couldn't be found in Discord at all");
 		} catch (e) {
@@ -46,16 +46,16 @@ async function guildProfileEmbed(message: Message, member: GuildMember) {
 		.setDescription(`User data for ${member}:`)
 		.setColor(randomColor)
 		.setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
-		.addFields(
+		.addFields([
 			{ name: "Username", value: member.user.tag, inline: true },
 			{ name: "Discriminator", value: member.user.discriminator, inline: true },
-			{ name: "Bot", value: member.user.bot, inline: true },
+			{ name: "Bot", value: member.user.bot.toString(), inline: true },
 			{ name: "User ID", value: member.id, inline: true },
-			{ name: "Highest Rank", value: member.roles.highest, inline: true },
+			{ name: "Highest Rank", value: member.roles.highest.toString(), inline: true },
 			{ name: "Created", value: accountCreated, inline: true },
 			{ name: "Joined", value: accountJoined, inline: true }
-		);
-	message.channel.send(embed);
+		]);
+	message.channel.send({ embeds: [embed] });
 }
 
 async function userProfileEmbed(message: Message, user: User) {
@@ -65,14 +65,14 @@ async function userProfileEmbed(message: Message, user: User) {
 		.setDescription(`User data for ${user}:`)
 		.setColor(randomColor)
 		.setThumbnail(user.displayAvatarURL({ dynamic: true }))
-		.addFields(
+		.addFields([
 			{ name: "Username", value: user.tag, inline: true },
 			{ name: "Discriminator", value: user.discriminator, inline: true },
-			{ name: "Bot", value: user.bot, inline: true },
+			{ name: "Bot", value: user.bot.toString(), inline: true },
 			{ name: "User ID", value: user.id, inline: true },
 			{ name: "Created", value: accountCreated, inline: true }
-		);
-	message.channel.send(embed);
+		]);
+	message.channel.send({ embeds: [embed] });
 }
 
 function daysAgo(date: Date | number) {

@@ -18,7 +18,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     const embed = new MessageEmbed()
         .setTitle("Reptiles and Birds")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .attachFiles([currentLogo])
         .setThumbnail(currentLogo.name)
         .setColor(randomColor)
         .setDescription('The following generators are unlocked by achieving the following ranks in the Mesozoic Valley\n'+
@@ -32,5 +31,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             'Rank 33 - [Paleognathae](https://cell-to-singularity-evolution.fandom.com/wiki/Paleognathae)',
             'Rank 38 - [Neoaves](https://cell-to-singularity-evolution.fandom.com/wiki/Neoaves)',
         ].map(t=>`**${t}**`).join('\n'));
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed], files: [currentLogo] });
 }

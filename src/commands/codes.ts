@@ -22,7 +22,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setTitle("Darwinium Codes")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
-        .attachFiles([currentLogo])
         .setThumbnail(currentLogo.name)
         .setDescription(codeHandler.info)
         .setFooter(codeHandler.footer);
@@ -36,5 +35,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setLabel('View Expired Codes')
         .setStyle('PRIMARY')
     ]);
-    message.channel.send({ embed, components: [component] });
+    message.channel.send({ embeds: [embed], files: [currentLogo], components: [component] });
 }

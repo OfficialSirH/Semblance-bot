@@ -20,5 +20,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
         .setDescription(changelogHandler.info);
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }

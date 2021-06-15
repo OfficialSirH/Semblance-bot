@@ -1,4 +1,4 @@
-import { MessageEmbed, Collection, Permissions, Message, User, MessageActionRow, MessageButton } from 'discord.js'; 
+import { MessageEmbed, Collection, Permissions, Message, User, MessageActionRow, MessageButton, Snowflake } from 'discord.js'; 
 import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
 import { Game, Information } from '@semblance/models';
@@ -6,8 +6,6 @@ import { Semblance } from '../structures';
 import { GameFormat } from '../models/Game';
 const { prefix } = config;
 const cooldownHandler: Collection<string, number> = new Collection();
-
-// TODO: Buttonify Idle-Game
 
 module.exports = {
     description: "An idle-game within Semblance",
@@ -35,13 +33,13 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
         .setThumbnail(message.author.displayAvatarURL())
-        .addFields(
-            { name: 'Level', value: statsHandler.level },
-            { name: 'Random-Bucks', value: statsHandler.money },
-            { name: 'Percent Increase', value: statsHandler.percentIncrease },
-            { name: 'Next Upgrade Cost', value: await currentPrice(statsHandler) },
-            { name: 'Idle Profit', value: statsHandler.idleProfit }
-        )
+        .addFields([
+            { name: 'Level', value: statsHandler.level.toString() },
+            { name: 'Random-Bucks', value: statsHandler.money.toString() },
+            { name: 'Percent Increase', value: statsHandler.percentIncrease.toString() },
+            { name: 'Next Upgrade Cost', value: (await currentPrice(statsHandler)).toString() },
+            { name: 'Idle Profit', value: statsHandler.idleProfit.toString() }
+        ])
     .setFooter("Remember to vote for Semblance to gain a production boost!"), 
     cost = await currentPrice(statsHandler);
     
@@ -83,48 +81,10 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             }))
             .setStyle('PRIMARY')
             .setEmoji('🏅')
-            .setLabel('Leaderboard'),
-            new MessageButton()
-            .setCustomID(JSON.stringify({
-                command: 'game',
-                action: 'stats',
-                id: message.author.id
-            }))
-            .setDisabled(!Boolean(statsHandler))
-            .setStyle('PRIMARY')
-            .setEmoji('🔢')
-            .setLabel('Stats')
-        ), new MessageActionRow()
-        .addComponents(new MessageButton()
-            .setCustomID(JSON.stringify({
-                command: 'game',
-                action: 'graph',
-                id: message.author.id
-            }))
-            .setStyle('PRIMARY')
-            .setEmoji('📈')
-            .setLabel('Graph'),
-            new MessageButton()
-            .setCustomID(JSON.stringify({
-                command: 'game',
-                action: 'create',
-                id: message.author.id
-            }))
-            .setEmoji(Boolean(statsHandler) ?  '⛔' : '🌎')
-            .setLabel(Boolean(statsHandler) ?  'Reset Progress' : 'Create new game')
-            .setStyle(Boolean(statsHandler) ?  'DANGER' : 'SUCCESS'),
-            new MessageButton()
-            .setCustomID(JSON.stringify({
-                command: 'game',
-                action: 'close',
-                id: message.author.id
-            }))
-            .setEmoji('🚫')
-            .setLabel('Close')
-            .setStyle('SECONDARY')
-    )];
+            .setLabel('Leaderboard'))
+    ];
 
-    return message.channel.send({ embed, components });
+    return message.channel.send({ embeds: [embed], components });
 
     if (args.length == 0) return message.reply(`Start with \`${prefix}game help\` to get more info on Semblance's idle game.`);
     let choice = args[0].toLowerCase();
@@ -140,7 +100,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 }
 
 async function noGame(message: Message) {
-    message.reply("You have not created a game yet; if you'd like to create a game, use `s!game create`");
+    message.reply(`You have not created a game yet; if you'd like to create a game, use \`${prefix}game create\``);
 }
 
 async function graphs(message: Message) {
@@ -148,7 +108,7 @@ async function graphs(message: Message) {
         .setTitle("Graphed Data of Semblance's Idle Game")
         .setColor(randomColor)
         .setDescription("[Click Here for Game Data Graphs](https://charts.mongodb.com/charts-semblance-xnkqg/public/dashboards/5f9e8f7f-59c6-4a87-8563-0d68faed8515)");
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }
 
 async function about(message: Message) {
@@ -157,13 +117,13 @@ async function about(message: Message) {
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
         .setDescription("SIG, AKA Semblance's Idle-Game, is an RNG idle-game that uses a currency called Random-Bucks \n"+
-                        "which yes, I asked Semblance whether or not I should use Random-Bucks as the name by using `s!8ball`. "+
+                        `which yes, I asked Semblance whether or not I should use Random-Bucks as the name by using \`${prefix}8ball\`. `+
                        "If you're confused by the acronym RNG, it's an acronym for \"Random Number Generation/Generator\", which "+
                        "means that everything is kind of random and runs on random chance in the game. Everything that is random "+
                        "within this game is the cost multiplier per upgrade, starting profits, and the amount your profits increase.\n\n"+
                        "You have to collect Random-Bucks manually every once in a while, that is how the game works.")
         .setFooter("Noice");
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
     
 }
 
@@ -179,18 +139,18 @@ async function help(message: Message) {
             `Typing \`${prefix}game leaderboard\` will rank the highest level users in the idle-game.\n\n` +
             `Typing \`${prefix}game stats\` will show your current stats in Semblance's idle-game.`)
         .setFooter("Have fun idling!");
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }
 
 async function leaderboard(message: Message) {
-    const leaderboard = await Information.findOne({ infoType: 'gameleaderboard' });
-    let embed = new MessageEmbed()
-        .setTitle("Semblance's idle-game leaderboard")
-        .setAuthor(message.author.tag, message.author.displayAvatarURL())
-        .setColor(randomColor)
-        .setDescription(`${leaderboard.info}`)
-        .setFooter("May the odds be with you.\n(Updates every minute)");
-    message.channel.send(embed);
+    // const leaderboard = await Information.findOne({ infoType: 'gameleaderboard' });
+    // let embed = new MessageEmbed()
+    //     .setTitle("Semblance's idle-game leaderboard")
+    //     .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    //     .setColor(randomColor)
+    //     .setDescription(`${leaderboard.info}`)
+    //     .setFooter("May the odds be with you.\n(Updates every minute)");
+    // message.channel.send({ embeds: [embed] });
 }
 
 async function currentPrice(userData: GameFormat) {
@@ -219,7 +179,7 @@ async function create(message: Message) {
                        `Starting Profits: ${creationHandler.idleProfit}/sec\n\n`+
                        `Reminder, don't be constantly spamming and creating a new game just cause your RNG stats aren't perfect \n`)
         .setFooter("Enjoy idling!");
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }
 
 async function collect(message: Message) {
@@ -233,7 +193,7 @@ async function collect(message: Message) {
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
         .setDescription(`You've collected ${collected} Random-Bucks and now your current balance is ${collectionHandler.money} Random-Bucks.`);
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }
 
 async function upgrade(message: Message, max: string) {
@@ -242,12 +202,12 @@ async function upgrade(message: Message, max: string) {
     let previousLevel = upgradeHandler.level;
     let costSubtraction = await currentPrice(upgradeHandler);
     if (upgradeHandler.money < costSubtraction) 
-        return message.channel.send(new MessageEmbed().setTitle("Not Enough Random-Bucks")
+        return message.channel.send({ embeds: [new MessageEmbed().setTitle("Not Enough Random-Bucks")
                 .setAuthor(message.author.tag, message.author.displayAvatarURL())
                 .setColor(randomColor)
                 .setDescription([`**Current Balance:** ${upgradeHandler.money} Random-Bucks`,
                                 `**Upgrade Cost:** ${costSubtraction} Random-Bucks`,
-                                `**How much more required:** ${costSubtraction - upgradeHandler.money} Random-Bucks`].join('\n')));
+                                `**How much more required:** ${costSubtraction - upgradeHandler.money} Random-Bucks`].join('\n'))] });
     if (max && max.toLowerCase() == 'max') {
         while (upgradeHandler.money > costSubtraction) {
             costSubtraction = await currentPrice(upgradeHandler);
@@ -262,29 +222,29 @@ async function upgrade(message: Message, max: string) {
         .setColor(randomColor)
         .setDescription(`You have successfully upgrade from level ${previousLevel} => ${upgradeHandler.level}.\n\nYour current balance is ${upgradeHandler.money} Random-Bucks.\n\nYour current profit is ${upgradeHandler.idleProfit} Random-Bucks/sec.`)
         .setFooter(`Upgrades will raise your rank in the '${prefix}game leaderboard', also, '${prefix}game upgrade max' will upgrade the max amount you're able to upgrade.`);
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }
 
 async function gameStats(client: Semblance, message: Message, args: string[]) {
-    let player: string | User = message.author.id;
-    if (message.mentions.members.size > 0) player = message.mentions.members[0].id;
-    else if (!!args[0].match(/\d{17,20}/g)) player = args[0].match(/\d{17,20}/g).join('');
-    let statsHandler = await Game.findOne({ player: player as string });
+    let playerID: Snowflake = message.author.id;
+    if (message.mentions.members.size > 0) playerID = message.mentions.members.first().id;
+    else if (!!args[0].match(/\d{17,20}/g)) playerID = args[0].match(/\d{17,20}/g).join('') as Snowflake;
+    let statsHandler = await Game.findOne({ player: playerID });
     if (!statsHandler) return noGame(message);
     let nxtUpgrade = await currentPrice(statsHandler);
-    player = await client.users.fetch(player as string);
+    let player = await client.users.fetch(playerID);
     let embed = new MessageEmbed()
         .setTitle(`${message.author.username}'s gamestats`)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
         .setThumbnail(player.displayAvatarURL())
         .addFields(
-            { name: 'Level', value: statsHandler.level },
-            { name: 'Random-Bucks', value: statsHandler.money },
-            { name: 'Percent Increase', value: statsHandler.percentIncrease },
-            { name: 'Next Upgrade Cost', value: nxtUpgrade },
-            { name: 'Idle Profit', value: statsHandler.idleProfit }
+            { name: 'Level', value: statsHandler.level.toString() },
+            { name: 'Random-Bucks', value: statsHandler.money.toString() },
+            { name: 'Percent Increase', value: statsHandler.percentIncrease.toString() },
+            { name: 'Next Upgrade Cost', value: nxtUpgrade.toString() },
+            { name: 'Idle Profit', value: statsHandler.idleProfit.toString() }
         )
         .setFooter("Remember to vote for Semblance to gain a production boost!");
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }

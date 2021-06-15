@@ -45,5 +45,5 @@ module.exports.run = async (client: Semblance, message: Message, args: any[]) =>
             `Current item level: ${currentLevel}`,
             `Item level goal: ${level as number + (currentLevel as number)}`,
             `Resulting Price: ${bigToName(resultingPrice)} ${itemCostType}`].join('\n'));
-    message.reply(embed);
+    message.reply({ embeds: [embed] });
 }

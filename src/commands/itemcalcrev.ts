@@ -41,5 +41,5 @@ module.exports.run = async (client: Semblance, message: Message, args: any[]) =>
             `Current item level: ${currentLevel}`,
             `currency input: ${bigToName(curAmount)} ${itemCostType}`,
             `Resulting level: ${level}`].join('\n'));
-    message.reply(embed);
+    message.reply({ embeds: [embed] });
 }

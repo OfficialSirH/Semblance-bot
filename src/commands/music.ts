@@ -19,10 +19,9 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 	let embed = new MessageEmbed()
 		.setTitle("Music")
 		.setColor(randomColor)
-		.attachFiles([currentLogo])
 		.setThumbnail(currentLogo.name)
 		.setDescription([`Here's a link to the music, ${message.author.tag}`,
 			"[Fandom Wiki](https://cell-to-singularity-evolution.fandom.com/wiki/music)",
 			"[Spotify Link](https://open.spotify.com/playlist/6XcJkgtRFpKwoxKleKIOOp?si=uR4gzciYQtKiXGPwY47v6w)"].join('\n'));
-	message.channel.send(embed);	
+	message.channel.send({ embeds: [embed], files: [currentLogo] });	
 }

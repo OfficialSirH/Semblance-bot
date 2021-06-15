@@ -1,4 +1,4 @@
-import { Guild, Message, MessageEmbed } from 'discord.js';
+import { Guild, Message, MessageEmbed, Snowflake } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import { Semblance } from '../structures';
 
@@ -17,7 +17,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
 	if (args[0] && permissionLevel == 7) {
 		let guildId = /\d{17,20}/.exec(args[0]);
 		if (!guildId) return message.reply('WRONG! That id is invalid!');
-		guild = client.guilds.cache.get(guildId[0]);
+		guild = client.guilds.cache.get(guildId[0] as Snowflake);
 	}
 	else guild = message.guild;
 
@@ -50,17 +50,16 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
 	let embed = new MessageEmbed()
 		.setAuthor(guild.name, guild.iconURL())
 		.setColor(randomColor)
-		.addFields(
-			{ name: "Owner", value: owner, inline: true },
-			{ name: "Region", value: guild.region, inline: true },
-			{ name: "Channel Categories", value: categoryChannel, inline: true },
-			{ name: "Text Channels", value: textChannel, inline: true },
-			{ name: "Voice Channels", value: voiceChannel, inline: true },
-			{ name: "Members", value: fetchedGuild.approximateMemberCount, inline: true },
-			{ name: "Roles", value: roleCount, inline: true },
+		.addFields([
+			{ name: "Owner", value: owner.toString(), inline: true },
+			{ name: "Channel Categories", value: categoryChannel.toString(), inline: true },
+			{ name: "Text Channels", value: textChannel.toString(), inline: true },
+			{ name: "Voice Channels", value: voiceChannel.toString(), inline: true },
+			{ name: "Members", value: fetchedGuild.approximateMemberCount.toString(), inline: true },
+			{ name: "Roles", value: roleCount.toString(), inline: true },
 			{ name: "Role List", value: canRoleListWork, inline: false },
-		)
+		])
 		.setFooter(`ID: ${guild.id} | Server Created: ${serverCreated}`);
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed] });
 }
 

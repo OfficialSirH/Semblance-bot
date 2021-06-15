@@ -20,7 +20,6 @@ module.exports.run = async(client: Semblance, message: Message, args: string[]) 
         .setTitle("Ways to earn Metabits faster")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
-        .attachFiles([metabitAttachment])
         .setThumbnail(metabitAttachment.name)
         .setDescription([["Metabits are basically earned from the total accumulation of entropy and ideas(with a bit of an equation involved),",
         "which means you would want to increase your production rate for entropy and ideas to make Metabits faster, but how do I do that though?"].join(' '),
@@ -40,5 +39,5 @@ module.exports.run = async(client: Semblance, message: Message, args: string[]) 
         "There are upgrades in the Reality Engine that specifically boost your production speed, which you can total up to **2105%** if you got all of the upgrades, now that's a lot! :D"].join('\n'),
         
         "If you'd like to see the effects all of these have on overall production speed, use the slash command, `/metaspeedcalc`, to play around with the values!"].join('\n\n'));
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed], files: [metabitAttachment] });
 }

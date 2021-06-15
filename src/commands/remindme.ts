@@ -3,6 +3,8 @@ import { randomColor, msToTime } from '@semblance/constants';
 import { Reminder } from '@semblance/models';
 import { Semblance } from '../structures';
 import { ReminderFormat } from '../models/Reminder';
+import config from '@semblance/config';
+const { prefix } = config;
 
 module.exports = {
 	description: "Set a reminder for yourself.",
@@ -11,7 +13,7 @@ module.exports = {
 		"<time(minutes)> <reminder>": ""
 	},
 	examples: {
-		"exampleOne": "s!remindme 60 I've got magical stuff to do in 1 hour!"
+		"exampleOne": `${prefix}remindme 60 I've got magical stuff to do in 1 hour!`
 	},
 	permissionRequired: 0,
 	checkArgs: (args: string[]) => args.length >= 1
@@ -34,7 +36,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setAuthor(message.author.tag, message.author.displayAvatarURL())
 		.setThumbnail(message.author.displayAvatarURL())
 		.setDescription(`I'll remind you in ${msToTime(totalTime)} for your reminder \n **Reminder**: ${reminder.join(" ")}`);
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed] });
 	let reminderHandler: ReminderFormat;
 	if (reminder.length == 0) reminderHandler = new Reminder({ userID: message.author.id, reminder: "A random reminder", remind: Date.now() + totalTime });
 	else reminderHandler = new Reminder({ userID: message.author.id, reminder: reminder.join(" "), remind: Date.now() + totalTime });

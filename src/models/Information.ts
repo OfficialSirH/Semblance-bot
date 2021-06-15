@@ -7,9 +7,7 @@ type infoType = 'beta'
     | 'codes'
     | 'changelog'
     | 'cacheList'
-    | 'beyondcount'
-    | 'gameleaderboard'
-    | 'voteleaderboard';
+    | 'beyondcount';
 
 export interface InformationFormat extends Document {
     infoType: infoType;

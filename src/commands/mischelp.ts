@@ -46,5 +46,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 				inline: true
 			}
 		);
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed] });
 }

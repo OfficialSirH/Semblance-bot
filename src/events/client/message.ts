@@ -28,7 +28,7 @@ export const message = (client: Semblance) => {
 
     const { commands, aliases, autoCommands } = client;
 
-	if (!message.content.toLowerCase().startsWith(`${prefix}afk`) && (!message.content.startsWith('</afk:813628842182311976>') || message.application == null)) removeAfk(client, message);
+	if (!message.content.toLowerCase().startsWith(`${prefix}afk`) && (!message.content.startsWith('</afk:813628842182311976>') || message.applicationID == null)) removeAfk(client, message);
 	//Cell to Singularity Exclusive Code
 	let chName = message.channel.name;
 	for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
@@ -37,7 +37,7 @@ export const message = (client: Semblance) => {
 		let msg = message.content.toLowerCase(), suggestionArray = ["suggestion:", "suggest:", `${prefix}suggestion`, `${prefix}suggest`],
 			suggestionRegex = new RegExp(`^(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
 		
-		if (msg.includes('beyond') && !msg.includes('s!beyond')) updateBeyondCount();
+		if (msg.includes('beyond') && !msg.includes(`${prefix}beyond`)) updateBeyondCount();
 
 		if (chName == 'suggestions') {
 			if (suggestionRegex.exec(msg) != null || getPermissionLevel(message.member) > 0) return;
@@ -46,15 +46,16 @@ export const message = (client: Semblance) => {
 				let embed = new MessageEmbed()
 					.setTitle("Your Suggestion")
 					.setDescription(`\`${message.content}\``);
-				message.author.send(`Your message in ${message.channel} was deleted due to not having the ` +
+				message.author.send({ content: `Your message in ${message.channel} was deleted due to not having the ` +
 					`suggestion-prefix required with suggestions, which means your message ` +
 					`*must* start with ${suggestionArray.map(t => `\`${t}\``).join(', ')}. The ` +
 					`reason for the required suggestion-prefixes is to prevent the channel ` +
-					`getting messy due to conversations instead of actual suggestions.`, embed);
+					`getting messy due to conversations instead of actual suggestions.`, embeds: [embed] });
 			}
 		}
 		if (chName == 'share-your-prestige' && message.attachments.size == 0 && getPermissionLevel(message.member) == 0) message.delete();
-		if (chName != 'semblance' && chName != 'mod-chat' && getPermissionLevel(message.member) == 0) return;
+		// TODO: remove "&& chName != 'booster-chat'" for production
+		if (chName != 'semblance' && chName != 'booster-chat' && chName != 'mod-chat' && getPermissionLevel(message.member) == 0) return;
 	}
 	if (message.guild.id == sirhGuildID) {
 		if (chName != 'bot-room' && chName != 'semblance-beta-testing' && getPermissionLevel(message.member) == 0) return;
@@ -63,7 +64,7 @@ export const message = (client: Semblance) => {
 	if (message.mentions) {
 		let msgMention = message.content.replace(/!/g, "");
 		if ((msgMention == `<@${client.user.id}> ` || msgMention == `<@${client.user.id}>`) && message.member.id != client.user.id) {
-			message.reply("My command prefix is s!, which you can start off with s!help for all of my commands. :D");
+			message.reply(`My command prefix is ${prefix}, which you can start off with ${prefix}help for all of my commands. :D`);
 			return;
 		}
 	}
@@ -142,9 +143,9 @@ export const message = (client: Semblance) => {
 		else warnings.set(member.id, 1);
 		if (warnings.get(member.id) === 3) {
 			await member.ban({ days: 7, reason: "Used the n-word multiple times" });
-			return await modLog.send(new MessageEmbed().setDescription(`${member.user.tag} has been banned for using the n-word multiple times.`));
+			return await modLog.send({ embeds: [new MessageEmbed().setDescription(`${member.user.tag} has been banned for using the n-word multiple times.`)] });
 		}
-		if (modLog) await modLog.send(new MessageEmbed().setDescription(`${member.user.tag} used the n-word and has been warned.\n message: ${message.content}`));
+		if (modLog) await modLog.send({ embeds: [new MessageEmbed().setDescription(`${member.user.tag} used the n-word and has been warned.\n message: ${message.content}`)] });
 		return await member.user.send(`This is a warning for using an explicit word, continuing this behavior may/will result in a ban. If you received this warning despite not actually using the explicit word (the n-word), please notify SirH#4297, else, please stop using the word.`);
 	}
 

@@ -1,11 +1,14 @@
-import { Client, ClientOptions, Collection, Snowflake, TextChannel } from 'discord.js';
+import { Client, ClientOptions, Collection, TextChannel } from 'discord.js';
 import * as fs from 'fs';
 import { Information } from '@semblance/models';
 import { Commands, Aliases, SlashCommands, ComponentHandlers } from '@semblance/lib/interfaces/Semblance';
 import { RESTManager } from '@semblance/lib/rest/RESTManager';
-import { Webhook } from '.';
+import { GameLeaderboard, VoteLeaderboard, Webhook } from '.';
+import { Game, Votes } from '../models';
 
 export class Semblance extends Client {
+    private _gameLeaderboard: GameLeaderboard;
+    private _voteLeaderboard: VoteLeaderboard;
     private _clearCache: NodeJS.Timeout;
     private _commandCounter: number;
     private _componentHandlers: ComponentHandlers;
@@ -62,6 +65,24 @@ export class Semblance extends Client {
         });
 
         this._api = new RESTManager(this);
+        this._gameLeaderboard = new GameLeaderboard(this);
+        this._voteLeaderboard = new VoteLeaderboard(this);
+    }
+
+    public async initializeLeaderboards() {
+        const gameData = await Game.find({}), voteData = await Votes.find({});
+        console.log('Fetched all game and vote data');
+        await this._gameLeaderboard.initialize(gameData);
+        await this._voteLeaderboard.initialize(voteData);
+        console.log('Initialized game and vote leaderboard');
+    }
+
+    public get gameLeaderboard() {
+        return this._gameLeaderboard;
+    }
+
+    public get voteLeaderboard() {
+        return this._voteLeaderboard;
     }
 
     public sweepUsers = async () => {
@@ -72,17 +93,17 @@ export class Semblance extends Client {
         let users = 0;
         users += this.users.cache.sweep(user => { 
             if (cacheCollection.has(user.id)) return false;
-            let channel = this.channels.cache.get((user as any).lastMessageChannelID as string) as TextChannel;
+            let channel = this.channels.cache.get((user as any).lastMessageChannelID) as TextChannel;
             if (!channel || !channel.messages) return true;
-            let lastMessage = channel.messages.cache.get(user.lastMessageID as string);
+            let lastMessage = channel.messages.cache.get(user.lastMessageID);
             if (!lastMessage) return true;
             return (now - (lastMessage.editedTimestamp || lastMessage.createdTimestamp)) > cacheLifetime;
         });
         this.guilds.cache.map(g => g.members.cache).forEach(members => {
             users += members.sweep(member => {
-                let channel = this.channels.cache.get(member.lastMessageChannelID as string) as TextChannel;
+                let channel = this.channels.cache.get(member.lastMessageChannelID) as TextChannel;
                 if (!channel || !channel.messages) return true;
-                let lastMessage = channel.messages.cache.get(member.lastMessageID as string);
+                let lastMessage = channel.messages.cache.get(member.lastMessageID);
                 if (!lastMessage) return true;
                 return (now - (lastMessage.editedTimestamp || lastMessage.createdTimestamp)) > cacheLifetime;
             });

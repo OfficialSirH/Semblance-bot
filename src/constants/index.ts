@@ -1,5 +1,5 @@
 ﻿import { Subcategory } from '@semblance/lib/interfaces/Semblance';
-import { GuildMember, MessageActionRow, MessageButton, Permissions, User } from 'discord.js';
+import { GuildMember, MessageActionRow, MessageButton, Permissions, Snowflake, User } from 'discord.js';
 import { Semblance } from '../structures';
 import config from '@semblance/config';
 const { prefix } = config;
@@ -8,7 +8,7 @@ export const getAvatar = (user: User) => {
     let avatarType = (user.avatar.startsWith('a_')) ? `${user.avatar}.gif` : `${user.avatar}.png`;
     return `https://cdn.discordapp.com/avatars/${user.id}/${avatarType}?size=1024` 
 };
-export const insertionSort = (list: Array<Array<number>>) => {
+export const insertionSort = (list: (number | Snowflake)[][]) => {
     for (var i = 0; i < list.length; i++) {
         const curItem = list[i];
         let curIndex = i - 1;
@@ -115,6 +115,23 @@ export const roles = {
     helper: Permissions.FLAGS.MANAGE_MESSAGES,
     duty: Permissions.FLAGS.MUTE_MEMBERS,
 };
+export const c2sRoles = {
+    dev: '493796775132528640',
+    realityExperts: '499316778426433538',
+    martianCouncil: '535129309648781332',
+    betaTester: '564870410227679254',
+    CouncilOverseer: '567039914294771742',
+    monthlyContestWinner: '643528653883441203',
+    paleontologist: '657305968442474502',
+    serverBooster: '660930089990488099',
+    muted: '718796622867464198',
+    alumniDev: '739233828064722965',
+    fanArtist: '762382937668714528',
+    serverEvents: '776980182070067211',
+    eventOrganizer: '778927954763841546',
+    caniforms: '808580036022108202',
+    feliforms: '808580140262359041'
+};
 export const cellChannels = [
     '488478893586645004', // cells-chat
     '496430259114082304', // share-your-prestige
@@ -184,8 +201,6 @@ export {
     dontDisturb,
     removeAfk,
     gameTransferPages,
-    updateGameLeaderboard,
-    updateVoteLeaderboard,
     checkReminders,
     correctReportList,
     bugChannels

@@ -1,16 +1,18 @@
 import { ButtonData } from "@semblance/lib/interfaces/Semblance";
-import { MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed } from "discord.js";
-import { Game, Information } from '@semblance/models';
+import { Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed } from "discord.js";
+import { Game, Information, Leaderboard } from '@semblance/models';
 import { filterAction, randomColor } from "../constants";
 import config from '@semblance/config';
 import { GameFormat } from "../models/Game";
+import { Semblance } from "../structures";
 const { prefix } = config;
 
 export const run = async (interaction: MessageComponentInteraction, { action, id }: ButtonData) => {
     const game = await Game.findOne({ player: id });
-    let cost: number;
+    let cost: number, components: MessageActionRow[];
     if (!!game) cost = await currentPrice(game);
-    const components = [new MessageActionRow()
+
+    let mainComponents = [new MessageActionRow()
         .addComponents(new MessageButton()
             .setCustomID(JSON.stringify({
                 command: 'game',
@@ -48,8 +50,10 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             }))
             .setStyle('PRIMARY')
             .setEmoji('🏅')
-            .setLabel('Leaderboard'),
-            new MessageButton()
+            .setLabel('Leaderboard')
+        )],
+    endComponents = [new MessageActionRow()
+        .addComponents(new MessageButton()
             .setCustomID(JSON.stringify({
                 command: 'game',
                 action: 'stats',
@@ -58,9 +62,8 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             .setDisabled(!Boolean(game))
             .setStyle('PRIMARY')
             .setEmoji('🔢')
-            .setLabel('Stats')
-        ), new MessageActionRow()
-        .addComponents(new MessageButton()
+            .setLabel('Stats'),
+            new MessageButton()
             .setCustomID(JSON.stringify({
                 command: 'game',
                 action: 'graph',
@@ -88,8 +91,10 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             .setLabel('Close')
             .setStyle('SECONDARY')
     )];
-
-    if (action != 'collect') filterAction(components, action);
+    if (['about', 'collect', 'upgrade', 'leaderboard'].includes(action)) components = endComponents;
+    else if (action == 'stats') components = mainComponents;
+    else components = filterAction(endComponents, action);
+    //if (action != 'collect') filterAction(components, action);
 
     switch(action) {
         case 'create':
@@ -116,7 +121,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             graph(interaction, components);
             break;
         case 'close':
-            interaction.message.delete();
+            (interaction.message as Message).delete();
     }
 }
 
@@ -141,7 +146,7 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
             .setLabel('No')
             .setStyle('SECONDARY')
     )];
-    await interaction.update('Are you sure you want to reset your progress?', { embeds: [], components });
+    await interaction.update({ content: 'Are you sure you want to reset your progress?', embeds: [], components });
 } 
 
 async function create(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
@@ -174,7 +179,7 @@ async function about(interaction: MessageComponentInteraction, components: Messa
         .setAuthor(user.tag, user.displayAvatarURL())
         .setColor(randomColor)
         .setDescription("SIG, AKA Semblance's Idle-Game, is an RNG idle-game that uses a currency called Random-Bucks \n"+
-                        "which yes, I asked Semblance whether or not I should use Random-Bucks as the name by using `s!8ball`. "+
+                        `which yes, I asked Semblance whether or not I should use Random-Bucks as the name by using \`${prefix}8ball\`. `+
                        "If you're confused by the acronym RNG, it's an acronym for \"Random Number Generation/Generator\", which "+
                        "means that everything is kind of random and runs on random chance in the game. Everything that is random "+
                        "within this game is the cost multiplier per upgrade, starting profits, and the amount your profits increase.\n\n"+
@@ -198,10 +203,18 @@ async function collect(interaction: MessageComponentInteraction, components: Mes
 }
 
 async function upgrade(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-    const { user } = interaction;
+    await interaction.deferUpdate();
+    const { user } = interaction, message = interaction.message as Message;
     let upgradeHandler = await Game.findOne({ player: user.id });
     let previousLevel = upgradeHandler.level;
     let costSubtraction = await currentPrice(upgradeHandler);
+    if (upgradeHandler.money < costSubtraction) return message.edit({ embeds:
+        [new MessageEmbed().setTitle("Not Enough Random-Bucks")
+                .setAuthor(user.tag, user.displayAvatarURL())
+                .setColor(randomColor)
+                .setDescription([`**Current Balance:** ${upgradeHandler.money} Random-Bucks`,
+                                `**Upgrade Cost:** ${costSubtraction} Random-Bucks`,
+                                `**How much more required:** ${costSubtraction - upgradeHandler.money} Random-Bucks`].join('\n'))], components });
 
     while (upgradeHandler.money > costSubtraction) {
         costSubtraction = await currentPrice(upgradeHandler);
@@ -214,18 +227,19 @@ async function upgrade(interaction: MessageComponentInteraction, components: Mes
         .setColor(randomColor)
         .setDescription(`You have successfully upgrade from level ${previousLevel} => ${upgradeHandler.level}.\n\nYour current balance is ${upgradeHandler.money} Random-Bucks.\n\nYour current profit is ${upgradeHandler.idleProfit} Random-Bucks/sec.`)
         .setFooter(`Upgrades will raise your rank in the '${prefix}game leaderboard', also, '${prefix}game upgrade max' will upgrade the max amount you're able to upgrade.`);
-    await interaction.update({ embeds: [embed], components });
+    await message.edit({ embeds: [embed], components });
 }
 
 async function leaderboard(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
     const { user } = interaction;
-    const leaderboard = await Information.findOne({ infoType: 'gameleaderboard' });
+    let leaderboard = (interaction.client as Semblance).gameLeaderboard.toString();
+    if (!leaderboard) leaderboard = 'There is currently no one who has upgraded their income.';
     let embed = new MessageEmbed()
         .setTitle("Semblance's idle-game leaderboard")
         .setAuthor(user.tag, user.displayAvatarURL())
         .setColor(randomColor)
-        .setDescription(`${leaderboard.info}`)
-        .setFooter("May the odds be with you.\n(Updates every minute)");
+        .setDescription(`${leaderboard}`)
+        .setFooter("May the odds be with you.");
     await interaction.update({ embeds: [embed], components });
 }
 
@@ -236,13 +250,13 @@ async function stats(interaction: MessageComponentInteraction, components: Messa
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
-    .addFields(
-        { name: 'Level', value: game.level },
-        { name: 'Random-Bucks', value: game.money },
-        { name: 'Percent Increase', value: game.percentIncrease },
-        { name: 'Next Upgrade Cost', value: await currentPrice(game) },
-        { name: 'Idle Profit', value: game.idleProfit }
-    )
+    .addFields([
+        { name: 'Level', value: game.level.toString() },
+        { name: 'Random-Bucks', value: game.money.toString() },
+        { name: 'Percent Increase', value: game.percentIncrease.toString() },
+        { name: 'Next Upgrade Cost', value: (await currentPrice(game)).toString() },
+        { name: 'Idle Profit', value: game.idleProfit.toString() }
+    ])
     .setFooter("Remember to vote for Semblance to gain a production boost!");
     await interaction.update({ embeds: [embed], components });
 }

@@ -19,7 +19,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setTitle("My Patreon")
 		.setURL("https://www.patreon.com/SirHDeveloper")
 		.setColor(randomColor)
-		.attachFiles([patreon])
 		.setThumbnail(patreon.name);
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed], files: [patreon] });
 }

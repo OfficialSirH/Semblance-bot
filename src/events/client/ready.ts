@@ -3,24 +3,22 @@ import { MessageEmbed, Collection, TextChannel } from 'discord.js';
 import config from '@semblance/config';
 import { Semblance } from '@semblance/src/structures';
 import {
-    updateGameLeaderboard,
-    updateVoteLeaderboard,
     checkReminders,
     randomColor
 } from '@semblance/constants';
 import { intervalPost } from '..';
-const { c2sGuildID } = config;
+const { c2sGuildID, prefix } = config;
 
     let alternateActivity = false;
 
     function showMyActivity(client: Semblance) {
         if (!alternateActivity) {
-            client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${client.commandCounter} commands used during uptime`, { type: "PLAYING" });
+            client.user.setActivity(`${prefix}help in ${client.guilds.cache.size} servers | ${client.commandCounter} commands used during uptime`, { type: "PLAYING" });
             alternateActivity = true;
         } else {
             alternateActivity = false;
             let totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
-            client.user.setActivity(`s!help in ${client.guilds.cache.size} servers | ${totalMembers} members`, { type: "PLAYING" });
+            client.user.setActivity(`${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`, { type: "PLAYING" });
         }
     }
 
@@ -66,12 +64,11 @@ export const ready = (client: Semblance) => {
                         .setAuthor(client.user.tag, client.user.displayAvatarURL())
                         .setDescription(`**${infoHandler.info}**`);
 
-                    (client.guilds.cache.get(c2sGuildID).channels.cache.find(c => c.name == 'semblance') as TextChannel).send(embed);
+                    (client.guilds.cache.get(c2sGuildID).channels.cache.find(c => c.name == 'semblance') as TextChannel).send({ embeds: [embed] });
                 }
             });
-        //await CommandCounter.deleteMany({});
-        await updateGameLeaderboard(client);
-        await updateVoteLeaderboard(client);
+        
+        await client.initializeLeaderboards();
         //intervalPost(client); // TODO: uncomment this after I'm ready for the full release 
     
         // client.setInterval(() => {

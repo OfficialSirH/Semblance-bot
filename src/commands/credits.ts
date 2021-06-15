@@ -21,21 +21,21 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 			"built with a better Discord module than previously, and have this many features. He even convinced Hype " +
 			"to add my bot to Cell to Singularity, which I can't thank him enough for, cause I was too shy to ask Hype. " +
 			"Thanks again, Aditya, you've helped me a lot. :D")*/
-		.addFields(
+		.addFields([
 			{ name: "Developer", value: "SirH" },
 			{ name: "Special Thanks and Organizer", value: "Aditya" },
 			{ name: "Artist", value: ["**Semblance:** cabiie",
 				"**Semblance Beta:** Lemon ([Lemon's Instagram page](https://www.instagram.com/creations_without_limtation/))",
-				"**Semblance Revisioned:** StarLuckArt(preview soon:tm:) ([DeviantArt](https://www.deviantart.com/starluckart) and [Personal Site](https://bubblestheprotogen.wixsite.com/starluckart))"] 
+				"**Semblance Revisioned:** StarLuckArt(preview soon:tm:) ([DeviantArt](https://www.deviantart.com/starluckart) and [Personal Site](https://bubblestheprotogen.wixsite.com/starluckart))"].join('\n')
 			},
 			{ name: "Silly dude who makes up funny ideas", value: "NerdGamer2848" },
 			{ name: "Early Testers", value: "Aditya, Parrot, Diza, 0NrD, and Aure" },
 			{ name: "Contributors", value: ["**Mesozoic Valley Guide:** Jojoseis",
 				"**Image for Prestige List:** Hardik Chavada",
 				"**Image for Nanobots:** SampeDrako",
-				"**Image for Currency:** Off Pringles"]
+				"**Image for Currency:** Off Pringles"].join('\n')
 			}
-		);
+		]);
 	const component = new MessageActionRow()
 	.addComponents([new MessageButton()
 		.setCustomID(JSON.stringify({
@@ -70,5 +70,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setLabel('Preview Semblance Revisioned Art')
 		.setStyle('PRIMARY')
 	]);
-	message.channel.send({ embed, components: [component] });
+	message.channel.send({ embeds: [embed], components: [component] });
 }

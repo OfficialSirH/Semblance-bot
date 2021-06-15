@@ -20,7 +20,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setTitle("Game Transfer")
 		.setColor(randomColor)
 		.setAuthor(message.author.tag, message.author.displayAvatarURL())
-		.attachFiles([currentLogo])
 		.setThumbnail(currentLogo.name)
 		.setImage(gameTransferPages[0])
 		.setDescription("Step 1:");
@@ -42,5 +41,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setEmoji('➡️')
 		.setStyle('PRIMARY')
 	])
-	message.channel.send({ embed, components: [component] });
+	message.channel.send({ embeds: [embed], files: [currentLogo], components: [component] });
 }

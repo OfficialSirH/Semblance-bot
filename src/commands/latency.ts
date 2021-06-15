@@ -23,5 +23,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 			.setThumbnail(userAvatar)
 			.setDescription(`**Bot Response Time:** \`${responseTime}ms\`\n **API**: \`${Math.round(client.ws.ping)}ms\` \n **Bot Uptime:** \`${duration}\``)
 			.setFooter(`Why do this to me ${message.author.tag}`, userAvatar);
-		message.channel.send(embed);
+		message.channel.send({ embeds: [embed] });
 }

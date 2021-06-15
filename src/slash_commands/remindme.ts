@@ -1,4 +1,4 @@
-import { MessageEmbed, CommandInteraction } from 'discord.js';
+import { MessageEmbed, CommandInteraction, User } from 'discord.js';
 import { Reminder } from '@semblance/models';
 import { randomColor, msToTime } from '@semblance/constants';
 import { Semblance } from '@semblance/structures';
@@ -8,7 +8,7 @@ module.exports = {
     run: async (client: Semblance, interaction: CommandInteraction) => {
 		let timeAmount = /(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,2})h)?(?:(?<minutes>\d{1,2})m)?/i.exec(interaction.options[0].value as string),
             reminder = interaction.options[1].value,
-            user = interaction.member.user;
+            user = interaction.member.user as User;
 
 		if (timeAmount == null) return interaction.reply('Your input for time is invalid, please try again.');
 		const { groups: { days = 0, hours = 0, minutes = 0 }} = timeAmount as unknown as TimeLengths;
@@ -26,7 +26,7 @@ module.exports = {
 			.setThumbnail(user.displayAvatarURL())
 			.setDescription(`I'll remind you in ${msToTime(totalTime)} for your reminder \n **Reminder**: ${reminder}`)
 			.setFooter(`Command called by ${user.tag}`, user.displayAvatarURL());
-		interaction.reply(embed);
+		interaction.reply({ embeds: [embed] });
     }
 }
 

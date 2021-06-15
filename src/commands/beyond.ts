@@ -3,7 +3,7 @@ import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
 import { Information } from '../models';
 import { Semblance } from '../structures';
-const { roadMap, currentLogo, earlyBeyondTesters } = config;
+const { roadMap, currentLogo, earlyBeyondTesters, prefix } = config;
 
 module.exports = {
 	description: "Provides info on The Beyond.",
@@ -24,12 +24,11 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 	let embed = new MessageEmbed()
 		.setTitle("Beyond/Road Map")
 		.setColor(randomColor)
-		.attachFiles([currentLogo, roadMap])
 		.setThumbnail(currentLogo.name)
 		.setImage(roadMap.name)
 		.setDescription("Summer 2021. Anyone who wants to give any complaints about the length of the release date can email their complaint to ImAWhinyKaren@gmail.com"+
-						"\n\n`s!beyond sneak peeks` for sneak peeks\n\n`s!beyond count` to see the amount of times that The Beyond has been mentioned by the community of C2S.");
-	message.channel.send(embed);
+						`\n\n\`${prefix}beyond sneak peeks\` for sneak peeks\n\n\`${prefix}beyond count\` to see the amount of times that The Beyond has been mentioned by the community of C2S.`);
+	message.channel.send({ embeds: [embed], files: [currentLogo, roadMap] });
 }
 
 async function clips(message) {
@@ -49,7 +48,7 @@ async function clips(message) {
 			`[Clip Ten](https://clips.twitch.tv/JoyousCarefulCheesePMSTwin-QbCPmpwO_taQfUTe)`,
 			`[Clip Eleven](https://clips.twitch.tv/ConfidentTallAniseSpicyBoy-zSeEcUibWET5R4pc)`].join("\n"))
 		.setFooter("Patience for The Beyond is key");
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed] });
 }
 
 async function beyondCounter(message) {
@@ -61,7 +60,7 @@ async function beyondCounter(message) {
 		.setDescription(`The Beyond has been mentioned ${beyondCount.count} time(s) since ${new Date(1611959542848)}`)
 		.setFooter("Since")
 		.setTimestamp(1611959542848);
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed] });
 }
 
 function testerCredits(message) {
@@ -71,5 +70,5 @@ function testerCredits(message) {
 		.setColor(randomColor)
 		.setDescription(earlyBeyondTesters.join('\n'))
 		.setFooter(`Thank you Early Private Beta Testers for helping the ComputerLunch team with testing The Beyond! :D`);
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed] });
 }

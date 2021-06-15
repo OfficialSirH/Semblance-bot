@@ -21,7 +21,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setTitle(`**Mesozoic Valley Guide**`)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
-        .attachFiles([currentLogo])
         .setThumbnail(currentLogo.name)
         .addFields([
             {
@@ -67,5 +66,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             }
         ])
         .setFooter(`Thanks to Jojoseis#0001 for making this guide! :D`);
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed], files: [currentLogo] });
 }

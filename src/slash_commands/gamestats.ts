@@ -1,34 +1,36 @@
-import { MessageEmbed, User, CommandInteraction } from 'discord.js';
+import { MessageEmbed, User, CommandInteraction, Snowflake } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import { Game } from '@semblance/models';
 import { Semblance } from '../structures';
 import { GameFormat } from '../models/Game';
+import config from '@semblance/config';
+const { prefix } = config;
 
 module.exports = {
     permissionRequired: 0,
     run: async (client: Semblance, interaction: CommandInteraction) => {
-        let player: string | User = (!!interaction.options[0]) ? interaction.options[0].value as string : interaction.member.user.id;
-        let statsHandler = await Game.findOne({ player: player as string });
-        if (!statsHandler) return interaction.reply(!!interaction.options[0] ? 
+        let player: Snowflake | User = (interaction.options.has('user')) ? interaction.options.get('user').value as Snowflake : interaction.member.user.id;
+        let statsHandler = await Game.findOne({ player: player as Snowflake });
+        if (!statsHandler) return interaction.reply({ content: interaction.options.has('user') ? 
             'This user does not exist' :
-            "You have not created a game yet; if you'd like to create a game, use `s!game create`", { ephemeral: true });
+            `You have not created a game yet; if you'd like to create a game, use \`${prefix}game create\``, ephemeral: true });
         let nxtUpgrade = await currentPrice(statsHandler);
         if (interaction.user.id == player) player = interaction.user;
-        else player = await client.users.fetch(player as string);
+        else player = await client.users.fetch(player as Snowflake);
         let embed = new MessageEmbed()
             .setTitle(`${player.username}'s gamestats`)
             .setAuthor(player.tag, player.displayAvatarURL())
             .setColor(randomColor)
             .setThumbnail(player.displayAvatarURL())
-            .addFields(
-                { name: 'Level', value: statsHandler.level },
-                { name: 'Random-Bucks', value: statsHandler.money },
-                { name: 'Percent Increase', value: statsHandler.percentIncrease },
-                { name: 'Next Upgrade Cost', value: nxtUpgrade },
-                { name: 'Idle Profit', value: statsHandler.idleProfit }
-            )
+            .addFields([
+                { name: 'Level', value: statsHandler.level.toString() },
+                { name: 'Random-Bucks', value: statsHandler.money.toString() },
+                { name: 'Percent Increase', value: statsHandler.percentIncrease.toString() },
+                { name: 'Next Upgrade Cost', value: nxtUpgrade.toString() },
+                { name: 'Idle Profit', value: statsHandler.idleProfit.toString() }
+            ])
             .setFooter("Remember to vote for Semblance to gain a production boost!");
-        return interaction.reply(embed);
+        return interaction.reply({ embeds: [embed] });
     }
 }
 

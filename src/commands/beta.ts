@@ -21,9 +21,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 	let embed = new MessageEmbed()
 		.setTitle("Beta")
 		.setColor(randomColor)
-		.attachFiles([currentLogo])
 		.setThumbnail(currentLogo.name)
 		.setDescription(infoHandler.info)
 		.setFooter("New stuff do be epicc");
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed], files: [currentLogo] });
 }

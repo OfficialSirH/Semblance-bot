@@ -1,4 +1,4 @@
-﻿import { Message, TextChannel } from "discord.js";
+﻿import { Message, Snowflake, TextChannel } from "discord.js";
 import { Semblance } from "../structures";
 
 module.exports = {
@@ -12,10 +12,10 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[], identifier: string, { permissionLevel }) => {
-	let channelRegex = /\d{17,20}/.exec(args[0]), channelId: string,
+	let channelRegex = /\d{17,20}/.exec(args[0]), channelId: Snowflake,
 		purgeNum: number = Number.parseInt(args[1]);
 	if (!channelRegex) return message.reply("The channel you specified is invalid");
-	channelId = channelRegex[0];
+	channelId = channelRegex[0] as Snowflake;
 	if (!purgeNum) return message.reply("That value for purge amount is invalid");
 	purgeNum = purgeNum > 100 ? 100 : purgeNum;
 	let channel = message.guild.channels.cache.get(channelId) as TextChannel;

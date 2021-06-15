@@ -69,5 +69,5 @@ module.exports.run = async (client: Semblance, message: Message, args: any[]) =>
             `Simulation Speed Upgrades: ${simspeed}%`,
             `Production/Total Multiplier: x${bigToName(num)}`].join('\n'))
         .setFooter("P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2105%.");
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }

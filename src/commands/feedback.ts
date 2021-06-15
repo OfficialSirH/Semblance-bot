@@ -21,5 +21,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setColor(randomColor)
 		.setDescription("Give feedback for ComputerLunch's game, C2S.")
 		.setImage(feedbackImage);
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed] });
 }

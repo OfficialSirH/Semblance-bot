@@ -22,7 +22,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setTitle("**-> Cell to Singularity Commands**")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
-        .attachFiles([currentLogo])
         .setThumbnail(currentLogo.name)
         .addFields([
             { name: 'Main Simulation', value: mainCommands, inline: true },
@@ -31,5 +30,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             { name: 'Other/Extras', value: otherCommands, inline: true }
         ])
         .setFooter("C2S for the win!");
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed], files: [currentLogo] });
 }

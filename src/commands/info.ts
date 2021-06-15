@@ -23,8 +23,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     let usage = Math.round(process.memoryUsage().heapUsed / Math.pow(1024, 2) * 100) / 100;
     let guilds: number, users: number, shardCount: number;
       if (message.client.shard) {
-      guilds = await message.client.shard.broadcastEval('this.guilds.cache.size').then(res => res.reduce((prev, val) => prev + val, 0));
-      users = await message.client.shard.broadcastEval('this.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b)').then(res => res.reduce((prev, val) => prev + val, 0));
+      guilds = await message.client.shard.broadcastEval((eclient: Semblance) => eclient.guilds.cache.size).then(res => res.reduce((prev, val) => prev + val, 0));
+      users = await message.client.shard.broadcastEval((eclient: Semblance) => eclient.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b)).then(res => res.reduce((prev, val) => prev + val, 0));
       shardCount = message.client.shard.count;
     } else {
       guilds = client.guilds.cache.size;
@@ -58,5 +58,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     embed.addField(`${mutagen} Links`, [`- [Semblance Invite](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot+applications.commands)`,
             `- [Semblance Support/Main](https://discord.gg/XFMaTn6taf)`,
             `- [Cell to Singularity](https://discord.gg/celltosingularity)`].join('\n'), true);
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed] });
 }

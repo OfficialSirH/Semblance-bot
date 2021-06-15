@@ -46,7 +46,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setEmoji('🚫')
         .setStyle('PRIMARY')
     ]);
-    message.channel.send('Jump Toggles:', { components: [component] });
+    message.channel.send({ content: 'Jump Toggles:', components: [component] });
     /*let choice = args[0].toLowerCase();
     if (choice == 't' || choice == 'true') {
         if (toggleHandler && toggleHandler.active) message.reply("You've already got `jump` enabled on this guild.");

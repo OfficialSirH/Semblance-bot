@@ -7,6 +7,9 @@ export { messageReactionAdd } from './client/messageReactionAdd';
 export { messageReactionRemove } from './client/messageReactionRemove';
 export { messageUpdate } from './client/messageUpdate';
 export { ready } from './client/ready';
+// Model events
+export { playerUpdate } from './models/Game';
+export { userVote } from './models/Votes';
 // Bot Listing handlers
 export { blsVoteHandler } from './bot_listing/botListSpace';
 export { bfdVoteHandler } from './bot_listing/botsForDiscord';

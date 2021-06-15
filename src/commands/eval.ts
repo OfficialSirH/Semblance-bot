@@ -26,18 +26,18 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
         Promise.resolve(evaled).then((result) => {
             evaled = result;
             if (typeof evaled != "string") evaled = require("util").inspect(evaled);
-            let data = { embed: null, files: [] };
+            let data = { embeds: null, files: [] };
             if (evaled.length > 1015) {
                 let evalOutputFile = new MessageAttachment(Buffer.from(`${evaled}`), 'evalOutput.js');
                 data.files = [evalOutputFile];
                 embed.addField("📤 Output", `Output is in file preview above`).setTitle("✅ Evaluation Completed");
             } else embed.addField("📤 Output", `\`\`\`js\n${evaled.substring(0, 1015)}\`\`\``).setTitle("✅ Evaluation Completed");
-            data.embed = embed;
+            data.embeds = [embed];
             message.channel.send(data);
         });
     } catch (e) {
         if (typeof e == "string") e = e.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203))
         embed.addField("📤 Output", `\`\`\`fix\n${e.toString().substring(0, 1014)}\`\`\``).setTitle("❌ Evaluation Failed");
-        message.channel.send(embed);
+        message.channel.send({ embeds: [embed] });
     }
 }

@@ -19,7 +19,7 @@ export const dontDisturb = async function(message: Message, mentioned: Collectio
             .setThumbnail(user.displayAvatarURL())
             .setDescription(`${user.tag} is currently afk`)
             .addField("Reason", `${reason}`);
-        message.reply(embed);
+        message.reply({ embeds: [embed] });
     });
 }
 
@@ -37,58 +37,16 @@ export const gameTransferPages = ["https://i.imgur.com/BsjMAu6.png",
 		"https://i.imgur.com/6qTz2Li.png",
 		"https://i.imgur.com/YNBHSw9.png"];
 
-// game functions - updateGameLeaderboard
-
-export const updateGameLeaderboard = async function(client: Semblance) {
-    let users = {}, mappedUsers = await Game.find({}), cacheList = await Information.findOne({ infoType: 'cacheList' });
-    mappedUsers.forEach(user => users[user.player] = user.level);
-    let list: any = [];
-    for (const [key, value] of Object.entries(users)) {
-        let user = (!!client.users.cache.get(key)) ? client.users.cache.get(key) : null;
-        if (!user) {
-            let newList = [...cacheList.list, key];
-            await Information.findOneAndUpdate({ infoType: 'cacheList' }, { $set: { list: newList } }, { new: true });
-            user = await client.users.fetch(key);
-        }
-        list.push([user.tag, value]);
-    }
-    list = insertionSort(list).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - level ${cur[1]}\n`, '');
-    if (!list) Information.findOneAndUpdate({ infoType: 'gameleaderboard' }, { $set: { info: 'There is currently no one who has upgraded their income.' } });
-    else Information.findOneAndUpdate({ infoType: 'gameleaderboard' }, { $set: { info: list } });
-    setTimeout(() => updateGameLeaderboard(client), 50000);
-}
-
-// leaderboard functions - updateVoteLeaderboard
-
-export const updateVoteLeaderboard = async function(client: Semblance) {
-	let users = {}, mappedUsers = await Votes.find({}), cacheList = await Information.findOne({ infoType: 'cacheList' });
-	mappedUsers.forEach(async (user, ind) => users[user.user] = user.voteCount);
-	let list: any = [];
-	for (const [key, value] of Object.entries(users)) {
-		let user = (!!client.users.cache.get(key)) ? client.users.cache.get(key) : null;
-		if (!user) {
-			let newList = [...cacheList.list, key];
-			await Information.findOneAndUpdate({ infoType: 'cacheList' }, { $set: { list: newList } }, { new: true });
-			user = await client.users.fetch(key);
-        }
-		list.push([user.tag, value]);
-	}
-	list = insertionSort(list).filter((item, ind) => ind < 20).reduce((total, cur, ind) => total += `${ind + 1}. ${cur[0]} - ${cur[1]} vote(s)\n`, '');
-	if (!list) Information.findOneAndUpdate({ infoType: 'voteleaderboard' }, { $set: { info: 'There is currently no voters for this month.' } });
-	else Information.findOneAndUpdate({ infoType: 'voteleaderboard' }, { $set: { info: list } });
-	setTimeout(() => updateVoteLeaderboard(client), 50000);
-}
-
 // reminder functions - checkReminders
 
 export const checkReminders = async (client: Semblance) => {
     if (!client.readyAt) return;
     let reminderList = await Reminder.find({});
     if (!reminderList) return;
-    const userReminders = {};
+    const userReminders = {} as Record<Snowflake, string>;
     reminderList.filter((user) => Date.now() > user.remind).forEach((user) => userReminders[user.userID] = user.reminder);
 
-    for (const [key, value] of Object.entries(userReminders)) {
+    for (const [key, value] of Object.entries(userReminders) as Array<any[]>) {
         let user = await client.users.fetch(key);
         user.send(`Reminder: ${value}`);
         await Reminder.findOneAndDelete({ userID: key });
@@ -108,7 +66,7 @@ export const correctReportList = async function(client: Semblance, message: Mess
             (message.guild.channels.cache.get(report.channelID) as TextChannel).messages.fetch(report.messageID)
                 .then((msg) => {
                     let author = msg.embeds[0].author;
-                    msg.edit(msg.embeds[0].setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nBug ID: #${bugID - 1}`, author.iconURL).setFooter(`#${bugID - 1}`));
+                    msg.edit({ embeds: [msg.embeds[0].setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nBug ID: #${bugID - 1}`, author.iconURL).setFooter(`#${bugID - 1}`)] });
                 });
         } catch (e) {
             console.error(e);
@@ -119,6 +77,6 @@ export const correctReportList = async function(client: Semblance, message: Mess
 }
 
 export const bugChannels = {
-    queue: '798933535255298078',
-    approved: '798933965539901440'
+    queue: '798933535255298078' as Snowflake,
+    approved: '798933965539901440' as Snowflake
 };

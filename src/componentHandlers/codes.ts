@@ -1,11 +1,11 @@
 import { ButtonData } from "@semblance/lib/interfaces/Semblance";
-import { MessageActionRow, MessageButton, MessageComponentInteraction } from "discord.js";
+import { MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed } from "discord.js";
 import { Information } from "../models";
 import config from '@semblance/config';
 const { currentLogo } = config;
 
 export const run = async (interaction: MessageComponentInteraction, { action, id }: ButtonData) => {
-    const codeHandler = await Information.findOne({ infoType: 'codes' }), embed = interaction.message.embeds[0];
+    const codeHandler = await Information.findOne({ infoType: 'codes' }), embed = interaction.message.embeds[0] as MessageEmbed;
     let component: MessageActionRow;
     if (action == 'expired') {
         embed.setDescription(codeHandler.expired);

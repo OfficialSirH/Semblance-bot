@@ -1,7 +1,7 @@
 ﻿import fetch from 'node-fetch';
 import { getRole, getChannel, getUser } from '@semblance/lib/utils/resolvers';
 import * as constants from '@semblance/constants';
-import { Message, TextChannel } from 'discord.js';
+import { Message, Snowflake, TextChannel } from 'discord.js';
 import { Semblance } from '../structures';
 
 module.exports = {
@@ -121,7 +121,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     // message lookup
     let channels = message.guild.channels.cache.filter(ch => ["text", "news"].includes(ch.type)).array() as TextChannel[];
     for (const ch of channels) try {
-        let m = await ch.messages.fetch(args[0]);
+        let m = await ch.messages.fetch(args[0] as Snowflake);
         if (m) return send(message.channel, `✅ This ID is a message ID: <https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}>`)
     } catch (e) { }
 

@@ -1,24 +1,18 @@
 import { nameToScNo, bigToName, checkValue } from '@semblance/constants';
-import { MessageEmbed, CommandInteraction } from 'discord.js';
+import { MessageEmbed, CommandInteraction, User } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import { Semblance } from '@semblance/structures';
+import { clamp } from '@semblance/lib/utils/math';
 
 module.exports.permissionRequired = 0;
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
     let options = interaction.options,
-        metabits: string | number = 0, dinoRanks = 0, simSpeed = 0;
-    for (let i = 0; i < options.length; i++) switch(options[i].name.toLowerCase()) {
-        case 'metabit': 
-            metabits = options[i].value as string;
-            break;
-        case 'mv_ranks':
-            dinoRanks = (options[i].value <= 550) ? options[i].value as number : 550;
-            break;
-        case 'speed_upgrades':
-            simSpeed = (options[i].value <= 2105) ? options[i].value as number : 2105;
-    }
-    if (!checkValue(metabits as string)) return interaction.reply('Your input for metabits was invalid', { ephemeral: true });
+    metabits = options.get('metabits').value,
+    dinoRanks = clamp(options.get('mv_ranks').value as number, 0, 550),
+    simSpeed = clamp(options.get('speed_upgrade').value as number, 0, 2105);
+    
+    if (!checkValue(metabits as string)) return interaction.reply({ content: 'Your input for metabits was invalid', ephemeral: true });
     metabits = nameToScNo(metabits as string);
     let num = 1.0;
 
@@ -58,14 +52,15 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
     let dinoranksMulti = 1 + dinoRanks * 0.1 + dinoPrestigeBonus * 0.5;
     num *= (dinoRanks == 0) ? 1 : dinoranksMulti;
     num *= ((simSpeed / 100) + 1);
-    let embed = new MessageEmbed()
+    let user = interaction.member.user as User,
+    embed = new MessageEmbed()
         .setTitle("Multiplier Total")
-        .setAuthor(interaction.member.user.tag, interaction.member.user.displayAvatarURL())
+        .setAuthor(user.tag, user.displayAvatarURL())
         .setColor(randomColor)
         .setDescription([`Total Collected Metabits/Simulation Level: ${bigToName(metabits)}`,
             `Accumulated Mesozoic Valley Ranks: ${dinoRanks}`,
             `Simulation Speed Upgrades: ${simSpeed}%`,
             `Production/Total Multiplier: x${bigToName(num)}`].join('\n'))
         .setFooter("P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2105%.");
-    return interaction.reply(embed);
+    return interaction.reply({ embeds: [embed] });
 }

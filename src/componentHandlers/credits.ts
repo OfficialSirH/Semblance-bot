@@ -48,21 +48,21 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
     if (action == 'credits') {
         embed = new MessageEmbed()
 		.setTitle("Credits")
-		.addFields(
+		.addFields([
 			{ name: "Developer", value: "SirH" },
 			{ name: "Special Thanks and Organizer", value: "Aditya" },
 			{ name: "Artist", value: ["**Semblance:** cabiie",
 				"**Semblance Beta:** Lemon ([Lemon's Instagram page](https://www.instagram.com/creations_without_limtation/))",
-				"**Semblance Revisioned:** StarLuckArt(preview soon:tm:) ([DeviantArt](https://www.deviantart.com/starluckart) and [Personal Site](https://bubblestheprotogen.wixsite.com/starluckart))"] 
+				"**Semblance Revisioned:** StarLuckArt(preview soon:tm:) ([DeviantArt](https://www.deviantart.com/starluckart) and [Personal Site](https://bubblestheprotogen.wixsite.com/starluckart))"].join('\n') 
 			},
 			{ name: "Silly dude who makes up funny ideas", value: "NerdGamer2848" },
 			{ name: "Early Testers", value: "Aditya, Parrot, Diza, 0NrD, and Aure" },
 			{ name: "Contributors", value: ["**Mesozoic Valley Guide:** Jojoseis",
 				"**Image for Prestige List:** Hardik Chavada",
 				"**Image for Nanobots:** SampeDrako",
-				"**Image for Currency:** Off Pringles"]
+				"**Image for Currency:** Off Pringles"].join('\n')
 			}
-		);
+		]);
     }
     else if (action == 'thanks') embed.setTitle('Special Thanks').setDescription("Special Thanks to Aditya for motivating me from the very beginning to work on this bot. " +
     "If it weren't for him, my bot wouldn't even be at this point right now; running on an actual server, " +

@@ -21,5 +21,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setTitle("**-> Admin Commands**")
 		.setThumbnail(client.user.displayAvatarURL())
 		.setDescription(adminCommands.join(', '));
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed] });
 }

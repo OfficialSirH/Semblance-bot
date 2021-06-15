@@ -7,7 +7,9 @@ import 'module-alias/register';
 // Semblance client
 import { Semblance } from '@semblance/structures'; 
 import { Intents } from 'discord.js'; 
-import { interaction, message, messageDelete, messageReactionAdd, messageReactionRemove, messageUpdate, ready, checkTweet } from '@semblance/events';
+import { interaction, message, messageDelete, messageReactionAdd, messageReactionRemove, messageUpdate, ready, checkTweet,
+	playerUpdate, userVote
+} from '@semblance/events';
 const client = new Semblance({
 	disableMentions: { parse: ['users', 'roles'], repliedUser: true },
 	messageCacheLifetime: 30,
@@ -21,7 +23,7 @@ import { Request, Response } from 'express';
 const app = express();
 // Database connection import
 import { connect } from 'mongoose';
-import { Afk, Game, Information, Jump, Reminder, Report, UserData, Votes } from '@semblance/models';
+import { Afk, Game, Information, Jump, Leaderboard, Reminder, Report, UserData, Votes } from '@semblance/models';
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -34,6 +36,9 @@ messageReactionAdd(client);
 messageReactionRemove(client);
 messageUpdate(client);
 ready(client);
+// Listen to model events
+playerUpdate(client);
+userVote(client);
 
 import router from '@semblance/src/routes';
 router(app, client);

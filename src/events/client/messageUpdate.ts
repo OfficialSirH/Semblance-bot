@@ -17,11 +17,11 @@ export const messageUpdate = (client: Semblance) => {
                     let embed = new MessageEmbed()
                         .setTitle("Your Suggestion")
                         .setDescription(`\`${newMsg.content}\``);
-                    newMsg.author.send(`Your message in ${newMsg.channel} was deleted due to not having the `+
+                    newMsg.author.send({ content: `Your message in ${newMsg.channel} was deleted due to not having the `+
                             `suggestion-prefix required with suggestions, which means your message `+
                             `*must* start with ${suggestionArray.map(t => `\`${t}\``).join(', ')}. The `+
                             `reason for the required suggestion-prefixes is to prevent the channel `+
-                            `getting messy due to conversations instead of actual suggestions.`, embed);
+                            `getting messy due to conversations instead of actual suggestions.`, embeds: [embed] });
                 }
             }
         }

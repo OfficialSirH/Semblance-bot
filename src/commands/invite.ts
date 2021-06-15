@@ -24,6 +24,6 @@ module.exports.run = (client: Semblance, message: Message, args: string[], ident
 		.setAuthor(message.author.tag, message.author.displayAvatarURL())
 		.setDescription(`Invite me to your server be clicking [here](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot+applications.commands).`)
 		.setFooter(`Spread the word about Semblance!`);
-	message.author.send(embed);
+	message.author.send({ embeds:[embed] });
 	message.reply("Check your DMs :D");
 }

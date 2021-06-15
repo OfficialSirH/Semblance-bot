@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
 import { Semblance } from '../structures';
-const { currentLogo } = config;
+const { currentLogo, prefix } = config;
 
 module.exports = {
     description: "",
@@ -18,11 +18,10 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     let embed = new MessageEmbed()
         .setTitle("Metabit Calculator Help")
         .setColor(randomColor)
-        .attachFiles([currentLogo])
         .setThumbnail(currentLogo.name)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setDescription("The Metabit Calculator supports Scientific Notation, which means you can type numbers like 1E25, as well as names for numbers like million all the way to vigintillion;" +
-            " Use s!largenumbers to get more info on large numbers.")
+            ` Use ${prefix}largenumbers to get more info on large numbers.`)
         .addFields(
             {
                 name: "metacalc",
@@ -34,13 +33,13 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             },
             {
                 name: 'metacalc example',
-                value: 's!metacalc 1E23 1.59E49, this example shows 1E23 entropy and 1.59E49 ideas being used for input.'
+                value: `${prefix}metacalc 1E23 1.59E49, this example shows 1E23 entropy and 1.59E49 ideas being used for input.`
             },
             {
                 name: 'metacalcrev example',
-                value: 's!metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.'
+                value: `${prefix}metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`
             }
         )
         .setFooter("Metabit Calculator goes brrr.");
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed], files: [currentLogo] });
 }

@@ -20,5 +20,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setDescription("Click the link above for the epic 3 minute video with Archie and Jotaru dancing, which I made as suggested by McScrungledorf#6020. "
         + "Also, above is a short video of Archie's dance animation from the game :P")
         .setURL("https://drive.google.com/file/d/1twLIqvEG-wwZJFmhtSERWBM5KoJ3zmkg/view?usp=sharing");
-    message.channel.send({ embed, files: [archieDance] });
+    message.channel.send({ embeds:[embed], files: [archieDance] });
 }

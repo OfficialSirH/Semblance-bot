@@ -22,7 +22,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     let embed = new MessageEmbed()
         .setTitle('Steps to join beta')
         .setColor(randomColor)
-        .attachFiles([currentLogo])
         .setThumbnail(currentLogo.name)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setFooter(`Called by ${message.author.tag}`);
@@ -34,5 +33,5 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
                             `NOTE: - the beta versions of the game will have a lot of bugs and there is a possibility that you might lose your progress, Enter at your own will.`,
                             `- Cells Support is a person, not a place. You can DM him here => <@647198180911349770>`,
                             `**REMINDER : DO NOT POST YOUR EMAIL IN THE PUBLIC CHAT AND DON'T PING CELLS SUPPORT**`].join('\n'))
-    message.channel.send(embed);
+    message.channel.send({ embeds: [embed], files: [currentLogo] });
 }

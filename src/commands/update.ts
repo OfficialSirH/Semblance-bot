@@ -21,8 +21,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 	let embed = new MessageEmbed()
 		.setTitle("Steam and Mobile Updates")
 		.setColor(randomColor)
-		.attachFiles([currentLogo])
 		.setThumbnail(currentLogo.name)
 		.setDescription(infoHandler.info);
-	message.channel.send(embed);
+	message.channel.send({ embeds: [embed], files: [currentLogo] });
 }

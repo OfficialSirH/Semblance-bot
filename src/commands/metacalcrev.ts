@@ -1,6 +1,8 @@
 import { bigToName, checkValue, nameToScNo, randomColor } from '@semblance/constants';
 import { Message, MessageEmbed } from 'discord.js';
 import { Semblance } from '../structures';
+import config from '@semblance/config';
+const { prefix } = config;
 
 module.exports = {
     description: "",
@@ -13,7 +15,7 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: any[]) => {
-    if (args.length == 0) return message.reply('an example of `s!metacalcrev` is `s!metacalcrev 500M`, which means an input of 500 million metabits which will output the amount of entropy and ideas you\'d need an accumulation of.');
+    if (args.length == 0) return message.reply(`an example of \`${prefix}metacalcrev\` is \`${prefix}metacalcrev 500M\`, which means an input of 500 million metabits which will output the amount of entropy and ideas you'd need an accumulation of.`);
     let metabits: string | number = args[0];
     if (!checkValue(metabits as string)) return message.reply('Your input for metabits was invalid');
     metabits = nameToScNo(metabits as string);
@@ -23,5 +25,5 @@ module.exports.run = async (client: Semblance, message: Message, args: any[]) =>
             .setColor(randomColor)
             .setAuthor(message.author.tag, message.author.displayAvatarURL())
             .setDescription(`Metabit Input: ${metabits}\n\nEntropy/Idea Accumulation Required: ${bigToName(accumulated)}`);
-    message.reply(embed);
+    message.reply({ embeds: [embed] });
 }

@@ -29,5 +29,5 @@ module.exports.run = async (client: Semblance, message: Message, args: any[]) =>
         .setColor(randomColor)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setDescription(`Entropy Input: ${entropy}\nIdea Input: ${ideas}\n\nMetabits Produced: ${(metabits < 1) ? 0 : bigToName(metabits)}`);
-    message.reply(embed);
+    message.reply({ embeds:[embed] });
 }
