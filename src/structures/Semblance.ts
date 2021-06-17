@@ -2,6 +2,7 @@ import { Client, ClientOptions, Collection, TextChannel } from 'discord.js';
 import * as fs from 'fs';
 import { Information } from '@semblance/models';
 import { Commands, Aliases, SlashCommands, ComponentHandlers } from '@semblance/lib/interfaces/Semblance';
+import { rpsGames } from '@semblance/src/componentHandlers/rps';
 import { RESTManager } from '@semblance/lib/rest/RESTManager';
 import { GameLeaderboard, VoteLeaderboard, Webhook } from '.';
 import { Game, Votes } from '../models';
@@ -110,7 +111,7 @@ export class Semblance extends Client {
         });
         return users;
     }
-
+    
     public get componentHandlers() {
         return this._componentHandlers;
     }

@@ -1,10 +1,8 @@
-import { Collection, Snowflake } from "discord.js";
+import { Snowflake } from "discord.js";
 import { BaseLeaderboard, Semblance } from ".";
 import { insertionSort } from "../constants";
 import { Leaderboard } from "../models";
 import { GameFormat } from "../models/Game";
-
-// TODO: work on update method for game and vote leaderboards
 
 export class GameLeaderboard extends BaseLeaderboard {
     

@@ -1,4 +1,4 @@
-import { Collection, Snowflake } from "discord.js";
+import { Snowflake } from "discord.js";
 import { BaseLeaderboard, Semblance } from ".";
 import { insertionSort } from "../constants";
 import { Leaderboard } from "../models";

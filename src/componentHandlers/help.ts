@@ -1,80 +1,12 @@
-import { ButtonData, Subcategory } from "@semblance/lib/interfaces/Semblance";
+import { ButtonData } from "@semblance/lib/interfaces/Semblance";
 import { Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed } from "discord.js";
-import { randomColor, filterAction, subcategoryList } from "../constants";
+import { randomColor, subcategoryList } from "../constants";
 import { Semblance } from "../structures";
 import config from '@semblance/config';
-const { prefix, currentLogo, c2sGuildID, sirhID, adityaID } = config;
+const { prefix, c2sGuildID, sirhID, adityaID } = config;
 
 export const run = async (interaction: MessageComponentInteraction, { action, id }: ButtonData, { permissionLevel }) => {
-    // let components = [new MessageActionRow()
-    //     .addComponents([new MessageButton()
-    //         .setCustomID(JSON.stringify({
-    //             command: 'help',
-    //             action: 'c2shelp',
-    //             id
-    //         }))
-    //         .setLabel('Cell to Singularity Help')
-    //         .setStyle('PRIMARY'),
-    //         new MessageButton()
-    //         .setCustomID(JSON.stringify({
-    //             command: 'help',
-    //             action: 'itemhelp',
-    //             id
-    //         }))
-    //         .setLabel('Item Calculator Help')
-    //         .setStyle('PRIMARY'),
-    //         new MessageButton()
-    //         .setCustomID(JSON.stringify({
-    //             command: 'help',
-    //             action: 'largenumbers',
-    //             id
-    //         }))
-    //         .setLabel('Large Numbers Help')
-    //         .setStyle('PRIMARY'),
-    //         new MessageButton()
-    //         .setCustomID(JSON.stringify({
-    //             command: 'help',
-    //             action: 'metahelp',
-    //             id
-    //         }))
-    //         .setLabel('Metabit Calculator Help')
-    //         .setStyle('PRIMARY'),
-    //         new MessageButton()
-    //         .setCustomID(JSON.stringify({
-    //             command: 'help',
-    //             action: 'mischelp',
-    //             id
-    //         }))
-    //         .setLabel('Miscellaneous Help')
-    //         .setStyle('PRIMARY')
-    //     ]),new MessageActionRow()
-    //     .addComponents([new MessageButton()
-    //         .setCustomID(JSON.stringify({
-    //             command: 'help',
-    //             action: 'close',
-    //             id
-    //         }))
-    //         .setLabel('Close')
-    //         .setEmoji('🚫')
-    //         .setStyle('SECONDARY')])
-    // ];
-
-    // if (action != 'help') components[1].components.unshift(
-    // );
-    // if (permissionLevel > 0 && action != 'ahelp') components[1].components.unshift(new MessageButton()
-	// .setCustomID(JSON.stringify({
-	// 	command: 'help',
-	// 	action: 'ahelp',
-	// 	id
-	// }))
-	// .setLabel('Admin Help')
-	// .setStyle('PRIMARY'));
-
-    //filterAction(components, action);
-    
-    let components = [new MessageActionRow()
-    ];
-    
+    let components = [new MessageActionRow()];
     if (action != 'help') components[0].components = [new MessageButton()
     .setCustomID(JSON.stringify({
         command: 'help',
@@ -125,15 +57,6 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
     // Back and Close Actions
     if (action == 'help') return help(interaction, components);
     if (action == 'close') (interaction.message as Message).delete();
-
-    /**
-     * BUTTONS FOR EACH HELP LIST
-     * Main Help - C2S, Calculator, Misc, Bug Reporting, Close
-     * C2S Help - Metabits Guide, Mesozoic Valley Guide, Back, Close
-     * Calculator Help - Large Numbers, Metabit Calculator, Item Calculator, Back, Close
-     * Misc Help - Admin Commands, Back, Close
-     * Bug Reporting - Bug Reporting Help, Format, Back, Close 
-     */
 }
 
 async function help(interaction: MessageComponentInteraction, components: MessageActionRow[]) {

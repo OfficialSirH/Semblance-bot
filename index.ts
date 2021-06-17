@@ -1,4 +1,4 @@
-// TODO: BUTTONIFY EVERYTHING! (i.e. Help command with button categories, button jump toggle, button this, button that, button the button)
+// TODO: BUTTONIFY EVERYTHING! (i.e. button this, button that, button the button)
 
 require('dotenv').config();
 import 'source-map-support/register';

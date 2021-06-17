@@ -1,105 +1,110 @@
-import config from '@semblance/config';
-import { MessageEmbed, Util, CommandInteraction } from 'discord.js';
+import { MessageEmbed, CommandInteraction, User, GuildMember, MessageActionRow, MessageButton, Message } from 'discord.js';
 import { Semblance } from '../structures';
-const { communistSemblance } = config; 
-const c2sList = ['semblance', 'nuke', 'lunch', 'computerlunch', 'aditya', 'tacocubes', 'beyond', 
-                'trex', 'devs', 'singularity', '0nrd', '0nrd0r4', 'magneto'];
+import { choiceToOutcome, countdownGIF, randomChoice } from '../constants/commands';
+import { rpsGames } from '../componentHandlers/rps';
+import { randomColor } from '../constants';
 
 module.exports.permissionRequired = 0;
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
-    let choice = interaction.options[0].value as string,
-        user = interaction.member.user;
-    if (choice.length == 0) return interaction.reply('rps stands for "Rock, Paper, Scissors", which you can play with me by choosing one of the **Five** (Don\'t forget Lizard and Spock) and I\'ll choose one as well and we\'ll see who wins, there\'s also secret bonuses. :D');
-    choice = Util.removeMentions(choice);
-    let randomFailure = Math.ceil(Math.random() * 100);
-    if (randomFailure == 100) return interaction.reply('***Error Ocurred... rebooting, try again in a moment.***');
-    let sembRandomness = Math.ceil(Math.random() * 5), sembChoice = convertNumberToChoice(sembRandomness);
-    let playerChoice = choice.toLowerCase();
-    if (playerChoice == 'senate') {
-        let embed = new MessageEmbed()
-            .setDescription('I *am* the senate, which means ***WE*** win this round!')
-            .setImage(communistSemblance.name);
-        return interaction.reply({ embeds: [embed], files: [communistSemblance] });
-    }
-    if (playerChoice == 'everything') return interaction.reply(`What the heck dude?! You don't need to use ***everything*** against ${sembChoice}!! You destroyed it after the *first* thing you threw at it, which was a nuclear bomb!!!`);
-    if (playerChoice == 'logic') return interaction.reply(`With the power of ***logic***, you ask ${sembChoice} how much wood could a woodchuck chuck wood if a woodchuck could chuck wood, which then the ${sembChoice} vanishes from thinking too hard, ${user.username} wins!`);
-    if (playerChoice == 'thanos') return interaction.reply(`Thanos wipes out half of ${sembChoice}, now the ${sembChoice} avengers will get revenge on Thanos in End Game.`);
-    if (playerChoice == 'rps') return interaction.reply(`With the power of ***rock, paper, and scissors*** you **obliterate** ${sembChoice}, ${user.username} wins!`);
-    if (playerChoice == 'sirh') return interaction.reply(`SirH deletes ${sembChoice}, ${user.username} wins!`);
-    if (playerChoice == 'hype') return interaction.reply(`${sembChoice} gets disintegrated by the sight of Hype, ${user.username} wins!`);
+    if (rpsGames.has(interaction.user.id)) return interaction.reply({ content: 'You have an RPS game still running, please finish your previous game first', ephemeral: true });
+    const { user } = interaction, gaveChoice = interaction.options.has('choice'), gaveOpponent = interaction.options.has('opponent');
+    let choice = interaction.options.get('choice')?.value as string, opponent: User | GuildMember = interaction.options.get('opponent')?.user;
+    try {
+        if (!gaveOpponent) opponent = await interaction.guild.members.fetch(client.user.id);
+        else opponent = await interaction.guild.members.fetch(opponent.id);
+    } catch (err) { 
+        return await interaction.reply({ content: "The opponent you choose isn't a part of this guild (or the command just wanted to have an issue).", ephemeral: true });
+    } finally {
+        if (opponent.id == user.id) return interaction.reply({ content: "Are you this lonely that you chose to face yourself? I'm sorry, but that's not how this game works.", ephemeral: true });
+        if (user.bot && user.id != client.user.id) return interaction.reply(`You can't face a bot (except for me) so what are you doing trying to fight, ${(opponent as GuildMember).user.tag}?`);
+        const components = [new MessageActionRow()
+        .addComponents([new MessageButton()
+            .setLabel('Rock')
+            .setCustomID(JSON.stringify({
+                command: 'rps',
+                action: 'rock',
+                id: user.id
+            }))
+            .setEmoji('🪨')
+            .setStyle('SECONDARY'),
+            new MessageButton()
+            .setLabel('Paper')
+            .setCustomID(JSON.stringify({
+                command: 'rps',
+                action: 'paper',
+                id: user.id
+            }))
+            .setEmoji('📄')
+            .setStyle('SECONDARY'),
+            new MessageButton()
+            .setLabel('Scissors')
+            .setCustomID(JSON.stringify({
+                command: 'rps',
+                action: 'scissors',
+                id: user.id
+            }))
+            .setEmoji('✂')
+            .setStyle('SECONDARY'),
+            new MessageButton()
+            .setLabel('Lizard')
+            .setCustomID(JSON.stringify({
+                command: 'rps',
+                action: 'lizard',
+                id: user.id
+            }))
+            .setEmoji('🦎')
+            .setStyle('SECONDARY'),
+            new MessageButton()
+            .setLabel('Spock')
+            .setCustomID(JSON.stringify({
+                command: 'rps',
+                action: 'spock',
+                id: user.id
+            }))
+            .setEmoji('👽')
+            .setStyle('SECONDARY')
+        ])],
+        embed = new MessageEmbed()
+        .setTitle(`${user.tag} has challenged ${(opponent as GuildMember).user.tag} to Rock, Paper, Scissors, Lizard, Spock!`)
+        .setThumbnail(countdownGIF)
+        .setColor(randomColor)
+        .setDescription('Make your choice with one of the buttons below.');
+        const awaitingText = gaveChoice ? `Awaiting for **${(opponent as GuildMember).user.tag}**` : `Awaiting for **${user.tag}** and **${(opponent as GuildMember).user.tag}**`,
+        semblanceChoice = randomChoice();
+        if (opponent.id == client.user.id) {
+            if (gaveChoice) {
+                let endTemplate = `${user.tag} chose ${choice} and ${client.user.tag} chose ${semblanceChoice}, leading to `, playerVictory = choiceToOutcome(choice, semblanceChoice);            
+                
+                if (playerVictory == 'tie') endTemplate = `${user.tag} and ${client.user.tag} both chose ${choice} so it's a tie!`;
+                else if (playerVictory) endTemplate += `${user.tag}'s victory!`;
+                else endTemplate += `${client.user.tag}'s victory!`; 
 
-    if (c2sList.includes(playerChoice)) return interaction.reply(`'${playerChoice}' beats ${sembChoice}, ${user.username} wins!`);
-    
-    if (playerChoice == 'c2s' || playerChoice == 'celltosingularity') return interaction.reply(`The almight idle-game, Cell to Singularity, defeats ${sembChoice}. ${user.username} wins!`);
-    
-    if (playerChoice == 'dyno' || playerChoice == 'mee6') return interaction.reply(`'${playerChoice}' instantly loses against ${sembChoice}, ${user.username} didn't stand a chance with their choice.`);
-    if (playerChoice == 'karen') return interaction.reply(`The ${playerChoice} loses against ${sembChoice} cause entitlement gets you no where in life.`);
-    if (playerChoice == 'ban') return interaction.reply(`Ban wipes your existance, ${sembChoice} is now deleted and ${user.username} automatically loses 🔨!`);
-    if (choiceToOutcome(playerChoice, sembChoice) === true) {
-        return interaction.reply(`${playerChoice} beats ${sembChoice}, ${user.username} wins!`);
-    } else if (choiceToOutcome(playerChoice, sembChoice) === false) {
-        return interaction.reply(`${sembChoice} beats ${playerChoice}, ${client.user.username} wins!`);
-    } else if (choiceToOutcome(playerChoice, sembChoice) == 'tie') {
-        return interaction.reply(`We've both chosen ${playerChoice}, so it's a tie!`);
+                return await interaction.reply(endTemplate);
+            } else 
+            await interaction.reply({ content: `Awaiting for **${user.tag}**`, embeds: [embed], components });
+        } else
+        await interaction.reply({ content: awaitingText, embeds: [embed], components });
+        const rpsMessage = await interaction.fetchReply() as Message;
+        rpsGames.set(user.id, {
+            player: {
+                id: user.id,
+                tag: user.tag,
+                choice: (gaveChoice) ? choice : ''
+            },
+            opponent: {
+                id: opponent.id,
+                tag: (opponent as GuildMember).user.tag,
+                choice: (opponent.id == client.user.id) ? semblanceChoice : ''
+            },
+            timeout: setTimeout(async () => {
+                if (rpsGames.has(user.id)) await rpsMessage.edit({ content: null, 
+                    embeds: [rpsMessage.embeds[0].setTitle('RPS game has timed out').setDescription('Someone took too long to make a choice. :(')],
+                    components: []
+                });
+                rpsGames.delete(user.id)
+            }, 60000)
+        });
     }
-    interaction.reply(`Due to your choice being invalid, I'mma just say that my choice, ${sembChoice}, beats whatever the heck ${playerChoice} is.`);
-}
 
-function convertNumberToChoice(number: number) {
-    switch(number) {
-        case 1:
-            return 'rock';
-            break;
-        case 2:
-            return 'paper';
-            break;
-        case 3:
-            return 'scissors';
-            break;
-        case 4:
-            return 'lizard';
-            break;
-        default:
-            return 'spock';
-    }
-}
-
-function choiceToOutcome(choice: string, sembChoice: string) {
-    if (choice == 'rock') {
-        if (sembChoice == 'paper') return false;
-        if (sembChoice == 'scissors') return true;
-        if (sembChoice == 'lizard') return true;
-        if (sembChoice == 'spock') return false;
-        if (sembChoice == 'rock') return 'tie';
-    }
-    if (choice == 'paper') {
-        if (sembChoice == 'paper') return 'tie';
-        if (sembChoice == 'scissors') return false;
-        if (sembChoice == 'rock') return true;
-        if (sembChoice == 'lizard') return false;
-        if (sembChoice == 'spock') return true;
-    }
-    if (choice == 'scissors') {
-        if (sembChoice == 'paper') return true;
-        if (sembChoice == 'scissors') return 'tie';
-        if (sembChoice == 'rock') return false;
-        if (sembChoice == 'lizard') return true;
-        if (sembChoice == 'spock') return false;
-    }
-    if (choice == 'lizard') {
-        if (sembChoice == 'paper') return true;
-        if (sembChoice == 'scissors') return false;
-        if (sembChoice == 'rock') return false;
-        if (sembChoice == 'lizard') return 'tie';
-        if (sembChoice == 'spock') return true;
-    }
-    if (choice == 'spock') {
-        if (sembChoice == 'paper') return false;
-        if (sembChoice == 'scissors') return true;
-        if (sembChoice == 'rock') return true;
-        if (sembChoice == 'lizard') return false;
-        if (sembChoice == 'spock') return 'tie';
-    }
-    return null;
 }

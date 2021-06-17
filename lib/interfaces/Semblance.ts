@@ -4,6 +4,7 @@ import { Collection, CommandInteraction, CommandInteractionOption, Message, Mess
 export type ComponentHandlers = Collection<string, ComponentHandler>;
 
 export interface ComponentHandler {
+    allowOthers?: boolean;
     run: (interaction: MessageComponentInteraction, data: ButtonData, { permissionLevel }: any) => Promise<void>;
 }
 

@@ -80,3 +80,48 @@ export const bugChannels = {
     queue: '798933535255298078' as Snowflake,
     approved: '798933965539901440' as Snowflake
 };
+
+// RPS functions and constants
+
+export const countdownGIF = 'https://cdn.discordapp.com/emojis/679872091922759760.gif?v=1';
+
+export function choiceToOutcome(choice: string, opponentChoice: string) {
+    if (choice == 'rock') {
+        if (opponentChoice == 'paper') return false;
+        if (opponentChoice == 'scissors') return true;
+        if (opponentChoice == 'lizard') return true;
+        if (opponentChoice == 'spock') return false;
+        if (opponentChoice == 'rock') return 'tie';
+    }
+    if (choice == 'paper') {
+        if (opponentChoice == 'paper') return 'tie';
+        if (opponentChoice == 'scissors') return false;
+        if (opponentChoice == 'rock') return true;
+        if (opponentChoice == 'lizard') return false;
+        if (opponentChoice == 'spock') return true;
+    }
+    if (choice == 'scissors') {
+        if (opponentChoice == 'paper') return true;
+        if (opponentChoice == 'scissors') return 'tie';
+        if (opponentChoice == 'rock') return false;
+        if (opponentChoice == 'lizard') return true;
+        if (opponentChoice == 'spock') return false;
+    }
+    if (choice == 'lizard') {
+        if (opponentChoice == 'paper') return true;
+        if (opponentChoice == 'scissors') return false;
+        if (opponentChoice == 'rock') return false;
+        if (opponentChoice == 'lizard') return 'tie';
+        if (opponentChoice == 'spock') return true;
+    }
+    if (choice == 'spock') {
+        if (opponentChoice == 'paper') return false;
+        if (opponentChoice == 'scissors') return true;
+        if (opponentChoice == 'rock') return true;
+        if (opponentChoice == 'lizard') return false;
+        if (opponentChoice == 'spock') return 'tie';
+    }
+    return null;
+}
+
+export const randomChoice = () => ['rock','paper','scissors','lizard','spock'][Math.floor(Math.random()*5)];

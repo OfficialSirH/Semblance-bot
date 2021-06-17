@@ -32,7 +32,8 @@ async function componentInteraction(client: Semblance, interaction: MessageCompo
     if (message.guild.id == c2sGuildID && (message.channel as TextChannel).name != 'booster-chat' && getPermissionLevel(message.member) == 0) return;
     const data = eval(`(${interaction.customID})`) as ButtonData;
     const { action, id } = data;
-    if (interaction.user.id != id) return await interaction.reply({ content: "This command wasn't called by you so you can't use it", ephemeral: true });
-    if (client.componentHandlers.has(data.command)) client.componentHandlers.get(data.command).run(interaction, { action, id } as ButtonData, 
-        { permissionLevel: getPermissionLevel(interaction.member as GuildMember) });
+    if (!client.componentHandlers.has(data.command)) return;
+    const componentHandler = client.componentHandlers.get(data.command);
+    if (interaction.user.id != id && !componentHandler.allowOthers) return await interaction.reply({ content: "This command wasn't called by you so you can't use it", ephemeral: true });
+    componentHandler.run(interaction, data, { permissionLevel: getPermissionLevel(interaction.member as GuildMember) });
 }

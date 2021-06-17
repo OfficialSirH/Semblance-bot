@@ -1,4 +1,3 @@
-import { LeaderboardUser } from '@semblance/lib/interfaces/BaseLeaderboard';
 import { Collection, Snowflake } from 'discord.js';
 import { Semblance } from '.';
 
