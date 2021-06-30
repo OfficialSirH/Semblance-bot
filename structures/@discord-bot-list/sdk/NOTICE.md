@@ -1,1 +1,0 @@
-# This is a modified version of `@top-gg/sdk` for the purpose of interacting with discordbotlist.com's API.

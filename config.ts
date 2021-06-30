@@ -1,56 +1,58 @@
-import { MessageAttachment } from 'discord.js';
-import * as fs from 'fs';    
+import { MessageAttachment, Snowflake } from 'discord.js';
+import { promises as fs } from 'fs';    
+const attachments = {} as AttachmentList;
 
-const attachmentURL = 'attachment://',
-    attachments = {} as AttachmentList;
-
-fs.readdir("./images/", (err, files) => {
-    if (err) console.log(err);
-    for (const file of files) {
-        const attachment = new MessageAttachment(`./images/${file}`, `attachment://${file}`), attachmentName = file.substring(0, file.indexOf("."));
-        attachments[attachmentName] = attachment;
+export const config = async () => {
+    try {
+        const files = await fs.readdir("./src/images/");
+        for (const file of files) if (file.endsWith('.png') || file.endsWith('.mp4')) {
+            const attachment = new MessageAttachment(`./src/images/${file}`, `attachment://${file}`), attachmentName = file.substring(0, file.indexOf("."));
+            attachments[attachmentName] = attachment;
+        }
+        Object.assign(exports.default, {
+            attachments,
+            currentLogo: attachments['Current_Logo'],
+            sharks: attachments['Sharks'],
+            roadMap: attachments['RoadMap'],
+            terminusChamber: attachments['TerminusChamber'],
+            simStatsLocation: attachments['SimStatsLocation'],
+            geodeImage: attachments['GeodeLevelComparison'],
+            prestige: attachments['Prestige'],
+            prestigeList: attachments['PrestigeList'],
+            archieDance: attachments['ArchieDance'],
+            patreon: attachments['Patreon_Mark_Coral'],
+            communistSemblance: attachments['CommunistSemblance'],
+            nanobots: attachments['Nanobots'],
+            currency: attachments['Currency'],
+            mementoMori: attachments['MementoMori']
+        });
     }
-    module.exports.default = Object.assign(module.exports.default, {
-        attachments,
-        currentLogo: attachments['Current_Logo'],
-        sharks: attachments['Sharks'],
-        roadMap: attachments['RoadMap'],
-        terminusChamber: attachments['TerminusChamber'],
-        simStatsLocation: attachments['SimStatsLocation'],
-        geodeImage: attachments['GeodeLevelComparison'],
-        prestige: attachments['Prestige'],
-        prestigeList: attachments['PrestigeList'],
-        archieDance: attachments['ArchieDance'],
-        patreon: attachments['Patreon_Mark_Coral'],
-        communistSemblance: attachments['CommunistSemblance'],
-        nanobots: attachments['Nanobots'],
-        currency: attachments['Currency'],
-        mementoMori: attachments['MementoMori']
-    });
-})
-
+    catch(err) {
+        console.log(err);
+    }
+}
 export default {
-    prefix: "s!",
-    sirhID: "780995336293711875",
+    prefix: "s?",
+    sirhID: "780995336293711875" as Snowflake,
     // organizer
-    adityaID: '506458497718812674',
+    adityaID: '506458497718812674' as Snowflake,
     // artist
-    cabiieID: '342004536753520651',
-    bloodexID: '297007456461258752',
+    cabiieID: '342004536753520651' as Snowflake,
+    bloodexID: '297007456461258752' as Snowflake,
     // contributors
-    offpringlesID: '299174026411114497',
-    jojoseisID: '325373529967296513',
-    sampedrakoID: '651370672911679498',
-    hardikID: '552102291616956416',
+    offpringlesID: '299174026411114497' as Snowflake,
+    jojoseisID: '325373529967296513' as Snowflake,
+    sampedrakoID: '651370672911679498' as Snowflake,
+    hardikID: '552102291616956416' as Snowflake,
     // servers
-    c2sGuildID: "488478892873744385",
-    lunchGuildID: '796153726586454077',
-    sirhGuildID: "794054988224659490",
+    c2sGuildID: "488478892873744385" as Snowflake,
+    lunchGuildID: '796153726586454077' as Snowflake,
+    sirhGuildID: "794054988224659490" as Snowflake,
     ignoredGuilds: ["264445053596991498",
         "439866052684283905",
         "450100127256936458",
         "110373943822540800",
-        "374071874222686211",],
+        "374071874222686211"] as Snowflake[],
     // Early Private Beta Testers of the Beyond
     earlyBeyondTesters: [
         'Maxence#6028',
@@ -87,9 +89,22 @@ export default {
     darkMatter: '<:darkMatter:808445570078867496>',
     stardust: '<:stardust:808445612013518868>',
     energy: '<:energy:808445587803471922>',
-    sentience: '<:sentience:808445599078809670>'
+    sentience: '<:sentience:808445599078809670>',
+    attachments: {} as AttachmentList,
+    currentLogo: {} as MessageAttachment,
+    sharks: {} as MessageAttachment,
+    roadMap: {} as MessageAttachment,
+    terminusChamber: {} as MessageAttachment,
+    simStatsLocation: {} as MessageAttachment,
+    geodeImage: {} as MessageAttachment,
+    prestige: {} as MessageAttachment,
+    prestigeList: {} as MessageAttachment,
+    archieDance: {} as MessageAttachment,
+    patreon: {} as MessageAttachment,
+    communistSemblance: {} as MessageAttachment,
+    nanobots: {} as MessageAttachment,
+    currency: {} as MessageAttachment,
+    mementoMori: {} as MessageAttachment
 }
 
-interface AttachmentList {
-    [key: string]: MessageAttachment
-}
+type AttachmentList = Record<string, MessageAttachment>;
