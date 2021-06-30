@@ -1,4 +1,4 @@
-import { customIDRegex, getPermissionLevel } from '@semblance/constants';
+import { customIDRegex, getPermissionLevel, properCustomIDRegex } from '@semblance/constants';
 import { ButtonData } from '@semblance/lib/interfaces/Semblance';
 import { Semblance } from "@semblance/src/structures";
 import { GuildMember, Message, MessageComponentInteraction, TextChannel } from 'discord.js';
@@ -21,8 +21,10 @@ export const interaction = (client: Semblance) => {
 async function componentInteraction(client: Semblance, interaction: MessageComponentInteraction) {
     const message = interaction.message as Message;
 
-    if (!interaction.customID.match(customIDRegex)) return console.log(`Detected oddly received custom ID from a button:\nCustom ID: \n${interaction.customID}\nuser ID: ${interaction.user.id}`);
-    const data = eval(`(${interaction.customID})`) as ButtonData;
+    let data: ButtonData;
+    if (interaction.customID.match(properCustomIDRegex)) data = JSON.parse(interaction.customID);
+    else if (interaction.customID.match(customIDRegex)) data = eval(`(${interaction.customID})`);
+    else return console.log(`Detected oddly received custom ID from a button:\nCustom ID: \n${interaction.customID}\nuser ID: ${interaction.user.id}`);
     const { action, id } = data;
     if (!client.componentHandlers.has(data.command)) return;
     const componentHandler = client.componentHandlers.get(data.command);
