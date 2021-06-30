@@ -32,7 +32,7 @@ export const config = async () => {
     }
 }
 export default {
-    prefix: "s?",
+    prefix: "s!",
     sirhID: "780995336293711875" as Snowflake,
     // organizer
     adityaID: '506458497718812674' as Snowflake,
