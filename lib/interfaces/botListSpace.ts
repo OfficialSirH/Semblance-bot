@@ -6,7 +6,7 @@ import { Request } from 'express';
  * Creates a new client.
  * @class Client
  */
- export declare class Client {
+export declare class Client {
     public _baseURL: string;
     public _options: object;
 

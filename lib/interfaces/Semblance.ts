@@ -23,7 +23,7 @@ export interface SlashCommand {
 
 export interface SlashOptions {
     permissionLevel: number;
-    options: CommandInteractionOption[];
+    options: Collection<string, CommandInteractionOption>;
 }
 
 export type Commands = Record<string, Command>;

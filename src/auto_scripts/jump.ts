@@ -43,9 +43,8 @@ module.exports.run = async function(client: Semblance, message: Message, args: s
                 .setFooter(`#${(msg.channel as GuildChannel).name} quoted by ${message.author.tag}`)
                 .setTimestamp(msg.createdTimestamp);
             if (msg.embeds[0] && attachmentLink == null) {
-                let title = (msg.embeds[0].title) ? msg.embeds[0].title : 'no title',
-                    description = (msg.embeds[0].description) ? msg.embeds[0].description : 'no description';
-                embed.addField(`Embed: ${title}`, `Description: ${description}`);
+                let title = (msg.embeds[0].title) ? msg.embeds[0].title : 'no title';
+                embed.addField(`*Contains embed titled: ${title}*`, `\u200b`);
                 if (msg.embeds[0].image) embed.setImage(msg.embeds[0].image.url);
             }
 

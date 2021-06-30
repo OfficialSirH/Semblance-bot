@@ -1,21 +1,19 @@
-import { Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
-import { randomColor, guildBookPage } from '@semblance/constants';
-import { Semblance } from '../structures';
-import { serversPerPage } from '../constants/commands';
+import { ButtonData } from "@semblance/lib/interfaces/Semblance";
+import { MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed } from "discord.js";
+import { guildBookPage, randomColor } from "../constants";
+import { serversPerPage } from "../constants/commands";
+import { message } from "../events";
+import { Semblance } from "../structures";
 
-module.exports = {
-	description: "Lists all servers that Semblance is in.",
-	category: 'developer',
-	usage: {
-		"": ""
-	},
-	permissionRequired: 7,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+export const run = async (interaction: MessageComponentInteraction, { action, id, page }: ServerlistButtonData) => {
+    const { client, user } = interaction, numOfPages = Math.ceil(client.guilds.cache.size/serversPerPage);
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
-	const { chosenPage, pageDetails } = guildBookPage(client, args[0]),
-	numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
+    if (action == 'left') page--;
+    else if (action == 'right') page++;
+    else if (action == 'first') page = 1;
+    else page = numOfPages;
+
+    const { chosenPage, pageDetails } = guildBookPage(client as Semblance, page);
 
 	const components = [new MessageActionRow()
 	.addComponents([new MessageButton()
@@ -25,8 +23,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setCustomID(JSON.stringify({
 			command: 'serverlist',
 			action: 'first',
-			id: message.author.id,
-			page: chosenPage
+			id: user.id,
+            page
 		})),
 		new MessageButton()
 		.setLabel('Left')
@@ -36,8 +34,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setCustomID(JSON.stringify({
 			command: 'serverlist',
 			action: 'left',
-			id: message.author.id,
-			page: chosenPage
+			id: user.id,
+            page
 		})),
 		new MessageButton()
 		.setLabel('Right')
@@ -47,8 +45,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setCustomID(JSON.stringify({
 			command: 'serverlist',
 			action: 'right',
-			id: message.author.id,
-			page: chosenPage
+			id: user.id,
+            page
 		})),
 		new MessageButton()
 		.setLabel('Last Page')
@@ -57,8 +55,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setCustomID(JSON.stringify({
 			command: 'serverlist',
 			action: 'last',
-			id: message.author.id,
-			page: chosenPage
+			id: user.id,
+            page
 		}))
 	])
 	],
@@ -68,5 +66,9 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setThumbnail(client.user.displayAvatarURL())
 		.setDescription(pageDetails)
 		.setFooter(`Page ${chosenPage} out of ${numOfPages}`);
-	message.channel.send({ embeds: [embed], components });
+    interaction.update({ embeds: [embed], components });
+}
+
+interface ServerlistButtonData extends ButtonData {
+    page: number;
 }

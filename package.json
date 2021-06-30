@@ -7,8 +7,8 @@
   "dependencies": {
     "@top-gg/sdk": "^3.0.9",
     "boats.js": "^2.5.1",
-    "botlist.space": "^3.3.1",
     "discord.js": "github:discordjs/discord.js#1ac9a2eb5bfef6d009de7c54d3fac5e3d4a5afdc",
+    "discordlist.space": "^0.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "ffmpeg": "0.0.4",

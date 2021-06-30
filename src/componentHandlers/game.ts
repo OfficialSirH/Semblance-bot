@@ -219,7 +219,8 @@ async function upgrade(interaction: MessageComponentInteraction, components: Mes
     while (upgradeHandler.money > costSubtraction) {
         costSubtraction = await currentPrice(upgradeHandler);
         if (upgradeHandler.money > costSubtraction) upgradeHandler = await Game.findOneAndUpdate({ player: user.id }, { $set: { money: upgradeHandler.money - costSubtraction, level: upgradeHandler.level + 1, idleProfit: upgradeHandler.idleProfit * (Math.random() * 0.05 + 1.05) } }, { new: true });
-    }    
+    }   
+    Game.emit('playerUpdate', upgradeHandler);
 
     let embed = new MessageEmbed()
         .setTitle("Upgrade Stats")

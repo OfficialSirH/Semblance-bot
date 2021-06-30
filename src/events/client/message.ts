@@ -18,7 +18,6 @@ export const message = (client: Semblance) => {
     client.on("message", async message => {
         checkForGitHubUpdate(message);
 	if (message.channel.type == 'dm') return messageDM(client, message) as unknown as void;
-	if (message.channel.name == "cells-tweets" && message.guild.id == c2sGuildID && message.author.id != client.user.id && !message.member.roles.cache.get('493796775132528640')) return message.delete() as unknown as void;
 	if (message.author.bot || ignoredGuilds.includes(message.guild.id)) return;
 	if (message.member) {
 		if (message.mentions.users && message.member.id != client.user.id) {
@@ -33,6 +32,7 @@ export const message = (client: Semblance) => {
 	let chName = message.channel.name;
 	for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
 	if (message.guild.id == c2sGuildID) {
+		
 		clearBlacklistedWord(message, message.member);
 		let msg = message.content.toLowerCase(), suggestionArray = ["suggestion:", "suggest:", `${prefix}suggestion`, `${prefix}suggest`],
 			suggestionRegex = new RegExp(`^(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
@@ -54,8 +54,7 @@ export const message = (client: Semblance) => {
 			}
 		}
 		if (chName == 'share-your-prestige' && message.attachments.size == 0 && getPermissionLevel(message.member) == 0) message.delete();
-		// TODO: remove "&& chName != 'booster-chat'" for production
-		if (chName != 'semblance' && chName != 'booster-chat' && chName != 'mod-chat' && getPermissionLevel(message.member) == 0) return;
+		if (chName != 'semblance' && getPermissionLevel(message.member) == 0) return;
 	}
 	if (message.guild.id == sirhGuildID) {
 		if (chName != 'bot-room' && chName != 'semblance-beta-testing' && getPermissionLevel(message.member) == 0) return;

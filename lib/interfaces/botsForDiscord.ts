@@ -260,12 +260,30 @@ export interface BotVotes {
      */
     votesMonth: number;
 }
+/**
+ * The bot's widget
+ */
 export type Widget = string;
 export interface votes {
+    /**
+     * total number of votes
+     */
     totalVotes: number;
+    /**
+     * total number of votes last 24 hours
+     */
     votes24: number;
+    /**
+     * total number of votes this month
+     */
     votesMonth: number;
+    /**
+     * snowflakes(IDs) of all users who have voted
+     */
     hasVoted?: Snowflake[];
+    /**
+     * snowflakes(IDs) of all user who have voted the last 24 hours
+     */
     hasVoted24?: Snowflake[];
 }
 export interface vote {

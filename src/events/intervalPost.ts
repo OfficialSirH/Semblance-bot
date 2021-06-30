@@ -1,15 +1,13 @@
 import fetch from 'node-fetch';
 import { BFDApi, DBLApi, Semblance } from '@semblance/structures';
-import * as BotList from 'botlist.space';
-import { Client } from '@semblance/lib/interfaces/botListSpace';
 import BOATS from 'boats.js';
 import * as TopggSDK from '@top-gg/sdk';
 
 export const intervalPost = (client: Semblance) => {
-    const baseURL = 'https://discord.bots.gg/api/v1';
+    const dBotsBaseURL = 'https://discord.bots.gg/api/v1';
     setInterval(async function() {
         const data = { guildCount: client.guilds.cache.size };
-        const r = await (await fetch(baseURL + '/bots/' + client.user.id + '/stats', {
+        const r = await (await fetch(dBotsBaseURL + '/bots/' + client.user.id + '/stats', {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
@@ -28,10 +26,21 @@ export const intervalPost = (client: Semblance) => {
     }, 1800000);
     
     
-    const botListClient = new BotList.Client({ id: client.user.id, botToken: JSON.parse(process.env.botListSpaceAuth).Auth }) as Client;
-            client.setInterval(() => 
-            botListClient.postServerCount(client.guilds.cache.size).then(() => console.log("Server count post to botlist.space was successful")).catch((err) => console.error(err))
-    , 1800000);
+    const discordListBaseURL = 'https://api.discordlist.space';
+    client.setInterval(() => {
+        const data = { server_count: client.guilds.cache.size };
+        fetch(discordListBaseURL + '/bots/' + client.user.id, {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': JSON.parse(process.env.botListSpaceAuth).Auth
+            },
+            body: JSON.stringify(data)
+        })
+        .then(d=>d.json())
+        .then(()=>console.log("Server count post to discordlist.space was successful"))
+        .catch(console.error)
+    }, 1800000);
     
     
     const Boats = new BOATS(JSON.parse(process.env.DBoatsAuth).Auth);

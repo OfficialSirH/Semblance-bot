@@ -3,6 +3,7 @@ import { insertionSort, randomColor } from ".";
 import { Afk, Game, Information, Reminder, Report, Votes } from "../models";
 import { Semblance } from "../structures";
 import config from '@semblance/config';
+import { clamp } from "@semblance/lib/utils/math";
 const { currentLogo } = config;
 
 // AFK functions - dontDisturb and removeAfk
@@ -125,3 +126,32 @@ export function choiceToOutcome(choice: string, opponentChoice: string) {
 }
 
 export const randomChoice = () => ['rock','paper','scissors','lizard','spock'][Math.floor(Math.random()*5)];
+
+// Serverlist function - Guild Book
+
+export const serversPerPage = 50;
+
+export function guildBookPage(client: Semblance, chosenPage: string | number) {
+    chosenPage = Number.parseInt(chosenPage as string);
+    let guildBook = {},
+	numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
+
+	if (!chosenPage) chosenPage = 1;
+	else chosenPage = clamp(chosenPage, 1, numOfPages);
+
+	for (let i = 0; i < numOfPages; i++) {
+        guildBook[`page_${i + 1}`] = {};
+        let loopCount = client.guilds.cache.size < (serversPerPage - 1) + (i * serversPerPage) ? client.guilds.cache.size - 1 : (serversPerPage - 1) + (i * serversPerPage);
+        for (let j = serversPerPage * i; j <= loopCount; j++) guildBook[`page_${i + 1}`][`${client.guilds.cache.array()[j].name}`] = `${client.guilds.cache.array()[j].id}`;
+    }
+
+	let pageDetails = "";
+	for (const [key, value] of Object.entries(guildBook[`page_${chosenPage}`])) {
+		pageDetails += `${key} : ${value}\n`;
+	}
+
+    return {
+        chosenPage,
+        pageDetails
+    };
+}

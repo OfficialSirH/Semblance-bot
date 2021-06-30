@@ -1,5 +1,3 @@
-// TODO: BUTTONIFY EVERYTHING! (i.e. button this, button that, button the button)
-
 require('dotenv').config();
 import 'source-map-support/register';
 import 'module-alias/register';
@@ -44,11 +42,11 @@ import router from '@semblance/src/routes';
 router(app, client);
 
 app.use((req: Request, res: Response) => res.redirect('https://officialsirh.github.io/'));
-// TODO: (LAST) uncomment the app listener and tweet checker
-//app.listen(8079);
+
+app.listen(8079);
 
 // Check for Tweet from ComputerLunch
-//setInterval(() => checkTweet(client), 2000);
+setInterval(() => checkTweet(client), 2000);
 
 (async () => {
 	await connect(process.env.mongoDBKey, {

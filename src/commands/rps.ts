@@ -2,7 +2,7 @@ import config from '@semblance/config';
 import { GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed, Util } from 'discord.js';
 import { rpsGames } from '../componentHandlers/rps';
 import { randomColor } from '../constants';
-import { countdownGIF } from '../constants/commands';
+import { countdownGIF, randomChoice } from '../constants/commands';
 import { Semblance } from '../structures';
 const { communistSemblance } = config;
 
@@ -17,11 +17,9 @@ module.exports = {
     checkArgs: (args: string[]) => args.length >= 0
 }
 
-// TODO: Button setup for RPS multiplayer
-
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
     if (args.length == 0) return message.reply('rps stands for "Rock, Paper, Scissors", which you can play with me by choosing one of the **Five** (Don\'t forget Lizard and Spock) and I\'ll choose one as well and we\'ll see who wins, there\'s also secret bonuses. :D');
-    if (args[0] == 'multiplayer' && !!args[1]) return await rpsMultiplayer(message, args[1]);
+    if (args[0] == 'multiplayer') return await rpsMultiplayer(message, args.slice(1, args.length).join(' '));
     args[0] = Util.removeMentions(args[0]);
     let randomFailure = Math.ceil(Math.random() * 100);
     if (randomFailure == 100) return message.reply('***Error Ocurred... rebooting, try again in a moment.***');
@@ -113,15 +111,17 @@ function choiceToOutcome(choice: string, sembChoice: string) {
 }
 
 async function rpsMultiplayer(message: Message, chosenOpponent: string) {
+    const { client } = message;
     if (rpsGames.has(message.author.id)) return message.reply('You have an RPS game still running, please finish your previous game first');
     let opponent: GuildMember;
     try {
-        opponent = (await message.guild.members.fetch({ query: chosenOpponent })).first();
+        if (chosenOpponent.length == 0) opponent = await message.guild.members.fetch(client.user.id);
+        else opponent = (await message.guild.members.fetch({ query: chosenOpponent })).first();
     } catch(err) {
         return message.reply('The chosen user does not exist.');
     } finally {
         if (opponent.id == message.author.id) return message.reply("Are you this lonely that you chose to face yourself? I'm sorry, but that's not how this game works.");
-        if (opponent.user.bot) return message.reply(`You can't face a bot (except for me) so what are you doing trying to fight, ${opponent.user.tag}?`);
+        if (opponent.user.bot && opponent.user.id != client.user.id) return message.reply(`You can't face a bot (except for me) so what are you doing trying to fight, ${opponent.user.tag}?`);
         const components = [new MessageActionRow()
         .addComponents([new MessageButton()
             .setLabel('Rock')
@@ -169,12 +169,18 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
             .setEmoji('👽')
             .setStyle('SECONDARY')
         ])],
+        awaitingText = `Awaiting for **${message.author.tag}** and **${opponent.user.tag}**`,
+        semblanceChoice = randomChoice(),
         embed = new MessageEmbed()
         .setTitle(`${message.author.tag} has challenged ${opponent.user.tag} to Rock, Paper, Scissors, Lizard, Spock!`)
         .setThumbnail(countdownGIF)
         .setColor(randomColor)
         .setDescription('Make your choice with one of the buttons below.');
-        const rpsMessage = await message.reply({ content: `Awaiting for **${message.author.tag}** and **${opponent.user.tag}**`, embeds: [embed], components });
+
+        let rpsMessage: Message;
+        if (opponent.id == client.user.id) rpsMessage = await message.reply({ content: `Awaiting for **${message.author.tag}**`, embeds: [embed], components });
+        else rpsMessage = await message.reply({ content: awaitingText, embeds: [embed], components });
+
         rpsGames.set(message.author.id, {
             player: {
                 id: message.author.id,
@@ -182,7 +188,8 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
             },
             opponent: {
                 id: opponent.id,
-                tag: opponent.user.tag
+                tag: opponent.user.tag,
+                choice: (opponent.id == client.user.id) ? semblanceChoice : ''
             },
             timeout: setTimeout(async () => {
                 if (rpsGames.has(message.author.id)) await rpsMessage.edit({ content: null, 

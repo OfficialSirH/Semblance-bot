@@ -10,7 +10,7 @@ module.exports = {
 		"<twitter name>": "input the name of a user from twitter."
 	},
 	permissionRequired: 7,
-	checkArgs: (args: string[]) => args.length >= 1
+	checkArgs: (args: string[]) => args.length >= 0
 }
 
 module.exports.run = (client: Semblance, message: Message, args: string[]) => {
