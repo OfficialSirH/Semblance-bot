@@ -8,10 +8,10 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
-	let reason = (!!interaction.options) ? interaction.options[0].value as string : "Just because";
+	let reason = !!interaction.options ? interaction.options.get('reason').value as string : "Just because";
     let user = interaction.member.user;
     let afkHandler = await Afk.findOne({ userID: user.id });
-	if (!afkHandler) await (new Afk({ userID: user.id, reason: reason })).save();
+	if (!afkHandler) await (new Afk({ userID: user.id, reason })).save();
 	else await Afk.findOneAndUpdate({ userID: user.id }, { $set: { reason } });
 	
 	let embed = new MessageEmbed()
