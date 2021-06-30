@@ -20,7 +20,7 @@ module.exports = {
       repo : 'https://github.com/OfficialSirH/Semblance-bot.git',
       path : './',
       'pre-deploy-local': '',
-      'post-deploy' : 'npm install && pm2 reload ecosystem.config.js --env production',
+      'post-deploy' : 'npm install && tsc && pm2 reload ecosystem.config.js --env production',
       'pre-setup': ''
     }
   }
