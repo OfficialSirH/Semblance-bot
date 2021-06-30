@@ -1,6 +1,5 @@
 import fetch from 'node-fetch';
 import { BFDApi, DBLApi, Semblance } from '@semblance/structures';
-import BOATS from 'boats.js';
 import * as TopggSDK from '@top-gg/sdk';
 
 export const intervalPost = (client: Semblance) => {
@@ -43,13 +42,19 @@ export const intervalPost = (client: Semblance) => {
     }, 1800000);
     
     
-    const Boats = new BOATS(JSON.parse(process.env.DBoatsAuth).Auth);
-    setInterval(function () {
-        Boats.postStats(client.guilds.cache.size, client.user.id).then(() => {
-            console.log('Successfully updated server count.');
-        }).catch((err) => {
-            console.error(err);
-        });
+    const boatsBaseURL = 'https://discord.boats/api';
+    client.setInterval(function () {
+        fetch(boatsBaseURL + '/bot/' + client.user.id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: JSON.parse(process.env.DBoatsAuth).Auth
+            },
+            body: JSON.stringify({ server_count: client.guilds.cache.size })
+        })
+        .then(d => d.json())
+        .then(()=>console.log('Server count post to discord.boats was successful'))
+        .catch(console.error)
     }, 1800000);
     
     
