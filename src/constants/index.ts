@@ -8,7 +8,7 @@ export const getAvatar = (user: User) => {
     let avatarType = (user.avatar.startsWith('a_')) ? `${user.avatar}.gif` : `${user.avatar}.png`;
     return `https://cdn.discordapp.com/avatars/${user.id}/${avatarType}?size=1024` 
 };
-export const insertionSort = (list: (number | Snowflake)[][]) => {
+export const insertionsort = (list: (number | Snowflake)[][]) => {
     for (var i = 0; i < list.length; i++) {
         const curItem = list[i];
         let curIndex = i - 1;
@@ -19,6 +19,22 @@ export const insertionSort = (list: (number | Snowflake)[][]) => {
         list[curIndex + 1] = curItem;
     }
     return list;
+};
+export const quicksort = (list: (number | Snowflake)[][]) => {
+    if (list.length <= 1) {
+        return list;
+    }
+    const pivot = list[0][1];
+    const left = [];
+    const right = [];
+    for (let i = 1; i < list.length; i++) {
+        if (list[i][1] < pivot) {
+            left.push(list[i]);
+        } else {
+            right.push(list[i]);
+        }
+    }
+    return quicksort(left).concat([list[0]], quicksort(right));
 };
 export const filterAction = (components: MessageActionRow[], action: string) => components.map(c => {
     c.components = (c.components as MessageButton[]).filter(b => eval(`(${b.customID})`).action != action);

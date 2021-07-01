@@ -1,6 +1,6 @@
-import { Snowflake } from "discord.js";
+import { Collection, Snowflake } from "discord.js";
 import { BaseLeaderboard, Semblance } from ".";
-import { insertionSort } from "../constants";
+import { insertionsort } from "../constants";
 import { Leaderboard } from "../models";
 import { GameFormat } from "../models/Game";
 
@@ -12,7 +12,7 @@ export class GameLeaderboard extends BaseLeaderboard {
 
     public async initialize(list: GameFormat[]) {
         if (this._initialized) throw new Error(`GameLeaderboard is already initialized`);
-        const sortedList = insertionSort(list.map(data => [data.player, data.level])).filter((item, ind) => ind < 20);
+        const sortedList = insertionsort(list.map(data => [data.player, data.level])).filter((item, ind) => ind < 20);
         if (!!list) await Leaderboard.findOneAndUpdate({ type: 'game' }, { list: sortedList.map(data => { 
             return { user: data[0] as Snowflake, level: (data[1] as number) } 
         })});

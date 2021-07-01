@@ -6,7 +6,7 @@ import { Semblance } from '@semblance/structures';
 module.exports.permissionRequired = 0;
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
-    let entropy = interaction.options[0].value, ideas = interaction.options[1].value;
+    let entropy = interaction.options.get('entropy').value, ideas = interaction.options.get('idea').value;
     if (!checkValue(entropy as string)) return interaction.reply({ content: 'Your input for entropy was invalid', ephemeral: true });
     if (!checkValue(ideas as string)) return interaction.reply({ content: 'Your input for ideas was invalid', ephemeral: true });
     entropy = nameToScNo(entropy as string);

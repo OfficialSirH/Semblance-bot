@@ -6,8 +6,8 @@ import { Semblance } from '@semblance/structures';
 module.exports = {
     permissionRequired: 0,
     run: async (client: Semblance, interaction: CommandInteraction) => {
-		let timeAmount = /(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,2})h)?(?:(?<minutes>\d{1,2})m)?/i.exec(interaction.options[0].value as string),
-            reminder = interaction.options[1].value,
+		let timeAmount = /(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,2})h)?(?:(?<minutes>\d{1,2})m)?/i.exec(interaction.options.get('length').value as string),
+            reminder = interaction.options.get('reminder').value,
             user = interaction.member.user as User;
 
 		if (timeAmount == null) return interaction.reply('Your input for time is invalid, please try again.');

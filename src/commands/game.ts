@@ -25,6 +25,10 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         cooldownHandler.set(message.author.id, Date.now());
     }
 
+    if (args.length >= 1) return message.reply(`**DEPRECATION NOTICE:**\nSemblance's Idle-Game has been updated to not require the use of 'collect', 'upgrade', and other arguments anymore.`
+    + ` Semblance now uses a new feature in Discord called buttons that will make interactions with the bot more simplified. If you can't see the buttons you may need to update Discord.`
+    + ` *tip: \`Stats\` button will go to the previous buttons so then you don't have to keep calling the command to collect and/or upgrade.*`);
+
     let statsHandler = await Game.findOne({ player: message.author.id }), embed = new MessageEmbed(), cost: number;
     if (!statsHandler) embed.setTitle(`Semblance's Idle-Game`)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())

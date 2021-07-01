@@ -1,5 +1,5 @@
 import { Collection, Message, MessageEmbed, MessageReaction, PartialMessage, PartialUser, Snowflake, TextChannel, User } from "discord.js";
-import { insertionSort, randomColor } from ".";
+import { randomColor } from ".";
 import { Afk, Game, Information, Reminder, Report, Votes } from "../models";
 import { Semblance } from "../structures";
 import config from '@semblance/config';
