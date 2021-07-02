@@ -3,6 +3,7 @@ import { BFDApi, DBLApi, Semblance } from '@semblance/structures';
 import * as TopggSDK from '@top-gg/sdk';
 
 export const intervalPost = (client: Semblance) => {
+    const day = 24 * 60 * 60 * 1000;
     const dBotsBaseURL = 'https://discord.bots.gg/api/v1';
     setInterval(async function() {
         const data = { guildCount: client.guilds.cache.size };
@@ -15,14 +16,14 @@ export const intervalPost = (client: Semblance) => {
             body: JSON.stringify(data)
         })).json();
         console.log(`discord.bots.gg response: ${r ? `guilds: ${r.guildCount} - shards: ${r.shardCount}` : r}`);
-    }, 1800000);
+    }, day);
     
     
     
     const bfd = new BFDApi(JSON.parse(process.env.botsForDiscordAuth).Auth);
             setInterval(() => {
                 bfd.postStats(client.guilds.cache.size);
-    }, 1800000);
+    }, day);
     
     
     const discordListBaseURL = 'https://api.discordlist.space';
@@ -39,7 +40,7 @@ export const intervalPost = (client: Semblance) => {
         .then(d=>d.json())
         .then(()=>console.log("Server count post to discordlist.space was successful"))
         .catch(console.error)
-    }, 1800000);
+    }, day);
     
     
     const boatsBaseURL = 'https://discord.boats/api';
@@ -55,7 +56,7 @@ export const intervalPost = (client: Semblance) => {
         .then(d => d.json())
         .then(()=>console.log('Server count post to discord.boats was successful'))
         .catch(console.error)
-    }, 1800000);
+    }, day);
     
     
     const dbl = new DBLApi(JSON.parse(process.env.discordBotListAuth).Auth);
@@ -71,7 +72,7 @@ export const intervalPost = (client: Semblance) => {
                 users: client.guilds.cache.reduce((acc, cur, ind) => acc += cur.memberCount, 0),
                 guilds: client.guilds.cache.size
             });
-    }, 1800000);
+    }, day);
     
     
     const tpgg = new TopggSDK.Api(JSON.parse(process.env.topGGAuth).Auth);
@@ -88,6 +89,6 @@ export const intervalPost = (client: Semblance) => {
                 shardCount: client.options.shardCount
             });
         }
-    }, 1800000);
+    }, day);
 
 }
