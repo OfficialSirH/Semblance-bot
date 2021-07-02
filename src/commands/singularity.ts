@@ -40,7 +40,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     `7. Party\n`,
     
     `If you're still having difficulties, here are some stuff to improve on, but be aware that these may be a bit tricky to execute:`,
-            `\t- Only buy the animals from the main tree - ignore the mammal and reptile evolution tree extensions`,
+            `\t- Only buy the animals from the main tree`,
+            `\t- ignore the mammal and reptile evolution tree extensions`,
             `\t- Fast switch from Entropy to Ideas\n\`\`\``].join('\n')].join('\n\n'))
         .setFooter(`Thanks to Jojoseis#0001 for making the Singularity Speedrun Guide`);
     message.channel.send({ embeds: [embed], files: [currentLogo] });
