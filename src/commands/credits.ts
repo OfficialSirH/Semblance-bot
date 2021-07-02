@@ -16,11 +16,6 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 	const embed = new MessageEmbed()
 		.setTitle("Credits")
 		.setColor(randomColor)
-		/*.setDescription("Special Thanks to Aditya for motivating me from the very beginning to work on this bot. " +
-			"If it weren't for him, my bot wouldn't even be at this point right now; running on an actual server, " +
-			"built with a better Discord module than previously, and have this many features. He even convinced Hype " +
-			"to add my bot to Cell to Singularity, which I can't thank him enough for, cause I was too shy to ask Hype. " +
-			"Thanks again, Aditya, you've helped me a lot. :D")*/
 		.addFields([
 			{ name: "Developer", value: "SirH" },
 			{ name: "Special Thanks and Organizer", value: "Aditya" },
