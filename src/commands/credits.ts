@@ -30,7 +30,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 			},
 			{ name: "Silly dude who makes up funny ideas", value: "NerdGamer2848" },
 			{ name: "Early Testers", value: "Aditya, Parrot, Diza, 0NrD, and Aure" },
-			{ name: "Contributors", value: ["**Mesozoic Valley Guide:** Jojoseis",
+			{ name: "Contributors", value: ["**Mesozoic Valley and Singularity Speedrun Guide:** Jojoseis",
 				"**Image for Prestige List:** Hardik Chavada",
 				"**Image for Nanobots:** SampeDrako",
 				"**Image for Currency:** Off Pringles"].join('\n')
