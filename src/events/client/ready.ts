@@ -17,7 +17,7 @@ export const ready = (client: Semblance) => {
         client.setInterval(() => {
             let totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
             const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
-            if (client.user.presence.activities[0].name !== activity) client.user.setActivity(activity, { type: "WATCHING" });
+            if (client.user.presence.activities[0]?.name !== activity) client.user.setActivity(activity, { type: "WATCHING" });
         }, 30000);
 
         /* Slash Command setup */
