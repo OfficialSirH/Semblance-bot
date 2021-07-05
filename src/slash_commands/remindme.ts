@@ -18,7 +18,7 @@ module.exports = {
 
 		if (totalTime > 2419200000) return interaction.reply('You cannot create a reminder for longer than 28 days/a month');
 
-		await (new Reminder({ userID: user.id, reminder: reminder, remind: Date.now() + totalTime })).save();
+		await (new Reminder({ userId: user.id, reminder: reminder, remind: Date.now() + totalTime })).save();
 
 		let embed = new MessageEmbed()
 			.setTitle("Reminder")

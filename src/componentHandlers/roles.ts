@@ -2,7 +2,7 @@ import { ButtonData } from "@semblance/lib/interfaces/Semblance";
 import { MessageComponentInteraction, Collection, MessageActionRow, MessageButton, Message, GuildMemberRoleManager } from "discord.js";
 import { c2sRoles } from "../constants";
 import config from "@semblance/config";
-const { c2sGuildID, currentLogo } = config;
+const { c2sGuildId, currentLogo } = config;
 const cooldown: Collection<string, number> = new Collection();
 
 export const run = async (interaction: MessageComponentInteraction, { action, id }: ButtonData) => {
@@ -12,8 +12,8 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
     const isAddingRole = action == 'add-events',
     components = [new MessageActionRow()
         .addComponents([new MessageButton()
-            .setDisabled(guild.id != c2sGuildID)
-            .setCustomID(JSON.stringify({
+            .setDisabled(guild.id != c2sGuildId)
+            .setCustomId(JSON.stringify({
                 command: 'roles',
                 action: isAddingRole ? 'remove-events' : 'add-events',
                 id

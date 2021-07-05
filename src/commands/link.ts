@@ -3,14 +3,14 @@ import config from '@semblance/config';
 import { Collection, Message } from 'discord.js';
 import { createHmac } from 'crypto';
 import { Semblance } from '../structures';
-const { prefix, c2sGuildID } = config; 
+const { prefix, c2sGuildId } = config; 
 const cooldown: Collection<string, number> = new Collection(); 
 
 module.exports = {
     description: 'used for linking the C2S player\'s game with their Discord account.',
     category: 'dm',
     usage: {
-        "PLAYER_ID": "The user's in-game ID",
+        "PLAYER_Id": "The user's in-game Id",
         "PLAYER_TOKEN": "The user's in-game token"
     },
     permissionRequired: 0,
@@ -23,7 +23,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     if (userCooldown && userCooldown > Date.now()) return message.channel.send(`You cannot use the link command again for another ${(userCooldown - Date.now())/1000} seconds.`); 
     else cooldown.set(message.author.id, Date.now() + 30000);
     try {
-        const isMember = !!(await client.guilds.cache.get(c2sGuildID).members.fetch(message.author.id));
+        const isMember = !!(await client.guilds.cache.get(c2sGuildId).members.fetch(message.author.id));
         if (!isMember) return message.channel.send('You need to be a member of the Cell to Singularity community server to use this command.');
     } catch {
         return message.channel.send('You need to be a member of the Cell to Singularity community server to use this command.');

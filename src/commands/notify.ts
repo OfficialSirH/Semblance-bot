@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
 import { Semblance } from '../structures';
-const { sirhGuildID } = config;
+const { sirhGuildId } = config;
 
 module.exports = {
   description: "This command will give you the the notification role for Semblance related announcements(Only SirH's server)",
@@ -15,7 +15,7 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
-  if (message.guild.id != sirhGuildID) return message.reply("This command is exclusive to SirH's server.");
+  if (message.guild.id != sirhGuildId) return message.reply("This command is exclusive to SirH's server.");
   let sembNotifications = message.guild.roles.cache.find(r => r.name == "Semblance Notifications");
   let hasRole = message.member.roles.cache.has(sembNotifications.id);
 

@@ -87,24 +87,21 @@ export class Semblance extends Client {
     }
 
     public sweepUsers = async () => {
-        let cacheList = await Information.findOne({ infoType: 'cacheList' });
-        const cacheCollection = new Collection(cacheList!.list.map(i => [i, 1]));
         let now = Date.now();
         let cacheLifetime = 30000;
         let users = 0;
         users += this.users.cache.sweep(user => { 
-            if (cacheCollection.has(user.id)) return false;
-            let channel = this.channels.cache.get((user as any).lastMessageChannelID) as TextChannel;
+            let channel = this.channels.cache.get((user as any).lastMessageChannelId) as TextChannel;
             if (!channel || !channel.messages) return true;
-            let lastMessage = channel.messages.cache.get(user.lastMessageID);
+            let lastMessage = channel.messages.cache.get(user.lastMessageId);
             if (!lastMessage) return true;
             return (now - (lastMessage.editedTimestamp || lastMessage.createdTimestamp)) > cacheLifetime;
         });
         this.guilds.cache.map(g => g.members.cache).forEach(members => {
             users += members.sweep(member => {
-                let channel = this.channels.cache.get(member.lastMessageChannelID) as TextChannel;
+                let channel = this.channels.cache.get(member.lastMessageChannelId) as TextChannel;
                 if (!channel || !channel.messages) return true;
-                let lastMessage = channel.messages.cache.get(member.lastMessageID);
+                let lastMessage = channel.messages.cache.get(member.lastMessageId);
                 if (!lastMessage) return true;
                 return (now - (lastMessage.editedTimestamp || lastMessage.createdTimestamp)) > cacheLifetime;
             });

@@ -6,7 +6,7 @@ module.exports = {
 	description: "See a user's avatar.",
 	category: 'utility',
 	usage: {
-		"<userID/mention>": ""
+		"<userId/mention>": ""
 	},
 	permissionRequired: 0,
 	checkArgs: (args: string[]) => args.length >= 0

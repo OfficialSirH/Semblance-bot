@@ -11,7 +11,7 @@ const { currentLogo } = config;
 export const dontDisturb = async function(message: Message, mentioned: Collection<string, User>) {
     mentioned.forEach(async (user) => {
         if (message.author.id == user.id) return;
-        let afkHandler = await Afk.findOne({ userID: user.id });
+        let afkHandler = await Afk.findOne({ userId: user.id });
         if (!afkHandler) return;
         let reason = afkHandler.reason;
         let embed = new MessageEmbed()
@@ -26,7 +26,7 @@ export const dontDisturb = async function(message: Message, mentioned: Collectio
 
 export async function removeAfk(client: Semblance, message: Message) {
     if (message.author.id == client.user.id) return;
-    let afkHandler = await Afk.findOneAndDelete({ userID: message.author.id });
+    let afkHandler = await Afk.findOneAndDelete({ userId: message.author.id });
     if (afkHandler) message.reply("You are no longer AFK");
 }
 
@@ -45,29 +45,29 @@ export const checkReminders = async (client: Semblance) => {
     let reminderList = await Reminder.find({});
     if (!reminderList) return;
     const userReminders = {} as Record<Snowflake, string>;
-    reminderList.filter((user) => Date.now() > user.remind).forEach((user) => userReminders[user.userID] = user.reminder);
+    reminderList.filter((user) => Date.now() > user.remind).forEach((user) => userReminders[user.userId] = user.reminder);
 
     for (const [key, value] of Object.entries(userReminders) as Array<any[]>) {
         let user = await client.users.fetch(key);
         user.send(`Reminder: ${value}`);
-        await Reminder.findOneAndDelete({ userID: key });
+        await Reminder.findOneAndDelete({ userId: key });
     }
 }
 
 // bug functions and constants - correctReportList and CHANNELS
 
-export const correctReportList = async function(client: Semblance, message: Message | PartialMessage, messageID: Snowflake) {
-    let deletedReport = await Report.findOneAndDelete({ messageID: messageID });
+export const correctReportList = async function(client: Semblance, message: Message | PartialMessage, messageId: Snowflake) {
+    let deletedReport = await Report.findOneAndDelete({ messageId: messageId });
     if (!deletedReport) return;
     let reportList = await Report.find({});
-    let bugIdList = Array.from(reportList.map(r => r.bugID).filter(item => item > deletedReport.bugID));
-    bugIdList.forEach(async (bugID) => {
-        let report = await Report.findOneAndUpdate({ bugID: bugID }, { $set: { bugID: bugID - 1 } }, { new: true });
+    let bugIdList = Array.from(reportList.map(r => r.bugId).filter(item => item > deletedReport.bugId));
+    bugIdList.forEach(async (bugId) => {
+        let report = await Report.findOneAndUpdate({ bugId: bugId }, { $set: { bugId: bugId - 1 } }, { new: true });
         try {
-            (message.guild.channels.cache.get(report.channelID) as TextChannel).messages.fetch(report.messageID)
+            (message.guild.channels.cache.get(report.channelId) as TextChannel).messages.fetch(report.messageId)
                 .then((msg) => {
                     let author = msg.embeds[0].author;
-                    msg.edit({ embeds: [msg.embeds[0].setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nBug ID: #${bugID - 1}`, author.iconURL).setFooter(`#${bugID - 1}`)] });
+                    msg.edit({ embeds: [msg.embeds[0].setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nBug Id: #${bugId - 1}`, author.iconURL).setFooter(`#${bugId - 1}`)] });
                 });
         } catch (e) {
             console.error(e);

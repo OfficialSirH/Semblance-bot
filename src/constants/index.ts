@@ -1,5 +1,5 @@
 ﻿import { Subcategory } from '@semblance/lib/interfaces/Semblance';
-import { GuildMember, MessageActionRow, MessageButton, Permissions, Snowflake, User } from 'discord.js';
+import { ColorResolvable, GuildMember, MessageActionRow, MessageButton, Permissions, RoleResolvable, Snowflake, User } from 'discord.js';
 import { Semblance } from '../structures';
 import config from '@semblance/config';
 const { prefix } = config;
@@ -37,7 +37,7 @@ export const quicksort = (list: (number | Snowflake)[][]) => {
     return quicksort(left).concat([list[0]], quicksort(right));
 };
 export const filterAction = (components: MessageActionRow[], action: string) => components.map(c => {
-    c.components = (c.components as MessageButton[]).filter(b => eval(`(${b.customID})`).action != action);
+    c.components = (c.components as MessageButton[]).filter(b => eval(`(${b.customId})`).action != action);
     return c;
 });
 export const subcategoryList = (client: Semblance, category: string, subcategory: Subcategory) => Object.keys(client.commands)
@@ -100,10 +100,10 @@ export const emojiSnowflakes = {
     energy: '808445587803471922',
     sentience: '808445599078809670'
 };
-export const messageLinkRegex = /https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?<guildID>@me|\d{17,19})?\/(?<channelID>\d{17,20})\/(?<messageID>\d{17,20})/g;
+export const messageLinkRegex = /https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?<guildId>@me|\d{17,19})?\/(?<channelId>\d{17,20})\/(?<messageId>\d{17,20})/g;
 export const attachmentLinkRegex = /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i;
-export const customIDRegex = /(?<!.){command:'[a-z]{3,20}',action:'[a-z]{1,20}(-[a-z]{1,20})?',id:'\d{17,20}'(,page:\d{1,3})?}(?!.)/;
-export const properCustomIDRegex = /(?<!.){"command":"[a-z]{3,20}","action":"[a-z]{1,20}(-[a-z]{1,20})?","id":"\d{17,20}"(,"page":\d{1,3})?}(?!.)/;
+export const customIdRegex = /(?<!.){command:'[a-z]{3,20}',action:'[a-z]{1,20}(-[a-z]{1,20})?',id:'\d{17,20}'(,page:\d{1,3})?}(?!.)/;
+export const properCustomIdRegex = /(?<!.){"command":"[a-z]{3,20}","action":"[a-z]{1,20}(-[a-z]{1,20})?","id":"\d{17,20}"(,"page":\d{1,3})?}(?!.)/;
 export const onlyUnique = (value: any, index: number, self: any[]) => self.indexOf(value) == index;
 export const parseArgs = (_arguments: string) => (_arguments.match(/\"[^"]+\"|[^ ]+/g) ?? []).map(argument => argument.startsWith("\"") && argument.endsWith("\"") ? argument.slice(1).slice(0, -1) : argument);
 export const lockMessage = (user: User) => `👮 👮 ***CHANNEL IS LOCKED BY ${user}*** 👮 👮`;
@@ -134,21 +134,21 @@ export const roles = {
     duty: Permissions.FLAGS.MUTE_MEMBERS,
 };
 export const c2sRoles = {
-    dev: '493796775132528640',
-    realityExperts: '499316778426433538',
-    martianCouncil: '535129309648781332',
-    betaTester: '564870410227679254',
-    CouncilOverseer: '567039914294771742',
-    monthlyContestWinner: '643528653883441203',
-    paleontologist: '657305968442474502',
-    serverBooster: '660930089990488099',
-    muted: '718796622867464198',
-    alumniDev: '739233828064722965',
-    fanArtist: '762382937668714528',
-    serverEvents: '776980182070067211',
-    eventOrganizer: '778927954763841546',
-    caniforms: '808580036022108202',
-    feliforms: '808580140262359041'
+    dev: '493796775132528640' as RoleResolvable,
+    realityExperts: '499316778426433538' as RoleResolvable,
+    martianCouncil: '535129309648781332' as RoleResolvable,
+    betaTester: '564870410227679254' as RoleResolvable,
+    CouncilOverseer: '567039914294771742' as RoleResolvable,
+    monthlyContestWinner: '643528653883441203' as RoleResolvable,
+    paleontologist: '657305968442474502' as RoleResolvable,
+    serverBooster: '660930089990488099' as RoleResolvable,
+    muted: '718796622867464198' as RoleResolvable,
+    alumniDev: '739233828064722965' as RoleResolvable,
+    fanArtist: '762382937668714528' as RoleResolvable,
+    serverEvents: '776980182070067211' as RoleResolvable,
+    eventOrganizer: '778927954763841546' as RoleResolvable,
+    caniforms: '808580036022108202' as RoleResolvable,
+    feliforms: '808580140262359041' as RoleResolvable
 };
 export const cellChannels = [
     '488478893586645004', // cells-chat
@@ -210,7 +210,7 @@ class RandomColor {
 		let redString = red.toString(16),
 		greenString = green.toString(16),
 		blueString = blue.toString(16);
-		return "#"+redString+greenString+blueString;
+		return ("#"+redString+greenString+blueString) as ColorResolvable;
 	}
 }
 export const randomColor = RandomColor.randomColor;

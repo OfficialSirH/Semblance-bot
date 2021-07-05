@@ -18,7 +18,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     const component = new MessageActionRow()
     .addComponents([new MessageButton()
         .setLabel('Enable')
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'jumptoggle',
             action: 'enable',
             id: message.author.id
@@ -28,7 +28,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setStyle('SUCCESS'),
         new MessageButton()
         .setLabel('Disable')
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'jumptoggle',
             action: 'disable',
             id: message.author.id
@@ -38,7 +38,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setStyle('DANGER'),
         new MessageButton()
         .setLabel('Cancel')
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'jumptoggle',
             action: 'cancel',
             id: message.author.id

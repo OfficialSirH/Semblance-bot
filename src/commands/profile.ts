@@ -50,7 +50,7 @@ async function guildProfileEmbed(message: Message, member: GuildMember) {
 			{ name: "Username", value: member.user.tag, inline: true },
 			{ name: "Discriminator", value: member.user.discriminator, inline: true },
 			{ name: "Bot", value: member.user.bot.toString(), inline: true },
-			{ name: "User ID", value: member.id, inline: true },
+			{ name: "User Id", value: member.id, inline: true },
 			{ name: "Highest Rank", value: member.roles.highest.toString(), inline: true },
 			{ name: "Created", value: accountCreated, inline: true },
 			{ name: "Joined", value: accountJoined, inline: true }
@@ -69,7 +69,7 @@ async function userProfileEmbed(message: Message, user: User) {
 			{ name: "Username", value: user.tag, inline: true },
 			{ name: "Discriminator", value: user.discriminator, inline: true },
 			{ name: "Bot", value: user.bot.toString(), inline: true },
-			{ name: "User ID", value: user.id, inline: true },
+			{ name: "User Id", value: user.id, inline: true },
 			{ name: "Created", value: accountCreated, inline: true }
 		]);
 	message.channel.send({ embeds: [embed] });

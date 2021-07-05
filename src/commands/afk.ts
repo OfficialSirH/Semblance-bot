@@ -15,9 +15,9 @@ module.exports = {
 
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
 	let reason = (args.length > 0) ? args.join(" ") : "Just because";
-	let afkHandler = await Afk.findOne({ userID: message.author.id });
-	if (!afkHandler) await (new Afk({ userID: message.author.id, reason: reason })).save();
-	else await Afk.findOneAndUpdate({ userID: message.author.id }, { $set: { reason: reason } });
+	let afkHandler = await Afk.findOne({ userId: message.author.id });
+	if (!afkHandler) await (new Afk({ userId: message.author.id, reason: reason })).save();
+	else await Afk.findOneAndUpdate({ userId: message.author.id }, { $set: { reason: reason } });
 	
 	let embed = new MessageEmbed()
 		.setTitle("AFK")

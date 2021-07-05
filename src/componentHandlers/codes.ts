@@ -11,7 +11,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
         embed.setDescription(codeHandler.expired);
         component = new MessageActionRow()
         .addComponents([new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'codes',
                 action: 'valid',
                 id
@@ -23,7 +23,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
         embed.setDescription(codeHandler.info);
         component = new MessageActionRow()
         .addComponents([new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'codes',
                 action: 'expired',
                 id

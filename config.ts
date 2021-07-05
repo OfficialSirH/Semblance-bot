@@ -33,21 +33,21 @@ export const config = async () => {
 }
 export default {
     prefix: "s!",
-    sirhID: "780995336293711875" as Snowflake,
+    sirhId: "780995336293711875" as Snowflake,
     // organizer
-    adityaID: '506458497718812674' as Snowflake,
+    adityaId: '506458497718812674' as Snowflake,
     // artist
-    cabiieID: '342004536753520651' as Snowflake,
-    bloodexID: '297007456461258752' as Snowflake,
+    cabiieId: '342004536753520651' as Snowflake,
+    bloodexId: '297007456461258752' as Snowflake,
     // contributors
-    offpringlesID: '299174026411114497' as Snowflake,
-    jojoseisID: '325373529967296513' as Snowflake,
-    sampedrakoID: '651370672911679498' as Snowflake,
-    hardikID: '552102291616956416' as Snowflake,
+    offpringlesId: '299174026411114497' as Snowflake,
+    jojoseisId: '325373529967296513' as Snowflake,
+    sampedrakoId: '651370672911679498' as Snowflake,
+    hardikId: '552102291616956416' as Snowflake,
     // servers
-    c2sGuildID: "488478892873744385" as Snowflake,
-    lunchGuildID: '796153726586454077' as Snowflake,
-    sirhGuildID: "794054988224659490" as Snowflake,
+    c2sGuildId: "488478892873744385" as Snowflake,
+    lunchGuildId: '796153726586454077' as Snowflake,
+    sirhGuildId: "794054988224659490" as Snowflake,
     ignoredGuilds: ["264445053596991498",
         "439866052684283905",
         "450100127256936458",

@@ -2,7 +2,7 @@ import { Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.
 import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
 import { Semblance } from '../structures';
-const { prefix, sirhID, adityaID, c2sGuildID, currentLogo } = config;
+const { prefix, sirhId, adityaId, c2sGuildId, currentLogo } = config;
 
 module.exports = {
     description: "Lists *all* available commands.",
@@ -40,7 +40,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
 		.setFooter(`Stay Cellular! If you really like the work I've done to Semblance, then check out ${prefix}patreon :D`);
 	const components = [new MessageActionRow()
 	.addComponents([new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'help',
 			action: 'c2shelp',
 			id: message.author.id
@@ -48,7 +48,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
 		.setLabel('Cell to Singularity Help')
 		.setStyle('PRIMARY'),
 		new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'help',
 			action: 'calculator',
 			id: message.author.id
@@ -56,7 +56,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
 		.setLabel('Calculator Help')
 		.setStyle('PRIMARY'),
 		new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'help',
 			action: 'mischelp',
 			id: message.author.id
@@ -64,17 +64,17 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
 		.setLabel('Miscellaneous Help')
 		.setStyle('PRIMARY'),
 		new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'help',
 			action: 'bug',
 			id: message.author.id
 		}))
-		.setDisabled(Boolean(message.guild.id != c2sGuildID && ![sirhID, adityaID].includes(message.author.id)))
+		.setDisabled(Boolean(message.guild.id != c2sGuildId && ![sirhId, adityaId].includes(message.author.id)))
 		.setLabel('Bug Reporting Help')
 		.setEmoji('🐛')
 		.setStyle('PRIMARY'),
 		new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'help',
 			action: 'close',
 			id: message.author.id

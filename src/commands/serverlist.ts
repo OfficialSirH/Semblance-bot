@@ -22,7 +22,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setLabel('First Page')
 		.setStyle('SECONDARY')
 		.setDisabled(chosenPage === 1)
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'serverlist',
 			action: 'first',
 			id: message.author.id,
@@ -33,7 +33,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setStyle('SECONDARY')
 		.setEmoji('⬅')
 		.setDisabled(chosenPage === 1)
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'serverlist',
 			action: 'left',
 			id: message.author.id,
@@ -44,7 +44,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setStyle('SECONDARY')
 		.setEmoji('➡')
 		.setDisabled(chosenPage === numOfPages)
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'serverlist',
 			action: 'right',
 			id: message.author.id,
@@ -54,7 +54,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setLabel('Last Page')
 		.setStyle('SECONDARY')
 		.setDisabled(chosenPage === numOfPages)
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'serverlist',
 			action: 'last',
 			id: message.author.id,

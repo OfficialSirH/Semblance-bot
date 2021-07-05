@@ -6,14 +6,14 @@ import { promisify } from 'util';
 import { Semblance } from '@semblance/structures';
 
 const wait = promisify(setTimeout),
-    { prefix, sirhGuildID, c2sGuildID } = config,
+    { prefix, sirhGuildId, c2sGuildId } = config,
     cooldown = new Collection();
 
 module.exports = {
     description: "Big epicc bug reporting feature exclusively for C2S server.",
     category: 'c2sServer',
     usage: {
-        "help/<bugID>": ""
+        "help/<bugId>": ""
     },
     aliases: ['report', 'bugreport'],
     permissionRequired: 0,
@@ -21,7 +21,7 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[], identifier: string, { permissionLevel, content }) => {
-    if (message.guild!.id != c2sGuildID) return;
+    if (message.guild!.id != c2sGuildId) return;
     if ((identifier == 'report' ?? identifier == 'bug' ?? identifier == 'bugreport') && args[0] == 'help') return help(message, permissionLevel);
     else if (identifier == 'report' ?? identifier == 'bugreport') return report(message, content, client);
     else if (identifier == 'bug') return bug(client, message, permissionLevel, content, args);
@@ -58,9 +58,9 @@ async function help(message: Message, permissionLevel: number) {
         
         '\nWHAT IF I HAVE THE SAME BUG OCCURING AS ANOTHER USER WHO HAS ALREADY REPORTED IT?',
         '+ FORMAT:',
-            `\t${prefix}bug BUG_ID reproduce SYSTEM_INFO | GAME_VERSION`,
+            `\t${prefix}bug BUG_Id reproduce SYSTEM_INFO | GAME_VERSION`,
         '- OR',
-            `\t${prefix}bug BUG_ID reproduce SYSTEM_INFO`,
+            `\t${prefix}bug BUG_Id reproduce SYSTEM_INFO`,
             '\tGAME_VERSION',
         
         '\nREPRODUCE EXAMPLE:',
@@ -106,9 +106,9 @@ async function report(message: Message, content: string, client: Semblance) {
     else if (!userCooldown ?? Date.now() - userCooldown > (1000 * 60 * 5)) cooldown.set(message.author.id, Date.now());
 
     let reportHandler = await Report.find({}), totalReports = reportHandler.map(r => r).length;
-    const currentBugID = totalReports + 1;
+    const currentBugId = totalReports + 1;
     var embed = new MessageEmbed()
-        .setAuthor(`${message.author.tag} (${message.author.id})\nBug ID: #${currentBugID}`, message.author.displayAvatarURL())
+        .setAuthor(`${message.author.tag} (${message.author.id})\nBug Id: #${currentBugId}`, message.author.displayAvatarURL())
         .setColor("#9512E8")
         .setTitle(contentList[0])
         .addFields(
@@ -118,12 +118,12 @@ async function report(message: Message, content: string, client: Semblance) {
             { name: "Game Version", value: contentList[4] },
             { name: "Can Reproduce", value: "Currently no one else has reproduced this bug." }
         )
-        .setFooter(`#${currentBugID}`)
+        .setFooter(`#${currentBugId}`)
         .setTimestamp(Date.now());
     let attachmentURL = "none";
     if (message.attachments.size > 0) {
         let attachment = new MessageAttachment(message.attachments.map(a => a)[0].proxyURL, "Image.png");
-        (client.guilds.cache.get(sirhGuildID)!.channels.cache.find((c: GuildChannel) => c.name == "image-storage") as TextChannel)!.send({ files: [attachment] })
+        (client.guilds.cache.get(sirhGuildId)!.channels.cache.find((c: GuildChannel) => c.name == "image-storage") as TextChannel)!.send({ files: [attachment] })
             .then(msg => attachmentURL = msg.attachments.map(a => a)[0].proxyURL);
         let videoType = [".mov", ".mp4", ".mkv", ".webm"], imageType = [".png", ".jpg", ".jpeg", ".gif"],
             foundType = false;
@@ -142,7 +142,7 @@ async function report(message: Message, content: string, client: Semblance) {
     }
     let reportURL = '';
     (message.guild!.channels.cache.get(bugChannels.queue) as TextChannel)!.send({ embeds: [embed] }).then(async (msg) => { // <-- #bug-approval-queue channel in C2S
-        let report = new Report({ User: message.author.id, bugID: currentBugID, messageID: msg.id, channelID: msg.channel.id });
+        let report = new Report({ User: message.author.id, bugId: currentBugId, messageId: msg.id, channelId: msg.channel.id });
         await report.save();
         reportURL = msg.url;
     });
@@ -151,18 +151,18 @@ async function report(message: Message, content: string, client: Semblance) {
         .setURL(reportURL)
         .setAuthor(message.author.tag)
         .setColor(randomColor)
-        .setDescription([`Your report's ID: ${currentBugID}`,
-            `Attaching an attachment: \`${prefix}bug ${currentBugID} attach (YouTube, Imgur, or Discord attachment link here if you don't have attachment)\`(NOTE: You *don't* need to place the parentheses around the link)`,
+        .setDescription([`Your report's Id: ${currentBugId}`,
+            `Attaching an attachment: \`${prefix}bug ${currentBugId} attach (YouTube, Imgur, or Discord attachment link here if you don't have attachment)\`(NOTE: You *don't* need to place the parentheses around the link)`,
             `**attach either an image or video(must be under 50 MB) with your attach command if the optional choices aren't available**`].join('\n'))
         .setFooter('Thank you for your considerable help towards Cell to Singularity, we appreciate it. :)')] });
 }
 
 async function bug(client: Semblance, message: Message, permissionLevel: number, content: string, args: string[]) {
-    let providedID = args[0].replace(/\D/g, '') as Snowflake, report;
-    if (!providedID) return message.reply("The ID you specified is invalid").then(msg => { setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000); message.delete() });
-    report = await Report.findOne({ bugID: (providedID as unknown) as number });
-    if (!report && !!providedID.match(/[0-9]{17,21}/)) report = await Report.findOne({ messageID: providedID });
-    if (!report) return message.reply("The ID you specified doesn't exist.").then(msg => { setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000); message.delete() });
+    let providedId = args[0].replace(/\D/g, '') as Snowflake, report;
+    if (!providedId) return message.reply("The Id you specified is invalid").then(msg => { setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000); message.delete() });
+    report = await Report.findOne({ bugId: (providedId as unknown) as number });
+    if (!report && !!providedId.match(/[0-9]{17,21}/)) report = await Report.findOne({ messageId: providedId });
+    if (!report) return message.reply("The Id you specified doesn't exist.").then(msg => { setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000); message.delete() });
 
 
     if (args[1] == 'attach') addAttachment(client, message, report, message.attachments.map(a => a)[0] ?? args.slice(2)[0]);
@@ -190,10 +190,10 @@ async function addAttachment(client: Semblance, message: Message, report: Report
     } else {
         let attachmentURL = attachment.proxyURL;
 
-        const storedMsg = await (client.guilds.cache.get(sirhGuildID)!.channels.cache.get('794054989860700179') as TextChannel)!.send({ files: [attachment] }); // <== Uses ID of #image-storage from SirH's server
+        const storedMsg = await (client.guilds.cache.get(sirhGuildId)!.channels.cache.get('794054989860700179') as TextChannel)!.send({ files: [attachment] }); // <== Uses Id of #image-storage from SirH's server
         attachmentURL = storedMsg.attachments.map(a => a)[0].proxyURL;
 
-        (message.guild!.channels.cache.get(report.channelID) as TextChannel)!.messages.fetch(report.messageID)
+        (message.guild!.channels.cache.get(report.channelId) as TextChannel)!.messages.fetch(report.messageId)
             .then(msg => {
                 let attachmentsField = msg.embeds[0].fields[5];
                 if (!attachmentsField) {
@@ -209,7 +209,7 @@ async function addAttachment(client: Semblance, message: Message, report: Report
 }
 
 async function deleteReproduce(message: Message, report: ReportFormat, args: string[]) {
-    (message.guild!.channels.cache.get(report.channelID) as TextChannel)!.messages.fetch(report.messageID, { cache: false })
+    (message.guild!.channels.cache.get(report.channelId) as TextChannel)!.messages.fetch(report.messageId, { cache: false })
         .then(msg => {
             let reproduceField = msg.embeds[0].fields[4].value.split('\n');
             let itemIndex = reproduceField.findIndex(item => item.includes(args.join(' ')));
@@ -229,7 +229,7 @@ async function addReproduce(message: Message, report: ReportFormat, specificatio
     if (!sysInfo) return message.reply("You forgot to provide system information and game version.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000));
     if (!gameVersion) return message.reply("You forgot to provide the game version.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000));
 
-    (message.guild!.channels.cache.get(report.channelID) as TextChannel)!.messages.fetch(report.messageID, { cache: false })
+    (message.guild!.channels.cache.get(report.channelId) as TextChannel)!.messages.fetch(report.messageId, { cache: false })
         .then(msg => {
             var reproduceField = msg.embeds[0].fields[4];
             if ((reproduceField.value.match(/:white_check_mark:/g) ?? []).length == 10) return message.reply("This report has reached its reproduce limit.");
@@ -242,16 +242,16 @@ async function addReproduce(message: Message, report: ReportFormat, specificatio
 }
 
 async function fixUpReports(client: Semblance, message: Message, channel: TextChannel, report: ReportFormat, reason: string = 'unspecified', approved: boolean) {
-    (message.guild.channels.cache.get(bugChannels.queue) as TextChannel).messages.fetch(report.messageID, { cache: false }) // <-- #bug-approval-queue channel from C2S
+    (message.guild.channels.cache.get(bugChannels.queue) as TextChannel).messages.fetch(report.messageId, { cache: false }) // <-- #bug-approval-queue channel from C2S
         .then(async msg => {
             let user = await client.users.fetch(report.User);
             if (approved) {
                 let m = await channel.send({ embeds: [msg.embeds[0].setColor("#17DB4A").addField("Approval Message", reason)] });
-                await Report.findOneAndUpdate({ messageID: report.messageID }, { $set: { messageID: m.id, channelID: m.channel.id } }, { new: true });
+                await Report.findOneAndUpdate({ messageId: report.messageId }, { $set: { messageId: m.id, channelId: m.channel.id } }, { new: true });
             }
             else {
                 let m = await user.send({ embeds: [msg.embeds[0].setColor("#D72020").addField("Denial Message", reason)] }) // <-- Denied Reports
-                await Report.findOneAndDelete({ messageID: report.messageID });
+                await Report.findOneAndDelete({ messageId: report.messageId });
             }
             msg.delete();
         }).catch((err: Error) => console.log(`Approval/Denial had an issue due to:\n${err}`));
@@ -272,7 +272,7 @@ async function attachmentFieldCorrection(client: Semblance, message: Message, re
         }
     } else try {
         attachment = new MessageAttachment(item);
-        await (client.guilds.cache.get(sirhGuildID)!.channels.cache.get('794054989860700179') as TextChannel)!.send({ files: [attachment as MessageAttachment] }) // <== Uses ID of #image-storage from SirH's server
+        await (client.guilds.cache.get(sirhGuildId)!.channels.cache.get('794054989860700179') as TextChannel)!.send({ files: [attachment as MessageAttachment] }) // <== Uses Id of #image-storage from SirH's server
             .then((msg) => attachmentURL = msg.attachments.map(a => a)[0].proxyURL);
 
         let videoType = [".mov", ".mp4", ".mkv", ".webm"], imageType = [".png", ".jpg", ".jpeg", ".gif"],
@@ -295,7 +295,7 @@ async function attachmentFieldCorrection(client: Semblance, message: Message, re
 
     if (creationFailed) return;
 
-    (message.guild!.channels.cache.get(report.channelID) as TextChannel)!.messages.fetch(report.messageID)
+    (message.guild!.channels.cache.get(report.channelId) as TextChannel)!.messages.fetch(report.messageId)
         .then(msg => {
             let attachmentsField = msg.embeds[0].fields[5];
             if (!attachmentsField) {
@@ -312,21 +312,21 @@ async function attachmentFieldCorrection(client: Semblance, message: Message, re
 }
 
 // async function archiveReport(client: Semblance, message: Message, report: ReportFormat) {
-//     let msg = await (message.guild!.channels.cache.get(report.channelID) as TextChannel).messages.fetch(report.messageID);
+//     let msg = await (message.guild!.channels.cache.get(report.channelId) as TextChannel).messages.fetch(report.messageId);
 //     let author = msg.embeds[0].author;
 //     try {
 //         msg.edit(msg.embeds[0].setAuthor(`${author!.name!.slice(0, author!.name!.indexOf('\n'))}\nArchived Report`, author!.iconURL).setFooter(`Archived Report`));
-//         await Report.findOneAndDelete({ bugID: report.bugID });
+//         await Report.findOneAndDelete({ bugId: report.bugId });
 
 //         let reportList = await Report.find({});
-//         let bugIdList = Array.from(reportList.map(r => r.bugID).filter(item => item > report.bugID));
-//         bugIdList.forEach(async (bugID) => {
-//             (message.guild!.channels.cache.get(report.channelID) as TextChannel)!.messages.fetch(report.messageID)
+//         let bugIdList = Array.from(reportList.map(r => r.bugId).filter(item => item > report.bugId));
+//         bugIdList.forEach(async (bugId) => {
+//             (message.guild!.channels.cache.get(report.channelId) as TextChannel)!.messages.fetch(report.messageId)
 //                 .then(msg => {
 //                     let author = msg.embeds[0].author;
-//                     msg.edit(msg.embeds[0].setAuthor(`${author!.name!.slice(0, author!.name!.indexOf('\n'))}\nBug ID: #${bugID - 1}`, author!.iconURL).setFooter(`#${bugID - 1}`));
+//                     msg.edit(msg.embeds[0].setAuthor(`${author!.name!.slice(0, author!.name!.indexOf('\n'))}\nBug Id: #${bugId - 1}`, author!.iconURL).setFooter(`#${bugId - 1}`));
 //                 });
-//             await Report.findOneAndUpdate({ bugID: bugID }, { $set: { bugID: bugID - 1 } }, { new: true });
+//             await Report.findOneAndUpdate({ bugId: bugId }, { $set: { bugId: bugId - 1 } }, { new: true });
 //         });
 
 //         message.reply("Report successfully archived(This message will delete in 5 seconds)").then(msg => setInterval(() => msg.delete(), 5000));

@@ -16,7 +16,7 @@ export interface BotStats {
      */
     guilds: number;
     /**
-     * The shard ID
+     * The shard Id
      */
     shard_id?: number;
 }
@@ -34,7 +34,7 @@ export interface vote {
      */
     username: string;
     /**
-     * The ID of the user who voted
+     * The Id of the user who voted
      */
     id: Snowflake;
 }

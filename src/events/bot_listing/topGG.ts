@@ -4,12 +4,12 @@ import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
 import { Response } from 'express';
 import { request } from '@semblance/lib/interfaces/topGG';
-const { sirhGuildID } = config;
+const { sirhGuildId } = config;
 
 export const tpggVoteHandler = (req: request, res: Response) => {
 	const { vote, client } = req;
 	if (!client.readyAt) return;
-	let channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
+	let channel = client.guilds.cache.get(sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
 	if (vote.type == 'test') return console.log("Test Vote Completed.");
 	client.users.fetch(vote.user as Snowflake, { cache: false }).then(async (u) => {
 		try {

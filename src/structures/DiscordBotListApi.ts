@@ -60,7 +60,7 @@ export class DBLApi extends EventEmitter {
      * @param {number} stats.voice_connections number of voice connections
      * @param {number} stats.users number of users
      * @param {number} stats.guilds guild count
-     * @param {number} stats.shard_id shard ID
+     * @param {number} stats.shard_id shard Id
      * @returns {BotStats} Passed stats
      * @example
      * await client.postStats({

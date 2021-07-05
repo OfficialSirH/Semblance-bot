@@ -16,7 +16,7 @@ export interface UserDataFormat extends Document {
 const UserDataSchema = new Schema({
     discordId: {
         type: String,
-        required: 'A user\'s Discord ID is required to create a saved entry'
+        required: 'A user\'s Discord Id is required to create a saved entry'
     },
     token: {
         type: String,

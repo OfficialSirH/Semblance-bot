@@ -49,7 +49,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     
     const components = [new MessageActionRow()
         .addComponents(new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'about',
                 id: message.author.id
@@ -58,7 +58,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             .setEmoji('❔')
             .setLabel('About'),
             new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'collect',
                 id: message.author.id
@@ -68,7 +68,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             .setEmoji('💵')
             .setLabel('Collect'),
             new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'upgrade',
                 id: message.author.id
@@ -78,7 +78,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             .setEmoji('⬆')
             .setLabel('Upgrade'),
             new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'leaderboard',
                 id: message.author.id
@@ -230,13 +230,13 @@ async function upgrade(message: Message, max: string) {
 }
 
 async function gameStats(client: Semblance, message: Message, args: string[]) {
-    let playerID: Snowflake = message.author.id;
-    if (message.mentions.members.size > 0) playerID = message.mentions.members.first().id;
-    else if (!!args[0].match(/\d{17,20}/g)) playerID = args[0].match(/\d{17,20}/g).join('') as Snowflake;
-    let statsHandler = await Game.findOne({ player: playerID });
+    let playerId: Snowflake = message.author.id;
+    if (message.mentions.members.size > 0) playerId = message.mentions.members.first().id;
+    else if (!!args[0].match(/\d{17,20}/g)) playerId = args[0].match(/\d{17,20}/g).join('') as Snowflake;
+    let statsHandler = await Game.findOne({ player: playerId });
     if (!statsHandler) return noGame(message);
     let nxtUpgrade = await currentPrice(statsHandler);
-    let player = await client.users.fetch(playerID);
+    let player = await client.users.fetch(playerId);
     let embed = new MessageEmbed()
         .setTitle(`${message.author.username}'s gamestats`)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())

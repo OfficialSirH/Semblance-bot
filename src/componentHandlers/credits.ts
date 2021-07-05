@@ -4,7 +4,7 @@ import { MessageActionRow, MessageButton, MessageComponentInteraction, MessageEm
 export const run = async (interaction: MessageComponentInteraction, { action, id }: ButtonData) => {
     let component: MessageActionRow, embed = new MessageEmbed();
     const creditComponents = [new MessageButton()
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'credits',
             action: 'credits',
             id
@@ -12,7 +12,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
         .setLabel('Credits')
         .setStyle('PRIMARY'),
         new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'credits',
 			action: 'thanks',
 			id
@@ -20,7 +20,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
 		.setLabel('Special Thanks')
 		.setStyle('PRIMARY'),
 		new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'credits',
 			action: 'semblance',
 			id
@@ -28,7 +28,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
 		.setLabel('Preview Semblance Art')
 		.setStyle('PRIMARY'),
 		new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'credits',
 			action: 'semblancebeta',
 			id
@@ -36,7 +36,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
 		.setLabel('Preview Semblance Beta Art')
 		.setStyle('PRIMARY'),
 		new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'credits',
 			action: 'semblancerevisioned',
 			id
@@ -77,6 +77,6 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
     .setImage('https://cdn.discordapp.com/avatars/794049840651960350/b101b9f78fb44d2c0b0c40e53b17e677.png?size=2048');
     
     else if (action == 'semblancerevisioned') embed.setTitle('Semblance Revisioned - by StarLuckArt(WIP/Not previewable yet)');
-    component = new MessageActionRow().addComponents(creditComponents.filter(c => eval(`(${c.customID})`).action != action));
+    component = new MessageActionRow().addComponents(creditComponents.filter(c => eval(`(${c.customId})`).action != action));
     interaction.update({ embeds: [embed], components: [component] });
 }

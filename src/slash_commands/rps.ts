@@ -21,7 +21,7 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
         const components = [new MessageActionRow()
         .addComponents([new MessageButton()
             .setLabel('Rock')
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'rps',
                 action: 'rock',
                 id: user.id
@@ -30,7 +30,7 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
             .setStyle('SECONDARY'),
             new MessageButton()
             .setLabel('Paper')
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'rps',
                 action: 'paper',
                 id: user.id
@@ -39,7 +39,7 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
             .setStyle('SECONDARY'),
             new MessageButton()
             .setLabel('Scissors')
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'rps',
                 action: 'scissors',
                 id: user.id
@@ -48,7 +48,7 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
             .setStyle('SECONDARY'),
             new MessageButton()
             .setLabel('Lizard')
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'rps',
                 action: 'lizard',
                 id: user.id
@@ -57,7 +57,7 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
             .setStyle('SECONDARY'),
             new MessageButton()
             .setLabel('Spock')
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'rps',
                 action: 'spock',
                 id: user.id

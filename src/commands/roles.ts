@@ -2,7 +2,7 @@ import { Message, MessageActionRow, MessageButton, MessageEmbed, Snowflake } fro
 import config from '@semblance/config';
 import { Semblance } from '../structures';
 import { c2sRoles } from '../constants';
-const { currentLogo, c2sGuildID } = config;
+const { currentLogo, c2sGuildId } = config;
 
 module.exports = {
     description: "",
@@ -31,8 +31,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         hasServerEvents = message.member.roles.cache.has(c2sRoles.serverEvents as Snowflake),
     components = [new MessageActionRow()
         .addComponents([new MessageButton()
-            .setDisabled(message.guild.id != c2sGuildID)
-            .setCustomID(JSON.stringify({
+            .setDisabled(message.guild.id != c2sGuildId)
+            .setCustomId(JSON.stringify({
                 command: 'roles',
                 action: hasServerEvents ? 'remove-events' : 'add-events',
                 id: message.author.id

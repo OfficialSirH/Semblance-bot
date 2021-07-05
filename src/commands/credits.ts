@@ -33,7 +33,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		]);
 	const component = new MessageActionRow()
 	.addComponents([new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'credits',
 			action: 'thanks',
 			id: message.author.id
@@ -41,7 +41,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setLabel('Special Thanks')
 		.setStyle('PRIMARY'),
 		new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'credits',
 			action: 'semblance',
 			id: message.author.id
@@ -49,7 +49,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setLabel('Preview Semblance Art')
 		.setStyle('PRIMARY'),
 		new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'credits',
 			action: 'semblancebeta',
 			id: message.author.id
@@ -57,7 +57,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setLabel('Preview Semblance Beta Art')
 		.setStyle('PRIMARY'),
 		new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'credits',
 			action: 'semblancerevisioned',
 			id: message.author.id

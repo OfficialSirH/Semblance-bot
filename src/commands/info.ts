@@ -52,7 +52,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         )
         .setFooter("The all powerful Semblance has spoken!");
 
-    if (client.shard) embed.addField(`${metabit} This Shard (${message.guild.shardID})`, `**Guilds:** ${guilds}\n` +
+    if (client.shard) embed.addField(`${metabit} This Shard (${message.guild.shardId})`, `**Guilds:** ${guilds}\n` +
         `**Users:** ${users}`);
 
     embed.addField(`${mutagen} Links`, [`- [Semblance Invite](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot+applications.commands)`,

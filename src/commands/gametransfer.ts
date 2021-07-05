@@ -25,7 +25,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setDescription("Step 1:");
 	const component = new MessageActionRow()
 	.addComponents([new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'gametransfer',
 			action: 'left',
 			id: message.author.id
@@ -33,7 +33,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setEmoji('⬅️')
 		.setStyle('PRIMARY'),
 		new MessageButton()
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'gametransfer',
 			action: 'right',
 			id: message.author.id

@@ -5,7 +5,7 @@ import 'module-alias/register';
 // Semblance client
 import { Semblance } from '@semblance/structures'; 
 import { Intents } from 'discord.js'; 
-import { interaction, message, messageDelete, messageReactionAdd, messageReactionRemove, messageUpdate, ready, checkTweet,
+import { interactionCreate, messageCreate, messageDelete, messageReactionAdd, messageReactionRemove, messageUpdate, ready, checkTweet,
 	playerUpdate, userVote
 } from '@semblance/events';
 const client = new Semblance({
@@ -27,8 +27,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Listen to client events
-interaction(client);
-message(client);
+interactionCreate(client);
+messageCreate(client);
 messageDelete(client);
 messageReactionAdd(client);
 messageReactionRemove(client);

@@ -21,16 +21,16 @@ module.exports.run = async function(client: Semblance, message: Message, args: s
 
     const link = messageLinkRegex.exec(content);
     if (link == null) return recursiveCount > 0 ? message.delete() : undefined; 
-    const { groups: { guildID, channelID, messageID } } = link as unknown as messageLink;
+    const { groups: { guildId, channelId, messageId } } = link as unknown as messageLink;
 
-    client.guilds.fetch(guildID).then(guild => {
-        let channel = guild.channels.cache.get(channelID);
+    client.guilds.fetch(guildId).then(guild => {
+        let channel = guild.channels.cache.get(channelId);
         if ((channel as TextChannel)!.nsfw ?? guild.id != message!.guild!.id) return;
 
         if (recursiveCount == 0) message.content.replace(messageLinkRegex, '').length == 0 ? 
             undefined : message.channel.send(Util.removeMentions(message.content.replace(messageLinkRegex, '')));
 
-        (channel as TextChannel)!.messages.fetch(messageID).then(async (msg) => {
+        (channel as TextChannel)!.messages.fetch(messageId).then(async (msg) => {
             let attachmentLink = /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i.exec(msg.content);
             if (attachmentLink != null)
                 msg.content = msg.content.replace(attachmentLink[0], ``);
@@ -66,8 +66,8 @@ module.exports.run = async function(client: Semblance, message: Message, args: s
 
 interface messageLink {
     groups: {
-        guildID: Snowflake, 
-        channelID: Snowflake,
-        messageID: Snowflake
+        guildId: Snowflake, 
+        channelId: Snowflake,
+        messageId: Snowflake
     }
 }

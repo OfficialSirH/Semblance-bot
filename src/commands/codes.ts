@@ -27,7 +27,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setFooter(codeHandler.footer);
     const component = new MessageActionRow()
     .addComponents([new MessageButton()
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'codes',
             action: 'expired',
             id: message.author.id

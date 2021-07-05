@@ -4,12 +4,12 @@ import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
 import { request } from '@semblance/lib/interfaces/discordBoats';
 import { Response } from 'express';
-const { sirhGuildID } = config;
+const { sirhGuildId } = config;
 
 export const dbVoteHandler = (req: request, res: Response) => {
 	const { vote, client } = req;
 	if (!client.readyAt) return;
-	let channel = client.guilds.cache.get(sirhGuildID).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
+	let channel = client.guilds.cache.get(sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
 	client.users.fetch(vote.user.id, { cache: false }).then(async (u) => {
 		try {
 			console.log(`${u.tag} just voted!`);

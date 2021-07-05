@@ -125,7 +125,7 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
         const components = [new MessageActionRow()
         .addComponents([new MessageButton()
             .setLabel('Rock')
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'rps',
                 action: 'rock',
                 id: message.author.id
@@ -134,7 +134,7 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
             .setStyle('SECONDARY'),
             new MessageButton()
             .setLabel('Paper')
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'rps',
                 action: 'paper',
                 id: message.author.id
@@ -143,7 +143,7 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
             .setStyle('SECONDARY'),
             new MessageButton()
             .setLabel('Scissors')
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'rps',
                 action: 'scissors',
                 id: message.author.id
@@ -152,7 +152,7 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
             .setStyle('SECONDARY'),
             new MessageButton()
             .setLabel('Lizard')
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'rps',
                 action: 'lizard',
                 id: message.author.id
@@ -161,7 +161,7 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
             .setStyle('SECONDARY'),
             new MessageButton()
             .setLabel('Spock')
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'rps',
                 action: 'spock',
                 id: message.author.id

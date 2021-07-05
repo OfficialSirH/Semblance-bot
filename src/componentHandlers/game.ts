@@ -14,7 +14,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
 
     let mainComponents = [new MessageActionRow()
         .addComponents(new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'about',
                 id
@@ -23,7 +23,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             .setEmoji('❔')
             .setLabel('About'),
             new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'collect',
                 id
@@ -33,7 +33,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             .setEmoji('💵')
             .setLabel('Collect'),
             new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'upgrade',
                 id
@@ -43,7 +43,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             .setEmoji('⬆')
             .setLabel('Upgrade'),
             new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'leaderboard',
                 id
@@ -54,7 +54,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
         )],
     endComponents = [new MessageActionRow()
         .addComponents(new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'stats',
                 id
@@ -64,7 +64,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             .setEmoji('🔢')
             .setLabel('Stats'),
             new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'graph',
                 id
@@ -73,7 +73,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             .setEmoji('📈')
             .setLabel('Graph'),
             new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'create',
                 id
@@ -82,7 +82,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             .setLabel(Boolean(game) ?  'Reset Progress' : 'Create new game')
             .setStyle(Boolean(game) ?  'DANGER' : 'SUCCESS'),
             new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'close',
                 id
@@ -129,7 +129,7 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
     const { user } = interaction;
     const components = [new MessageActionRow()
         .addComponents(new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'reset',
                 id: user.id
@@ -138,7 +138,7 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
             .setLabel('Yes')
             .setStyle('DANGER'),
             new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'game',
                 action: 'close',
                 id: user.id

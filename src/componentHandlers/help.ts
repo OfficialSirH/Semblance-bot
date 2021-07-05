@@ -3,12 +3,12 @@ import { Message, MessageActionRow, MessageButton, MessageComponentInteraction, 
 import { randomColor, subcategoryList } from "../constants";
 import { Semblance } from "../structures";
 import config from '@semblance/config';
-const { prefix, c2sGuildID, sirhID, adityaID } = config;
+const { prefix, c2sGuildId, sirhId, adityaId } = config;
 
 export const run = async (interaction: MessageComponentInteraction, { action, id }: ButtonData, { permissionLevel }) => {
     let components = [new MessageActionRow()];
     if (action != 'help') components[0].components = [new MessageButton()
-    .setCustomID(JSON.stringify({
+    .setCustomId(JSON.stringify({
         command: 'help',
         action: 'help',
         id
@@ -17,7 +17,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
     .setEmoji('⬅️')
     .setStyle('SECONDARY'),
     new MessageButton()
-            .setCustomID(JSON.stringify({
+            .setCustomId(JSON.stringify({
                 command: 'help',
                 action: 'close',
                 id
@@ -27,7 +27,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             .setStyle('SECONDARY')
     ];
     else components[0].components.push(new MessageButton()
-    .setCustomID(JSON.stringify({
+    .setCustomId(JSON.stringify({
         command: 'help',
         action: 'close',
         id
@@ -63,7 +63,7 @@ async function help(interaction: MessageComponentInteraction, components: Messag
     const client = interaction.client as Semblance, user = interaction.user;
     const c2sServerCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'c2sServer').map(key => `**\`${prefix}${key}\`**`);
 	components[0].components = [new MessageButton()
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'help',
             action: 'c2shelp',
             id: user.id
@@ -71,7 +71,7 @@ async function help(interaction: MessageComponentInteraction, components: Messag
         .setLabel('Cell to Singularity Help')
         .setStyle('PRIMARY'),
         new MessageButton()
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'help',
             action: 'calculator',
             id: user.id
@@ -79,7 +79,7 @@ async function help(interaction: MessageComponentInteraction, components: Messag
         .setLabel('Calculator Help')
         .setStyle('PRIMARY'),
         new MessageButton()
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'help',
             action: 'mischelp',
             id: user.id
@@ -87,12 +87,12 @@ async function help(interaction: MessageComponentInteraction, components: Messag
         .setLabel('Miscellaneous Help')
         .setStyle('PRIMARY'),
         new MessageButton()
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'help',
             action: 'bug',
             id: user.id
         }))
-        .setDisabled(Boolean(interaction.guild.id != c2sGuildID && ![sirhID, adityaID].includes(user.id)))
+        .setDisabled(Boolean(interaction.guild.id != c2sGuildId && ![sirhId, adityaId].includes(user.id)))
         .setEmoji('🐛')
         .setLabel('Bug Reporting Help')
         .setStyle('PRIMARY'),
@@ -140,7 +140,7 @@ async function c2shelp(interaction: MessageComponentInteraction, components: Mes
     const mesozoicCommands = subcategoryList(client, 'game', 'mesozoic');
     const otherCommands = subcategoryList(client, 'game', 'other');
     components[0].components = [new MessageButton()
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'help',
             action: 'metabits',
             id: user.id
@@ -148,7 +148,7 @@ async function c2shelp(interaction: MessageComponentInteraction, components: Mes
         .setLabel('Metabits Guide')
         .setStyle('PRIMARY'),
         new MessageButton()
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'help',
             action: 'mesoguide',
             id: user.id
@@ -258,7 +258,7 @@ async function mischelp(interaction: MessageComponentInteraction, components: Me
 		utilityCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'utility').map(key => `**\`${prefix}${key}\`**`),
 	semblanceCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'semblance').map(key => `**\`${prefix}${key}\`**`);
 	components[0].components = [new MessageButton()
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
            command: 'help',
            action: 'ahelp',
            id: user.id 
@@ -302,7 +302,7 @@ async function calchelp(interaction: MessageComponentInteraction, components: Me
     const client = interaction.client as Semblance, user = interaction.user,
     calculatorCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'calculator').map(key => `**\`${prefix}${key}\`**`);
     components[0].components = [new MessageButton()
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'help',
             action: 'largenumbers',
             id: user.id
@@ -310,7 +310,7 @@ async function calchelp(interaction: MessageComponentInteraction, components: Me
         .setLabel('Large Numbers')
         .setStyle('PRIMARY'),
         new MessageButton()
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'help',
             action: 'metahelp',
             id: user.id
@@ -318,7 +318,7 @@ async function calchelp(interaction: MessageComponentInteraction, components: Me
         .setLabel('Metabit Calculator')
         .setStyle('PRIMARY'),
         new MessageButton()
-        .setCustomID(JSON.stringify({
+        .setCustomId(JSON.stringify({
             command: 'help',
             action: 'itemhelp',
             id: user.id
@@ -374,9 +374,9 @@ async function bughelp(interaction: MessageComponentInteraction, components: Mes
         
         '\nWHAT IF I HAVE THE SAME BUG OCCURING AS ANOTHER USER WHO HAS ALREADY REPORTED IT?',
         '+ FORMAT:',
-            `\t${prefix}bug BUG_ID reproduce SYSTEM_INFO | GAME_VERSION`,
+            `\t${prefix}bug BUG_Id reproduce SYSTEM_INFO | GAME_VERSION`,
         '- OR',
-            `\t${prefix}bug BUG_ID reproduce SYSTEM_INFO`,
+            `\t${prefix}bug BUG_Id reproduce SYSTEM_INFO`,
             '\tGAME_VERSION',
         
         '\nREPRODUCE EXAMPLE:',

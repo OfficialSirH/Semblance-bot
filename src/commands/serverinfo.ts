@@ -46,7 +46,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
 	serverCreated = serverCreated.substring(0, 16);
 	let canRoleListWork = (roleList.length > 1024) ? "*Too many roles*":roleList;
 	let fetchedGuild = await guild.fetch();
-	let owner = await guild.members.fetch(guild.ownerID);
+	let owner = await guild.members.fetch(guild.ownerId);
 	let embed = new MessageEmbed()
 		.setAuthor(guild.name, guild.iconURL())
 		.setColor(randomColor)
@@ -59,7 +59,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
 			{ name: "Roles", value: roleCount.toString(), inline: true },
 			{ name: "Role List", value: canRoleListWork, inline: false },
 		])
-		.setFooter(`ID: ${guild.id} | Server Created: ${serverCreated}`);
+		.setFooter(`Id: ${guild.id} | Server Created: ${serverCreated}`);
 	message.channel.send({ embeds: [embed] });
 }
 

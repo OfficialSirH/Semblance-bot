@@ -240,11 +240,11 @@ export interface BotsResponse {
 }
 export interface BotVotes {
     /**
-     * Array of user IDs
+     * Array of user Ids
      */
     hasVoted: Snowflake[];
     /**
-     * Array of user IDs that voted last 24 hours
+     * Array of user Ids that voted last 24 hours
      */
     hasVoted24: Snowflake[];
     /**
@@ -278,21 +278,21 @@ export interface votes {
      */
     votesMonth: number;
     /**
-     * snowflakes(IDs) of all users who have voted
+     * snowflakes(Ids) of all users who have voted
      */
     hasVoted?: Snowflake[];
     /**
-     * snowflakes(IDs) of all user who have voted the last 24 hours
+     * snowflakes(Ids) of all user who have voted the last 24 hours
      */
     hasVoted24?: Snowflake[];
 }
 export interface vote {
     /**
-     * The ID of the user who voted
+     * The Id of the user who voted
      */
     user: Snowflake;
     /**
-     * The ID of the bot that the user voted for
+     * The Id of the bot that the user voted for
      */
     bot: Snowflake;
     /**

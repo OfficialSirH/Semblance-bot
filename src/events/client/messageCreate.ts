@@ -1,5 +1,5 @@
 import { Semblance } from "@semblance/src/structures";
-import { GuildMember, Message, TextChannel, Collection, MessageEmbed } from "discord.js";
+import { GuildMember, Message, TextChannel, Collection, MessageEmbed, Constants } from "discord.js";
 import config from '@semblance/config';
 import { 
 	getPermissionLevel,
@@ -10,12 +10,13 @@ import {
 import { promisify } from 'util';
 import { messageDM } from './messageDM';
 import { Information } from '@semblance/models';
-const { sirhID, prefix, c2sGuildID, sirhGuildID, lunchGuildID, ignoredGuilds } = config;
+const { Events } = Constants;
+const { sirhId, prefix, c2sGuildId, sirhGuildId, lunchGuildId, ignoredGuilds } = config;
 const wait = promisify(setTimeout);
 
 
-export const message = (client: Semblance) => {
-    client.on("message", async message => {
+export const messageCreate = (client: Semblance) => {
+    client.on(Events.MESSAGE_CREATE, async message => {
         checkForGitHubUpdate(message);
 	if (message.channel.type == 'dm') return messageDM(client, message) as unknown as void;
 	if (message.author.bot || ignoredGuilds.includes(message.guild.id)) return;
@@ -27,11 +28,11 @@ export const message = (client: Semblance) => {
 
     const { commands, aliases, autoCommands } = client;
 
-	if (!message.content.toLowerCase().startsWith(`${prefix}afk`) && (!message.content.startsWith('</afk:813628842182311976>') || message.applicationID == null)) removeAfk(client, message);
+	if (!message.content.toLowerCase().startsWith(`${prefix}afk`) && (!message.content.startsWith('</afk:813628842182311976>') || message.applicationId == null)) removeAfk(client, message);
 	//Cell to Singularity Exclusive Code
 	let chName = message.channel.name;
 	for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
-	if (message.guild.id == c2sGuildID) {
+	if (message.guild.id == c2sGuildId) {
 		
 		clearBlacklistedWord(message, message.member);
 		let msg = message.content.toLowerCase(), suggestionArray = ["suggestion:", "suggest:", `${prefix}suggestion`, `${prefix}suggest`],
@@ -56,7 +57,7 @@ export const message = (client: Semblance) => {
 		if (chName == 'share-your-prestige' && message.attachments.size == 0 && getPermissionLevel(message.member) == 0) message.delete();
 		if (chName != 'semblance' && getPermissionLevel(message.member) == 0) return;
 	}
-	if (message.guild.id == sirhGuildID) {
+	if (message.guild.id == sirhGuildId) {
 		if (chName != 'bot-room' && chName != 'semblance-beta-testing' && getPermissionLevel(message.member) == 0) return;
 	}
 	//End of Cell to Singularity Exclusive Code
@@ -86,7 +87,7 @@ export const message = (client: Semblance) => {
 			}
 			let permissionLevel;
 			const args = parseArgs(content); try { permissionLevel = getPermissionLevel(message.member);
-			} catch (e) { permissionLevel = (message.author.id == sirhID) ? 7 : 0 }
+			} catch (e) { permissionLevel = (message.author.id == sirhId) ? 7 : 0 }
 			//console.log(`${message.member}: ${permissionLevel}`);
 			try { if (permissionLevel < commandFile.permissionRequired) return message.channel.send("❌ You don't have permission to do this!") as unknown as void;
 				if (!commandFile.checkArgs(args, permissionLevel, content)) return message.channel.send(`❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage).map(a => " " + a).join("")}\`, for additional help, see \`${prefix}help\`.`) as unknown as void;
@@ -118,7 +119,7 @@ export const message = (client: Semblance) => {
 	*/
 
 	async function checkForGitHubUpdate(message) {
-		if (message.channel.name == 'semblance-updates' && message.guild.id == sirhGuildID && message.author.username == 'GitHub' && message.embeds[0].title.includes('master')) {
+		if (message.channel.name == 'semblance-updates' && message.guild.id == sirhGuildId && message.author.username == 'GitHub' && message.embeds[0].title.includes('master')) {
 			let infoHandler = await Information.findOneAndUpdate({ infoType: "github" }, { $set: { info: message.embeds[0].description, updated: true } }, { new: true });
 			return true;
 		}
@@ -132,7 +133,7 @@ export const message = (client: Semblance) => {
 	let warnings: Collection<string, number> = new Collection();
 
 	async function clearBlacklistedWord(message: Message, member: GuildMember) {
-		if (message.guild.id != c2sGuildID && message.guild.id != sirhGuildID) return;
+		if (message.guild.id != c2sGuildId && message.guild.id != sirhGuildId) return;
 		let msg = message.content.toLowerCase();
 		if (!msg.match(/(nigger)|(nigga)/g) ?? member.user.bot) return;
 		message.delete();

@@ -2,7 +2,6 @@ import { ButtonData } from "@semblance/lib/interfaces/Semblance";
 import { MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed } from "discord.js";
 import { guildBookPage, randomColor } from "../constants";
 import { serversPerPage } from "../constants/commands";
-import { message } from "../events";
 import { Semblance } from "../structures";
 
 export const run = async (interaction: MessageComponentInteraction, { action, id, page }: ServerlistButtonData) => {
@@ -20,7 +19,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
 		.setLabel('First Page')
 		.setStyle('SECONDARY')
 		.setDisabled(chosenPage === 1)
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'serverlist',
 			action: 'first',
 			id: user.id,
@@ -31,7 +30,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
 		.setStyle('SECONDARY')
 		.setEmoji('⬅')
 		.setDisabled(chosenPage === 1)
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'serverlist',
 			action: 'left',
 			id: user.id,
@@ -42,7 +41,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
 		.setStyle('SECONDARY')
 		.setEmoji('➡')
 		.setDisabled(chosenPage === numOfPages)
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'serverlist',
 			action: 'right',
 			id: user.id,
@@ -52,7 +51,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
 		.setLabel('Last Page')
 		.setStyle('SECONDARY')
 		.setDisabled(chosenPage === numOfPages)
-		.setCustomID(JSON.stringify({
+		.setCustomId(JSON.stringify({
 			command: 'serverlist',
 			action: 'last',
 			id: user.id,

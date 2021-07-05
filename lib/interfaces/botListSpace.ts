@@ -12,7 +12,7 @@ export declare class Client {
 
 	/**
 	 * @param {object} options An object with client options.
-	 * @param {string} options.id The ID of the bot.
+	 * @param {string} options.id The Id of the bot.
 	 * @param {string} options.botToken The token provided from the bots's token page.
 	 */
 	constructor(options: object);

@@ -73,14 +73,14 @@ export class BFDApi extends EventEmitter {
     }
     /**
      * Get bot info
-     * @param {Snowflake} id Bot ID
+     * @param {Snowflake} id Bot Id
      * @returns {BotInfo} Info for bot
      * @example
      * await client.getBot('794033850665533450') // returns bot info
      */
     async getBot(id: Snowflake): Promise<BotInfo> {
         if (!id)
-            throw new Error('ID Missing');
+            throw new Error('Id Missing');
         return this._request('GET', `/bot/${id}`);
     }
     /**
@@ -94,7 +94,7 @@ export class BFDApi extends EventEmitter {
     }
     /**
      * Get bot's widget
-     * @param {Snowflake} id Bot ID
+     * @param {Snowflake} id Bot Id
      * @param {Number} width The width of the widget
      * @param {String} theme The theme of the widget
      * @returns {Widget} the bot's widget
@@ -102,7 +102,7 @@ export class BFDApi extends EventEmitter {
      * await client.getBotWidget('794033850665533450', 480, 'dark') // returns bot's widget
      */
     async getBotWidget(id: Snowflake, width: number, theme: string): Promise<Widget> {
-        if (!id) throw new Error('ID Missing');
+        if (!id) throw new Error('Id Missing');
         if (!width && !theme)
             return this._request('GET', `/bot/${id}/widget`);
         if (!width)
@@ -113,7 +113,7 @@ export class BFDApi extends EventEmitter {
     }
     /**
      * Get user info
-     * @param {Snowflake} id User ID
+     * @param {Snowflake} id User Id
      * @returns {UserInfo} Info for user
      * @example
      * await client.getUser('780995336293711875')
@@ -122,13 +122,13 @@ export class BFDApi extends EventEmitter {
      */
     async getUser(id: Snowflake): Promise<UserInfo> {
         if (!id)
-            throw new Error('ID Missing');
+            throw new Error('Id Missing');
         return this._request('GET', `/user/${id}`);
     }
 
     /**
      * Get user's bots
-     * @param {Snowflake} id User ID
+     * @param {Snowflake} id User Id
      * @returns {UserBots} user's bots
      * @example
      * await client.getUserBots('780995336293711875')
@@ -136,7 +136,7 @@ export class BFDApi extends EventEmitter {
      * 
      */
     async getUserBots(id: Snowflake): Promise<UserBots> {
-        if (!id) throw new Error('ID Missing');
+        if (!id) throw new Error('Id Missing');
         return this._request('GET', `/user/${id}/bots`);
     }
 }

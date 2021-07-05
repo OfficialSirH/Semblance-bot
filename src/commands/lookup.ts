@@ -5,7 +5,7 @@ import { Message, Snowflake, TextChannel } from 'discord.js';
 import { Semblance } from '../structures';
 
 module.exports = {
-    description: "Lookup something unknown, like an ID or an invite, and hopefully get the meaning behind it!",
+    description: "Lookup something unknown, like an Id or an invite, and hopefully get the meaning behind it!",
     category: 'admin',
     usage: {
         "<unknown>": "The unknown you'd like to lookup."
@@ -20,10 +20,10 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     message.channel.startTyping();
 
     const role = getRole(args[0], message.guild);
-    if (role) return send(message.channel, `✅ This ID is a role ID for the role ${role.name}.`)
+    if (role) return send(message.channel, `✅ This Id is a role Id for the role ${role.name}.`)
 
     const channel = getChannel(args[0], message.guild);
-    if (channel) return send(message.channel, `✅ This ID is a channel ID for the channel ${channel}.`)
+    if (channel) return send(message.channel, `✅ This Id is a channel Id for the channel ${channel}.`)
 
     // user lookup
     try {
@@ -31,7 +31,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         if (user) {
             if (user.bot) {
                 const botblock = await fetch(`https://botblock.org/api/bots/${user.id}`).then(res => res.json())
-                if (botblock.discriminator == "0000") return send(message.channel, `✅ This ID is a bot ID of ${user.username}#${user.discriminator} (${user.id}). Unfortunately, this bot is not listed on any of BotBlock's bot lists.`)
+                if (botblock.discriminator == "0000") return send(message.channel, `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}). Unfortunately, this bot is not listed on any of BotBlock's bot lists.`)
 
                 const fields = [], add = values => { for (const name in values) fields.push({ name, value: values[name], inline: true }) }
 
@@ -66,14 +66,14 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
                 if (owners.length > 1) add({ "Owners": owners.join("\n") });
                 else add({ "Owner": owners[0] });
 
-                return send(message.channel, `✅ This ID is a bot ID of ${user.username}#${user.discriminator} (${user.id}).`, {
+                return send(message.channel, `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}).`, {
                     embed: {
                         fields, thumbnail: user.avatar ? {
                             url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=2048`
                         } : null, color: constants.randomColor
                     }
                 })
-            } else return send(message.channel, `✅ This ID is a user ID of ${user.username}#${user.discriminator} (${user.id}).`)
+            } else return send(message.channel, `✅ This Id is a user Id of ${user.username}#${user.discriminator} (${user.id}).`)
         }
     } catch (e) { console.log(e) }
 
@@ -97,7 +97,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             if (invite.guild.description) add({ "Description": invite.guild.description })
             if (invite.guild.verification_level) add({ "Verification Level": ["None", "Verified email", "Verified email and 5 minutes on Discord", "Verified email and 10 minutes on server", "Verified phone number"][invite.guild.verification_level] })
 
-            return send(message.channel, `✅ This ID is a Discord invite.`, {
+            return send(message.channel, `✅ This Id is a Discord invite.`, {
                 embed: {
                     title: "Invite Lookup",
                     description: `Information from the invite \`${invite.code}\``,
@@ -115,17 +115,17 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     // emoji lookup
     try {
         let res = await fetch(`https://cdn.discordapp.com/emojis/${args[0]}.png`);
-        if (res.ok) return send(message.channel, `✅ This ID is an emoji ID: https://cdn.discordapp.com/emojis/${args[0]}.png`)
+        if (res.ok) return send(message.channel, `✅ This Id is an emoji Id: https://cdn.discordapp.com/emojis/${args[0]}.png`)
     } catch (e) { }
 
     // message lookup
     let channels = message.guild.channels.cache.filter(ch => ["text", "news"].includes(ch.type)).array() as TextChannel[];
     for (const ch of channels) try {
         let m = await ch.messages.fetch(args[0] as Snowflake);
-        if (m) return send(message.channel, `✅ This ID is a message ID: <https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}>`)
+        if (m) return send(message.channel, `✅ This Id is a message Id: <https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}>`)
     } catch (e) { }
 
-    return send(message.channel, `🚫 I don't know what the ID \`${args[0]}\` is coming from. Maybe the deep abyss known as The Beyond?`)
+    return send(message.channel, `🚫 I don't know what the Id \`${args[0]}\` is coming from. Maybe the deep abyss known as The Beyond?`)
 }
 
 const send = (channel, content, morecontent = undefined) => channel.send(content, morecontent).then(() => channel.stopTyping())

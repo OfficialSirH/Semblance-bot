@@ -1,18 +1,19 @@
-import { customIDRegex, getPermissionLevel, properCustomIDRegex } from '@semblance/constants';
+import { customIdRegex, getPermissionLevel, properCustomIdRegex } from '@semblance/constants';
 import { ButtonData } from '@semblance/lib/interfaces/Semblance';
 import { Semblance } from "@semblance/src/structures";
-import { GuildMember, Message, MessageComponentInteraction, TextChannel } from 'discord.js';
+import { GuildMember, Message, MessageComponentInteraction, Constants } from 'discord.js';
 import { promises as fs } from 'fs';
 import config from '@semblance/config';
-const { c2sGuildID } = config;
+const { c2sGuildId } = config;
+const { Events } = Constants;
 
-export const interaction = (client: Semblance) => {
-    client.on('interaction', async interaction => {
+export const interactionCreate = (client: Semblance) => {
+    client.on(Events.INTERACTION_CREATE, async interaction => {
         if (interaction.isMessageComponent()) return componentInteraction(client, interaction);
         if (!interaction.isCommand()) return;
 
-        if (client.slashCommands.has(interaction.commandID)) 
-            await client.slashCommands.get(interaction.commandID).run(client, interaction, 
+        if (client.slashCommands.has(interaction.commandId)) 
+            await client.slashCommands.get(interaction.commandId).run(client, interaction, 
                 { options: interaction.options, permissionLevel: getPermissionLevel(interaction.member as GuildMember) });
         else await interaction.reply('I can\'t find a command for this, something is borked.');
     });
@@ -22,9 +23,9 @@ async function componentInteraction(client: Semblance, interaction: MessageCompo
     const message = interaction.message as Message;
 
     let data: ButtonData;
-    if (interaction.customID.match(properCustomIDRegex)) data = JSON.parse(interaction.customID);
-    else if (interaction.customID.match(customIDRegex)) data = eval(`(${interaction.customID})`);
-    else return console.log(`Detected oddly received custom ID from a button:\nCustom ID: \n${interaction.customID}\nuser ID: ${interaction.user.id}`);
+    if (interaction.customId.match(properCustomIdRegex)) data = JSON.parse(interaction.customId);
+    else if (interaction.customId.match(customIdRegex)) data = eval(`(${interaction.customId})`);
+    else return console.log(`Detected oddly received custom Id from a button:\nCustom Id: \n${interaction.customId}\nuser Id: ${interaction.user.id}`);
     const { action, id } = data;
     if (!client.componentHandlers.has(data.command)) return;
     const componentHandler = client.componentHandlers.get(data.command);

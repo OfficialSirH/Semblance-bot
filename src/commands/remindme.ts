@@ -38,8 +38,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setDescription(`I'll remind you in ${msToTime(totalTime)} for your reminder \n **Reminder**: ${reminder.join(" ")}`);
 	message.channel.send({ embeds: [embed] });
 	let reminderHandler: ReminderFormat;
-	if (reminder.length == 0) reminderHandler = new Reminder({ userID: message.author.id, reminder: "A random reminder", remind: Date.now() + totalTime });
-	else reminderHandler = new Reminder({ userID: message.author.id, reminder: reminder.join(" "), remind: Date.now() + totalTime });
+	if (reminder.length == 0) reminderHandler = new Reminder({ userId: message.author.id, reminder: "A random reminder", remind: Date.now() + totalTime });
+	else reminderHandler = new Reminder({ userId: message.author.id, reminder: reminder.join(" "), remind: Date.now() + totalTime });
 	await reminderHandler.save();
 }
 
