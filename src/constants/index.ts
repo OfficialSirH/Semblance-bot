@@ -102,8 +102,8 @@ export const emojiSnowflakes = {
 };
 export const messageLinkRegex = /https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?<guildId>@me|\d{17,19})?\/(?<channelId>\d{17,20})\/(?<messageId>\d{17,20})/g;
 export const attachmentLinkRegex = /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i;
-export const customIdRegex = /(?<!.){command:'[a-z]{3,20}',action:'[a-z]{1,20}(-[a-z]{1,20})?',id:'\d{17,20}'(,page:\d{1,3})?}(?!.)/;
-export const properCustomIdRegex = /(?<!.){"command":"[a-z]{3,20}","action":"[a-z]{1,20}(-[a-z]{1,20})?","id":"\d{17,20}"(,"page":\d{1,3})?}(?!.)/;
+export const customIdRegex = /(?<!.){command:'[a-z]{3,20}',action:'([a-z]|\d){1,20}(-[a-z]{1,20})?',id:'\d{17,20}'(,page:\d{1,3})?}(?!.)/;
+export const properCustomIdRegex = /(?<!.){"command":"[a-z]{3,20}","action":"([a-z]|\d){1,20}(-[a-z]{1,20})?","id":"\d{17,20}"(,"page":\d{1,3})?}(?!.)/;
 export const onlyUnique = (value: any, index: number, self: any[]) => self.indexOf(value) == index;
 export const parseArgs = (_arguments: string) => (_arguments.match(/\"[^"]+\"|[^ ]+/g) ?? []).map(argument => argument.startsWith("\"") && argument.endsWith("\"") ? argument.slice(1).slice(0, -1) : argument);
 export const lockMessage = (user: User) => `👮 👮 ***CHANNEL IS LOCKED BY ${user}*** 👮 👮`;
