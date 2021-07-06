@@ -2,6 +2,7 @@ import { Snowflake } from 'discord.js';
 import { Model, Document, Schema, model } from 'mongoose';
 
 type infoType = 'beta'
+    | 'joinbeta'
     | 'update'
     | 'github'
     | 'codes'

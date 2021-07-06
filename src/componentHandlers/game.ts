@@ -50,7 +50,16 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             }))
             .setStyle('PRIMARY')
             .setEmoji('🏅')
-            .setLabel('Leaderboard')
+            .setLabel('Leaderboard'),
+            new MessageButton()
+            .setCustomId(JSON.stringify({
+                command: 'game',
+                action: 'vote',
+                id
+            }))
+            .setStyle('PRIMARY')
+            .setEmoji('💰')
+            .setLabel('Voting Sites')
         )],
     endComponents = [new MessageActionRow()
         .addComponents(new MessageButton()
@@ -91,7 +100,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             .setLabel('Close')
             .setStyle('SECONDARY')
     )];
-    if (['about', 'collect', 'upgrade', 'leaderboard'].includes(action)) components = endComponents;
+    if (['about', 'collect', 'upgrade', 'leaderboard', 'vote'].includes(action)) components = endComponents;
     else if (action == 'stats') components = mainComponents;
     else components = filterAction(endComponents, action);
     //if (action != 'collect') filterAction(components, action);
@@ -113,6 +122,9 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
             break;
         case 'leaderboard':
             leaderboard(interaction, components);
+            break;
+        case 'votes':
+            votes(interaction, components);
             break;
         case 'stats':
             stats(interaction, components, game);
@@ -242,6 +254,24 @@ async function leaderboard(interaction: MessageComponentInteraction, components:
         .setDescription(`${leaderboard}`)
         .setFooter("May the odds be with you.");
     await interaction.update({ embeds: [embed], components });
+}
+
+async function votes(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+    const { user, client } = interaction, embed = new MessageEmbed()
+	.setTitle("Vote")
+	.setColor(randomColor)
+	.setThumbnail(client.user.displayAvatarURL())
+		.setDescription(["**Votable sites(gives burst of currency for Semblance's idle-game)**",
+				`[Top.gg](https://top.gg/bot/${client.user.id})`,
+				`[Discordbotlist.com](https://discordbotlist.com/bots/semblance)`,
+				`[Botsfordiscord.com](https://botsfordiscord.com/bot/${client.user.id})`,
+				`[Botlist.space](https://botlist.space/bot/${client.user.id})`,
+				`[Discord.boats](https://discord.boats/bot/${client.user.id})`,
+				"**Unvotable sites**",
+				`[Discord.bots.gg](https://discord.bots.gg/bots/${client.user.id})`,
+			].join('\n'))
+	.setFooter(`Thanks, ${user.tag}, for considering to support my bot through voting, you may also support me with ${prefix}patreon :D`, user.displayAvatarURL());
+    interaction.update({ embeds: [embed], components });
 }
 
 async function stats(interaction: MessageComponentInteraction, components: MessageActionRow[], game: GameFormat) {

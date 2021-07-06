@@ -85,7 +85,16 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             }))
             .setStyle('PRIMARY')
             .setEmoji('🏅')
-            .setLabel('Leaderboard'))
+            .setLabel('Leaderboard'),
+            new MessageButton()
+            .setCustomId(JSON.stringify({
+                command: 'game',
+                action: 'vote',
+                id: message.author.id
+            }))
+            .setStyle('PRIMARY')
+            .setEmoji('💰')
+            .setLabel('Voting Sites'))
     ];
 
     return message.channel.send({ embeds: [embed], components });
