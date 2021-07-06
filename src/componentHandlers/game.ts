@@ -123,7 +123,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
         case 'leaderboard':
             leaderboard(interaction, components);
             break;
-        case 'votes':
+        case 'vote':
             votes(interaction, components);
             break;
         case 'stats':
