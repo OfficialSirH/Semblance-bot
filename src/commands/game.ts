@@ -39,10 +39,10 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setThumbnail(message.author.displayAvatarURL())
         .addFields([
             { name: 'Level', value: statsHandler.level.toString() },
-            { name: 'Random-Bucks', value: statsHandler.money.toString() },
+            { name: 'Random-Bucks', value: statsHandler.money.toFixed(3).toString() },
             { name: 'Percent Increase', value: statsHandler.percentIncrease.toString() },
-            { name: 'Next Upgrade Cost', value: (await currentPrice(statsHandler)).toString() },
-            { name: 'Idle Profit', value: statsHandler.idleProfit.toString() }
+            { name: 'Next Upgrade Cost', value: (await currentPrice(statsHandler)).toFixed(3).toString() },
+            { name: 'Idle Profit', value: statsHandler.idleProfit.toFixed(3).toString() }
         ])
     .setFooter("Remember to vote for Semblance to gain a production boost!"), 
     cost = await currentPrice(statsHandler);

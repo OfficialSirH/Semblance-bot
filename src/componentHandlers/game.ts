@@ -174,7 +174,7 @@ async function create(interaction: MessageComponentInteraction, components: Mess
         .setColor(randomColor)
         .setDescription(`Game Successfully created! Now you can start collecting Random-Bucks by typing \`${prefix}game collect\` and upgrade your Random-Bucks with \`${prefix}game upgrade\`\n\n`+
                        `Price Increase: ${(creationHandler.percentIncrease - 1)*100}%\n`+
-                       `Starting Profits: ${creationHandler.idleProfit}/sec\n\n`+
+                       `Starting Profits: ${creationHandler.idleProfit.toFixed(3)}/sec\n\n`+
                        `Reminder, don't be constantly spamming and creating a new game just cause your RNG stats aren't perfect \n`)
         .setFooter("Enjoy idling!");
     components = components.map(c => {
@@ -210,7 +210,7 @@ async function collect(interaction: MessageComponentInteraction, components: Mes
         .setTitle("Balance")
         .setAuthor(user.tag, user.displayAvatarURL())
         .setColor(randomColor)
-        .setDescription(`You've collected ${collected} Random-Bucks and now your current balance is ${collectionHandler.money} Random-Bucks.`);
+        .setDescription(`You've collected ${collected.toFixed(3)} Random-Bucks and now your current balance is ${collectionHandler.money.toFixed(3)} Random-Bucks.`);
     await interaction.update({ embeds: [embed], components });
 }
 
@@ -224,9 +224,9 @@ async function upgrade(interaction: MessageComponentInteraction, components: Mes
         [new MessageEmbed().setTitle("Not Enough Random-Bucks")
                 .setAuthor(user.tag, user.displayAvatarURL())
                 .setColor(randomColor)
-                .setDescription([`**Current Balance:** ${upgradeHandler.money} Random-Bucks`,
-                                `**Upgrade Cost:** ${costSubtraction} Random-Bucks`,
-                                `**How much more required:** ${costSubtraction - upgradeHandler.money} Random-Bucks`].join('\n'))], components });
+                .setDescription([`**Current Balance:** ${upgradeHandler.money.toFixed(3)} Random-Bucks`,
+                                `**Upgrade Cost:** ${costSubtraction.toFixed(3)} Random-Bucks`,
+                                `**How much more required:** ${(costSubtraction - upgradeHandler.money).toFixed(3)} Random-Bucks`].join('\n'))], components });
 
     while (upgradeHandler.money > costSubtraction) {
         costSubtraction = await currentPrice(upgradeHandler);
@@ -238,7 +238,7 @@ async function upgrade(interaction: MessageComponentInteraction, components: Mes
         .setTitle("Upgrade Stats")
         .setAuthor(user.tag, user.displayAvatarURL())
         .setColor(randomColor)
-        .setDescription(`You have successfully upgrade from level ${previousLevel} => ${upgradeHandler.level}.\n\nYour current balance is ${upgradeHandler.money} Random-Bucks.\n\nYour current profit is ${upgradeHandler.idleProfit} Random-Bucks/sec.`)
+        .setDescription(`You have successfully upgrade from level ${previousLevel} => ${upgradeHandler.level}.\n\nYour current balance is ${upgradeHandler.money.toFixed(3)} Random-Bucks.\n\nYour current profit is ${upgradeHandler.idleProfit.toFixed(3)} Random-Bucks/sec.`)
         .setFooter(`Upgrades will raise your rank in the '${prefix}game leaderboard', also, '${prefix}game upgrade max' will upgrade the max amount you're able to upgrade.`);
     await message.edit({ embeds: [embed], components });
 }
@@ -283,10 +283,10 @@ async function stats(interaction: MessageComponentInteraction, components: Messa
     .setThumbnail(user.displayAvatarURL())
     .addFields([
         { name: 'Level', value: game.level.toString() },
-        { name: 'Random-Bucks', value: game.money.toString() },
+        { name: 'Random-Bucks', value: game.money.toFixed(3).toString() },
         { name: 'Percent Increase', value: game.percentIncrease.toString() },
-        { name: 'Next Upgrade Cost', value: (await currentPrice(game)).toString() },
-        { name: 'Idle Profit', value: game.idleProfit.toString() }
+        { name: 'Next Upgrade Cost', value: (await currentPrice(game)).toFixed(3).toString() },
+        { name: 'Idle Profit', value: game.idleProfit.toFixed(3).toString() }
     ])
     .setFooter("Remember to vote for Semblance to gain a production boost!");
     await interaction.update({ embeds: [embed], components });
