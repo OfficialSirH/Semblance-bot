@@ -36,7 +36,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setColor(randomColor)
 		.setAuthor(message.author.tag, message.author.displayAvatarURL())
 		.setThumbnail(message.author.displayAvatarURL())
-		.setDescription(`New reminder successfully created:\n**When:** ${formattedDate(totalTime)}\n **Reminder**: ${reminder.join(" ")}`);
+		.setDescription(`New reminder successfully created:\n**When:** ${formattedDate(Date.now() + totalTime)}\n **Reminder**: ${reminder.join(" ")}`);
 	message.channel.send({ embeds: [embed] });
 
 	if (!!currentReminderData) return currentReminderData.update({ reminders: currentReminderData.reminders.concat([{ 

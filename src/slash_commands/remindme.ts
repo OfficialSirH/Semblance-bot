@@ -13,39 +13,7 @@ module.exports = {
 		if (actions.has('edit')) return edit(client, interaction, actions.get('edit').options);
 		if (actions.has('delete')) return deleteReminder(client, interaction, actions.get('delete').options);
 		if (actions.has('list')) return list(client, interaction);
-		// let timeAmount = timeInputRegex.exec(interaction.options.get('length').value as string),
-        //     reminder = interaction.options.get('reminder').value as string,
-        //     user = interaction.member.user as User;
-
-		// if (timeAmount == null) return interaction.reply('Your input for time is invalid, please try again.');
-		// const { groups: { months = 0, weeks = 0, days = 0, hours = 0, minutes = 0 }} = timeAmount as unknown as TimeLengths;
-		// if ([months, weeks, days, hours, minutes].every(time => !time)) return interaction.reply('Your input for time was invalid, please try again.');
-    
-		// let totalTime = (days * 1000 * 3600 * 24) + (hours * 1000 * 3600) + (minutes * 1000 * 60);
-
-		// if (totalTime > 29030400000) return interaction.reply("You cannot create a reminder for longer than a year");
-
-		// const currentReminderData = await Reminder.findOne({ userId: user.id });
-		// if (currentReminderData?.reminders.length >= 5) return interaction.reply("You cannot have more than 5 reminders at a time");
-
-		// let embed = new MessageEmbed()
-		// 	.setTitle("Reminder")
-		// 	.setColor(randomColor)
-		// 	.setThumbnail(user.displayAvatarURL())
-		// 	.setDescription(`New reminder successfully created:\n**When:** ${formattedDate(totalTime)}\n **Reminder**: ${reminder}`)
-		// 	.setFooter(`Command called by ${user.tag}`, user.displayAvatarURL());
-		// await interaction.reply({ embeds: [embed] });
-
-		// if (!!currentReminderData) return currentReminderData.update({ reminders: currentReminderData.reminders.concat([{ message: reminder, time: Date.now() + totalTime }]) });
-
-		// let reminderHandler = new Reminder({ 
-		// 	userId: user.id, 
-		// 	reminders: [{
-		// 		message: reminder,
-		// 		time: Date.now() + totalTime
-		// 	}]
-		// });
-		// await reminderHandler.save();
+		return interaction.reply({ content: "You didn't provide any valid options.", ephemeral: true });
     }
 }
 
@@ -69,7 +37,7 @@ async function create(client: Semblance, interaction: CommandInteraction, option
 		.setTitle("Reminder")
 		.setColor(randomColor)
 		.setThumbnail(user.displayAvatarURL())
-		.setDescription(`New reminder successfully created:\n**When:** ${formattedDate(totalTime)}\n **Reminder**: ${reminder}`)
+		.setDescription(`New reminder successfully created:\n**When:** ${formattedDate(Date.now() + totalTime)}\n **Reminder**: ${reminder}`)
 		.setFooter(`Command called by ${user.tag}`, user.displayAvatarURL());
 	await interaction.reply({ embeds: [embed] });
 
@@ -163,7 +131,7 @@ async function list(client: Semblance, interaction: CommandInteraction) {
 		.setTitle("Reminder List")
 		.setColor(randomColor)
 		.setThumbnail(user.displayAvatarURL())
-		.setDescription(currentReminderData.reminders.map(reminder => `**Reminder ID:** ${reminder.reminderId}\n**When:** ${formattedDate(reminder.time - Date.now())}\n**Reminder:** ${reminder.message}`).join('\n\n'))
+		.setDescription(currentReminderData.reminders.map(reminder => `**Reminder ID:** ${reminder.reminderId}\n**When:** ${formattedDate(reminder.time)}\n**Reminder:** ${reminder.message}`).join('\n\n'))
 		.setFooter(`Command called by ${user.tag}`, user.displayAvatarURL());
 	await interaction.reply({ embeds: [embed] });
 }

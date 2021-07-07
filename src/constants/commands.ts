@@ -53,7 +53,7 @@ export const checkReminders = async (client: Semblance) => {
 
     for (const [key, value] of Object.entries(userReminders) as Array<(Snowflake | UserReminder[])[]>) {
         (value as UserReminder[]).forEach((reminder) => {
-            (client.channels.cache.get(reminder.channelId) as TextChannel).send(`Reminder: ${value}`);
+            (client.channels.cache.get(reminder.channelId) as TextChannel).send(`<@${key}> Reminder: ${reminder.message}`);
         });
         if (reminderList.find(user => user.userId == key).reminders.length == (value as UserReminder[]).length)
             await Reminder.findOneAndDelete({ userId: key as Snowflake });
