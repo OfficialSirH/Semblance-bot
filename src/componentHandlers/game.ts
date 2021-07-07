@@ -163,7 +163,7 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
 
 async function create(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
     const { user } = interaction;
-    let percent = ((Math.ceil(Math.random() * 25) + 25) / 100) + 1;
+    let percent = ((Math.round(Math.random() * 25) + 25) / 100) + 1;
     let startingProfits = (Math.random() * 0.05) + 0.05;
     await Game.findOneAndDelete({ player: user.id });
     let creationHandler = new Game({ player: user.id, percentIncrease: percent, idleProfit: startingProfits, idleCollection: Date.now() });
