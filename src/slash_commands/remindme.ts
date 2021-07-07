@@ -3,6 +3,7 @@ import { Reminder } from '@semblance/models';
 import { randomColor, msToTime, timeInputRegex, formattedDate, timeInputToMs } from '@semblance/constants';
 import { Semblance } from '@semblance/structures';
 import { TimeLengths } from '@semblance/lib/interfaces/remindme';
+import { UserReminder } from '../models/Reminder';
 
 module.exports = {
     permissionRequired: 0,
@@ -75,7 +76,8 @@ async function create(client: Semblance, interaction: CommandInteraction, option
 	if (!!currentReminderData) return currentReminderData.update({ reminders: currentReminderData.reminders.concat([{ 
 		message: reminder, 
 		time: Date.now() + totalTime,
-		reminderId: currentReminderData.reminders.length
+		reminderId: currentReminderData.reminders.length,
+		channelId: interaction.channel.id
 	}]) });
 
 	let reminderHandler = new Reminder({ 
@@ -109,11 +111,12 @@ async function edit(client: Semblance, interaction: CommandInteraction, options:
 		totalTime = timeInputToMs(months, weeks, days, hours, minutes);
 	}
 
-	const updatedReminder = {} as { message: string, time: number, reminderId: number };
+	const updatedReminder = {} as UserReminder;
 
 	if (reminder) updatedReminder.message = reminder;
 	if (length) updatedReminder.time = Date.now() + totalTime;
 	updatedReminder.reminderId = reminderId;
+	updatedReminder.channelId = currentReminderData.reminders.find(r => r.reminderId === reminderId).channelId;
 
 	await currentReminderData.update({
 		reminders: currentReminderData.reminders.map(reminder => {

@@ -42,7 +42,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 	if (!!currentReminderData) return currentReminderData.update({ reminders: currentReminderData.reminders.concat([{ 
 		message: reminder.join(" "), 
 		time: Date.now() + totalTime, 
-		reminderId: currentReminderData.reminders.length
+		reminderId: currentReminderData.reminders.length,
+		channelId: message.channel.id
 	}]) });
 
 	let reminderHandler = new Reminder({ 

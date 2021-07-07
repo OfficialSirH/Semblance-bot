@@ -4,6 +4,7 @@ import { Afk, Game, Information, Reminder, Report, Votes } from "../models";
 import { Semblance } from "../structures";
 import config from '@semblance/config';
 import { clamp } from "@semblance/lib/utils/math";
+import { UserReminder } from "../models/Reminder";
 const { currentLogo } = config;
 
 // AFK functions - dontDisturb and removeAfk
@@ -39,18 +40,31 @@ export const gameTransferPages = ["https://i.imgur.com/BsjMAu6.png",
 		"https://i.imgur.com/YNBHSw9.png"];
 
 // reminder functions - checkReminders
-// TODO: update the checkReminders function to use the new Reminder model
 export const checkReminders = async (client: Semblance) => {
     if (!client.readyAt) return;
-    let reminderList = await Reminder.find({});
+    const reminderList = await Reminder.find({}), now = Date.now(); 
     if (!reminderList) return;
-    const userReminders = {} as Record<Snowflake, string>;
-    reminderList.filter((user) => Date.now() > user.remind).forEach((user) => userReminders[user.userId] = user.reminder);
+    const userReminders = {} as Record<Snowflake, UserReminder[]>;
+    reminderList.filter((user) => user.reminders.some(reminder => now < reminder.time))
+    .map(user => {
+        user.reminders = user.reminders.filter(reminder => now < reminder.time); 
+        return user;
+    }).forEach((user) => userReminders[user.userId] = user.reminders);
 
-    for (const [key, value] of Object.entries(userReminders) as Array<any[]>) {
-        let user = await client.users.fetch(key);
-        user.send(`Reminder: ${value}`);
-        await Reminder.findOneAndDelete({ userId: key });
+    for (const [key, value] of Object.entries(userReminders) as Array<(Snowflake | UserReminder[])[]>) {
+        (value as UserReminder[]).forEach((reminder) => {
+            (client.channels.cache.get(reminder.channelId) as TextChannel).send(`Reminder: ${value}`);
+        });
+        if (reminderList.find(user => user.userId == key).reminders.length == (value as UserReminder[]).length)
+            await Reminder.findOneAndDelete({ userId: key as Snowflake });
+        else 
+            await Reminder.findOneAndUpdate({ userId: key as Snowflake }, { $set: { 
+                reminders: reminderList.find(user => user.userId == key).reminders.filter(reminder => now > reminder.time)
+                    .map((reminder, index) => {
+                        reminder.reminderId = index+1;
+                        return reminder;
+                    })
+            } });
     }
 }
 

@@ -10,6 +10,7 @@ export interface UserReminder {
     message: string;
     time: number;
     reminderId: number;
+    channelId: Snowflake;
 }
 
 const ReminderSchema = new Schema({
