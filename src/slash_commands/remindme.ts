@@ -112,7 +112,8 @@ async function deleteReminder(client: Semblance, interaction: CommandInteraction
 	if (reminderId > currentReminderData.reminders.length) return interaction.reply({ content:"You must specify a valid reminder ID", ephemeral: true });
 
 	const deletedReminder = currentReminderData.reminders.find(reminder => reminder.reminderId == reminderId);
-	await currentReminderData.update({ reminders: currentReminderData.reminders.filter(reminder => reminder.reminderId != reminderId).map((reminder, index) => {
+	if (currentReminderData.reminders.length == 1) await currentReminderData.delete();
+	else await currentReminderData.update({ reminders: currentReminderData.reminders.filter(reminder => reminder.reminderId != reminderId).map((reminder, index) => {
 		reminder.reminderId = index + 1;
 		return reminder;
 	}) });
