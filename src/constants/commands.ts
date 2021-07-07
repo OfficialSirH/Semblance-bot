@@ -45,9 +45,9 @@ export const checkReminders = async (client: Semblance) => {
     const reminderList = await Reminder.find({}), now = Date.now(); 
     if (!reminderList) return;
     const userReminders = {} as Record<Snowflake, UserReminder[]>;
-    reminderList.filter((user) => user.reminders.some(reminder => now < reminder.time))
+    reminderList.filter((user) => user.reminders.some(reminder => now > reminder.time))
     .map(user => {
-        user.reminders = user.reminders.filter(reminder => now < reminder.time); 
+        user.reminders = user.reminders.filter(reminder => now > reminder.time); 
         return user;
     }).forEach((user) => userReminders[user.userId] = user.reminders);
 
@@ -59,7 +59,7 @@ export const checkReminders = async (client: Semblance) => {
             await Reminder.findOneAndDelete({ userId: key as Snowflake });
         else 
             await Reminder.findOneAndUpdate({ userId: key as Snowflake }, { $set: { 
-                reminders: reminderList.find(user => user.userId == key).reminders.filter(reminder => now > reminder.time)
+                reminders: reminderList.find(user => user.userId == key).reminders.filter(reminder => now < reminder.time)
                     .map((reminder, index) => {
                         reminder.reminderId = index+1;
                         return reminder;
