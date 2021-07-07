@@ -39,7 +39,7 @@ export const gameTransferPages = ["https://i.imgur.com/BsjMAu6.png",
 		"https://i.imgur.com/YNBHSw9.png"];
 
 // reminder functions - checkReminders
-
+// TODO: update the checkReminders function to use the new Reminder model
 export const checkReminders = async (client: Semblance) => {
     if (!client.readyAt) return;
     let reminderList = await Reminder.find({});
