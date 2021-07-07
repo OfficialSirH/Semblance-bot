@@ -15,7 +15,7 @@ export interface UserReminder {
 
 const ReminderSchema = new Schema({
     userId: String,
-    reminder: Array
+    reminders: Array
 })
 
 export const Reminder = model("Reminder", ReminderSchema, "Reminder") as Model<ReminderFormat>;
