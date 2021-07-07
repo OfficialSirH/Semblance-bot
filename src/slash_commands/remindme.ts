@@ -44,7 +44,7 @@ async function create(client: Semblance, interaction: CommandInteraction, option
 	if (!!currentReminderData) return currentReminderData.update({ reminders: currentReminderData.reminders.concat([{ 
 		message: reminder, 
 		time: Date.now() + totalTime,
-		reminderId: currentReminderData.reminders.length,
+		reminderId: currentReminderData.reminders.length+1,
 		channelId: interaction.channel.id
 	}]) });
 
