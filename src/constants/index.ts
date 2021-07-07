@@ -108,7 +108,7 @@ export const timeInputRegex = /(?:(?<months>\d{1,2})M)?(?:(?<weeks>\d{1,2})w)?(?
 export const onlyUnique = (value: any, index: number, self: any[]) => self.indexOf(value) == index;
 export const parseArgs = (_arguments: string) => (_arguments.match(/\"[^"]+\"|[^ ]+/g) ?? []).map(argument => argument.startsWith("\"") && argument.endsWith("\"") ? argument.slice(1).slice(0, -1) : argument);
 export const lockMessage = (user: User) => `👮 👮 ***CHANNEL IS LOCKED BY ${user}*** 👮 👮`;
-export const formattedDate = (ms: number) => `<t:${ms/1000}:F>`;
+export const formattedDate = (ms: number) => `<t:${Math.floor(ms/1000)}:F>`;
 export const timeInputToMs = (months: number, weeks: number, days: number, hours: number, minutes: number) => {
     let ms = 0;
     ms += months * 30 * 24 * 60 * 60 * 1000;
