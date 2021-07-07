@@ -71,6 +71,7 @@ async function edit(client: Semblance, interaction: CommandInteraction, options:
 	length = options.get('length')?.value as string;
 		
 	if (!reminder && !length) return interaction.reply({ content: "You must specify a reminder or a length", ephemeral: true });
+	if (reminderId > currentReminderData.reminders.length) return interaction.reply({ content:"You must specify a valid reminder ID", ephemeral: true });
 
 	let timeAmount: RegExpExecArray, totalTime = 0;
 	if (length) {
@@ -82,7 +83,7 @@ async function edit(client: Semblance, interaction: CommandInteraction, options:
 
 	const updatedReminder = {} as UserReminder;
 
-	if (reminder) updatedReminder.message = reminder;
+	updatedReminder.message = reminder ? reminder : currentReminderData.reminders[reminderId - 1].message;
 	if (length) updatedReminder.time = Date.now() + totalTime;
 	updatedReminder.reminderId = reminderId;
 	updatedReminder.channelId = currentReminderData.reminders.find(r => r.reminderId === reminderId).channelId;
@@ -97,19 +98,20 @@ async function edit(client: Semblance, interaction: CommandInteraction, options:
 		.setTitle("Edited Reminder")
 		.setColor(randomColor)
 		.setThumbnail(user.displayAvatarURL())
-		.setDescription(``)
+		.setDescription(`Reminder successfully edited:\n**When:** ${formattedDate(updatedReminder.time)}\n **Reminder**: ${updatedReminder.message}`)
 		.setFooter(`Command called by ${user.tag}`, user.displayAvatarURL());
 	await interaction.reply({ embeds: [embed] });
 }
 
 async function deleteReminder(client: Semblance, interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) {
 	const user = interaction.member.user as User,
-		currentReminderData = await Reminder.findOne({ userId: user.id });
+	reminderId = options.get('reminderid').value as number,
+	currentReminderData = await Reminder.findOne({ userId: user.id });
 
 	if (!currentReminderData) return interaction.reply({ content: "You don't have any reminders to delete.", ephemeral: true });
+	if (reminderId > currentReminderData.reminders.length) return interaction.reply({ content:"You must specify a valid reminder ID", ephemeral: true });
 
-	const reminderId = options.get('reminderid').value as number,
-	deletedReminder = currentReminderData.reminders.find(reminder => reminder.reminderId == reminderId);
+	const deletedReminder = currentReminderData.reminders.find(reminder => reminder.reminderId == reminderId);
 	await currentReminderData.update({ reminders: currentReminderData.reminders.filter(reminder => reminder.reminderId != reminderId) });
 
 	let embed = new MessageEmbed()
