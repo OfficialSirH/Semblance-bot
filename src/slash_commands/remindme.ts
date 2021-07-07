@@ -85,7 +85,8 @@ async function create(client: Semblance, interaction: CommandInteraction, option
 		reminders: [{
 			message: reminder,
 			time: Date.now() + totalTime,
-			reminderId: 1
+			reminderId: 1,
+			channelId: interaction.channel.id
 		}]
 	});
 	await reminderHandler.save();
@@ -162,7 +163,7 @@ async function list(client: Semblance, interaction: CommandInteraction) {
 		.setTitle("Reminder List")
 		.setColor(randomColor)
 		.setThumbnail(user.displayAvatarURL())
-		.setDescription(currentReminderData.reminders.map(reminder => `**Reminder ID:** ${reminder.reminderId} **When:** ${formattedDate(reminder.time - Date.now())}\n**Reminder:** ${reminder.message}`).join('\n'))
+		.setDescription(currentReminderData.reminders.map(reminder => `**Reminder ID:** ${reminder.reminderId}\n**When:** ${formattedDate(reminder.time - Date.now())}\n**Reminder:** ${reminder.message}`).join('\n\n'))
 		.setFooter(`Command called by ${user.tag}`, user.displayAvatarURL());
 	await interaction.reply({ embeds: [embed] });
 }

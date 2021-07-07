@@ -51,7 +51,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		reminders: [{
 			message: reminder.join(' '),
 			time: Date.now() + totalTime,
-			reminderId: 1
+			reminderId: 1,
+			channelId: message.channel.id
 		}]
 	});
 	await reminderHandler.save();
