@@ -1,4 +1,4 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, Util } from 'discord.js';
 import { randomColor, formattedDate, timeInputRegex, timeInputToMs } from '@semblance/constants';
 import { Reminder } from '@semblance/models';
 import { Semblance } from '../structures';
@@ -25,7 +25,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 	const { groups: { months = 0, weeks = 0, days = 0, hours = 0, minutes = 0 }} = timeAmount as unknown as TimeLengths;
 	if ([months, weeks, days, hours, minutes].every(time => !time)) return message.reply("Your input for time was invalid, please try again.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000));
 
-	let reminder = args.splice(1, args.length);
+	let reminder = Util.removeMentions(args.splice(1, args.length).join(' '));
 	let totalTime = timeInputToMs(months, weeks, days, hours, minutes);
 
 	if (totalTime > 29030400000) return message.reply("You cannot create a reminder for longer than a year");
@@ -36,11 +36,11 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		.setColor(randomColor)
 		.setAuthor(message.author.tag, message.author.displayAvatarURL())
 		.setThumbnail(message.author.displayAvatarURL())
-		.setDescription(`New reminder successfully created:\n**When:** ${formattedDate(Date.now() + totalTime)}\n **Reminder**: ${reminder.join(" ")}`);
+		.setDescription(`New reminder successfully created:\n**When:** ${formattedDate(Date.now() + totalTime)}\n **Reminder**: ${reminder}`);
 	message.channel.send({ embeds: [embed] });
 
 	if (!!currentReminderData) return currentReminderData.update({ reminders: currentReminderData.reminders.concat([{ 
-		message: reminder.join(" "), 
+		message: reminder, 
 		time: Date.now() + totalTime, 
 		reminderId: currentReminderData.reminders.length+1,
 		channelId: message.channel.id
@@ -49,7 +49,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 	let reminderHandler = new Reminder({ 
 		userId: message.author.id, 
 		reminders: [{
-			message: reminder.join(' '),
+			message: reminder,
 			time: Date.now() + totalTime,
 			reminderId: 1,
 			channelId: message.channel.id

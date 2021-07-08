@@ -1,4 +1,4 @@
-import { MessageEmbed, CommandInteraction, User, CommandInteractionOption, Collection } from 'discord.js';
+import { MessageEmbed, CommandInteraction, User, CommandInteractionOption, Collection, Util } from 'discord.js';
 import { Reminder } from '@semblance/models';
 import { randomColor, msToTime, timeInputRegex, formattedDate, timeInputToMs } from '@semblance/constants';
 import { Semblance } from '@semblance/structures';
@@ -19,7 +19,7 @@ module.exports = {
 
 async function create(client: Semblance, interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) {
 		const timeAmount = timeInputRegex.exec(options.get('length').value as string),
-        reminder = options.get('reminder').value as string,
+        reminder = Util.removeMentions(options.get('reminder').value as string),
         user = interaction.member.user as User;
 
 	if (timeAmount == null) return interaction.reply({ content: 'Your input for time is invalid, please try again.', ephemeral: true });
@@ -83,7 +83,7 @@ async function edit(client: Semblance, interaction: CommandInteraction, options:
 
 	const updatedReminder = {} as UserReminder;
 
-	updatedReminder.message = reminder ? reminder : currentReminderData.reminders[reminderId - 1].message;
+	updatedReminder.message = reminder ? Util.removeMentions(reminder) : Util.removeMentions(currentReminderData.reminders[reminderId - 1].message);
 	if (length) updatedReminder.time = Date.now() + totalTime;
 	updatedReminder.reminderId = reminderId;
 	updatedReminder.channelId = currentReminderData.reminders.find(r => r.reminderId === reminderId).channelId;
