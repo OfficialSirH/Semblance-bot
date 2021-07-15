@@ -7,7 +7,7 @@ import { Semblance } from '@semblance/structures';
 
 const wait = promisify(setTimeout),
     { prefix, sirhGuildId, c2sGuildId } = config,
-    cooldown = new Collection();
+    cooldown = new Collection<Snowflake, number>();
 
 module.exports = {
     description: "Big epicc bug reporting feature exclusively for C2S server.",
@@ -101,11 +101,11 @@ async function report(message: Message, content: string, client: Semblance) {
     } else contentList = difcontent;
     if (contentList[0].length < 1 ?? contentList[1].length < 1 ?? contentList[2].length < 1 ?? contentList[3].length < 1 ?? contentList[4].length < 1) return message.reply("You missed some content in your report, please don't leave fields empty.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 10000));
 
-    let userCooldown: number | undefined = cooldown.get(message.author.id) as number;
-    if (userCooldown && Date.now() - userCooldown < (1000 * 60 * 5) && !message.member!.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return message.reply(`You're on cooldown with this command, you can use the command again in ${(Date.now() - userCooldown - (1000 * 60 * 5)) / 1000 / 60} minutes.`);
+    let userCooldown = cooldown.get(message.author.id);
+    if (userCooldown && Date.now() - userCooldown < (1000 * 60 * 5) && !message.member?.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) return message.reply(`You're on cooldown with this command, you can use the command again in ${(Date.now() - userCooldown - (1000 * 60 * 5)) / 1000 / 60} minutes.`);
     else if (!userCooldown ?? Date.now() - userCooldown > (1000 * 60 * 5)) cooldown.set(message.author.id, Date.now());
 
-    let reportHandler = await Report.find({}), totalReports = reportHandler.map(r => r).length;
+    let reportHandler = await Report.find({}), totalReports = reportHandler.length;
     const currentBugId = totalReports + 1;
     var embed = new MessageEmbed()
         .setAuthor(`${message.author.tag} (${message.author.id})\nBug Id: #${currentBugId}`, message.author.displayAvatarURL())
@@ -161,7 +161,7 @@ async function bug(client: Semblance, message: Message, permissionLevel: number,
     let providedId = args[0].replace(/\D/g, '') as Snowflake, report;
     if (!providedId) return message.reply("The Id you specified is invalid").then(msg => { setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000); message.delete() });
     report = await Report.findOne({ bugId: (providedId as unknown) as number });
-    if (!report && !!providedId.match(/[0-9]{17,21}/)) report = await Report.findOne({ messageId: providedId });
+    if (!report && !!providedId.match(/\d{17,21}/)) report = await Report.findOne({ messageId: providedId });
     if (!report) return message.reply("The Id you specified doesn't exist.").then(msg => { setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000); message.delete() });
 
 

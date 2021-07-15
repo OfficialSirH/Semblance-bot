@@ -12,8 +12,8 @@ const client = new Semblance({
 	disableMentions: { parse: ['users', 'roles'], repliedUser: true },
 	messageCacheLifetime: 30,
 	messageSweepInterval: 300,
-	partials: [ "USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE", "REACTION" ],
-	intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MESSAGE_REACTIONS, Intents.FLAGS.DIRECT_MESSAGES ]
+	partials: [ "USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE" ],
+	intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES ]
 });
 // express routing
 import * as express from 'express';

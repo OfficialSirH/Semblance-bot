@@ -32,7 +32,13 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     let statsHandler = await Game.findOne({ player: message.author.id }), embed = new MessageEmbed(), cost: number;
     if (!statsHandler) embed.setTitle(`Semblance's Idle-Game`)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
-    .setDescription('Use the buttons below to play the game. :D');
+    .setDescription(['Use the buttons below to play the game. :D',
+        'If you can\'t see the buttons, you need to update your Discord.\n',
+        'About - explains the game and its rules',
+        'Collect - collect earnings',
+        'Upgrade - upgrade profit',
+        'Leaderboard - see top 20 players',
+        'Vote - list of voting sites to earn bonus currency'].join('\n'));
     else embed.setTitle(`Welcome back to Semblance's Idle-Game!`)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
