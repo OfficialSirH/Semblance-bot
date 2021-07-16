@@ -7,6 +7,7 @@ import { clamp } from "@semblance/lib/utils/math";
 import { UserReminder } from "../models/Reminder";
 import { APIParams } from "@semblance/lib/interfaces/catAndDogAPI";
 import * as querystring from 'querystring';
+import fetch from 'node-fetch';
 const { currentLogo } = config;
 
 // AFK functions - dontDisturb and removeAfk
