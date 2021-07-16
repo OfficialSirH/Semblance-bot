@@ -43,8 +43,6 @@ router(app, client);
 
 app.use((req: Request, res: Response) => res.redirect('https://officialsirh.github.io/'));
 
-app.listen(8079);
-
 // Check for Tweet from ComputerLunch
 setInterval(() => checkTweet(client), 2000);
 
@@ -54,7 +52,8 @@ setInterval(() => checkTweet(client), 2000);
 		useFindAndModify: false,
 		useUnifiedTopology: true
 	});
-	return client.login(process.env.token);
+	await client.login(process.env.token);
+	app.listen(8079);
 })()
 
 export default client;
