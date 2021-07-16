@@ -20,7 +20,7 @@ export const run = async (client: Semblance, interaction: CommandInteraction) =>
     
     const images = await fetchCatOrDog(query_params, wantsCat);
 
-    if (images.data.length === 0) return interaction.reply({ content: 'No images found.', ephemeral: true });
+    if (images.length === 0) return interaction.reply({ content: 'No images found.', ephemeral: true });
 
     const image = images[0],
     image_url = image.url,
