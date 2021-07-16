@@ -18,7 +18,10 @@ export default function (app: Express) {
 	dboatsWebhook = new Webhook(JSON.parse(process.env.DBoatsAuth).webAuth);
 
     app.route('/dblwebhook')
-        .post(topggWebhook.middleware(),(req, res) => tpggVoteHandler);
+        .post(topggWebhook.middleware(),(req, res) => {
+            console.log('testing webhook');
+            tpggVoteHandler
+        });
 
     app.route('/bfdwebhook')
         .post(bfdWebhook.middleware(),(req, res) => bfdVoteHandler);
