@@ -5,6 +5,8 @@ import { Semblance } from "../structures";
 import config from '@semblance/config';
 import { clamp } from "@semblance/lib/utils/math";
 import { UserReminder } from "../models/Reminder";
+import { APIParams } from "@semblance/lib/interfaces/catAndDogAPI";
+import * as querystring from 'querystring';
 const { currentLogo } = config;
 
 // AFK functions - dontDisturb and removeAfk
@@ -168,4 +170,12 @@ export function guildBookPage(client: Semblance, chosenPage: string | number) {
         chosenPage,
         pageDetails
     };
+}
+
+// imagegen API fetch
+export const fetchCatOrDog = async (query_params: APIParams, wantsCat: boolean) => {
+    const API_URL = `https://api.the${wantsCat ? 'cat' : 'dog'}api.com/v1/images/search?${querystring.stringify(query_params)}`,
+    API_KEY = wantsCat ? process.env.CAT_API_KEY : process.env.DOG_API_KEY;
+
+    return (await fetch(API_URL, { headers: { 'X-API-KEY': API_KEY } })).json();
 }
