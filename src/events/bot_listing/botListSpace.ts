@@ -2,12 +2,12 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import { Votes, Game } from '@semblance/models';
 import config from '@semblance/config';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { request } from '@semblance/lib/interfaces/botListSpace';
 const { sirhGuildId } = config;
 
-export const blsVoteHandler = (req: request, res: Response) => {
-	const { vote, client } = req, user = vote.user;
+export const blsVoteHandler = (req: request | Request, res: Response) => {
+	const { vote, client } = req as request, user = vote.user;
 	if (!client.readyAt) return;
 	let channel = client.guilds.cache.get(sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
 	if (vote.type == 'test') return console.log("Test Vote Completed.");

@@ -3,11 +3,11 @@ import { Votes, Game } from '@semblance/models';
 import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
 import { request } from '@semblance/lib/interfaces/discordBotList';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 const { sirhGuildId } = config;
 
-export const dblVoteHandler = (req: request, res: Response) => {
-	const { vote, client } = req;
+export const dblVoteHandler = (req: request | Request, res: Response) => {
+	const { vote, client } = req as request;
 	if (!client.readyAt) return;
 	let channel = client.guilds.cache.get(sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
 	client.users.fetch(vote.id, { cache: false }).then(async (u) => {

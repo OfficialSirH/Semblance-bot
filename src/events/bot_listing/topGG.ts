@@ -2,12 +2,12 @@ import { MessageEmbed, Snowflake, TextChannel } from 'discord.js';
 import { Votes, Game } from '@semblance/models';
 import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { request } from '@semblance/lib/interfaces/topGG';
 const { sirhGuildId } = config;
 
-export const tpggVoteHandler = (req: request, res: Response) => {
-	const { vote, client } = req;
+export const tpggVoteHandler = (req: request | Request, res: Response) => {
+	const { vote, client } = req as request;
 	console.log('testing tpggVoteHandler');
 	if (!client.readyAt) return;
 	let channel = client.guilds.cache.get(sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;

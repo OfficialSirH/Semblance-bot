@@ -18,21 +18,18 @@ export default function (app: Express) {
 	dboatsWebhook = new Webhook(JSON.parse(process.env.DBoatsAuth).webAuth);
 
     app.route('/dblwebhook')
-        .post(topggWebhook.middleware(),(req, res) => {
-            console.log('testing webhook');
-            tpggVoteHandler
-        });
+        .post(topggWebhook.middleware(),(req, res) => tpggVoteHandler(req, res));
 
     app.route('/bfdwebhook')
-        .post(bfdWebhook.middleware(),(req, res) => bfdVoteHandler);
+        .post(bfdWebhook.middleware(),(req, res) => bfdVoteHandler(req, res));
 
     app.route('/discordblwebhook')
         .options(dblWebhook.middleware(), () => console.log(`Test vote was successful`))
-        .post(dblWebhook.middleware(),(req, res) => dblVoteHandler);
+        .post(dblWebhook.middleware(),(req, res) => dblVoteHandler(req, res));
 
     app.route('/blswebhook')
-        .post(blsWebhook.middleware(),(req, res) => blsVoteHandler);
+        .post(blsWebhook.middleware(),(req, res) => blsVoteHandler(req, res));
 
 	app.route('/dboatswebhook')
-		.post(dboatsWebhook.middleware(),(req, res) => dbVoteHandler);
+		.post(dboatsWebhook.middleware(),(req, res) => dbVoteHandler(req, res));
 }
