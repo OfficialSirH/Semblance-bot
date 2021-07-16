@@ -26,8 +26,6 @@ export class Semblance extends Client {
     constructor(options: object) {
         super(options as ClientOptions);
 
-        Webhook.client = this;
-
         this._clearCache = setInterval(() => {
             this.sweepUsers();
         }, 30000);

@@ -1,7 +1,7 @@
 import { Information } from '@semblance/models';
 import { MessageEmbed, TextChannel, Constants } from 'discord.js';
 import config from '@semblance/config';
-import { Semblance } from '@semblance/src/structures';
+import { Semblance, Webhook } from '@semblance/src/structures';
 import {
     checkReminders,
     randomColor
@@ -13,6 +13,8 @@ const { Events } = Constants;
 export const ready = (client: Semblance) => {
     client.on(Events.CLIENT_READY, async () => {
         console.log(`Logged in as ${client.user.tag}!`);
+
+        Webhook.client = client;
 
         client.setInterval(() => {
             let totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
