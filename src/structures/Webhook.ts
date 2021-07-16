@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import * as rawBody from 'raw-body';
 import { parse } from 'querystring';
 import { Semblance } from ".";
+import { request } from "@semblance/lib/interfaces/topGG";
 
 /**
  * Webhook Class
@@ -71,17 +72,17 @@ export class Webhook {
      * })
      */
     middleware() {
-        return async (req: Request, res: Response, next: NextFunction) => {
+        return async (req: baserequest, res: Response, next: NextFunction) => {
             const response = await this._parseRequest(req, res);
             if (!response)
                 return res.sendStatus(404);
             res.sendStatus(200);
-            req = {
-                ...req,
-                vote: response,
-                client: Webhook.client
-            } as any;
+            req.vote = response;
             next();
         };
     }
+}
+
+export interface baserequest extends Request {
+    vote: any;
 }
