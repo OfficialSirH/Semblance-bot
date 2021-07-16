@@ -8,7 +8,6 @@ const { sirhGuildId } = config;
 
 export const dblVoteHandler = (req: request | Request, res: Response) => {
 	const { vote, client } = req as request;
-	if (!client.readyAt) return;
 	let channel = client.guilds.cache.get(sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
 	client.users.fetch(vote.id, { cache: false }).then(async (u) => {
 		try {

@@ -8,7 +8,6 @@ const { sirhGuildId } = config;
 
 export const bfdVoteHandler = (req: request | Request, res: Response) => {
 	const { vote, client } = req as request;
-	if (!client.readyAt) return;
 	if (vote.type == 'test') return console.log("Test Vote Completed.");
 	let channel = client.guilds.cache.get(sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
 	client.users.fetch(vote.user, { cache: false }).then(async (u) => {

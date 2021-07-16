@@ -8,11 +8,8 @@ const { sirhGuildId } = config;
 
 export const tpggVoteHandler = (req: request | Request, res: Response) => {
 	const { vote, client } = req as request;
-	console.log('testing tpggVoteHandler');
-	if (!client.readyAt) return console.log('apparently client is not ready');
 	let channel = client.guilds.cache.get(sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
 	if (vote.type == 'test') return console.log("Test Vote Completed.");
-	console.log('testing passed test vote');
 	client.users.fetch(vote.user as Snowflake, { cache: false }).then(async (u) => {
 		try {
 			console.log(`${u.tag} just voted!`);
