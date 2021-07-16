@@ -4,10 +4,11 @@ import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
 import { request } from '@semblance/lib/interfaces/discordBotList';
 import { Response, Request } from 'express';
+import { Webhook } from '@semblance/src/structures';
 const { sirhGuildId } = config;
 
 export const dblVoteHandler = (req: request | Request, res: Response) => {
-	const { vote, client } = req as request;
+	const { vote } = req as request, { client } = Webhook;
 	let channel = client.guilds.cache.get(sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
 	client.users.fetch(vote.id, { cache: false }).then(async (u) => {
 		try {
