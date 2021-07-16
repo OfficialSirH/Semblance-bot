@@ -4,11 +4,11 @@ import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
 import { Response, Request } from 'express';
 import { request } from '@semblance/lib/interfaces/topGG';
-import { Webhook } from '@semblance/structures';
+import { Semblance } from '@semblance/structures';
 const { sirhGuildId } = config;
 
-export const tpggVoteHandler = (req: request | Request, res: Response) => {
-	const { vote } = req as request, { client } = Webhook;
+export const tpggVoteHandler = (req: request | Request, res: Response, client: Semblance) => {
+	const { vote } = req as request;
 	let channel = client.guilds.cache.get(sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
 	if (vote.type == 'test') return console.log("Test Vote Completed.");
 	client.users.fetch(vote.user as Snowflake, { cache: false }).then(async (u) => {

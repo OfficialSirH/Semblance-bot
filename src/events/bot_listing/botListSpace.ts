@@ -4,11 +4,11 @@ import { Votes, Game } from '@semblance/models';
 import config from '@semblance/config';
 import { Response, Request } from 'express';
 import { request } from '@semblance/lib/interfaces/botListSpace';
-import { Webhook } from '@semblance/src/structures';
+import { Semblance } from '@semblance/src/structures';
 const { sirhGuildId } = config;
 
-export const blsVoteHandler = (req: request | Request, res: Response) => {
-	const { vote } = req as request, user = vote.user, { client } = Webhook;
+export const blsVoteHandler = (req: request | Request, res: Response, client: Semblance) => {
+	const { vote } = req as request, user = vote.user;
 	let channel = client.guilds.cache.get(sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
 	if (vote.type == 'test') return console.log("Test Vote Completed.");
 	client.users.fetch(user.id, { cache: false }).then(async (u) => {
