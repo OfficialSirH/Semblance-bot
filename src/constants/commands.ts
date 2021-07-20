@@ -49,10 +49,10 @@ export const checkReminders = async (client: Semblance) => {
     if (!reminderList) return;
     const userReminders = {} as Record<Snowflake, UserReminder[]>;
     reminderList.filter((user) => user.reminders.some(reminder => now > reminder.time))
-    .map(user => {
-        user.reminders = user.reminders.filter(reminder => now > reminder.time); 
-        return user;
-    }).forEach((user) => userReminders[user.userId] = user.reminders);
+    .map(user => ({
+            ...user,
+            reminders: user.reminders.filter(reminder => now > reminder.time)
+        })).forEach((user) => userReminders[user.userId] = user.reminders);
 
     for (const [key, value] of Object.entries(userReminders) as Array<(Snowflake | UserReminder[])[]>) {
         (value as UserReminder[]).forEach((reminder) => {
