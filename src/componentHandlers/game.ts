@@ -5,6 +5,7 @@ import { filterAction, randomColor } from "../constants";
 import config from '@semblance/config';
 import { GameFormat } from "../models/Game";
 import { Semblance } from "../structures";
+import { currentPrice } from "../constants/commands";
 const { prefix } = config;
 
 export const run = async (interaction: MessageComponentInteraction, { action, id }: ButtonData) => {
@@ -300,14 +301,4 @@ async function graph(interaction: MessageComponentInteraction, components: Messa
         .setColor(randomColor)
         .setDescription("[Click Here for Game Data Graphs](https://charts.mongodb.com/charts-semblance-xnkqg/public/dashboards/5f9e8f7f-59c6-4a87-8563-0d68faed8515)");
     await interaction.update({ embeds: [embed], components });
-}
-
-async function currentPrice(userData: GameFormat) {
-    if (userData.level == userData.checkedLevel) {
-        userData = await Game.findOneAndUpdate({ player: userData.player }, {
-            $set: { checkedLevel: userData.checkedLevel+1, cost: userData.cost + userData.baseCost * Math.pow(userData.percentIncrease, userData.level + 1) }
-        }, { new: true });
-        return userData.cost;
-    }
-    return (userData.cost == 0) ? userData.baseCost : userData.cost;
 }

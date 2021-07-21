@@ -8,6 +8,7 @@ import { UserReminder } from "../models/Reminder";
 import { APIParams } from "@semblance/lib/interfaces/catAndDogAPI";
 import * as querystring from 'querystring';
 import fetch from 'node-fetch';
+import { GameFormat } from "../models/Game";
 const { currentLogo } = config;
 
 // AFK functions - dontDisturb and removeAfk
@@ -178,4 +179,16 @@ export const fetchCatOrDog = async (query_params: APIParams, wantsCat: boolean) 
     API_KEY = wantsCat ? process.env.CAT_API_KEY : process.env.DOG_API_KEY;
 
     return (await fetch(API_URL, { headers: { 'X-API-KEY': API_KEY } })).json();
+}
+
+// game - currentPrice
+
+export async function currentPrice(userData: GameFormat) {
+    if (userData.level == userData.checkedLevel) {
+        userData = await Game.findOneAndUpdate({ player: userData.player }, {
+            $set: { checkedLevel: userData.checkedLevel+1, cost: userData.cost + userData.baseCost * Math.pow(userData.percentIncrease, userData.level + 1) }
+        }, { new: true });
+        return userData.cost;
+    }
+    return (userData.cost == 0) ? userData.baseCost : userData.cost;
 }
