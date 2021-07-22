@@ -2,7 +2,7 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import { Votes, Game } from '@semblance/models';
 import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
-import { request } from '@semblance/lib/interfaces/botsForDiscord';
+import { request } from '@semblance/lib/interfaces/discords';
 import { Response, Request } from 'express';
 import { Semblance } from '@semblance/src/structures';
 const { sirhGuildId } = config;
@@ -16,7 +16,7 @@ export const bfdVoteHandler = (req: request | Request, res: Response, client: Se
 			console.log(`${u.tag} just voted!`);
 			let playerData = await Game.findOne({ player: vote.user });
 			let earningsBoost = 3600 * 6;
-			let description = `Thanks for voting for Semblance on botsfordiscord.com!! :D`;
+			let description = `Thanks for voting for Semblance on discords.com!! :D`;
 			if (playerData)
 				playerData = await Game.findOneAndUpdate({ player: vote.user }, { $set: { money: playerData.money + (playerData.idleProfit * earningsBoost) } }, { new: true });
 			

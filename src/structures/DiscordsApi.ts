@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { BotStats, BotInfo, UserInfo, BotsResponse, BotVotes, UserBots, Widget } from '@semblance/lib/interfaces/botsForDiscord';
+import { BotStats, BotInfo, UserInfo, BotsResponse, BotVotes, UserBots, Widget } from '@semblance/lib/interfaces/discords';
 import { Snowflake } from 'discord.js';
 import fetch, { Headers } from 'node-fetch';
 import { APIError } from './ApiError';

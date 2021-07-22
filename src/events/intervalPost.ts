@@ -11,7 +11,7 @@ export const intervalPost = (client: Semblance) => {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': JSON.parse(process.env.discordBotsGGAuth).Auth
+                'Authorization': process.env.discordBotsGGAuth
             },
             body: JSON.stringify(data)
         })).json();
@@ -20,9 +20,9 @@ export const intervalPost = (client: Semblance) => {
     
     
     
-    const bfd = new BFDApi(JSON.parse(process.env.botsForDiscordAuth).Auth);
-            setInterval(() => {
-                bfd.postStats(client.guilds.cache.size);
+    const bfd = new BFDApi(process.env.botsForDiscordAuth);
+    client.setInterval(() => {
+        bfd.postStats(client.guilds.cache.size);
     }, day);
     
     
@@ -33,7 +33,7 @@ export const intervalPost = (client: Semblance) => {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': JSON.parse(process.env.botListSpaceAuth).Auth
+                'Authorization': process.env.botListSpaceAuth
             },
             body: JSON.stringify(data)
         })
@@ -49,7 +49,7 @@ export const intervalPost = (client: Semblance) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: JSON.parse(process.env.DBoatsAuth).Auth
+                Authorization: process.env.DBoatsAuth
             },
             body: JSON.stringify({ server_count: client.guilds.cache.size })
         })
@@ -59,7 +59,7 @@ export const intervalPost = (client: Semblance) => {
     }, day);
     
     
-    const dbl = new DBLApi(JSON.parse(process.env.discordBotListAuth).Auth);
+    const dbl = new DBLApi(process.env.discordBotListAuth);
     setInterval(() => {
         if (client.shard != null && client.shard)
             dbl.postStats({
@@ -75,7 +75,7 @@ export const intervalPost = (client: Semblance) => {
     }, day);
     
     
-    const tpgg = new TopggSDK.Api(JSON.parse(process.env.topGGAuth).Auth);
+    const tpgg = new TopggSDK.Api(process.env.topGGAuth);
     setInterval(() => {
         if (client.shard != null && client.shard) {
             tpgg.postStats({

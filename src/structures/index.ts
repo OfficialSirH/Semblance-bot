@@ -1,5 +1,5 @@
 export { Webhook } from './Webhook';
-export { BFDApi } from './BotsForDiscordApi'; 
+export { BFDApi } from './DiscordsApi'; 
 export { DBLApi } from './DiscordBotListApi';
 export { Semblance } from './Semblance';
 export { BaseLeaderboard } from './BaseLeaderboard';

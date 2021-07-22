@@ -4,7 +4,7 @@ import { Request } from 'express';
 
 export interface APIOptions {
     /**
-     * Botsfordiscord.com Token
+     * discords.com Token
      */
     token?: string;
 }

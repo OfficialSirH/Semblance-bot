@@ -8,7 +8,7 @@ module.exports.permissionRequired = 0;
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
     let options = interaction.options,
-    metabits = options.get('metabits').value,
+    metabits = options.get('metabit').value,
     dinoRanks = clamp(options.get('mv_ranks').value as number, 0, 550),
     simSpeed = clamp(options.get('speed_upgrade').value as number, 0, 2105);
     

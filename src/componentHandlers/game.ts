@@ -262,15 +262,16 @@ async function votes(interaction: MessageComponentInteraction, components: Messa
 	.setTitle("Vote")
 	.setColor(randomColor)
 	.setThumbnail(client.user.displayAvatarURL())
-		.setDescription(["**Votable sites(gives burst of currency for Semblance's idle-game)**",
-				`[Top.gg](https://top.gg/bot/${client.user.id})`,
-				`[Discordbotlist.com](https://discordbotlist.com/bots/semblance)`,
-				`[Botsfordiscord.com](https://botsfordiscord.com/bot/${client.user.id})`,
-				`[Botlist.space](https://botlist.space/bot/${client.user.id})`,
-				`[Discord.boats](https://discord.boats/bot/${client.user.id})`,
-				"**Unvotable sites**",
-				`[Discord.bots.gg](https://discord.bots.gg/bots/${client.user.id})`,
-			].join('\n'))
+		.setDescription(["**Rewardable voting sites**",
+        `[Top.gg](https://top.gg/bot/${client.user.id})`,
+        `[Discordbotlist.com](https://discordbotlist.com/bots/semblance)`,
+        `[Discords.com](https://discords.com/bots/bot/${client.user.id})`,
+        `[Discord.boats](https://discord.boats/bot/${client.user.id})`,
+        "**Unrewardable voting sites**",
+        `[Botlist.space](https://botlist.space/bot/${client.user.id})`,
+        "**Unvotable sites**",
+        `[Discord.bots.gg](https://discord.bots.gg/bots/${client.user.id})`,
+    ].join('\n'))
 	.setFooter(`Thanks, ${user.tag}, for considering to support my bot through voting, you may also support me with ${prefix}patreon :D`, user.displayAvatarURL());
     interaction.update({ embeds: [embed], components });
 }
