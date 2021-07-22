@@ -10,7 +10,7 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
     let options = interaction.options,
     metabits = options.get('metabit').value,
     dinoRanks = clamp(options.get('mv_ranks').value as number, 0, 550),
-    simSpeed = clamp(options.get('speed_upgrade').value as number, 0, 2105);
+    simSpeed = clamp(options.get('speed_upgrades').value as number, 0, 2105);
     
     if (!checkValue(metabits as string)) return interaction.reply({ content: 'Your input for metabits was invalid', ephemeral: true });
     metabits = nameToScNo(metabits as string);
