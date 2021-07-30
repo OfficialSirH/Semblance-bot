@@ -6,7 +6,7 @@ import { Semblance } from '@semblance/structures';
 module.exports.permissionRequired = 0;
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
-    let metabits = interaction.options.get('metabits').value;
+    let metabits = interaction.options.get('metabit').value;
     if (!checkValue(metabits as string)) return interaction.reply({ content: 'Your input for metabits was invalid', ephemeral: true });
     try {
         metabits = (metabits as string).match(/[a-z]/i) ? nameToScNo(metabits as string) : parseInt(metabits as string);
