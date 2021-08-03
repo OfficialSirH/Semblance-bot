@@ -20,21 +20,43 @@ export const insertionsort = (list: (number | Snowflake)[][]) => {
     }
     return list;
 };
-export const quicksort = (list: (number | Snowflake)[][]) => {
-    if (list.length <= 1) {
-        return list;
-    }
-    const pivot = list[0][1];
-    const left = [];
-    const right = [];
-    for (let i = 1; i < list.length; i++) {
-        if (list[i][1] < pivot) {
-            left.push(list[i]);
-        } else {
-            right.push(list[i]);
+export const quickSort = (list: (number | Snowflake)[][], left: number, right: number) => {
+    let index: number;
+    if (list.length > 1) {
+        index = partition(list, left, right); //index returned from partition
+        if (left < index - 1) { //more elements on the left side of the pivot
+            quickSort(list, left, index - 1);
+        }
+        if (index < right) { //more elements on the right side of the pivot
+            quickSort(list, index, right);
         }
     }
-    return quicksort(left).concat([list[0]], quicksort(right));
+    return list;
+};
+const swap = (list: (number | Snowflake)[][], leftIndex: number, rightIndex: number) => {
+    const temp = list[leftIndex];
+    list[leftIndex] = list[rightIndex];
+    list[rightIndex] = temp;
+    return list;
+};
+const partition = (list: (number | Snowflake)[][], left: number, right: number) => {
+    let pivot = list[Math.floor((right + left) / 2)],
+        i = left,
+        j = right;
+    while (i <= j) {
+        while (list[i] < pivot) {
+            i++;
+        }
+        while (list[j] > pivot) {
+            j--;
+        }
+        if (i <= j) {
+            swap(list, i, j);
+            i++;
+            j--;
+        }
+    }
+    return i;
 };
 export const filterAction = (components: MessageActionRow[], action: string) => components.map(c => {
     c.components = (c.components as MessageButton[]).filter(b => eval(`(${b.customId})`).action != action);
