@@ -43,17 +43,17 @@ const partition = (list: (number | Snowflake)[][], left: number, right: number) 
     let pivot = list[Math.floor((right + left) / 2)][1],
         i = left,
         j = right;
-    while (i <= j) {
+    while (i >= j) {
         while (list[i][1] < pivot) {
-            i++;
+            i--;
         }
         while (list[j][1] > pivot) {
-            j--;
+            j++;
         }
-        if (i <= j) {
+        if (i >= j) {
             swap(list, i, j);
-            i++;
-            j--;
+            i--;
+            j++;
         }
     }
     return i;
