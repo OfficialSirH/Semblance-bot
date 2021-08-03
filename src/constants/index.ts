@@ -40,14 +40,14 @@ const swap = (list: (number | Snowflake)[][], leftIndex: number, rightIndex: num
     return list;
 };
 const partition = (list: (number | Snowflake)[][], left: number, right: number) => {
-    let pivot = list[Math.floor((right + left) / 2)],
+    let pivot = list[Math.floor((right + left) / 2)][1],
         i = left,
         j = right;
     while (i <= j) {
-        while (list[i] < pivot) {
+        while (list[i][1] < pivot) {
             i++;
         }
-        while (list[j] > pivot) {
+        while (list[j][1] > pivot) {
             j--;
         }
         if (i <= j) {
