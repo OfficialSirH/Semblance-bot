@@ -16,7 +16,7 @@ export const blsVoteHandler = (req: request | Request, res: Response, client: Se
 			console.log(`${u.tag} just voted!`);
 			let playerData = await Game.findOne({ player: user.id });
 			let earningsBoost = 3600 * 6;
-			let description = `Thanks for voting for Semblance on botlist.space!! :D`;
+			let description = `Thanks for voting for Semblance on discordlist.space!! :D`;
 			if (playerData) {
 				description += `\nAs a voting bonus, you have earned **6** hours of idle profit for Semblance's Idle Game!`;
 				playerData = await Game.findOneAndUpdate({ player: user.id }, { $set: { money: playerData.money + (playerData.idleProfit * earningsBoost) } }, { new: true });
@@ -36,7 +36,7 @@ export const blsVoteHandler = (req: request | Request, res: Response, client: Se
 				let embed = new MessageEmbed()
 					.setAuthor(`<@${user.id}>`)
 					.setColor(randomColor)
-					.setDescription(`Thanks for voting for Semblance on botlist.space!! :D`)
+					.setDescription(`Thanks for voting for Semblance on discordlist.space!! :D`)
 					.setFooter(`${user.id} has voted.`);
 				channel.send({ embeds:[embed] });
 			} catch (err) {

@@ -29,12 +29,14 @@ const client = new Semblance({
 			sweepInterval: 60,
 			sweepFilter: LimitedCollection.filterByLifetime({
 				lifetime: 30,
+				getComparisonTimestamp: () => Date.now() - 60000
 			})
 		},
 		UserManager: {
 			sweepInterval: 60,
 			sweepFilter: LimitedCollection.filterByLifetime({
 				lifetime: 30,
+				getComparisonTimestamp: () => Date.now() - 60000
 			})
 		},
 	}),
