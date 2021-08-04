@@ -8,8 +8,8 @@ module.exports.permissionRequired = 0;
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
     if (rpsGames.has(interaction.user.id)) return interaction.reply({ content: 'You have an RPS game still running, please finish your previous game first', ephemeral: true });
-    const { user } = interaction, gaveChoice = interaction.options.has('choice'), gaveOpponent = interaction.options.has('opponent');
-    let choice = interaction.options.get('choice')?.value as string, opponent: User | GuildMember = interaction.options.get('opponent')?.user;
+    const { user } = interaction, gaveChoice = !!interaction.options.getString('choice'), gaveOpponent = !!interaction.options.getString('opponent');
+    let choice = interaction.options.getString('choice'), opponent: User | GuildMember = interaction.options.getUser('opponent');
     try {
         if (!gaveOpponent) opponent = await interaction.guild.members.fetch(client.user.id);
         else opponent = await interaction.guild.members.fetch(opponent.id);

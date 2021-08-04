@@ -4,14 +4,40 @@ import 'module-alias/register';
 (async () => await require(`@semblance/config`).config())()
 // Semblance client
 import { Semblance } from '@semblance/structures'; 
-import { Intents } from 'discord.js'; 
+import { Intents, LimitedCollection, Options } from 'discord.js'; 
 import { interactionCreate, messageCreate, messageDelete, messageReactionAdd, messageReactionRemove, messageUpdate, ready, checkTweet,
 	playerUpdate, userVote
 } from '@semblance/events';
 const client = new Semblance({
 	disableMentions: { parse: ['users', 'roles'], repliedUser: true },
-	messageCacheLifetime: 30,
-	messageSweepInterval: 300,
+	makeCache: Options.cacheWithLimits({
+		ThreadManager: {
+			sweepInterval: 3600,
+			sweepFilter: LimitedCollection.filterByLifetime({
+			getComparisonTimestamp: e => e.archiveTimestamp,
+			excludeFromSweep: e => !e.archived,
+			}),
+		},
+		MessageManager: {
+			sweepInterval: 60,
+			sweepFilter: LimitedCollection.filterByLifetime({
+				lifetime: 30,
+				getComparisonTimestamp: m => m.editedTimestamp ?? m.createdTimestamp,
+			})
+		},
+		GuildMemberManager: {
+			sweepInterval: 60,
+			sweepFilter: LimitedCollection.filterByLifetime({
+				lifetime: 30,
+			})
+		},
+		UserManager: {
+			sweepInterval: 60,
+			sweepFilter: LimitedCollection.filterByLifetime({
+				lifetime: 30,
+			})
+		},
+	}),
 	partials: [ "USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE" ],
 	intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES ]
 });

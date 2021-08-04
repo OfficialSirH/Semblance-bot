@@ -5,9 +5,9 @@
   "main": "dist/index",
   "author": "SirH",
   "dependencies": {
-    "@top-gg/sdk": "^3.0.9",
+    "@top-gg/sdk": "^3.1.2",
     "boats.js": "^2.5.1",
-    "discord.js": "github:discordjs/discord.js#fe5d56c9b11b3e5f05933c6d746237b9f353b392",
+    "discord.js": "^13.0.0-dev.t1627992462.35fa3b3",
     "discordlist.space": "^0.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",

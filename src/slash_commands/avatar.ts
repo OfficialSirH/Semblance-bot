@@ -5,8 +5,8 @@ import { Semblance } from '../structures';
 module.exports = {
     permissionRequired: 0,
     run: async (client: Semblance, interaction: CommandInteraction) => {
-        let user = interaction.options.has('user') ?
-        await client.users.fetch(interaction.options.get('user').value as Snowflake) :
+        let user = interaction.options.getUser('user') ?
+        await client.users.fetch(interaction.options.getUser('user').id) :
         interaction.member.user as User,
         author = interaction.member.user as User,
         embed = new MessageEmbed()

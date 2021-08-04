@@ -1,6 +1,7 @@
 import { Semblance } from "@semblance/src/structures";
 import { HTTPError, Snowflake } from "discord.js";
 import { Request } from 'express';
+import { RemoveVoteKey } from "./topGG";
 
 /**
  * Creates a new client.
@@ -40,7 +41,7 @@ export interface vote {
     type?: string;
 }
 
-export interface request extends Request {
+export interface request extends RemoveVoteKey<Request> {
     vote: vote;
     client: Semblance;
 }

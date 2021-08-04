@@ -24,7 +24,7 @@ export class RESTManager {
         this.versioned = true;
         this.globalTimeout = null;
         if (client.options.restSweepInterval > 0) {
-            client.setInterval(() => {
+            setInterval(() => {
                 this.handlers.sweep(handler => handler._inactive);
             }, client.options.restSweepInterval * 1000);
         }

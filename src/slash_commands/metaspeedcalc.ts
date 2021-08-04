@@ -8,16 +8,16 @@ module.exports.permissionRequired = 0;
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
     let options = interaction.options,
-    metabits = options.get('metabit').value,
-    dinoRanks = options.has('mv_ranks') ? clamp(options.get('mv_ranks').value as number, 0, 550) : 0,
-    simSpeed = options.has('speed_upgrades') ? clamp(options.get('speed_upgrades').value as number, 0, 2105) : 0;
+    metabits = options.getString('metabit'),
+    dinoRanks = options.getNumber('mv_ranks') ? clamp(options.getNumber('mv_ranks'), 0, 550) : 0,
+    simSpeed = options.getNumber('speed_upgrades') ? clamp(options.getNumber('speed_upgrades'), 0, 2105) : 0;
     
-    if (!checkValue(metabits as string)) return interaction.reply({ content: 'Your input for metabits was invalid', ephemeral: true });
-    metabits = nameToScNo(metabits as string);
+    if (!checkValue(metabits)) return interaction.reply({ content: 'Your input for metabits was invalid', ephemeral: true });
+    const metabitCount = nameToScNo(metabits);
     let num = 1.0;
 
-    if (metabits > 1000.0) {
-        var num2 = metabits as number - 1000.0;
+    if (metabitCount > 1000.0) {
+        var num2 = metabitCount - 1000.0;
         num += 10.0;
 
         if (num2 > 100000.0) {
@@ -46,7 +46,7 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
         }
     }
     else {
-        num += metabits as number * 0.009999999776482582;
+        num += metabitCount * 0.009999999776482582;
     }
     let dinoPrestigeBonus = (dinoRanks == 550) ? 10 : (Math.ceil(dinoRanks / 50) > Math.floor(dinoRanks / 50)) ? Math.floor(dinoRanks / 50) : Math.floor(dinoRanks / 50)-1;
     let dinoranksMulti = 1 + dinoRanks * 0.1 + dinoPrestigeBonus * 0.5;
@@ -57,7 +57,7 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
         .setTitle("Multiplier Total")
         .setAuthor(user.tag, user.displayAvatarURL())
         .setColor(randomColor)
-        .setDescription([`Total Collected Metabits/Simulation Level: ${bigToName(metabits)}`,
+        .setDescription([`Total Collected Metabits/Simulation Level: ${bigToName(metabitCount)}`,
             `Accumulated Mesozoic Valley Ranks: ${dinoRanks}`,
             `Simulation Speed Upgrades: ${simSpeed}%`,
             `Production/Total Multiplier: x${bigToName(num)}`].join('\n'))

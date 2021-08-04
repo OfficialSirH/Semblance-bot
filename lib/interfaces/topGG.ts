@@ -5,3 +5,5 @@ export interface request extends Request {
     vote: WebhookPayload;
     client: Semblance;
 }
+
+export type RemoveVoteKey<T> = Omit<T, 'vote'>;

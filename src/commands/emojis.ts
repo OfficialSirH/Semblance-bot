@@ -24,7 +24,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 		const files = await fs.readdir('./src/images/emojis');
 			let fileNames = [], addedEmojis: GuildEmoji[] = [];
 			for (let file of files) fileNames.push(file.replace('.png', '').toLowerCase());
-			for (let fileName of fileNames) if (!message.guild.emojis.cache.array().includes(fileName)) {
+			for (let fileName of fileNames) if (!message.guild.emojis.cache.map(e => e.name).includes(fileName)) {
 				addedEmojis.push(await message.guild.emojis.create(`./src/images/emojis/${files[fileNames.indexOf(fileName)]}`, fileName));
 			}
 

@@ -6,11 +6,11 @@ import { APIError } from './ApiError';
 import { stringify } from 'querystring';
 
 /**
- * botsfordiscord.com API Client for Posting stats or Fetching data
+ * discords.com API Client for Posting stats or Fetching data
  * @example
- * const Botsfordiscord = require(`./structures/@bots-for-discord/sdk`)
+ * const Discords = require(`./structures/DiscordsAPI`)
  *
- * const api = new Botsfordiscord.Api('Your botsfordiscord.com token')
+ * const api = new Discords.BFDApi('Your discords.com token')
  */
 export class BFDApi extends EventEmitter {
     private options: {
@@ -36,7 +36,7 @@ export class BFDApi extends EventEmitter {
             headers.set('Authorization', this.options.token);
         if (method !== 'GET')
             headers.set('Content-Type', 'application/json');
-        let url = `https://botsfordiscord.com/api/${path}`;
+        let url = `https://discords.com/bots/api/${path}`;
         if (body && method === 'GET')
             url += `?${stringify(body)}`;
         const response = await fetch(url, {
@@ -52,7 +52,7 @@ export class BFDApi extends EventEmitter {
             responseBody = await response.text();
         }
         if (!response.ok) {
-            throw new APIError('botsfordiscord.com', response.status, response.statusText, responseBody);
+            throw new APIError('discords.com', response.status, response.statusText, responseBody);
         }
         return responseBody;
     }

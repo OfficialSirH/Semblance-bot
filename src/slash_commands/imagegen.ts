@@ -6,9 +6,15 @@ import { fetchCatOrDog } from '../constants/commands';
 export const permissionRequired = 0;
 
 export const run = async (client: Semblance, interaction: CommandInteraction) => {
-    const wantsCat = interaction.options.has('cat'),
-    wantsDog = interaction.options.has('dog'),
-    query_params = {
+    let wantsCat: boolean, commandFailed: boolean;
+    try {
+        wantsCat = interaction.options.getSubcommand() === 'cat';
+    } catch (e) {
+        commandFailed = true;
+        await interaction.reply({ content: 'Something didn\'t work quite right. Please try again.', ephemeral: true });
+    }
+    if (commandFailed) return;
+    const query_params = {
         'has_breeds': true,
         'mime_types': 'jpg,png,gif',
         size: 'small' as sizeType,
@@ -16,8 +22,6 @@ export const run = async (client: Semblance, interaction: CommandInteraction) =>
         limit: 1
     };
 
-    if (!wantsCat && !wantsDog) return interaction.reply({ content: 'Please specify a type of image.' });
-    
     const images = await fetchCatOrDog(query_params, wantsCat);
 
     if (images.length === 0) return interaction.reply({ content: 'No images found.', ephemeral: true });

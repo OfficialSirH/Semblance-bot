@@ -1,5 +1,5 @@
 import { Information } from '@semblance/models';
-import { MessageEmbed, TextChannel, Constants } from 'discord.js';
+import { MessageEmbed, TextChannel, Constants, Presence } from 'discord.js';
 import config from '@semblance/config';
 import { Semblance, Webhook } from '@semblance/src/structures';
 import {
@@ -16,10 +16,10 @@ export const ready = (client: Semblance) => {
 
         Webhook.client = client;
 
-        client.setInterval(() => {
+        setInterval(() => {
             let totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
             const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
-            if (client.user.presence.activities[0]?.name !== activity) client.user.setActivity(activity, { type: "WATCHING" });
+            if (((client.user as any).presence as Presence).activities[0]?.name !== activity) client.user.setActivity(activity, { type: "WATCHING" });
         }, 30000);
 
         /* Slash Command setup */
@@ -30,7 +30,7 @@ export const ready = (client: Semblance) => {
         * Reminder check
         */
 
-        client.setInterval(() => { checkReminders(client) }, 60000);
+        setInterval(() => { checkReminders(client) }, 60000);
 
         Information.findOne({ infoType: "github" })
             .then(async (infoHandler) => {

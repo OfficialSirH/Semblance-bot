@@ -7,7 +7,7 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
-    if (!interaction.options.has('question')) return interaction.reply('Ask any question with this command and Semblance will answer.');
+    if (!interaction.options.getString('question')) return interaction.reply('Ask any question with this command and Semblance will answer.');
     let randomizedChoice = Math.ceil(Math.random() * 20), user = interaction.member.user as User;
     const embed = new MessageEmbed()
         .setTitle('8ball')

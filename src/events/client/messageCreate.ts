@@ -18,7 +18,7 @@ const wait = promisify(setTimeout);
 export const messageCreate = (client: Semblance) => {
     client.on(Events.MESSAGE_CREATE, async message => {
         checkForGitHubUpdate(message);
-	if (message.channel.type == 'dm') return messageDM(client, message) as unknown as void;
+	if (message.channel.type == 'DM') return messageDM(client, message) as unknown as void;
 	if (message.author.bot || ignoredGuilds.includes(message.guild.id)) return;
 	if (message.member) {
 		if (message.mentions.users && message.member.id != client.user.id) {

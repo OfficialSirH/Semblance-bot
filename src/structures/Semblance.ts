@@ -10,7 +10,7 @@ import { Game, Votes } from '../models';
 export class Semblance extends Client {
     private _gameLeaderboard: GameLeaderboard;
     private _voteLeaderboard: VoteLeaderboard;
-    private _clearCache: NodeJS.Timeout;
+    // private _clearCache: NodeJS.Timeout;
     private _commandCounter: number;
     private _componentHandlers: ComponentHandlers;
     private _slashCommands: SlashCommands;
@@ -26,9 +26,9 @@ export class Semblance extends Client {
     constructor(options: object) {
         super(options as ClientOptions);
 
-        this._clearCache = setInterval(() => {
-            this.sweepUsers();
-        }, 30000);
+        // this._clearCache = setInterval(() => {
+        //     this.sweepUsers();
+        // }, 30000);
 
         this._commandCounter = 0;
 
@@ -84,28 +84,28 @@ export class Semblance extends Client {
         return this._voteLeaderboard;
     }
 
-    public sweepUsers = async () => {
-        let now = Date.now();
-        let cacheLifetime = 30000;
-        let users = 0;
-        users += this.users.cache.sweep(user => { 
-            let channel = this.channels.cache.get((user as any).lastMessageChannelId) as TextChannel;
-            if (!channel || !channel.messages) return true;
-            let lastMessage = channel.messages.cache.get(user.lastMessageId);
-            if (!lastMessage) return true;
-            return (now - (lastMessage.editedTimestamp || lastMessage.createdTimestamp)) > cacheLifetime;
-        });
-        this.guilds.cache.map(g => g.members.cache).forEach(members => {
-            users += members.sweep(member => {
-                let channel = this.channels.cache.get(member.lastMessageChannelId) as TextChannel;
-                if (!channel || !channel.messages) return true;
-                let lastMessage = channel.messages.cache.get(member.lastMessageId);
-                if (!lastMessage) return true;
-                return (now - (lastMessage.editedTimestamp || lastMessage.createdTimestamp)) > cacheLifetime;
-            });
-        });
-        return users;
-    }
+    // public sweepUsers = async () => {
+    //     let now = Date.now();
+    //     let cacheLifetime = 30000;
+    //     let users = 0;
+    //     users += this.users.cache.sweep(user => { 
+    //         let channel = this.channels.cache.get((user as any).lastMessageChannelId) as TextChannel;
+    //         if (!channel || !channel.messages) return true;
+    //         let lastMessage = channel.messages.cache.get(user.lastMessageId);
+    //         if (!lastMessage) return true;
+    //         return (now - (lastMessage.editedTimestamp || lastMessage.createdTimestamp)) > cacheLifetime;
+    //     });
+    //     this.guilds.cache.map(g => g.members.cache).forEach(members => {
+    //         users += members.sweep(member => {
+    //             let channel = this.channels.cache.get(member.lastMessageChannelId) as TextChannel;
+    //             if (!channel || !channel.messages) return true;
+    //             let lastMessage = channel.messages.cache.get(member.lastMessageId);
+    //             if (!lastMessage) return true;
+    //             return (now - (lastMessage.editedTimestamp || lastMessage.createdTimestamp)) > cacheLifetime;
+    //         });
+    //     });
+    //     return users;
+    // }
     
     public get componentHandlers() {
         return this._componentHandlers;

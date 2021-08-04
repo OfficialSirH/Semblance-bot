@@ -9,9 +9,9 @@ const { prefix } = config;
 module.exports = {
     permissionRequired: 0,
     run: async (client: Semblance, interaction: CommandInteraction) => {
-        let player: Snowflake | User = (interaction.options.has('user')) ? interaction.options.get('user').value as Snowflake : interaction.member.user.id;
+        let player: Snowflake | User = interaction.options.getUser('user') ? interaction.options.getUser('user').id : interaction.member.user.id;
         let statsHandler = await Game.findOne({ player: player as Snowflake });
-        if (!statsHandler) return interaction.reply({ content: interaction.options.has('user') ? 
+        if (!statsHandler) return interaction.reply({ content: interaction.options.getUser('user') ? 
             'This user does not exist' :
             `You have not created a game yet; if you'd like to create a game, use \`${prefix}game create\``, ephemeral: true });
         let nxtUpgrade = await currentPrice(statsHandler);

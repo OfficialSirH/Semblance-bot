@@ -14,7 +14,7 @@ export const getMember = (search: string | Snowflake, guild: Guild) =>
     guild.members.cache.get(getId(search) as Snowflake)
 
 export const getChannel = (search: string | Snowflake, guild: Guild) => {
-    const channels = guild.channels.cache.filter(ch => ch.type == "text" && ch.viewable);
+    const channels = guild.channels.cache.filter(ch => ch.type == 'GUILD_TEXT' && ch.viewable);
     return false ??
         channels.find(ch => search.toLowerCase() == ch.name.toLowerCase()) ??
         channels.get(getId(search) as Snowflake)

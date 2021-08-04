@@ -28,7 +28,7 @@ export class VoteLeaderboard extends BaseLeaderboard {
         }
         this.list.set(updatedVoter.user, updatedVoter.voteCount)
         .sort((a, b) => b - a);
-        if (this.list.array().length > 20) {
+        if (this.list.map(l => l).length > 20) {
             this.list.delete(this.list.lastKey());
         }
         return this.list;

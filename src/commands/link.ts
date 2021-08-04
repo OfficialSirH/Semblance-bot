@@ -18,7 +18,7 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
-    if (message.channel.type != 'dm') return;
+    if (message.channel.type != 'DM') return;
     const userCooldown = cooldown.get(message.author.id);
     if (userCooldown && userCooldown > Date.now()) return message.channel.send(`You cannot use the link command again for another ${(userCooldown - Date.now())/1000} seconds.`); 
     else cooldown.set(message.author.id, Date.now() + 30000);

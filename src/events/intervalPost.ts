@@ -21,13 +21,13 @@ export const intervalPost = (client: Semblance) => {
     
     
     const bfd = new BFDApi(process.env.botsForDiscordAuth);
-    client.setInterval(() => {
+    setInterval(() => {
         bfd.postStats(client.guilds.cache.size);
     }, day);
     
     
     const discordListBaseURL = 'https://api.discordlist.space';
-    client.setInterval(() => {
+    setInterval(() => {
         const data = { server_count: client.guilds.cache.size };
         fetch(discordListBaseURL + '/bots/' + client.user.id, {
             method: 'post',
@@ -44,7 +44,7 @@ export const intervalPost = (client: Semblance) => {
     
     
     const boatsBaseURL = 'https://discord.boats/api';
-    client.setInterval(function () {
+    setInterval(function () {
         fetch(boatsBaseURL + '/bot/' + client.user.id, {
             method: 'POST',
             headers: {

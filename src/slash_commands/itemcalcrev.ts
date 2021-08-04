@@ -4,6 +4,7 @@ import { MessageEmbed, CommandInteraction, User } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import { Semblance } from '@semblance/structures';
 import { ItemList } from '@semblance/lib/interfaces/ItemList';
+import { clamp } from '@semblance/lib/utils/math';
 const itemList = require('@semblance/itemList') as ItemList;
 
 module.exports = {
@@ -11,14 +12,12 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
-    let [itemInput, currentLevel, curAmount] = interaction.options.map(o => o.value);
-    
-    if (!itemInput) return interaction.reply({ content: "You forgot input for 'item'.", ephemeral: true });
-    if (!curAmount) return interaction.reply({ content: "You forgot input for 'Currency Amount'.", ephemeral: true });
-    if (!currentLevel || currentLevel < 0) currentLevel = 0;
-    itemInput = (itemInput as string).toLowerCase();
+    const itemInput = interaction.options.getString('item').toLocaleLowerCase(),
+    currentLevel = clamp(interaction.options.getNumber('current_level'), 0, Infinity),
+    curAmount = interaction.options.getString('currency');
+
     if (!checkValue(curAmount as string)) return interaction.reply({ content: "Your input for 'currency' is invalid.", ephemeral: true });
-    curAmount = nameToScNo(curAmount as string);
+    const convertedAmount = nameToScNo(curAmount);
     
     let itemCost: number, itemCostType: string;   
     for (const [key, value] of Object.entries(itemList)) if (itemList[key][itemInput]) {
@@ -27,8 +26,8 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
     }
 
     if (!itemCost) return interaction.reply({ content: "Your input for 'item' was invalid.", ephemeral: true });
-    let num3 = curAmount as number * 0.1499999761581421;
-    let num5 = itemCost * Math.pow(1.149999976158142, currentLevel as number);
+    let num3 = convertedAmount * 0.1499999761581421;
+    let num5 = itemCost * Math.pow(1.149999976158142, currentLevel);
     let level = Math.floor(Math.log(num3 / num5 + 1) / Math.log(1.149999976158142));
     let user = interaction.member.user as User,
     embed = new MessageEmbed()
@@ -37,7 +36,7 @@ module.exports.run = async (client: Semblance, interaction: CommandInteraction) 
         .setColor(randomColor)
         .setDescription([`Chosen item: ${itemInput}`,
             `Current item level: ${currentLevel}`,
-            `currency input: ${bigToName(curAmount)} ${itemCostType}`,
+            `currency input: ${bigToName(convertedAmount)} ${itemCostType}`,
             `Resulting level: ${level}`].join('\n'));
     return interaction.reply({ embeds: [embed] });
 }

@@ -8,18 +8,37 @@ import { UserReminder } from '../models/Reminder';
 module.exports = {
     permissionRequired: 0,
     run: async (client: Semblance, interaction: CommandInteraction) => {
-		const actions = interaction.options.filter(o => o.type == 'SUB_COMMAND');
-		if (actions.has('create')) return create(client, interaction, actions.get('create').options);
-		if (actions.has('edit')) return edit(client, interaction, actions.get('edit').options);
-		if (actions.has('delete')) return deleteReminder(client, interaction, actions.get('delete').options);
-		if (actions.has('list')) return list(client, interaction);
+		let action: string, commandFailed: boolean;
+		try {
+			action = interaction.options.getSubcommand();
+		} catch (e) {
+			commandFailed = true;
+			interaction.reply({ content: "You must specify a subcommand.", ephemeral: true });
+		}
+		if (commandFailed) return;
+		switch (action) {
+			case 'create':
+				await create(client, interaction);
+				break;
+			case 'edit':
+				await edit(client, interaction);	
+				break;
+			case 'delete':
+				await deleteReminder(client, interaction);
+				break;
+			case 'list':
+				await list(client, interaction);
+				break;
+			default:
+				return interaction.reply({ content: "You must specify a valid subcommand.", ephemeral: true });
+		}
 		return interaction.reply({ content: "You didn't provide any valid options.", ephemeral: true });
     }
 }
 
-async function create(client: Semblance, interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) {
-		const timeAmount = timeInputRegex.exec(options.get('length').value as string),
-        reminder = Util.removeMentions(options.get('reminder').value as string),
+async function create(client: Semblance, interaction: CommandInteraction) {
+		const timeAmount = timeInputRegex.exec(interaction.options.getString('length')),
+        reminder = Util.removeMentions(interaction.options.getString('reminder')),
         user = interaction.member.user as User;
 
 	if (timeAmount == null) return interaction.reply({ content: 'Your input for time is invalid, please try again.', ephemeral: true });
@@ -60,15 +79,15 @@ async function create(client: Semblance, interaction: CommandInteraction, option
 	await reminderHandler.save();
 }
 
-async function edit(client: Semblance, interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) {
+async function edit(client: Semblance, interaction: CommandInteraction) {
 	const user = interaction.member.user as User,
 	currentReminderData = await Reminder.findOne({ userId: user.id });
 
 	if (!currentReminderData) return interaction.reply({ content: "You don't have any reminders to edit.", ephemeral: true });
 
-	const reminderId = options.get('reminderid').value as number,
-	reminder = options.get('reminder')?.value as string,
-	length = options.get('length')?.value as string;
+	const reminderId = interaction.options.getNumber('reminderid'),
+	reminder = interaction.options.getString('reminder'),
+	length = interaction.options.getString('length');
 		
 	if (!reminder && !length) return interaction.reply({ content: "You must specify a reminder or a length", ephemeral: true });
 	if (reminderId > currentReminderData.reminders.length) return interaction.reply({ content:"You must specify a valid reminder ID", ephemeral: true });
@@ -103,9 +122,9 @@ async function edit(client: Semblance, interaction: CommandInteraction, options:
 	await interaction.reply({ embeds: [embed] });
 }
 
-async function deleteReminder(client: Semblance, interaction: CommandInteraction, options: Collection<string, CommandInteractionOption>) {
+async function deleteReminder(client: Semblance, interaction: CommandInteraction) {
 	const user = interaction.member.user as User,
-	reminderId = options.get('reminderid').value as number,
+	reminderId = interaction.options.getNumber('reminderid'),
 	currentReminderData = await Reminder.findOne({ userId: user.id });
 
 	if (!currentReminderData) return interaction.reply({ content: "You don't have any reminders to delete.", ephemeral: true });

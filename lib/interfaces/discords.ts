@@ -1,6 +1,7 @@
 import { Semblance } from "@semblance/src/structures";
 import { Snowflake } from "discord.js";
 import { Request } from 'express';
+import { RemoveVoteKey } from "./topGG";
 
 export interface APIOptions {
     /**
@@ -304,7 +305,7 @@ export interface vote {
      */
     type: 'vote' | 'test';
 }
-export interface request extends Request {
+export interface request extends RemoveVoteKey<Request> {
     vote: vote;
     client: Semblance;
 }

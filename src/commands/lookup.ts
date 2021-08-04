@@ -1,7 +1,7 @@
 ﻿import fetch from 'node-fetch';
 import { getRole, getChannel, getUser } from '@semblance/lib/utils/resolvers';
 import * as constants from '@semblance/constants';
-import { Message, Snowflake, TextChannel } from 'discord.js';
+import { DMChannel, Message, MessageOptions, NewsChannel, Snowflake, TextChannel, ThreadChannel } from 'discord.js';
 import { Semblance } from '../structures';
 
 module.exports = {
@@ -17,7 +17,7 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
-    message.channel.startTyping();
+    message.channel.sendTyping();
 
     const role = getRole(args[0], message.guild);
     if (role) return send(message.channel, `✅ This Id is a role Id for the role ${role.name}.`)
@@ -66,12 +66,12 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
                 if (owners.length > 1) add({ "Owners": owners.join("\n") });
                 else add({ "Owner": owners[0] });
 
-                return send(message.channel, `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}).`, {
-                    embed: {
+                return send(message.channel, { content: `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}).`,
+                    embeds: [{
                         fields, thumbnail: user.avatar ? {
                             url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=2048`
                         } : null, color: constants.randomColor
-                    }
+                    }]
                 })
             } else return send(message.channel, `✅ This Id is a user Id of ${user.username}#${user.discriminator} (${user.id}).`)
         }
@@ -97,8 +97,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             if (invite.guild.description) add({ "Description": invite.guild.description })
             if (invite.guild.verification_level) add({ "Verification Level": ["None", "Verified email", "Verified email and 5 minutes on Discord", "Verified email and 10 minutes on server", "Verified phone number"][invite.guild.verification_level] })
 
-            return send(message.channel, `✅ This Id is a Discord invite.`, {
-                embed: {
+            return send(message.channel, { content: `✅ This Id is a Discord invite.`,
+                embeds: [{
                     title: "Invite Lookup",
                     description: `Information from the invite \`${invite.code}\``,
                     fields, image: invite.guild.banner ? {
@@ -107,7 +107,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
                         url: `https://cdn.discordapp.com/icons/${invite.guild.id}/${invite.guild.icon}.jpg?size=4096`
                     } : undefined,
                     color: constants.randomColor
-                }
+                }]
             })
         }
     } catch (e) { }
@@ -119,7 +119,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     } catch (e) { }
 
     // message lookup
-    let channels = message.guild.channels.cache.filter(ch => ["text", "news"].includes(ch.type)).array() as TextChannel[];
+    let channels = message.guild.channels.cache.filter(ch => ['GUILD_TEXT', 'GUILD_NEWS'].includes(ch.type)).map(c => c) as TextChannel[];
     for (const ch of channels) try {
         let m = await ch.messages.fetch(args[0] as Snowflake);
         if (m) return send(message.channel, `✅ This Id is a message Id: <https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}>`)
@@ -128,4 +128,4 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     return send(message.channel, `🚫 I don't know what the Id \`${args[0]}\` is coming from. Maybe the deep abyss known as The Beyond?`)
 }
 
-const send = (channel, content, morecontent = undefined) => channel.send(content, morecontent).then(() => channel.stopTyping())
+const send = (channel: TextChannel | DMChannel | NewsChannel | ThreadChannel, options: string | MessageOptions) => channel.send(options)

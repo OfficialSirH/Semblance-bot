@@ -7,9 +7,9 @@ import { stringify } from 'querystring';
 /**
  * discordbotlist.com API Client for Posting stats or Fetching data
  * @example
- * const Discordbotlist = require(`./structures/@bots-for-discord/sdk`)
+ * const Discordbotlist = require(`./structures/DiscordBotListAPI`)
  *
- * const api = new Discordbotlist.Api('Your discordbotlist.com token')
+ * const api = new Discordbotlist.DBLApi('Your discordbotlist.com token')
  */
 export class DBLApi extends EventEmitter {
     private options: {

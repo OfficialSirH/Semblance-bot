@@ -23,13 +23,13 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
 
 	let textChannel = 0, voiceChannel = 0, categoryChannel = 0;
 	guild.channels.cache.forEach(channel => {
-		if(channel.type == "text") {
+		if(channel.type == "GUILD_TEXT") {
 			textChannel++;
 		}
-		if(channel.type == "voice") {
+		if(channel.type == "GUILD_VOICE") {
 			voiceChannel++;
 		}
-		if(channel.type == "category") {
+		if(channel.type == "GUILD_CATEGORY") {
 			categoryChannel++;
 		}
 	});

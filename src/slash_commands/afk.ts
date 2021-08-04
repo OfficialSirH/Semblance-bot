@@ -8,7 +8,7 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
-	let reason = interaction.options.has('reason') ? interaction.options.get('reason').value as string : "Just because";
+	let reason = interaction.options.getString('reason') ? interaction.options.getString('reason') : "Just because";
     let user = interaction.member.user;
     let afkHandler = await Afk.findOne({ userId: user.id });
 	if (!afkHandler) await (new Afk({ userId: user.id, reason })).save();

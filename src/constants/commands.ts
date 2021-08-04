@@ -159,7 +159,7 @@ export function guildBookPage(client: Semblance, chosenPage: string | number) {
 	for (let i = 0; i < numOfPages; i++) {
         guildBook[`page_${i + 1}`] = {};
         let loopCount = client.guilds.cache.size < (serversPerPage - 1) + (i * serversPerPage) ? client.guilds.cache.size - 1 : (serversPerPage - 1) + (i * serversPerPage);
-        for (let j = serversPerPage * i; j <= loopCount; j++) guildBook[`page_${i + 1}`][`${client.guilds.cache.array()[j].name}`] = `${client.guilds.cache.array()[j].id}`;
+        for (let j = serversPerPage * i; j <= loopCount; j++) guildBook[`page_${i + 1}`][`${client.guilds.cache.map(c => c)[j].name}`] = `${client.guilds.cache.map(c => c)[j].id}`;
     }
 
 	let pageDetails = "";
@@ -175,7 +175,7 @@ export function guildBookPage(client: Semblance, chosenPage: string | number) {
 
 // imagegen API fetch
 export const fetchCatOrDog = async (query_params: APIParams, wantsCat: boolean) => {
-    const API_URL = `https://api.the${wantsCat ? 'cat' : 'dog'}api.com/v1/images/search?${querystring.stringify(query_params)}`,
+    const API_URL = `https://api.the${wantsCat ? 'cat' : 'dog'}api.com/v1/images/search?${new URLSearchParams(query_params as Record<string, string>)}`,
     API_KEY = wantsCat ? process.env.CAT_API_KEY : process.env.DOG_API_KEY;
 
     return (await fetch(API_URL, { headers: { 'X-API-KEY': API_KEY } })).json();

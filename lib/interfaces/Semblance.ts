@@ -1,5 +1,5 @@
 import { Semblance } from "@semblance/structures";
-import { Collection, CommandInteraction, CommandInteractionOption, Message, MessageComponentInteraction, Snowflake } from "discord.js";
+import { Collection, CommandInteraction, CommandInteractionOptionResolver, Message, MessageComponentInteraction, Snowflake } from "discord.js";
 
 export type ComponentHandlers = Collection<string, ComponentHandler>;
 
@@ -23,7 +23,7 @@ export interface SlashCommand {
 
 export interface SlashOptions {
     permissionLevel: number;
-    options: Collection<string, CommandInteractionOption>;
+    options: CommandInteractionOptionResolver;
 }
 
 export type Commands = Record<string, Command>;
