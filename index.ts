@@ -55,7 +55,7 @@ app.use(express.json());
 // Listen to client events
 import * as fs from 'fs';
 import { EventHandler } from './lib/interfaces/Semblance';
-const eventFiles = fs.readdirSync('./src/events/client').filter(file => file.endsWith('.js'));
+const eventFiles = fs.readdirSync('./dist/src/events/client').filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
 	const event = require(`./src/events/client/${file}`).default as EventHandler;
