@@ -20,7 +20,8 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     let duration = msToTime(uptime);
     let responseTime = Date.now() - message.createdTimestamp;
     let totalMembers = client.guilds.cache.reduce((total, cur) => total += cur.memberCount, 0);
-    let usage = Math.round(process.memoryUsage().heapUsed / Math.pow(1024, 2) * 100) / 100;
+    const usage = Math.round(process.memoryUsage().heapUsed / Math.pow(1024, 2) * 100) / 100;
+    const percentageUsed =  Math.round(usage/1000 * 10000)/ 100;
     let guilds: number, users: number, shardCount: number;
       if (message.client.shard) {
       guilds = await message.client.shard.broadcastEval((eclient: Semblance) => eclient.guilds.cache.size).then(res => res.reduce((prev, val) => prev + val, 0));
@@ -39,7 +40,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .addFields(
             { name: `${singularity} Host`, value: [`**OS:** \`Ubuntu ${require('os').release()}\``,
                                     `**Library:** \`discord.js${version}\``,
-                                   `**Memory Usage:** \`${usage} MB (${Math.round(usage/512 * 10000)/100}%)\``].join('\n'), inline: true },
+                                   `**Memory Usage:** \`${usage} MB (${percentageUsed}%)\``].join('\n'), inline: true },
                                    
             
             { name: `${entropy} Stats`, value: [`**Guilds:** \`${guilds}\``,
