@@ -1,5 +1,5 @@
 import { Semblance } from "@semblance/structures";
-import { Collection, CommandInteraction, CommandInteractionOptionResolver, Message, MessageComponentInteraction, Snowflake } from "discord.js";
+import { Collection, CommandInteraction, CommandInteractionOptionResolver, Message, MessageComponentInteraction, Snowflake, ConstantsEvents } from "discord.js";
 
 export type ComponentHandlers = Collection<string, ComponentHandler>;
 
@@ -50,3 +50,11 @@ export type Category = 'fun' | 'game' | 'dm' | 'utility' | 'semblance' | 'admin'
 export type Subcategory = 'main' | 'mesozoic' | 'other';
 
 export type Aliases = Record<string, string>;
+
+export interface EventHandler {
+    name: keyof ConstantsEvents;
+    once?: boolean;
+    exec: EventHandlerExecution<any[]>;
+}
+
+export type EventHandlerExecution<T extends any[]> = (...args: [...T, Semblance]) => void;

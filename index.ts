@@ -5,9 +5,7 @@ import 'module-alias/register';
 // Semblance client
 import { Semblance } from '@semblance/structures'; 
 import { Intents, LimitedCollection, Options } from 'discord.js'; 
-import { interactionCreate, messageCreate, messageDelete, messageReactionAdd, messageReactionRemove, messageUpdate, ready, checkTweet,
-	playerUpdate, userVote
-} from '@semblance/events';
+import { checkTweet, playerUpdate, userVote } from '@semblance/events';
 const client = new Semblance({
 	disableMentions: { parse: ['users', 'roles'], repliedUser: true },
 	makeCache: Options.cacheWithLimits({
@@ -55,13 +53,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Listen to client events
-interactionCreate(client);
-messageCreate(client);
-messageDelete(client);
-messageReactionAdd(client);
-messageReactionRemove(client);
-messageUpdate(client);
-ready(client);
+import * as fs from 'fs';
+import { EventHandler } from './lib/interfaces/Semblance';
+const eventFiles = fs.readdirSync('./dist/events/client').filter(file => file.endsWith('.js'));
+
+for (const file of eventFiles) {
+	const event = require(`./dist/events/client/${file}`).default as EventHandler;
+	if (event.once) client.once(event.name, (...args) => event.exec(...args, client));
+	else client.on(event.name, (...args) => event.exec(...args, client));
+}
 // Listen to model events
 playerUpdate(client);
 userVote(client);
@@ -83,5 +83,3 @@ setInterval(() => checkTweet(client), 2000);
 	await client.login(process.env.token);
 	app.listen(8079);
 })()
-
-export default client;

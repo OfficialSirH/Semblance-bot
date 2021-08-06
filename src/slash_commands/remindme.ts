@@ -85,7 +85,7 @@ async function edit(client: Semblance, interaction: CommandInteraction) {
 
 	if (!currentReminderData) return interaction.reply({ content: "You don't have any reminders to edit.", ephemeral: true });
 
-	const reminderId = interaction.options.getNumber('reminderid'),
+	const reminderId = interaction.options.getInteger('reminderid'),
 	reminder = interaction.options.getString('reminder'),
 	length = interaction.options.getString('length');
 		
@@ -124,7 +124,7 @@ async function edit(client: Semblance, interaction: CommandInteraction) {
 
 async function deleteReminder(client: Semblance, interaction: CommandInteraction) {
 	const user = interaction.member.user as User,
-	reminderId = interaction.options.getNumber('reminderid'),
+	reminderId = interaction.options.getInteger('reminderid'),
 	currentReminderData = await Reminder.findOne({ userId: user.id });
 
 	if (!currentReminderData) return interaction.reply({ content: "You don't have any reminders to delete.", ephemeral: true });

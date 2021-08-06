@@ -8,17 +8,19 @@ import {
 	removeAfk 
 } from '@semblance/constants';
 import { promisify } from 'util';
-import { messageDM } from './messageDM';
 import { Information } from '@semblance/models';
 const { Events } = Constants;
 const { sirhId, prefix, c2sGuildId, sirhGuildId, lunchGuildId, ignoredGuilds } = config;
 const wait = promisify(setTimeout);
 
+export default {
+	name: Events.MESSAGE_CREATE,
+	exec: (message: Message, client: Semblance) => messageCreate(message, client)
+}
 
-export const messageCreate = (client: Semblance) => {
-    client.on(Events.MESSAGE_CREATE, async message => {
-        checkForGitHubUpdate(message);
-	if (message.channel.type == 'DM') return messageDM(client, message) as unknown as void;
+export const messageCreate = async (message: Message, client: Semblance) => {
+    checkForGitHubUpdate(message);
+	if (message.channel.type == 'DM') return client.emit('messageDM', message) as unknown as void;
 	if (message.author.bot || ignoredGuilds.includes(message.guild.id)) return;
 	if (message.member) {
 		if (message.mentions.users && message.member.id != client.user.id) {
@@ -28,7 +30,7 @@ export const messageCreate = (client: Semblance) => {
 
     const { commands, aliases, autoCommands } = client;
 
-	if (!message.content.toLowerCase().startsWith(`${prefix}afk`) && (!message.content.startsWith('</afk:813628842182311976>') || message.applicationId == null)) removeAfk(client, message);
+	if (!message.content.toLowerCase().startsWith(`${prefix}afk`)) removeAfk(client, message);
 	//Cell to Singularity Exclusive Code
 	let chName = message.channel.name;
 	for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
@@ -111,7 +113,6 @@ export const messageCreate = (client: Semblance) => {
 			default:
         }
     }
-});
 }
 
 	/*

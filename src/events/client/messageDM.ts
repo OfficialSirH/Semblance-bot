@@ -4,7 +4,12 @@ import { Semblance } from '@semblance/src/structures';
 import { Message } from 'discord.js';
 const { prefix } = config;
 
-export const messageDM = (client: Semblance, message: Message) => {
+export default {
+    name: 'messageDM',
+    exec: (message: Message, client: Semblance) => messageDM(message, client)
+}
+
+export const messageDM = (message: Message, client: Semblance) => {
     const { commands, aliases } = client;
     if (message.content.toLowerCase().startsWith(prefix) || message.content.match(`^<@!?${client.user.id}> `)) {
         let splitContent = message.content.split(" ")

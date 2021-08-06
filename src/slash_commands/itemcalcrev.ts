@@ -13,7 +13,7 @@ module.exports = {
 
 module.exports.run = async (client: Semblance, interaction: CommandInteraction) => {
     const itemInput = interaction.options.getString('item').toLocaleLowerCase(),
-    currentLevel = clamp(interaction.options.getNumber('current_level'), 0, Infinity),
+    currentLevel = clamp(interaction.options.getInteger('current_level'), 0, Infinity),
     curAmount = interaction.options.getString('currency');
 
     if (!checkValue(curAmount as string)) return interaction.reply({ content: "Your input for 'currency' is invalid.", ephemeral: true });

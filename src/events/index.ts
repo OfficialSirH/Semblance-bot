@@ -1,10 +1,8 @@
-// Client events
+// Client event handlers
 export { interactionCreate } from './client/interactionCreate';
 export { messageCreate } from './client/messageCreate';
 export { messageDelete } from './client/messageDelete';
 export { messageDM } from './client/messageDM';
-export { messageReactionAdd } from './client/messageReactionAdd';
-export { messageReactionRemove } from './client/messageReactionRemove';
 export { messageUpdate } from './client/messageUpdate';
 export { ready } from './client/ready';
 // Model events
