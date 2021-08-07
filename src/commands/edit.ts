@@ -76,7 +76,7 @@ const addBoosterCode = async (client: Semblance, message: Message, code: string)
     const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
     if (darwiniumCodes.list.includes(code)) return message.reply("That code is already in the list.");
     darwiniumCodes.list.push(code);
-    await darwiniumCodes.update();
+    await darwiniumCodes.updateOne();
     const list = darwiniumCodes.list.length > 0 ? darwiniumCodes.list.join(', ') : 'None';
     const embed = new MessageEmbed()
     .setTitle(`Booster Codes`)
@@ -91,7 +91,7 @@ const removeBoosterCode = async (client: Semblance, message: Message, code: stri
     const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
     if (!darwiniumCodes.list.includes(code)) return message.reply("That code is not in the list.");
     darwiniumCodes.list.splice(darwiniumCodes.list.indexOf(code), 1);
-    await darwiniumCodes.update();
+    await darwiniumCodes.updateOne();
     const list = darwiniumCodes.list.length > 0 ? darwiniumCodes.list.join(', ') : 'None';
     const embed = new MessageEmbed()
     .setTitle(`Booster Codes`)
