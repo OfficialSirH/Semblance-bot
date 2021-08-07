@@ -1,4 +1,5 @@
 export { Afk } from './Afk';
+export { BoosterRewards } from './BoosterRewards';
 export { Game } from './Game';
 export { Information } from './Information';
 export { Jump } from './Jump';

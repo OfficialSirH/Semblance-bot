@@ -1,6 +1,6 @@
 import { Snowflake } from "discord.js";
 import { BaseLeaderboard, Semblance } from ".";
-import { insertionsort } from "../constants";
+import { quickSort } from "../constants";
 import { Leaderboard } from "../models";
 import { VotesFormat } from "../models/Votes";
 
@@ -12,7 +12,7 @@ export class VoteLeaderboard extends BaseLeaderboard {
 
     public async initialize(list: VotesFormat[]) {
         if (this._initialized) throw new Error(`VoteLeaderboard is already initialized`);
-        const sortedList = insertionsort(list.map(data => [data.user, data.voteCount])).filter((item, ind) => ind < 20);
+        const sortedList = quickSort(list.map(data => [data.user, data.voteCount]), 0, list.length - 1).filter((item, ind) => ind < 20);
         if (!!list) await Leaderboard.findOneAndUpdate({ type: 'vote' }, { list: sortedList.map(data => { 
             return { user: data[0] as Snowflake, voteCount: (data[1] as number) } 
         })});

@@ -7,6 +7,7 @@ import {
     randomColor
 } from '@semblance/constants';
 import { intervalPost } from '..';
+import { checkBoosterRewards } from '@semblance/src/constants/models';
 const { c2sGuildId, prefix } = config;
 const { Events } = Constants;
 
@@ -36,6 +37,7 @@ export const ready = async (client: Semblance) => {
     */
 
     setInterval(() => { checkReminders(client) }, 60000);
+    setInterval(() => { checkBoosterRewards(client) }, 3600000);
 
     Information.findOne({ infoType: "github" })
         .then(async (infoHandler) => {

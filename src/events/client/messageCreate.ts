@@ -8,7 +8,8 @@ import {
 	removeAfk 
 } from '@semblance/constants';
 import { promisify } from 'util';
-import { Information } from '@semblance/models';
+import { BoosterRewards, Information } from '@semblance/models';
+import { createBoosterRewards } from "@semblance/src/constants/models";
 const { Events } = Constants;
 const { sirhId, prefix, c2sGuildId, sirhGuildId, lunchGuildId, ignoredGuilds } = config;
 const wait = promisify(setTimeout);
@@ -17,7 +18,7 @@ export default {
 	name: Events.MESSAGE_CREATE,
 	exec: (message: Message, client: Semblance) => messageCreate(message, client)
 }
-
+// TODO: add an if statement that will execute if system property is true and message type is USER_PREMIUM_GUILD_SUBSCRIPTION  
 export const messageCreate = async (message: Message, client: Semblance) => {
     checkForGitHubUpdate(message);
 	if (message.channel.type == 'DM') return client.emit('messageDM', message) as unknown as void;
@@ -35,7 +36,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
 	let chName = message.channel.name;
 	for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
 	if (message.guild.id == c2sGuildId) {
-		
+		if (chName == 'booster-chat' && message.type == 'USER_PREMIUM_GUILD_SUBSCRIPTION') return createBoosterRewards(message);
 		clearBlacklistedWord(message, message.member);
 		let msg = message.content.toLowerCase(), suggestionArray = ["suggestion:", "suggest:", `${prefix}suggestion`, `${prefix}suggest`],
 			suggestionRegex = new RegExp(`^(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');

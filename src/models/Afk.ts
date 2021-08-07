@@ -15,4 +15,3 @@ const AfkSchema = new Schema({
 })
 
 export const Afk = model("Afk", AfkSchema, "Afk") as Model<AfkFormat>;
-

@@ -1,6 +1,5 @@
 import * as https from 'https';
 import * as FormData from '@discordjs/form-data';
-import AbortController from 'abort-controller';
 import fetch from 'node-fetch';
 import { Constants } from 'discord.js';
 import { Semblance } from '@semblance/src/structures';
@@ -67,14 +66,12 @@ export class APIRequest {
         headers['Content-Type'] = 'application/json';
         }
 
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), this.client.options.restRequestTimeout);
+        const timeout = setTimeout(() => this.client.options.restRequestTimeout);
         return fetch(url, {
         method: this.method,
         headers,
         agent,
         body,
-        signal: controller.signal,
         }).finally(() => clearTimeout(timeout));
     }
 }

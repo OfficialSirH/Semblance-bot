@@ -187,7 +187,6 @@ export const cellChannels = [
     '488478893586645004', // cells-chat
     '496430259114082304', // share-your-prestige
     '511658545280712726', // suggestions
-    //'822852513001766982', // suggestion-discussion
     '545344551095894028', // beta
     '694901423732686878', // cells-art
     '506940509441490947', // general

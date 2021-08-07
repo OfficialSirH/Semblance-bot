@@ -1,8 +1,6 @@
-import { Client, ClientOptions, Collection, TextChannel } from 'discord.js';
+import { Client, ClientOptions, Collection } from 'discord.js';
 import * as fs from 'fs';
-import { Information } from '@semblance/models';
 import { Commands, Aliases, SlashCommands, ComponentHandlers } from '@semblance/lib/interfaces/Semblance';
-import { rpsGames } from '@semblance/src/componentHandlers/rps';
 import { RESTManager } from '@semblance/lib/rest/RESTManager';
 import { GameLeaderboard, VoteLeaderboard, Webhook } from '.';
 import { Game, Votes } from '../models';
@@ -10,7 +8,6 @@ import { Game, Votes } from '../models';
 export class Semblance extends Client {
     private _gameLeaderboard: GameLeaderboard;
     private _voteLeaderboard: VoteLeaderboard;
-    // private _clearCache: NodeJS.Timeout;
     private _commandCounter: number;
     private _componentHandlers: ComponentHandlers;
     private _slashCommands: SlashCommands;
@@ -26,10 +23,6 @@ export class Semblance extends Client {
     constructor(options: object) {
         super(options as ClientOptions);
 
-        // this._clearCache = setInterval(() => {
-        //     this.sweepUsers();
-        // }, 30000);
-
         this._commandCounter = 0;
 
         this._autoCommands = {};
@@ -44,7 +37,7 @@ export class Semblance extends Client {
 
         this._slashCommands = new Collection();
 
-        this._commands = {}, this._aliases = {} // { "command": require("that_command") }, { "alias": "command" }
+        this._commands = {}, this._aliases = {};
         fs.readdir("./dist/src/commands/", (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith(".js")) {
@@ -84,29 +77,6 @@ export class Semblance extends Client {
         return this._voteLeaderboard;
     }
 
-    // public sweepUsers = async () => {
-    //     let now = Date.now();
-    //     let cacheLifetime = 30000;
-    //     let users = 0;
-    //     users += this.users.cache.sweep(user => { 
-    //         let channel = this.channels.cache.get((user as any).lastMessageChannelId) as TextChannel;
-    //         if (!channel || !channel.messages) return true;
-    //         let lastMessage = channel.messages.cache.get(user.lastMessageId);
-    //         if (!lastMessage) return true;
-    //         return (now - (lastMessage.editedTimestamp || lastMessage.createdTimestamp)) > cacheLifetime;
-    //     });
-    //     this.guilds.cache.map(g => g.members.cache).forEach(members => {
-    //         users += members.sweep(member => {
-    //             let channel = this.channels.cache.get(member.lastMessageChannelId) as TextChannel;
-    //             if (!channel || !channel.messages) return true;
-    //             let lastMessage = channel.messages.cache.get(member.lastMessageId);
-    //             if (!lastMessage) return true;
-    //             return (now - (lastMessage.editedTimestamp || lastMessage.createdTimestamp)) > cacheLifetime;
-    //         });
-    //     });
-    //     return users;
-    // }
-    
     public get componentHandlers() {
         return this._componentHandlers;
     }

@@ -57,4 +57,4 @@ export interface EventHandler {
     exec: EventHandlerExecution<any[]>;
 }
 
-export type EventHandlerExecution<T extends any[]> = (...args: [...T, Semblance]) => void;
+export type EventHandlerExecution<T extends any[]> = (...args: [...T, Semblance]) => Promise<void>;

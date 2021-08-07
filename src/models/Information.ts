@@ -8,7 +8,8 @@ type infoType = 'beta'
     | 'codes'
     | 'changelog'
     | 'cacheList'
-    | 'beyondcount';
+    | 'beyondcount'
+    | 'boostercodes';
 
 export interface InformationFormat extends Document {
     infoType: infoType;
@@ -16,7 +17,7 @@ export interface InformationFormat extends Document {
     count: number;
     updated: boolean;
     expired: string;
-    list: Snowflake[];
+    list: any[];
     footer: string;
 }
 

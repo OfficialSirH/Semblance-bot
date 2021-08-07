@@ -39,6 +39,21 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
                 .addField("Expired Codes", infoHandler.expired)
                 .setFooter(infoHandler.footer);
             break;
+        case 'boostercodes':
+            switch(args[1]) {
+                case 'list':
+                    listBoosterCodes(client, message);
+                    break;
+                case 'add':
+                    addBoosterCode(client, message, args[2]);
+                    break;
+                case 'remove':
+                    removeBoosterCode(client, message, args[2]);
+                    break;
+                default:
+                    return message.reply("Invalid argument for boostercodes option. Choose `list`, `add`, or `remove`.");
+            }
+            break;
         case 'changelog':
             infoHandler = await Information.findOneAndUpdate({ infoType: "changelog" }, { $set: { info: args.slice(1).join(" ") } }, { new: true });
             embed.setDescription(infoHandler.info);
@@ -48,3 +63,41 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     }
     message.channel.send({ embeds: [embed] });
 }
+
+const listBoosterCodes = async (client: Semblance, message: Message) => {
+    const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
+    const embed = new MessageEmbed()
+    .setTitle(`Booster Codes`)
+    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setDescription(`number of codes: ${darwiniumCodes.list.length}\`\`\`\n${darwiniumCodes.list.join(', ')}\`\`\``)
+    .setColor(randomColor);
+    message.channel.send({ embeds: [embed] });
+}
+const addBoosterCode = async (client: Semblance, message: Message, code: string) => {
+    if (!code) return message.reply("You need to give me a code to add.");
+    const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
+    if (darwiniumCodes.list.includes(code)) return message.reply("That code is already in the list.");
+    darwiniumCodes.list.push(code);
+    await darwiniumCodes.update();
+    const embed = new MessageEmbed()
+    .setTitle(`Booster Codes`)
+    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setDescription(`**Code was successfully added**\nnew number of codes: ${darwiniumCodes.list.length}\`\`\`\n${darwiniumCodes.list.join(', ')}\`\`\``)
+    .setColor(randomColor);
+    message.channel.send({ embeds: [embed] });
+}
+
+const removeBoosterCode = async (client: Semblance, message: Message, code: string) => {
+    if (!code) return message.reply("You need to give me a code to remove.");
+    const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
+    if (!darwiniumCodes.list.includes(code)) return message.reply("That code is not in the list.");
+    darwiniumCodes.list.splice(darwiniumCodes.list.indexOf(code), 1);
+    await darwiniumCodes.update();
+    const embed = new MessageEmbed()
+    .setTitle(`Booster Codes`)
+    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setDescription(`**Code was successfully removed**\nnew number of codes: ${darwiniumCodes.list.length}\`\`\`\n${darwiniumCodes.list.join(', ')}\`\`\``)
+    .setColor(randomColor);
+    message.channel.send({ embeds: [embed] });
+}
+

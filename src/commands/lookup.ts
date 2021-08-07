@@ -1,7 +1,7 @@
 ﻿import fetch from 'node-fetch';
 import { getRole, getChannel, getUser } from '@semblance/lib/utils/resolvers';
 import * as constants from '@semblance/constants';
-import { DMChannel, Message, MessageOptions, NewsChannel, Snowflake, TextChannel, ThreadChannel } from 'discord.js';
+import { DMChannel, Message, MessageOptions, NewsChannel, Snowflake, TextBasedChannels, TextChannel, ThreadChannel } from 'discord.js';
 import { Semblance } from '../structures';
 
 module.exports = {
@@ -128,4 +128,4 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     return send(message.channel, `🚫 I don't know what the Id \`${args[0]}\` is coming from. Maybe the deep abyss known as The Beyond?`)
 }
 
-const send = (channel: TextChannel | DMChannel | NewsChannel | ThreadChannel, options: string | MessageOptions) => channel.send(options)
+const send = (channel: TextBasedChannels, options: string | MessageOptions) => channel.send(options)
