@@ -8,17 +8,20 @@ module.exports = {
     description: 'interact with booster rewards for users',
     category: 'developer',
     permissionRequired: 7,
+    aliases: ['boosterrewards', 'brewards'],
     checkArgs: (args: string[]) => args.length >= 1,
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+    if (!args.length) return message.reply('The following options are:\n`list`\n`add <user id or mention>` or vice versa\n`remove <user id or mention>` or vice versa');
+    if (args.includes('list')) listBoosters(message);
+    
     let user = message.mentions.members.first();
     let userId = user ? user.id : args.filter(a => a.match(/^<@!?\d{16,19}>$/)).shift();
     if (!user && !userId) return message.reply('You must refer to a user by ID or mention');
     
     if (args.includes('add')) addBooster(message, userId);
     if (args.includes('remove')) removeBooster(message, userId);
-    if (args.includes('list')) listBoosters(message);
 }
 
 const addBooster = async (message: Message, user: string | GuildMember) => {
