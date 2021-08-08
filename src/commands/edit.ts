@@ -76,7 +76,7 @@ const addBoosterCode = async (message: Message, codes: string[]) => {
     const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
     if (codes.every(c => darwiniumCodes.list.includes(c))) return message.reply("All of the codes you provided are already in the list.");
     codes = codes.filter(c => !darwiniumCodes.list.includes(c));
-    darwiniumCodes.list.concat(codes);
+    darwiniumCodes.list = darwiniumCodes.list.concat(codes);
     await Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } }, { new: true });
     const list = darwiniumCodes.list.length > 0 ? darwiniumCodes.list.join(', ') : 'None';
     const embed = new MessageEmbed()
