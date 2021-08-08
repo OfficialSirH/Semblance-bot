@@ -37,7 +37,7 @@ export const ready = async (client: Semblance) => {
     */
 
     setInterval(() => { checkReminders(client) }, 60000);
-    setInterval(() => { checkBoosterRewards(client) }, 1000 * 60 * 60 * 24);
+    setInterval(() => { checkBoosterRewards(client) }, 1000 * 60 * 60 * 12);
 
     Information.findOne({ infoType: "github" })
         .then(async (infoHandler) => {
