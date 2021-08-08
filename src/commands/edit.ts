@@ -2,7 +2,7 @@ import { Message, MessageEmbed } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import { Information } from '@semblance/models';
 import { Semblance } from '../structures';
-import { InformationFormat } from '../models/Information';
+import { Information, InformationFormat } from '../models/Information';
 
 module.exports = {
     description: "Used for editing information on the beta and update commands",
@@ -42,11 +42,11 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         case 'boostercodes':
             switch(args[1]) {
                 case 'list':
-                    return listBoosterCodes(client, message);
+                    return listBoosterCodes(message);
                 case 'add':
-                    return addBoosterCode(client, message, args[2]);
+                    return addBoosterCode(message, args.slice(2));
                 case 'remove':
-                    return removeBoosterCode(client, message, args[2]);
+                    return removeBoosterCode(message, args.slice(2));
                 default:
                     return message.reply("Invalid argument for boostercodes option. Choose `list`, `add`, or `remove`.");
             }
@@ -61,7 +61,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
     message.channel.send({ embeds: [embed] });
 }
 
-const listBoosterCodes = async (client: Semblance, message: Message) => {
+const listBoosterCodes = async (message: Message) => {
     const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
     const list = darwiniumCodes.list.length > 0 ? darwiniumCodes.list.join(', ') : 'None';
     const embed = new MessageEmbed()
@@ -71,32 +71,34 @@ const listBoosterCodes = async (client: Semblance, message: Message) => {
     .setColor(randomColor);
     message.channel.send({ embeds: [embed] });
 }
-const addBoosterCode = async (client: Semblance, message: Message, code: string) => {
-    if (!code) return message.reply("You need to give me a code to add.");
+const addBoosterCode = async (message: Message, codes: string[]) => {
+    if (codes.length == 0) return message.reply("You need to give me a code to add.");
     const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
-    if (darwiniumCodes.list.includes(code)) return message.reply("That code is already in the list.");
-    darwiniumCodes.list.push(code);
-    await darwiniumCodes.updateOne();
+    if (codes.every(c => darwiniumCodes.list.includes(c))) return message.reply("All of the codes you provided are already in the list.");
+    codes = codes.filter(c => !darwiniumCodes.list.includes(c));
+    darwiniumCodes.list.concat(codes);
+    await Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } }, { new: true });
     const list = darwiniumCodes.list.length > 0 ? darwiniumCodes.list.join(', ') : 'None';
     const embed = new MessageEmbed()
     .setTitle(`Booster Codes`)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
-    .setDescription(`**Code was successfully added**\nnew number of codes: ${darwiniumCodes.list.length}\n\`\`\`\n${list}\`\`\``)
+    .setDescription(`**The provided codes were successfully added**\nnew number of codes: ${darwiniumCodes.list.length}\n\`\`\`\n${list}\`\`\``)
     .setColor(randomColor);
     message.channel.send({ embeds: [embed] });
 }
 
-const removeBoosterCode = async (client: Semblance, message: Message, code: string) => {
-    if (!code) return message.reply("You need to give me a code to remove.");
+const removeBoosterCode = async (message: Message, codes: string[]) => {
+    if (codes.length == 0) return message.reply("You need to give me a code to remove.");
     const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
-    if (!darwiniumCodes.list.includes(code)) return message.reply("That code is not in the list.");
-    darwiniumCodes.list.splice(darwiniumCodes.list.indexOf(code), 1);
-    await darwiniumCodes.updateOne();
+    if (codes.every(c => !darwiniumCodes.list.includes(c))) return message.reply("All of the codes you provided aren't in the list.");
+    codes = codes.filter(c => darwiniumCodes.list.includes(c));
+    darwiniumCodes.list = darwiniumCodes.list.filter(c => !codes.includes(c));
+    await Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } }, { new: true });
     const list = darwiniumCodes.list.length > 0 ? darwiniumCodes.list.join(', ') : 'None';
     const embed = new MessageEmbed()
     .setTitle(`Booster Codes`)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
-    .setDescription(`**Code was successfully removed**\nnew number of codes: ${darwiniumCodes.list.length}\n\`\`\`\n${list}\`\`\``)
+    .setDescription(`**The provided codes were successfully removed**\nnew number of codes: ${darwiniumCodes.list.length}\n\`\`\`\n${list}\`\`\``)
     .setColor(randomColor);
     message.channel.send({ embeds: [embed] });
 }
