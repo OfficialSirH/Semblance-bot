@@ -1,6 +1,5 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Information } from '@semblance/models';
 import { Semblance } from '../structures';
 import { Information, InformationFormat } from '../models/Information';
 
