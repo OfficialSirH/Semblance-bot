@@ -14,14 +14,14 @@ module.exports = {
 
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
     if (!args.length) return message.reply('The following options are:\n`list`\n`add <user id or mention>` or vice versa\n`remove <user id or mention>` or vice versa');
-    if (args.includes('list')) listBoosters(message);
+    if (args.includes('list')) return listBoosters(message);
     
     let user = message.mentions.members.first();
     let userId = user ? user.id : args.filter(a => a.match(/^<@!?\d{16,19}>$/)).shift();
     if (!user && !userId) return message.reply('You must refer to a user by ID or mention');
     
-    if (args.includes('add')) addBooster(message, userId);
-    if (args.includes('remove')) removeBooster(message, userId);
+    if (args.includes('add')) return addBooster(message, userId);
+    if (args.includes('remove')) return removeBooster(message, userId);
 }
 
 const addBooster = async (message: Message, user: string | GuildMember) => {
@@ -45,5 +45,5 @@ const removeBooster = async (message: Message, user: string | GuildMember) => {
 const listBoosters = async (message: Message) => {
     let boosterRewards = await BoosterRewards.find({});
     if (!boosterRewards.length) return message.reply('There are no booster rewards to list');
-    message.channel.send(`There are ${boosterRewards.length} booster rewards currently listed:\n${boosterRewards.reduce((acc, cur) => acc += `${cur.userId} - ${formattedDate(cur.rewardingDate)}`, '')}`);
+    message.channel.send(`There are ${boosterRewards.length} booster rewards currently listed:\n${boosterRewards.reduce((acc, cur) => acc += `${cur.userId} - ${formattedDate(cur.rewardingDate)}\n`, '')}`);
 };
