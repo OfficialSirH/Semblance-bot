@@ -39,7 +39,8 @@ const removeBooster = async (message: Message, user: string | GuildMember) => {
     let userId = user instanceof GuildMember ? user.id : user;
     let boosterRewards = await BoosterRewards.findOne({ userId });
     if (!boosterRewards) return message.reply('That user is not listed to receive an automated reward');
-    boosterRewards.remove();
+    await boosterRewards.remove();
+    message.reply('That user will no longer receive an automated reward');
 }
 
 const listBoosters = async (message: Message) => {
