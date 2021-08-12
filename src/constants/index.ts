@@ -8,7 +8,7 @@ export const getAvatar = (user: User) => {
     let avatarType = (user.avatar.startsWith('a_')) ? `${user.avatar}.gif` : `${user.avatar}.png`;
     return `https://cdn.discordapp.com/avatars/${user.id}/${avatarType}?size=1024` 
 };
-export const insertionsort = (list: (number | Snowflake)[][]) => {
+export const insertionsort = (list: [Snowflake, number][]) => {
     for (var i = 0; i < list.length; i++) {
         const curItem = list[i];
         let curIndex = i - 1;
@@ -20,7 +20,7 @@ export const insertionsort = (list: (number | Snowflake)[][]) => {
     }
     return list;
 };
-export const quickSort = (list: (number | Snowflake)[][], left: number, right: number) => {
+export const quickSort = (list: [Snowflake, number][], left: number, right: number) => {
     let index: number;
     if (list.length > 1) {
         index = partition(list, left, right); //index returned from partition
@@ -33,13 +33,13 @@ export const quickSort = (list: (number | Snowflake)[][], left: number, right: n
     }
     return list;
 };
-const swap = (list: (number | Snowflake)[][], leftIndex: number, rightIndex: number) => {
+const swap = (list: [Snowflake, number][], leftIndex: number, rightIndex: number) => {
     const temp = list[leftIndex];
     list[leftIndex] = list[rightIndex];
     list[rightIndex] = temp;
     return list;
 };
-const partition = (list: (number | Snowflake)[][], left: number, right: number) => {
+const partition = (list: [Snowflake, number][], left: number, right: number) => {
     let pivot = list[Math.floor((right + left) / 2)][1],
         i = left,
         j = right;

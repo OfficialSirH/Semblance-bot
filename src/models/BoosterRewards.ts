@@ -1,5 +1,5 @@
 import { Snowflake } from 'discord.js';
-import { Model, Document, Schema, model } from 'mongoose';
+import { Document, Schema, model } from 'mongoose';
 
 export interface BoosterRewardsFormat extends Document {
     userId: Snowflake;
@@ -14,4 +14,4 @@ const BoosterRewardsSchema = new Schema({
     },
 })
 
-export const BoosterRewards = model("BoosterRewards", BoosterRewardsSchema, "BoosterRewards") as Model<BoosterRewardsFormat>;
+export const BoosterRewards = model<BoosterRewardsFormat>("BoosterRewards", BoosterRewardsSchema, "BoosterRewards");

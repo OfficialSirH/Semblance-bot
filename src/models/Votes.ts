@@ -14,4 +14,4 @@ const VotesSchema = new Schema({
     }
 });
 
-export const Votes = model('Votes', VotesSchema, 'Votes') as Model<VotesFormat>;
+export const Votes = model<VotesFormat>('Votes', VotesSchema, 'Votes');

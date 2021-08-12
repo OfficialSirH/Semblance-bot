@@ -52,4 +52,4 @@ const UserDataSchema = new Schema({
     }
 });
 
-export const UserData = model('UserData', UserDataSchema, 'UserData') as Model<UserDataFormat>;
+export const UserData = model<UserDataFormat>('UserData', UserDataSchema, 'UserData');

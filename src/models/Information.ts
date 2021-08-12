@@ -46,4 +46,4 @@ const InformationSchema = new Schema({
     }
 });
 
-export const Information = model("Information", InformationSchema, "Information") as Model<InformationFormat>;
+export const Information = model<InformationFormat>("Information", InformationSchema, "Information");

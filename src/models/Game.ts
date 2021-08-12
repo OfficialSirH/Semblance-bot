@@ -40,4 +40,4 @@ const GameSchema = new Schema({
     idleProfit: Number
 });
 
-export const Game = model('Game', GameSchema, 'games') as Model<GameFormat>;
+export const Game = model<GameFormat>('Game', GameSchema, 'games');

@@ -19,4 +19,4 @@ const LeaderboardSchema = new Schema({
     list: Array
 });
 
-export const Leaderboard = model('Leaderboard', LeaderboardSchema, 'Leaderboard') as Model<LeaderboardFormat>;
+export const Leaderboard = model<LeaderboardFormat>('Leaderboard', LeaderboardSchema, 'Leaderboard');

@@ -18,4 +18,4 @@ const ReminderSchema = new Schema({
     reminders: Array
 })
 
-export const Reminder = model("Reminder", ReminderSchema, "Reminder") as Model<ReminderFormat>;
+export const Reminder = model<ReminderFormat>("Reminder", ReminderSchema, "Reminder");

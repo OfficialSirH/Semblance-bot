@@ -14,4 +14,4 @@ const JumpSchema = new Schema({
     }
 });
 
-export const Jump = model('JumpToggle', JumpSchema, 'JumpToggle') as Model<JumpFormat>;
+export const Jump = model<JumpFormat>('JumpToggle', JumpSchema, 'JumpToggle');

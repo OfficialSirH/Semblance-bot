@@ -15,4 +15,4 @@ const ReportSchema = new Schema({
     channelId: String
 });
 
-export const Report = model('Reports', ReportSchema, 'Reports') as Model<ReportFormat>;
+export const Report = model<ReportFormat>('Reports', ReportSchema, 'Reports');

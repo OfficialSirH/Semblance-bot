@@ -1,5 +1,5 @@
 import { Snowflake } from 'discord.js';
-import { Model, Document, Schema, model } from 'mongoose';
+import { Document, Schema, model } from 'mongoose';
 
 export interface AfkFormat extends Document {
     userId: Snowflake;
@@ -14,4 +14,4 @@ const AfkSchema = new Schema({
     }
 })
 
-export const Afk = model("Afk", AfkSchema, "Afk") as Model<AfkFormat>;
+export const Afk = model<AfkFormat>("Afk", AfkSchema, "Afk");
