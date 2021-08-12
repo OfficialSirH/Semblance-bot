@@ -1,9 +1,9 @@
 import { Semblance } from '@semblance/structures';
 import { BoosterRewards, Information } from '@semblance/models';
-import { GuildMember, Message, TextChannel } from 'discord.js';
+import { GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
 import config from '@semblance/config';
 import { formattedDate } from '.';
-const { sirhId, adityaId, c2sGuildId } = config;
+const { sirhId, adityaId, c2sGuildId, darwinium } = config;
 
 // BoosterRewards - check dates for booster rewards
 export const checkBoosterRewards = async (client: Semblance) => {
@@ -31,7 +31,9 @@ export const checkBoosterRewards = async (client: Semblance) => {
         } finally {
             if (failedToFetch) return promises.push(boosterReward.remove());        
             if (!member.roles.cache.has(boosterRole(client).id)) return promises.push(boosterReward.remove());
-            member.user.send(`Here's your code, ${member.user.username}! Code: ${darwiniumCode}`)
+            member.user.send({ embeds: [new MessageEmbed().setTitle('Booster reward')
+            .setAuthor(member.user.tag, member.user.displayAvatarURL())
+            .setDescription(`Thank you for boosting Cell to Singularity for 2 weeks! As a reward, here's 150 ${darwinium}!\nCode: ||${darwiniumCode}||`)] })
             .catch(async err => {
                 await boosterChannel(client).send(`${member} I had trouble DMing you so instead Aditya or SirH will manually provide you a code. :)`+
                 `\nTip: These errors tend to happen when your DMs are closed. So keeping them open would help us out :D`);
