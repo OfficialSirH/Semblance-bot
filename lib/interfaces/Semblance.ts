@@ -1,11 +1,22 @@
 import { Semblance } from "@semblance/structures";
 import { Collection, CommandInteraction, CommandInteractionOptionResolver, Message, MessageComponentInteraction, Snowflake, ConstantsEvents } from "discord.js";
 
+export type ContextMenuHandlers = Collection<string, ContextMenuHandler>;
+
+export interface ContextMenuHandler {
+    run: (interaction: CommandInteraction, { options, permissionLevel }: ContextMenuHandlerOptions) => Promise<void>;
+}
+
+export interface ContextMenuHandlerOptions {
+    options: CommandInteractionOptionResolver;
+    permissionLevel: number;
+}
+
 export type ComponentHandlers = Collection<string, ComponentHandler>;
 
 export interface ComponentHandler {
     allowOthers?: boolean;
-    run: (interaction: MessageComponentInteraction, data: ButtonData, { permissionLevel }: any) => Promise<void>;
+    run: (interaction: MessageComponentInteraction, data: ButtonData, { permissionLevel }: { permissionLevel: number }) => Promise<void>;
 }
 
 export interface ButtonData {

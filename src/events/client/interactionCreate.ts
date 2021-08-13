@@ -1,7 +1,7 @@
 import { customIdRegex, getPermissionLevel, properCustomIdRegex } from '@semblance/constants';
 import { ButtonData } from '@semblance/lib/interfaces/Semblance';
 import { Semblance } from "@semblance/src/structures";
-import { GuildMember, MessageComponentInteraction, Constants, Interaction } from 'discord.js';
+import { GuildMember, MessageComponentInteraction, Constants, Interaction, ContextMenuInteraction } from 'discord.js';
 const { Events } = Constants;
 
 export default {
@@ -11,12 +11,13 @@ export default {
 
 export const interactionCreate = async (interaction: Interaction, client: Semblance) => {
     if (interaction.isMessageComponent()) return componentInteraction(client, interaction);
-        if (!interaction.isCommand()) return;
+    if (interaction.isContextMenu()) return contextMenuInteraction(client, interaction);
+    if (!interaction.isCommand()) return;
 
-        if (client.slashCommands.has(interaction.commandId)) 
-            await client.slashCommands.get(interaction.commandId).run(client, interaction, 
-                { options: interaction.options, permissionLevel: getPermissionLevel(interaction.member as GuildMember) });
-        else await interaction.reply('I can\'t find a command for this, something is borked.');
+    if (client.slashCommands.has(interaction.commandId)) 
+        await client.slashCommands.get(interaction.commandId).run(client, interaction, 
+            { options: interaction.options, permissionLevel: getPermissionLevel(interaction.member as GuildMember) });
+    else await interaction.reply('I can\'t find a command for this, something is borked.');
 }
 
 async function componentInteraction(client: Semblance, interaction: MessageComponentInteraction) {
@@ -29,4 +30,10 @@ async function componentInteraction(client: Semblance, interaction: MessageCompo
     const componentHandler = client.componentHandlers.get(data.command);
     if (interaction.user.id != id && !componentHandler.allowOthers) return await interaction.reply({ content: "This command wasn't called by you so you can't use it", ephemeral: true });
     componentHandler.run(interaction, data, { permissionLevel: getPermissionLevel(interaction.member as GuildMember) });
+}
+
+const contextMenuInteraction = async (client: Semblance, interaction: ContextMenuInteraction) => {
+    if (!client.contextMenuHandlers.has(interaction.commandName)) return;
+    const contextMenuHandler = client.contextMenuHandlers.get(interaction.commandName);
+    contextMenuHandler.run(interaction, { options: interaction.options, permissionLevel: getPermissionLevel(interaction.member as GuildMember) });
 }

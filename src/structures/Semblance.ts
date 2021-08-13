@@ -1,6 +1,6 @@
 import { Client, ClientOptions, Collection } from 'discord.js';
 import * as fs from 'fs';
-import { Commands, Aliases, SlashCommands, ComponentHandlers } from '@semblance/lib/interfaces/Semblance';
+import { Commands, Aliases, SlashCommands, ComponentHandlers, ContextMenuHandlers } from '@semblance/lib/interfaces/Semblance';
 import { RESTManager } from '@semblance/lib/rest/RESTManager';
 import { GameLeaderboard, VoteLeaderboard, Webhook } from '.';
 import { Game, Votes } from '../models';
@@ -10,6 +10,7 @@ export class Semblance extends Client {
     private _voteLeaderboard: VoteLeaderboard;
     private _commandCounter: number;
     private _componentHandlers: ComponentHandlers;
+    private _contextMenuHandlers: ContextMenuHandlers;
     private _slashCommands: SlashCommands;
     private _commands: Commands;
     private _aliases: Aliases;
@@ -34,6 +35,12 @@ export class Semblance extends Client {
                 this._componentHandlers.set(file.replace('.js', ''), require(`../componentHandlers/${file}`));
             }
         });
+
+        this._contextMenuHandlers = new Collection();
+        const files = fs.readdirSync('./dist/src/contextMenuHandlers/');
+        for (const file of files) if (file.endsWith('.js')) {
+            this._contextMenuHandlers.set(file.replace('.js', ''), require(`../contextMenuHandlers/${file}`));
+        }
 
         this._slashCommands = new Collection();
 
@@ -79,6 +86,10 @@ export class Semblance extends Client {
 
     public get componentHandlers() {
         return this._componentHandlers;
+    }
+
+    public get contextMenuHandlers() {
+        return this._contextMenuHandlers;
     }
 
     public get slashCommands() {
