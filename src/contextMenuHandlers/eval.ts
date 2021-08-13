@@ -10,7 +10,7 @@ export const run = async (interaction: ContextMenuInteraction, { options, permis
     let content: string;
     
     if (message.content.length == 0) content = await fetch(message.attachments.first().url).then(r => r.text());
-    else content = (message.content.indexOf('```js') == 0) ? message.content.substring(3, message.content.length - 3) : message.content;
+    else content = (message.content.indexOf('```js') == 0) ? message.content.substring(5, message.content.length - 3) : message.content;
 
     let embed = new MessageEmbed().setColor(randomColor).addField("📥 Input", `\`\`\`js\n${content.substring(0, 1015)}\`\`\``).setFooter("Feed me code!");
     try {
