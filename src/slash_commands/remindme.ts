@@ -18,21 +18,20 @@ module.exports = {
 		if (commandFailed) return;
 		switch (action) {
 			case 'create':
-				await create(client, interaction);
+				return create(client, interaction);
 				break;
 			case 'edit':
-				await edit(client, interaction);	
+				return edit(client, interaction);	
 				break;
 			case 'delete':
-				await deleteReminder(client, interaction);
+				return deleteReminder(client, interaction);
 				break;
 			case 'list':
-				await list(client, interaction);
+				return list(client, interaction);
 				break;
 			default:
 				return interaction.reply({ content: "You must specify a valid subcommand.", ephemeral: true });
 		}
-		return interaction.reply({ content: "You didn't provide any valid options.", ephemeral: true });
     }
 }
 

@@ -45,7 +45,6 @@ export const gameTransferPages = ["https://i.imgur.com/BsjMAu6.png",
 
 // reminder functions - checkReminders
 export const checkReminders = async (client: Semblance) => {
-    if (!client.readyAt) return;
     const reminderList = await Reminder.find({}), now = Date.now(); 
     if (!reminderList) return;
     const userReminders = {} as Record<Snowflake, UserReminder[]>;
