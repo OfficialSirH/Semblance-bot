@@ -6,7 +6,7 @@ import fetch from 'node-fetch';
 
 export const run = async (interaction: ContextMenuInteraction, { options, permissionLevel }: ContextMenuHandlerOptions) => {
     if (permissionLevel < 7) return interaction.reply({ content: `You do not have permission to use this command.`, ephemeral: true });
-    const message = options.getMessage('message', true) as Message;
+    const message = options.getMessage('message', true) as Message, client = interaction.client;
     let content: string;
     
     if (message.content.length == 0) content = await fetch(message.attachments.first().url).then(r => r.text());
