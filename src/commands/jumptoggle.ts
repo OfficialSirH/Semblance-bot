@@ -14,7 +14,7 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
-    const toggleHandler = await Jump.findOne({ guild: message.guild.id });
+    const toggleHandler = await Jump.findOne({ userId: message.author.id });
     const component = new MessageActionRow()
     .addComponents([new MessageButton()
         .setLabel('Enable')
@@ -47,21 +47,4 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setStyle('PRIMARY')
     ]);
     message.channel.send({ content: 'Jump Toggles:', components: [component] });
-    /*let choice = args[0].toLowerCase();
-    if (choice == 't' || choice == 'true') {
-        if (toggleHandler && toggleHandler.active) message.reply("You've already got `jump` enabled on this guild.");
-        else if (toggleHandler && !toggleHandler.active) {
-            await Jump.findOneAndUpdate({ guild: message.guild.id }, { $set: { active: true } });
-            message.channel.send("Jump message converter is now **active**.");
-        } else {
-            await (new Jump({ guild: message.guild.id })).save();
-            message.channel.send("Jump message converter is now **active**.");
-        }
-    } else if (choice == 'f' || choice == 'false') {
-        if (toggleHandler && !toggleHandler.active) message.reply("You've already got `jump` disabled on this guild.");
-        else if (toggleHandler && toggleHandler.active) {
-            await Jump.findOneAndUpdate({ guild: message.guild.id }, { $set: { active: false } });
-            message.channel.send("Jump message converter is now **inactive**.");
-        } else message.channel.send("Disabling this isn't required as it is disabled by default.");
-    } else message.reply("Incorrect argument, the allowed arguments are true/t or false/f");*/
 }

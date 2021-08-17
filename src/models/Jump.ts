@@ -1,13 +1,13 @@
 import { Snowflake } from 'discord.js';
-import { Model, Document, Schema, model } from 'mongoose';
+import { Document, Schema, model } from 'mongoose';
 
 export interface JumpFormat extends Document {
-    guild: Snowflake;
+    userId: Snowflake;
     active: boolean;
 }
 
 const JumpSchema = new Schema({
-    guild: String,
+    userId: String,
     active: {
         default: true,
         type: Boolean

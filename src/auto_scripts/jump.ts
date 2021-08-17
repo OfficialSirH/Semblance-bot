@@ -13,9 +13,8 @@ module.exports = {
 }
 
 module.exports.run = async function(client: Semblance, message: Message, args: string[], recursiveCount = 0) {
-    const jumpHandler = await Jump.findOne({ guild: message.guild.id });
     if (recursiveCount == 2) return message.delete();
-    if (!jumpHandler || !jumpHandler.active) return;
+    if (recursiveCount == 0 && !(await Jump.findOne({ userId: message.author.id }))?.active) return;
     
     let content = args.join(" ");
 
