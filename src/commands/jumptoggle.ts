@@ -23,7 +23,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             action: 'enable',
             id: message.author.id
         }))
-        .setDisabled(Boolean(toggleHandler.active))
+        .setDisabled(Boolean(toggleHandler?.active))
         .setEmoji('✔')
         .setStyle('SUCCESS'),
         new MessageButton()
@@ -33,7 +33,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             action: 'disable',
             id: message.author.id
         }))
-        .setDisabled(!Boolean(toggleHandler.active))
+        .setDisabled(!Boolean(toggleHandler?.active))
         .setEmoji('❌')
         .setStyle('DANGER'),
         new MessageButton()
