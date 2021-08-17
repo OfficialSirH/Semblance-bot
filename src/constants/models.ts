@@ -53,7 +53,7 @@ export const boosterRole = (client: Semblance) => client.guilds.cache.get(c2sGui
 export const createBoosterRewards = async (message: Message) => {
     const boosterReward = await BoosterRewards.findOne({ userId: message.author.id });
     if (boosterReward) return;
-    BoosterRewards.create({ userId: message.author.id })
+    BoosterRewards.create({ userId: message.author.id, rewardingDate: Date.now() + 1000 * 60 * 60 * 24 * 14 })
     .then(br => message.channel.send(`Thank you for boosting the server, ${message.author.username}! You will receive your booster reward on ${formattedDate(br.rewardingDate)}`))
     .catch(err => message.channel.send(`<@${sirhId}> the automated rewarder failed at creating the scheduled reward for ${message.author.username}`));
 }
