@@ -16,13 +16,14 @@ export const checkBoosterRewards = async (client: Semblance) => {
         if (darwiniumCodes.updated) {
             boosterChannel(client).send(`<@${sirhId}> <@${adityaId}> No booster codes left!`+
             ` The following users need codes: ${boosterRewards.map(c => c.userId).join(', ')}`);
-            return darwiniumCodes.update({ updated: false });
+            return Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { updated: false } } as any); // TS_BUG: have to put any here for now due to TS bug
         }
         return;
     }
     const promises = [];
     boosterRewards.forEach(async boosterReward => {
         const ogCodeLength = darwiniumCodes.list.length, darwiniumCode = darwiniumCodes.list.shift();
+        darwiniumCodes.list = darwiniumCodes.list.filter(c => c != darwiniumCode);
         let failedToFetch: boolean, member: GuildMember;
         try {
             member = await client.guilds.cache.get(c2sGuildId).members.fetch(boosterReward.userId);
@@ -30,16 +31,17 @@ export const checkBoosterRewards = async (client: Semblance) => {
             failedToFetch = true;
         } finally {
             if (failedToFetch) return promises.push(boosterReward.remove());        
-            if (!member.roles.cache.has(boosterRole(client).id)) return promises.push(boosterReward.remove());
+            if (!member.roles.cache.has(boosterRole)) return promises.push(boosterReward.remove());
             member.user.send({ embeds: [new MessageEmbed().setTitle('Booster reward')
             .setAuthor(member.user.tag, member.user.displayAvatarURL())
             .setDescription(`Thank you for boosting Cell to Singularity for 2 weeks! As a reward, here's 150 ${darwinium}!\nCode: ||${darwiniumCode}||`)] })
             .catch(async err => {
+                console.log(`There was an issue with sending the code to ${member.user.tag}: ${err}`);
                 await boosterChannel(client).send(`${member} I had trouble DMing you so instead Aditya or SirH will manually provide you a code. :)`+
                 `\nTip: These errors tend to happen when your DMs are closed. So keeping them open would help us out :D`);
                 darwiniumCodes.list.unshift(darwiniumCode);
             });
-            if (darwiniumCodes.list.length != ogCodeLength) promises.push(darwiniumCodes.update({ list: darwiniumCodes.list }));
+            if (darwiniumCodes.list.length != ogCodeLength) promises.push(Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } } as any)); // TS_BUG: have to put any here for now due to TS bug
             promises.push(boosterReward.delete());
         }
     });
@@ -47,7 +49,7 @@ export const checkBoosterRewards = async (client: Semblance) => {
 };
 
 export const boosterChannel = (client: Semblance) => client.channels.cache.get('800981350714834964') as TextChannel;
-export const boosterRole = (client: Semblance) => client.guilds.cache.get(c2sGuildId).roles.cache.get('660930089990488099');
+export const boosterRole = '660930089990488099';
 
 // BoosterRewards - create automatic booster rewards for author of message
 export const createBoosterRewards = async (message: Message) => {
