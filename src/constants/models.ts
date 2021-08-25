@@ -46,7 +46,7 @@ export const checkBoosterRewards = async (client: Semblance) => {
     return Promise.all(promises);
 };
 
-export const boosterChannel = (client: Semblance) => client.channels.cache.get('547455179302109186') as TextChannel;
+export const boosterChannel = (client: Semblance) => client.channels.cache.get('800981350714834964') as TextChannel;
 export const boosterRole = (client: Semblance) => client.guilds.cache.get(c2sGuildId).roles.cache.get('660930089990488099');
 
 // BoosterRewards - create automatic booster rewards for author of message
