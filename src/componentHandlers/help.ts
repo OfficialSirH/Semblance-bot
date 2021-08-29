@@ -423,24 +423,35 @@ async function mesoguide(interaction: MessageComponentInteraction, components: M
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
 	.setAuthor(user.tag, user.displayAvatarURL())
+    .setDescription('This guide is mainly aimed at helping people with their first run through the Mesozoic Valley. ')
     .addFields([
         {
             name: '**Starting a new stage**',
-            value: [`\`\`\`\nWhen starting a new stage get to your newest dinos as fast as possible completely ignoring all the dinos before the newest 3-4. Then only upgrade these few as far as you can afford in the first 10-15 min.`, 
-                `After that focus on the missions to get geodes to upgrade your trait cards.`,
-                `Buying other dinos is only recommended right before getting to the next stage to take the free mutagen from getting 25, 50, 100, 150, 250 and 500 of one dino. Don’t buy anything that doesn’t achieve one of these two things.\`\`\``].join(' '),
+            value: [`\`\`\`\nWhen starting a new stage get to your newest dinos as fast as possible completely ignoring all the dinos before the newest 2-3. Then only upgrade these few as far as you can afford in the first 5-10 min.`,
+            `After that focus on completing missions to get geodes.\`\`\``].join(' '),
                 inline: true
         },
         {
+            name: '**Exiting a stage**',
+            value: ['I recommend only exiting a stage when you have completed all missions.',
+            "Before doing so you should go through all your dinos and try to reach as many milestones as you can for some extra mutagen. Don't underestimate the effect of this, especially at higher stages.",
+            'The milestones are 10, 25, 50, 100, 150, 250, and 500.'].join('\n'),
+        },
+        {
             name: '**Missions**',
-            value: [`\`\`\`\nAlways try to do all the missions before calling the asteroid to get to the next stage.`,
-            `Leaving one open might not be a big deal but getting all of them is recommended because the missing trait cards and mutagen will really hurt you in the long run.\`\`\``].join(' ')
+            value: [`\`\`\`\nThere are four mission types, two of them are a free source of mutagen and traits:`,
+            `- taking a photo of your newest dino`,
+            `- upgrading a certain amount of traits`,
+            `The other two can be a lot more challenging:`,
+            `- upgrading dinos to a particular level - you should just complete this one after the other`,
+            `- producing a certain amount of fossils - there are going to be 1-2 of these per stage, one of them most likely as the last mission with a very high amount of fossils\`\`\``].join('\n'),
+            inline: true
         },
         { 
             name: '**Traits**',
-            value: [`\`\`\`\nAlways upgrade the rare (silver) and epic (gold) traits because you keep them after you reset on stage 50. The normal traits should be upgraded depending on which level you are on. Only upgrade the newest 2-3 dinos to this level, because the efficiency drops significantly below that.`,
-                [`(This next segment is not completely accurate yet, so only take it as a rough estimate)`,
-                `Recommended trait level depending on stage:`].join('\n'),
+            value: [[`\`\`\`\nThis segment is closely connected to the "shop"-part of the guide.`,
+            `Always upgrade the rare (silver) and epic (gold) traits when available because you keep them after you reset on stage 50.`,
+            `The normal traits should only be upgraded for your newest 2 dinos because newer dinos always have a better cost/income ratio. The level depends on which stage you are in.`].join('\n'),
                 [`Stage 1-5: lvl 1-2`,
                 `Stage 6-10: lvl 2-3`,
                `Stage 11-15: lvl 3-4`,
@@ -452,18 +463,17 @@ async function mesoguide(interaction: MessageComponentInteraction, components: M
                 `Stage 41-45: lvl 9-10`,
                 `Stage 46-50: lvl 10-11`].join('\n'),
                 `If you have lots of mutagen left, you can of course use that to speed up you progress by upgrading the traits further.\`\`\``
-            ].join('\n\n'),
-            inline: true
+            ].join('\n\n')
         },
         {
             name: '** The Shop**',
-            value: [`\`\`\`\nThe shop is the third tab in the navigation menu. The Shop gives you options to buy geodes, trait cards and mutagen. When to buy what stuff is really important because buying too much wastes resources and buying too little wastes time.`,
-
-            `Buy Geodes only on stage 50 before prestiging, because the content of the geodes scales with you stage so it is most effective to buy them on stage 50.`,
-            
-            `Buying traits is a good way of levelling up the new/lower-level cards on higher stages because the shop always gives you the newest cards that don’t have an upgrade available. Only buy trait cards if you have mutagen left over.`,
-            
-            `The mutagen part of the shop is not needed because completing all the missions should provide you with enough mutagen to get you through the entire mesozoic valley. Of course speeding up your progress with darwinium using these offers is possible.\`\`\``].join('\n\n')
+            value: [`\`\`\`\nThe Shop gives you options to buy geodes, traits, and mutagen. When and what to buy is really important because buying too much wastes resources and buying too little wastes time.`,
+            `Only buy diamond geodes, and those only on stage 50 before prestiging, because the contents of the geodes scale with your stage so it is most effective to buy them at 50.`,
+            `Buying traits is the only way of effectively leveling the new traits on higher stages.`,
+            `The shop always offers traits that don’t have an upgrade available. By always buying and instantly upgrading two traits you can get new traits to a high level really fast.`,
+            `There is no need to ever keep more than about 5 times the mutagen needed for the most expensive upgrade you want to get, so you can invest the rest in buying and upgrading traits.`,
+            `The mutagen part of the shop is not needed at any time. If you have an urge to spend darwinium then buy diamond geodes instead.\`\`\``].join('\n'),
+            inline: true
         }
     ])
     .setFooter(`Thanks to Jojoseis#0001 for making this guide! :D`);
