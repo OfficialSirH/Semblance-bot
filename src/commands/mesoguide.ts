@@ -32,9 +32,9 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
             },
             {
                 name: '**Exiting a stage**',
-                value: ['I recommend only exiting a stage when you have completed all missions.',
+                value: ['```\nI recommend only exiting a stage when you have completed all missions.',
                 "Before doing so you should go through all your dinos and try to reach as many milestones as you can for some extra mutagen. Don't underestimate the effect of this, especially at higher stages.",
-                'The milestones are 10, 25, 50, 100, 150, 250, and 500.'].join('\n'),
+                'The milestones are 10, 25, 50, 100, 150, 250, and 500.```'].join('\n'),
             },
             {
                 name: '**Missions**',
@@ -71,7 +71,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
                 `Buying traits is the only way of effectively leveling the new traits on higher stages.`,
                 `The shop always offers traits that don’t have an upgrade available. By always buying and instantly upgrading two traits you can get new traits to a high level really fast.`,
                 `There is no need to ever keep more than about 5 times the mutagen needed for the most expensive upgrade you want to get, so you can invest the rest in buying and upgrading traits.`,
-                `The mutagen part of the shop is not needed at any time. If you have an urge to spend darwinium then buy diamond geodes instead.\`\`\``].join('\n'),
+                `The mutagen part of the shop is not needed at any time. If you have an urge to spend darwinium then buy diamond geodes instead.\`\`\``].join('\n\n'),
                 inline: true
             }
         ])
