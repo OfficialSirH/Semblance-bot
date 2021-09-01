@@ -22,6 +22,10 @@ export const ready = async (client: Semblance) => {
 
     Webhook.client = client;
 
+    const totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
+    const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
+    client.user.setActivity(activity, { type: "WATCHING" });
+
     setInterval(() => {
         let totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
         const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;

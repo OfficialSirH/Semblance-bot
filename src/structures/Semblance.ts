@@ -8,7 +8,6 @@ import { Game, Votes } from '../models';
 export class Semblance extends Client {
     private _gameLeaderboard: GameLeaderboard;
     private _voteLeaderboard: VoteLeaderboard;
-    private _commandCounter: number;
     private _componentHandlers: ComponentHandlers;
     private _contextMenuHandlers: ContextMenuHandlers;
     private _slashCommands: SlashCommands;
@@ -23,8 +22,6 @@ export class Semblance extends Client {
      */
     constructor(options: object) {
         super(options as ClientOptions);
-
-        this._commandCounter = 0;
 
         this._autoCommands = {};
 
@@ -106,14 +103,6 @@ export class Semblance extends Client {
 
     public get autoCommands() {
         return this._autoCommands;
-    }
-
-    public get commandCounter() {
-        return this._commandCounter;
-    }
-
-    public increaseCommandCount() {
-        this._commandCounter++;
     }
 
     public get call() {
