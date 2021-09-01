@@ -1,7 +1,7 @@
 import { Snowflake } from 'discord.js';
-import { Model, Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
-export interface LeaderboardFormat extends Document {
+export interface LeaderboardFormat {
     type: leaderboardType;
     list: rankedUser[]
 }
@@ -14,7 +14,7 @@ interface rankedUser {
     voteCount?: number;
 }
 
-const LeaderboardSchema = new Schema({
+const LeaderboardSchema = new Schema<LeaderboardFormat>({
     type: String,
     list: Array
 });

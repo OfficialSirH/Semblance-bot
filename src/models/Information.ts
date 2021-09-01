@@ -1,5 +1,4 @@
-import { Snowflake } from 'discord.js';
-import { Model, Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
 type infoType = 'beta'
     | 'joinbeta'
@@ -11,17 +10,17 @@ type infoType = 'beta'
     | 'beyondcount'
     | 'boostercodes';
 
-export interface InformationFormat extends Document {
+export interface InformationFormat {
     infoType: infoType;
     info: string;
     count: number;
     updated: boolean;
     expired: string;
-    list: any[];
+    list: any;
     footer: string;
 }
 
-const InformationSchema = new Schema({
+const InformationSchema = new Schema<InformationFormat>({
     infoType: String,
     info: {
         type: String,

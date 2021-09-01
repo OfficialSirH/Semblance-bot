@@ -35,7 +35,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 			"**Secrets of the speedruns:**",
 			"9. Reach Singularity within 5 minutes.",
 			"10. Reach Singularity within 120 seconds!"].join("\n"));
-	message.author.send({ embeds:[embed] }).catch(() => message.reply('Something went wrong while trying to send the message, you likely have your DMs closed, preventing you from receiving the message'));
+	message.author.send({ embeds:[embed] }).catch(() => message.channel.send(`${message.author}, something went wrong while trying to send the message, you likely have your DMs closed, preventing you from receiving the message`));
 }
 
 async function fun(message: Message) {

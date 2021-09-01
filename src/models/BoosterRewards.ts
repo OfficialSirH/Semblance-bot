@@ -1,12 +1,12 @@
 import { Snowflake } from 'discord.js';
-import { Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
-export interface BoosterRewardsFormat extends Document {
+export interface BoosterRewardsFormat {
     userId: Snowflake;
     rewardingDate: number;
 }
 
-const BoosterRewardsSchema = new Schema({
+const BoosterRewardsSchema = new Schema<BoosterRewardsFormat>({
     userId: String,
     rewardingDate: Number
 })

@@ -1,14 +1,14 @@
 import { Snowflake } from 'discord.js';
-import { Model, Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
-export interface ReportFormat extends Document {
+export interface ReportFormat {
     User: Snowflake;
     bugId: number;
     messageId: Snowflake;
     channelId: Snowflake;
 }
 
-const ReportSchema = new Schema({
+const ReportSchema = new Schema<ReportFormat>({
     User: String,
     bugId: Number,
     messageId: String,

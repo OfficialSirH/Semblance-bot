@@ -1,4 +1,4 @@
-![status](https://botlist.space/bot/794033850665533450/badge?property=status) ![servers](https://botlist.space/bot/794033850665533450/badge?property=servers) [![chat](https://img.shields.io/discord/794054988224659490?color=%237289DA&logo=discord&logoColor=white)](https://discord.gg/XFMaTn6taf) [![dependencies](https://img.shields.io/david/officialsirh/semblance-bot)](https://david-dm.org/officialsirh/semblance-bot)
+![servers](https://api.discordlist.space/v2/bots/794033850665533450/badge?property=servers&style=plastic&color=informational) ![prefix](https://api.discordlist.space/v2/bots/794033850665533450/badge?property=prefix&style=plastic&color=7289DA) [![chat](https://img.shields.io/discord/794054988224659490?color=%237289DA&logo=discord&logoColor=white)](https://discord.gg/XFMaTn6taf) [![dependencies](https://img.shields.io/david/officialsirh/semblance-bot?style=plastic)](https://david-dm.org/officialsirh/semblance-bot)
 
 ## **Who is Semblance?**
 
@@ -6,7 +6,7 @@
 
 ## **What's her purpose as a bot?**
 
-- She will give tips and help for the game, as well as a tweet function so you can stay on track with what the developers have been up to.
+- She will give tips and help for the game, as well as give some extra fun activities like a RNG-based idle-game.
 
 ## **What are her commands and what does each command do?**
 
@@ -104,7 +104,7 @@
 
 - **s!patreon** - Provides link to my Patreon page.
 
-- **s!credits** - Tells you who were all the people who helped with this bot.
+- **s!credits** - Provides a list of all the people who helped with this bot.
 
 ### - *Admin Commands*
 

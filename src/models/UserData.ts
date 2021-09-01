@@ -1,7 +1,7 @@
 import { Snowflake } from 'discord.js';
-import { Model, Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
-export interface UserDataFormat extends Document {
+export interface UserDataFormat {
     discordId: Snowflake;
     token: string;
     metabits: number;
@@ -13,7 +13,7 @@ export interface UserDataFormat extends Document {
     edited_timestamp: number;
 }
 
-const UserDataSchema = new Schema({
+const UserDataSchema = new Schema<UserDataFormat>({
     discordId: {
         type: String,
         required: 'A user\'s Discord Id is required to create a saved entry'

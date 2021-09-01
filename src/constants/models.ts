@@ -16,7 +16,7 @@ export const checkBoosterRewards = async (client: Semblance) => {
         if (darwiniumCodes.updated) {
             boosterChannel(client).send(`<@${sirhId}> <@${adityaId}> No booster codes left!`+
             ` The following users need codes: ${boosterRewards.map(c => c.userId).join(', ')}`);
-            return Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { updated: false } } as any); // TS_BUG: have to put any here for now due to TS bug
+            return Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { updated: false } });
         }
         return;
     }
@@ -41,7 +41,7 @@ export const checkBoosterRewards = async (client: Semblance) => {
                 `\nTip: These errors tend to happen when your DMs are closed. So keeping them open would help us out :D`);
                 darwiniumCodes.list.unshift(darwiniumCode);
             });
-            if (darwiniumCodes.list.length != ogCodeLength) promises.push(Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } } as any)); // TS_BUG: have to put any here for now due to TS bug
+            if (darwiniumCodes.list.length != ogCodeLength) promises.push(Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } }));
             promises.push(boosterReward.delete());
         }
     });

@@ -22,7 +22,11 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
         .setThumbnail(currentLogo.name)
-        .setDescription('This guide is mainly aimed at helping people with their first run through the Mesozoic Valley. ')
+        .setDescription('This guide is mainly aimed at helping people with their first run through the Mesozoic Valley.\n' +
+        'For later runs, up to prestige 10 you should start saving up lots of mutagen to make getting the last achievements much easier. ' +
+        'With the bonus income from the "Warm Climate" trait you can save yourself about 1-2 trait upgrades per dino - especially in the last runs, and still be really fast. ' +
+        'Getting up to 5 million mutagen by Prestige 10 Rank 50 should be no problem. With this you can then buy and upgrade the traits for the gigantosaurus to very high levels. ' +
+        'I recommend getting about 10 diamond geodes over all to get your rare and epic cards to a nice level. ')
         .addFields([
             {
                 name: '**Starting a new stage**',

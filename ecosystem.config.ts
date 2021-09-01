@@ -1,7 +1,7 @@
 module.exports = {
     apps: [{
         name: 'Semblance',
-        script: './dist/index.js',
+        script: 'index.js',
         watch: true,
         instances: '1',
         env: {

@@ -1,7 +1,7 @@
 import { Snowflake } from 'discord.js';
-import { Model, Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
-export interface GameFormat extends Document {
+export interface GameFormat {
     player: Snowflake;
     money: number;
     percentIncrease: number;
@@ -13,7 +13,7 @@ export interface GameFormat extends Document {
     idleProfit: number;
 }
 
-const GameSchema = new Schema({
+const GameSchema = new Schema<GameFormat>({
     player: String,
     money: {
         default: 0,

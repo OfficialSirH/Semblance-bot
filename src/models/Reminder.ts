@@ -1,7 +1,7 @@
 import { Snowflake } from 'discord.js';
-import { Model, Document, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
-export interface ReminderFormat extends Document {
+export interface ReminderFormat {
     userId: Snowflake;
     reminders: UserReminder[];
 }
@@ -13,7 +13,7 @@ export interface UserReminder {
     channelId: Snowflake;
 }
 
-const ReminderSchema = new Schema({
+const ReminderSchema = new Schema<ReminderFormat>({
     userId: String,
     reminders: Array
 })

@@ -25,8 +25,8 @@ export const ready = async (client: Semblance) => {
     setInterval(() => {
         let totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
         const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
-        if (((client.user as any).presence as Presence).activities[0]?.name !== activity) client.user.setActivity(activity, { type: "WATCHING" });
-    }, 30000);
+        if (client.user.presence.activities[0]?.name !== activity) client.user.setActivity(activity, { type: "WATCHING" });
+    }, 3600000);
 
     /* Slash Command setup */
     let slash_commands = await client.application.commands.fetch();
@@ -42,7 +42,7 @@ export const ready = async (client: Semblance) => {
     Information.findOne({ infoType: "github" })
         .then(async (infoHandler) => {
             if (infoHandler.updated) {
-                await Information.findOneAndUpdate({ infoType: "github" }, { $set: { updated: false } }, { new: true });
+                await Information.findOneAndUpdate({ infoType: "github" }, { $set: { updated: false } });
                 let embed = new MessageEmbed()
                     .setTitle("Semblance Update")
                     .setColor(randomColor)

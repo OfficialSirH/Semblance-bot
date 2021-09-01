@@ -1,5 +1,5 @@
 import { Semblance } from "@semblance/src/structures";
-import { GuildMember, Message, TextChannel, Collection, MessageEmbed, Constants } from "discord.js";
+import { Message, MessageEmbed, Constants } from "discord.js";
 import config from '@semblance/config';
 import { 
 	getPermissionLevel,
@@ -11,17 +11,17 @@ import { promisify } from 'util';
 import { BoosterRewards, Information } from '@semblance/models';
 import { createBoosterRewards } from "@semblance/src/constants/models";
 const { Events } = Constants;
-const { sirhId, prefix, c2sGuildId, sirhGuildId, lunchGuildId, ignoredGuilds } = config;
+const { sirhId, prefix, c2sGuildId, sirhGuildId, ignoredGuilds } = config;
 const wait = promisify(setTimeout);
 
 export default {
 	name: Events.MESSAGE_CREATE,
 	exec: (message: Message, client: Semblance) => messageCreate(message, client)
-}
-// TODO: add an if statement that will execute if system property is true and message type is USER_PREMIUM_GUILD_SUBSCRIPTION  
+};
+
 export const messageCreate = async (message: Message, client: Semblance) => {
     checkForGitHubUpdate(message);
-	if (message.channel.type == 'DM') return client.emit('messageDM', message) as unknown as void;
+	if (message.channel.type == 'DM') return client.emit('messageDM', message);
 	if (message.author.bot || ignoredGuilds.includes(message.guild.id)) return;
 	if (message.member) {
 		if (message.mentions.users && message.member.id != client.user.id) {
@@ -32,12 +32,12 @@ export const messageCreate = async (message: Message, client: Semblance) => {
     const { commands, aliases, autoCommands } = client;
 
 	if (!message.content.toLowerCase().startsWith(`${prefix}afk`)) removeAfk(client, message);
+	for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
 	//Cell to Singularity Exclusive Code
 	let chName = message.channel.name;
-	for (const [key, value] of Object.entries(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
+	
 	if (message.guild.id == c2sGuildId) {
 		if (chName == 'booster-chat' && message.type == 'USER_PREMIUM_GUILD_SUBSCRIPTION') return createBoosterRewards(message);
-		clearBlacklistedWord(message, message.member);
 		let msg = message.content.toLowerCase(), suggestionArray = ["suggestion:", "suggest:", `${prefix}suggestion`, `${prefix}suggest`],
 			suggestionRegex = new RegExp(`^(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
 		
@@ -79,41 +79,23 @@ export const messageCreate = async (message: Message, client: Semblance) => {
 		const identifier = splitContent.shift().toLowerCase(), command = aliases[identifier] || identifier;
 		let content = splitContent.join(" ")
 		const commandFile = commands[command]
-		
-		if (commandFile) {
-			if (commandFile.category == 'dm') { 
-				message.reply('DM commands go in **DMs!**(DM = Direct Message)');
-				console.log(`a dumbass(${message.author.tag}(${message.author.id})) just used the link command in the server.`);
-				await wait(5000);
-				if (message.member.roles.cache.has('718796622867464198')) return message.member.roles.remove('718796622867464198') as unknown as void;
-				return;
-			}
-			let permissionLevel;
-			const args = parseArgs(content); try { permissionLevel = getPermissionLevel(message.member);
-			} catch (e) { permissionLevel = (message.author.id == sirhId) ? 7 : 0 }
-			//console.log(`${message.member}: ${permissionLevel}`);
-			try { if (permissionLevel < commandFile.permissionRequired) return message.channel.send("❌ You don't have permission to do this!") as unknown as void;
-				if (!commandFile.checkArgs(args, permissionLevel, content)) return message.channel.send(`❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage).map(a => " " + a).join("")}\`, for additional help, see \`${prefix}help\`.`) as unknown as void;
-				commandFile.run(client, message, args, identifier, { permissionLevel, content });
-				client.increaseCommandCount();
-			} catch (e) { }
+		if (!commandFile) return;
+		if (commandFile.category == 'dm') { 
+			message.reply('DM commands go in DMs(DM = Direct Message).');
+			await wait(5000);
+			if (message.member.roles.cache.has('718796622867464198')) return message.member.roles.remove('718796622867464198');
+			return;
 		}
+		let permissionLevel;
+		const args = parseArgs(content); try { permissionLevel = getPermissionLevel(message.member);
+		} catch (e) { permissionLevel = (message.author.id == sirhId) ? 7 : 0 }
+		//console.log(`${message.member}: ${permissionLevel}`);
+		try { if (permissionLevel < commandFile.permissionRequired) return message.channel.send("❌ You don't have permission to do this!");
+			if (!commandFile.checkArgs(args, permissionLevel, content)) return message.channel.send(`❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage).map(a => " " + a).join("")}\`, for additional help, see \`${prefix}help\`.`) as unknown as void;
+			commandFile.run(client, message, args, identifier, { permissionLevel, content });
+			console.log(command + " Called by " + message.author.username + " in " + message.guild.name);
+		} catch (e) { }
 	}
-
-	if (message.content.substring(0, prefix.length).toLowerCase() == prefix) {
-        let args = message.content.substring(prefix.length).split(' ');
-        let cmd = args[0].toLowerCase();
-		console.log(cmd + " Called by " + message.author.username + " in " + message.guild.name);
-       
-        args = args.splice(1);
-		let msgs = message.content;
-		switch (cmd) {
-			case 'ping':
-				message.channel.send(`Pinging me gets you pinged, <@${message.author.id}> :D`);
-				break;
-			default:
-        }
-    }
 }
 
 	/*
@@ -122,36 +104,13 @@ export const messageCreate = async (message: Message, client: Semblance) => {
 
 	async function checkForGitHubUpdate(message) {
 		if (message.channel.name == 'semblance-updates' && message.guild.id == sirhGuildId && message.author.username == 'GitHub' && message.embeds[0].title.includes('master')) {
-			let infoHandler = await Information.findOneAndUpdate({ infoType: "github" }, { $set: { info: message.embeds[0].description, updated: true } }, { new: true });
+			await Information.findOneAndUpdate({ infoType: "github" }, { $set: { info: message.embeds[0].description, updated: true } });
 			return true;
 		}
 		return false;
 	}
 
-	/*
-	* Blacklisted word filtering
-	*/
-
-	let warnings: Collection<string, number> = new Collection();
-
-	async function clearBlacklistedWord(message: Message, member: GuildMember) {
-		if (message.guild.id != c2sGuildId && message.guild.id != sirhGuildId) return;
-		let msg = message.content.toLowerCase();
-		if (!msg.match(/(nigger)|(nigga)/g) ?? member.user.bot) return;
-		message.delete();
-		let modLog = message.guild.channels.cache.find(c => (c.name == 'mod-log' || c.name == 'mod-logs')) as TextChannel;
-		let userWarnings = warnings.get(member.id);
-		if (userWarnings) warnings.set(member.id, userWarnings + 1);
-		else warnings.set(member.id, 1);
-		if (warnings.get(member.id) === 3) {
-			await member.ban({ days: 7, reason: "Used the n-word multiple times" });
-			return await modLog.send({ embeds: [new MessageEmbed().setDescription(`${member.user.tag} has been banned for using the n-word multiple times.`)] });
-		}
-		if (modLog) await modLog.send({ embeds: [new MessageEmbed().setDescription(`${member.user.tag} used the n-word and has been warned.\n message: ${message.content}`)] });
-		return await member.user.send(`This is a warning for using an explicit word, continuing this behavior may/will result in a ban. If you received this warning despite not actually using the explicit word (the n-word), please notify SirH#4297, else, please stop using the word.`);
-	}
-
 	async function updateBeyondCount() {
 		const beyondCount = await Information.findOne({ infoType: 'beyondcount' });
-		await Information.findOneAndUpdate({ infoType: 'beyondcount' }, { $set: { count: ++beyondCount.count } }, { new: true });
+		await Information.findOneAndUpdate({ infoType: 'beyondcount' }, { $set: { count: ++beyondCount.count } });
 	}
