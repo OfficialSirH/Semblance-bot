@@ -1,4 +1,4 @@
-import { Message, MessageEmbed, Util, MessageAttachment, TextChannel } from "discord.js";
+import { Message, MessageEmbed, TextChannel, MessageMentionTypes } from "discord.js";
 import { Semblance } from "../structures";
 import { attachmentLinkRegex } from '@semblance/constants';
 
@@ -17,11 +17,12 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
     let channel = !message.mentions ? message.channel : message.mentions.channels.first() as TextChannel;
     if (!message.guild.channels.cache.has(channel.id)) return message.reply('Don\'t be using channels from other servers, that\'s not allowed.');
     args.splice(args.indexOf(`<#${channel.id}>`), 1);
-    let announcement = permissionLevel >= 4 ? args.join(' ') : Util.removeMentions(args.join(' ')).replace(/@/g, '');
+    let announcement = args.join(' ');
 
     let messageOptions = {
         content: announcement,
-        files: []
+        files: [],
+        allowedMentions: permissionLevel >= 4 ? { parse: ['users', 'roles', 'everyone'] as MessageMentionTypes[] } : { parse: ['users'] as MessageMentionTypes[] }
     };
     if (message.attachments.size > 0) messageOptions.files.push(message.attachments.map(a => a)[0]);
     else if (!!attachmentLinkRegex.exec(content)) messageOptions.files.push(attachmentLinkRegex.exec(content)[0]);

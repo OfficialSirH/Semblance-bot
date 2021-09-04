@@ -20,8 +20,8 @@ export class Semblance extends Client {
      * 
      * @param options Client options
      */
-    constructor(options: object) {
-        super(options as ClientOptions);
+    constructor(options: ClientOptions) {
+        super(options);
 
         this._autoCommands = {};
 

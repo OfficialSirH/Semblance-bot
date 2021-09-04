@@ -1,5 +1,5 @@
-import { MessageEmbed, Util, Message, Snowflake, MessageAttachment, TextChannel, GuildChannel } from 'discord.js';
-import { parseArgs, messageLinkRegex, attachmentLinkRegex } from '@semblance/constants';
+import { MessageEmbed, Message, Snowflake, MessageAttachment, TextChannel, GuildChannel } from 'discord.js';
+import { messageLinkRegex, attachmentLinkRegex } from '@semblance/constants';
 import { Jump } from '@semblance/models';
 import { Semblance } from '@semblance/structures';
 
@@ -27,10 +27,10 @@ module.exports.run = async function(client: Semblance, message: Message, args: s
         if ((channel as TextChannel)!.nsfw ?? guild.id != message!.guild!.id) return;
 
         if (recursiveCount == 0) message.content.replace(messageLinkRegex, '').length == 0 ? 
-            undefined : message.channel.send(Util.removeMentions(message.content.replace(messageLinkRegex, '')));
+            undefined : message.channel.send(message.content.replace(messageLinkRegex, ''));
 
         (channel as TextChannel)!.messages.fetch(messageId).then(async (msg) => {
-            let attachmentLink = /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i.exec(msg.content);
+            let attachmentLink = attachmentLinkRegex.exec(msg.content);
             if (attachmentLink != null)
                 msg.content = msg.content.replace(attachmentLink[0], ``);
 

@@ -7,7 +7,7 @@ import { Semblance } from '@semblance/structures';
 import { Intents, LimitedCollection, Options } from 'discord.js'; 
 import { checkTweet, playerUpdate, userVote } from '@semblance/events';
 const client = new Semblance({
-	disableMentions: { parse: ['users', 'roles'], repliedUser: true },
+	allowedMentions: { parse: [] },
 	makeCache: Options.cacheWithLimits({
 		ThreadManager: {
 			sweepInterval: 3600,

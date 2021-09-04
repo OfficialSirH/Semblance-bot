@@ -1,5 +1,5 @@
 import config from '@semblance/config';
-import { GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed, Util } from 'discord.js';
+import { GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { rpsGames } from '../componentHandlers/rps';
 import { randomColor } from '../constants';
 import { countdownGIF, randomChoice } from '../constants/commands';
@@ -20,7 +20,7 @@ module.exports = {
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
     if (args.length == 0) return message.reply('rps stands for "Rock, Paper, Scissors", which you can play with me by choosing one of the **Five** (Don\'t forget Lizard and Spock) and I\'ll choose one as well and we\'ll see who wins, there\'s also secret bonuses. :D');
     if (args[0] == 'multiplayer') return await rpsMultiplayer(message, args.slice(1, args.length).join(' '));
-    args[0] = Util.removeMentions(args[0]);
+
     let randomFailure = Math.ceil(Math.random() * 100);
     if (randomFailure == 100) return message.reply('***Error Ocurred... rebooting, try again in a moment.***');
     let sembRandomness = Math.ceil(Math.random() * 5), sembChoice = convertNumberToChoice(sembRandomness);
