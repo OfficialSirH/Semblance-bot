@@ -14,8 +14,8 @@ export const checkBoosterRewards = async (client: Semblance) => {
     const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
     if (darwiniumCodes.list.length == 0) {
         if (darwiniumCodes.updated) {
-            boosterChannel(client).send(`<@${sirhId}> <@${adityaId}> No booster codes left!`+
-            ` The following users need codes: ${boosterRewards.map(c => c.userId).join(', ')}`);
+            boosterChannel(client).send({ content: `<@${sirhId}> <@${adityaId}> No booster codes left!`+
+            ` The following users need codes: ${boosterRewards.map(c => c.userId).join(', ')}`, allowedMentions: { users: [sirhId, adityaId] } });
             return Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { updated: false } });
         }
         return;
@@ -37,8 +37,8 @@ export const checkBoosterRewards = async (client: Semblance) => {
             .setDescription(`Thank you for boosting Cell to Singularity for 2 weeks! As a reward, here's 150 ${darwinium}!\nCode: ||${darwiniumCode}||`)] })
             .catch(async err => {
                 console.log(`There was an issue with sending the code to ${member.user.tag}: ${err}`);
-                await boosterChannel(client).send(`${member} I had trouble DMing you so instead Aditya or SirH will manually provide you a code. :)`+
-                `\nTip: These errors tend to happen when your DMs are closed. So keeping them open would help us out :D`);
+                await boosterChannel(client).send({ content: `${member} I had trouble DMing you so instead Aditya or SirH will manually provide you a code. :)`+
+                `\nTip: These errors tend to happen when your DMs are closed. So keeping them open would help us out :D`, allowedMentions: { users: [member.id] } });
                 darwiniumCodes.list.unshift(darwiniumCode);
             });
             if (darwiniumCodes.list.length != ogCodeLength) promises.push(Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } }));
@@ -57,5 +57,5 @@ export const createBoosterRewards = async (message: Message) => {
     if (boosterReward) return;
     BoosterRewards.create({ userId: message.author.id, rewardingDate: Date.now() + 1000 * 60 * 60 * 24 * 14 })
     .then(br => message.channel.send(`Thank you for boosting the server, ${message.author.username}! You will receive your booster reward on ${formattedDate(br.rewardingDate)}`))
-    .catch(err => message.channel.send(`<@${sirhId}> the automated rewarder failed at creating the scheduled reward for ${message.author.username}`));
+    .catch(err => message.channel.send({ content: `<@${sirhId}> the automated rewarder failed at creating the scheduled reward for ${message.author.username}`, allowedMentions: { users: [sirhId] } }));
 }
