@@ -2,7 +2,7 @@ import { Client, ClientOptions, Collection } from 'discord.js';
 import * as fs from 'fs';
 import { Commands, Aliases, SlashCommands, ComponentHandlers, ContextMenuHandlers } from '@semblance/lib/interfaces/Semblance';
 import { RESTManager } from '@semblance/lib/rest/RESTManager';
-import { GameLeaderboard, VoteLeaderboard, Webhook } from '.';
+import { GameLeaderboard, VoteLeaderboard } from '.';
 import { Game, Votes } from '../models';
 
 export class Semblance extends Client {

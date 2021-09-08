@@ -1,9 +1,4 @@
-import { WebhookPayload } from '@top-gg/sdk/dist/typings';
-import { Semblance } from '@semblance/structures';
+import type { WebhookPayload } from '@top-gg/sdk/dist/typings';
+import type { FastifyRequest } from 'fastify';
 
-export interface request extends Request {
-    vote: WebhookPayload;
-    client: Semblance;
-}
-
-export type RemoveVoteKey<T> = Omit<T, 'vote'>;
+export type TGGRequest = FastifyRequest<{ Body: WebhookPayload }>;

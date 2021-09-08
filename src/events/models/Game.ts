@@ -1,4 +1,4 @@
-import { Semblance } from '@semblance/structures';
+import type { Semblance } from '@semblance/structures';
 import { Game } from '@semblance/models';
 
 export const playerUpdate = async (client: Semblance) => { 

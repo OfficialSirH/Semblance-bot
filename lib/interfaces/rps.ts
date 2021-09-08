@@ -1,4 +1,4 @@
-import { Message, Snowflake } from "discord.js";
+import type { Snowflake } from "discord.js";
 
 export interface RPSGame {
     player: Player;

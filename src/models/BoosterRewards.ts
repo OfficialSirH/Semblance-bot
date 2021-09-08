@@ -1,4 +1,4 @@
-import { Snowflake } from 'discord.js';
+import type { Snowflake } from 'discord.js';
 import { Schema, model } from 'mongoose';
 
 export interface BoosterRewardsFormat {

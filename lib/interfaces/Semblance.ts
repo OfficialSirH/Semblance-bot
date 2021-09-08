@@ -1,5 +1,5 @@
-import { Semblance } from "@semblance/structures";
-import { Collection, CommandInteraction, CommandInteractionOptionResolver, Message, MessageComponentInteraction, Snowflake, ConstantsEvents } from "discord.js";
+import type { Semblance } from "@semblance/structures";
+import type { Collection, CommandInteraction, CommandInteractionOptionResolver, Message, MessageComponentInteraction, Snowflake, ConstantsEvents } from "discord.js";
 
 export type ContextMenuHandlers = Collection<string, ContextMenuHandler>;
 

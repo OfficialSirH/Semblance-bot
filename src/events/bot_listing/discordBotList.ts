@@ -2,13 +2,13 @@ import { MessageEmbed, TextChannel } from 'discord.js';
 import { Votes, Game } from '@semblance/models';
 import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
-import { request } from '@semblance/lib/interfaces/discordBotList';
-import { Response, Request } from 'express';
-import { Semblance } from '@semblance/src/structures';
+import type { DBLRequest } from '@semblance/lib/interfaces/discordBotList';
+import type { Semblance } from '@semblance/src/structures';
+import type { FastifyReply } from 'fastify';
 const { sirhGuildId } = config;
 
-export const dblVoteHandler = (req: request | Request, res: Response, client: Semblance) => {
-	const { vote } = req as request;
+export const dblVoteHandler = (req: DBLRequest, res: FastifyReply, client: Semblance) => {
+	const vote = req.body;
 	let channel = client.guilds.cache.get(sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
 	client.users.fetch(vote.id, { cache: false }).then(async (u) => {
 		try {

@@ -1,7 +1,5 @@
-import { Semblance } from "@semblance/src/structures";
-import { HTTPError, Snowflake } from "discord.js";
-import { Request } from 'express';
-import { RemoveVoteKey } from "./topGG";
+import type { HTTPError, Snowflake } from "discord.js";
+import type { FastifyRequest } from "fastify";
 
 /**
  * Creates a new client.
@@ -27,7 +25,7 @@ export declare class Client {
     postServerCount(count: number | Array<number>): Promise<undefined|HTTPError>;
 }
 
-export interface vote {
+export interface DLSVote {
     site: string;
     bot: Snowflake;
     user: {
@@ -41,7 +39,4 @@ export interface vote {
     type?: string;
 }
 
-export interface request extends RemoveVoteKey<Request> {
-    vote: vote;
-    client: Semblance;
-}
+export type DLSRequest = FastifyRequest<{ Body: DLSVote }>;

@@ -1,7 +1,5 @@
-import { Semblance } from '@semblance/src/structures';
-import { Snowflake } from 'discord.js';
-import { Request } from 'express';
-import { RemoveVoteKey } from './topGG';
+import type { Snowflake } from 'discord.js';
+import type { FastifyRequest } from 'fastify';
 
 export interface BotStats {
     /**
@@ -21,7 +19,7 @@ export interface BotStats {
      */
     shard_id?: number;
 }
-export interface vote {
+export interface DBLVote {
     /**
      * If the user is a site administrator
      */
@@ -40,7 +38,4 @@ export interface vote {
     id: Snowflake;
 }
 
-export interface request extends RemoveVoteKey<Request> {
-    vote: vote;
-    client: Semblance;
-}
+export type DBLRequest = FastifyRequest<{ Body: DBLVote }>;

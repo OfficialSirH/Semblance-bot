@@ -1,7 +1,5 @@
-import { Semblance } from "@semblance/src/structures";
-import { Snowflake } from "discord.js";
-import { Request } from 'express';
-import { RemoveVoteKey } from "./topGG";
+import type { Snowflake } from "discord.js";
+import type { FastifyReply, FastifyRequest } from "fastify";
 
 export interface APIOptions {
     /**
@@ -287,7 +285,7 @@ export interface votes {
      */
     hasVoted24?: Snowflake[];
 }
-export interface vote {
+export interface DiscordsVote {
     /**
      * The Id of the user who voted
      */
@@ -305,7 +303,5 @@ export interface vote {
      */
     type: 'vote' | 'test';
 }
-export interface request extends RemoveVoteKey<Request> {
-    vote: vote;
-    client: Semblance;
-}
+
+export type DiscordsRequest = FastifyRequest<{ Body: DiscordsVote }>;

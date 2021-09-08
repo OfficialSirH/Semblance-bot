@@ -41,20 +41,16 @@ const client = new Semblance({
 	partials: [ "USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE" ],
 	intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES ]
 });
-// express routing
-import * as express from 'express';
-import { Request, Response } from 'express';
-const app = express();
+// fastify routing
+import fastify from 'fastify';
+const app = fastify();
 // Database connection import
 import { connect } from 'mongoose';
 import { Afk, Game, Information, Jump, Leaderboard, Reminder, Report, UserData, Votes } from '@semblance/models';
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-
 // Listen to client events
 import * as fs from 'fs';
-import { EventHandler } from './lib/interfaces/Semblance';
+import type { EventHandler } from './lib/interfaces/Semblance';
 const eventFiles = fs.readdirSync('./dist/src/events/client').filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
@@ -69,7 +65,7 @@ userVote(client);
 import router from '@semblance/src/routes';
 router(app, client);
 
-app.use((req: Request, res: Response) => res.redirect('https://officialsirh.github.io/'));
+app.get('/', (_req, res) => { res.redirect('https://officialsirh.github.io/') });
 
 // Check for Tweet from ComputerLunch
 setInterval(() => checkTweet(client), 2000);
@@ -81,5 +77,7 @@ setInterval(() => checkTweet(client), 2000);
 		useUnifiedTopology: true
 	});
 	await client.login(process.env.token);
-	app.listen(8079);
+	let address: string;
+	address = await app.listen(8079, '0.0.0.0');
+    console.log('Semblance has started on: ' + address);
 })()

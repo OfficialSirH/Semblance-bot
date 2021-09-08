@@ -1,8 +1,8 @@
 import * as Twitter from 'twitter';
 import fetch from 'node-fetch';
 import config from '@semblance/config';
-import { Semblance } from '../structures';
-import { TextChannel } from 'discord.js';
+import type { Semblance } from '../structures';
+import type { TextChannel } from 'discord.js';
 const { c2sGuildId, lunchGuildId } = config,
 twClient = new Twitter(JSON.parse(process.env.twitter));
 let current_id = null, screen_name = "ComputerLunch";
