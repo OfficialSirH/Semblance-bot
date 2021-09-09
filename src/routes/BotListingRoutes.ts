@@ -79,4 +79,5 @@ export const middleware = (req: FastifyRequest, rep: FastifyReply) => {
     if (typeof req.body != 'object') return rep.status(422).send({ error: 'Malformed request' });
     const { Authorization, authorization } = req.headers;
     if (Authorization != process.env.USERDATA_AUTH && authorization != process.env.BOT_LISTING_AUTH) return rep.status(403).send({ error: 'Invalid Authorization header' });
+    return rep.status(200).send({ success: true });
 }
