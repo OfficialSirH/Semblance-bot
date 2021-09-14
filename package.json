@@ -6,8 +6,10 @@
   "author": "SirH",
   "dependencies": {
     "@top-gg/sdk": "^3.1.2",
+    "bufferutil": "^4.0.3",
     "discord.js": "github:discordjs/discord.js#6cac03a39408ef14316a898eb81cc998921a8f0f",
     "dotenv": "^10.0.0",
+    "erlpack": "github:discord/erlpack",
     "fastify": "^3.21.0",
     "module-alias": "^2.2.2",
     "mongoose": "^5.13.7",
@@ -15,7 +17,9 @@
     "pm2": "^5.1.1",
     "relative-to-alias": "^2.0.1",
     "source-map-support": "^0.5.19",
-    "twitter": "^1.7.1"
+    "twitter": "^1.7.1",
+    "utf-8-validate": "^5.0.5",
+    "zlib-sync": "^0.1.7"
   },
   "_moduleAliases": {
     "@semblance/src": "./dist/src",
