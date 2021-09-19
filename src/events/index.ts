@@ -8,12 +8,6 @@ export { ready } from './client/ready';
 // Model events
 export { playerUpdate } from './models/Game';
 export { userVote } from './models/Votes';
-// Bot Listing handlers
-export { dlsVoteHandler } from './bot_listing/discordListSpace';
-export { bfdVoteHandler } from './bot_listing/discords';
-export { dbVoteHandler } from './bot_listing/discordBoats';
-export { dblVoteHandler } from './bot_listing/discordBotList';
-export { tpggVoteHandler } from './bot_listing/topGG';
 // Tweets
 export { checkTweet } from './checkTweet';
 // Interval Posting

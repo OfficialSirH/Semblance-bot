@@ -62,7 +62,7 @@ for (const file of eventFiles) {
 playerUpdate(client);
 userVote(client);
 
-import router from '@semblance/src/routes';
+import router from '@semblance/src/routing/routes';
 router(app, client);
 
 app.get('/', (_req, res) => { res.redirect('https://officialsirh.github.io/') });
