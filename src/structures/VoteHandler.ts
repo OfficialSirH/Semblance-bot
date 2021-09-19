@@ -7,13 +7,15 @@ import { randomColor } from "../constants";
 
 export class VoteHandler {
     readonly client: Semblance;
-    private readonly voteChannel: TextChannel;
     readonly votingSite: string;
 
     constructor(_client: Semblance, _votingSite: string) {
         this.client = _client;
         this.votingSite = _votingSite;
-        this.voteChannel = this.client.guilds.cache.get(config.sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
+    }
+
+    get voteChannel() {
+        return this.client.guilds.cache.get(config.sirhGuildId).channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
     }
 
     public async sendVotedEmbed(user: Snowflake | User, description: string, { hasGame, weekendBonus }: { hasGame?: boolean, weekendBonus?: boolean } = 
