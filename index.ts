@@ -63,7 +63,6 @@ playerUpdate(client);
 userVote(client);
 
 import router from '@semblance/src/routing/routes';
-router(app, client);
 
 app.get('/', (_req, res) => { res.redirect('https://officialsirh.github.io/') });
 
@@ -80,4 +79,5 @@ setInterval(() => checkTweet(client), 2000);
 	let address: string;
 	address = await app.listen(8079, '0.0.0.0');
     console.log('Semblance has started on: ' + address);
+	router(app, client);
 })()
