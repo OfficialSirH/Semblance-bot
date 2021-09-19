@@ -11,6 +11,13 @@ export class TopGG extends VoteHandler {
 
 	async handle(request: TGGRequest, reply: FastifyReply): Promise<FastifyReply> {
 		const vote = request.body;
+		if (vote.type === 'test') {
+			console.log('Test vote received');
+			return reply.code(200).send({
+				success: true,
+				message: 'Test vote received',
+			});
+		}
 		const user = await this.client.users.fetch(vote.user, { cache: false });
 		
 		console.log(`${user.tag} just voted!`);
