@@ -19,7 +19,7 @@ export class DiscordBoats extends VoteHandler {
 		if (playerData) playerData = await Game.findOneAndUpdate({ player: vote.user.id }, 
 		{ $set: { money: playerData.money + (playerData.idleProfit * (3600 * 6)) } }, { new: true });
 			
-		this.sendVotedEmbed(user ?? vote.user.id, `Thanks for voting for Semblance on ${this.votingSite}!! :D`);
+		this.sendVotedEmbed(user ?? vote.user.id, `Thanks for voting for Semblance on ${this.votingSite}!! :D`, { hasGame: !!playerData });
 
 		let votingUser = await Votes.findOne({ user: user.id });
 		if (!!votingUser) votingUser = await Votes.findOneAndUpdate({ user: user.id }, 

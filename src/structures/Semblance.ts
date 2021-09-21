@@ -1,7 +1,6 @@
 import { Client, ClientOptions, Collection } from 'discord.js';
 import * as fs from 'fs';
 import { Commands, Aliases, SlashCommands, ComponentHandlers, ContextMenuHandlers } from '@semblance/lib/interfaces/Semblance';
-import { RESTManager } from '@semblance/lib/rest/RESTManager';
 import { GameLeaderboard, VoteLeaderboard } from '.';
 import { Game, Votes } from '../models';
 
@@ -14,7 +13,6 @@ export class Semblance extends Client {
     private _commands: Commands;
     private _aliases: Aliases;
     private _autoCommands: Commands;
-    private _api: RESTManager;
     
     /**
      * 
@@ -26,17 +24,17 @@ export class Semblance extends Client {
         this._autoCommands = {};
 
         this._componentHandlers = new Collection();
-        fs.readdir('./dist/src/componentHandlers/', (err, files) => {
+        fs.readdir('./dist/src/applicationCommands/componentHandlers/', (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith('.js')) {
-                this._componentHandlers.set(file.replace('.js', ''), require(`../componentHandlers/${file}`));
+                this._componentHandlers.set(file.replace('.js', ''), require(`../applicationCommands/componentHandlers/${file}`));
             }
         });
 
         this._contextMenuHandlers = new Collection();
-        const files = fs.readdirSync('./dist/src/contextMenuHandlers/');
+        const files = fs.readdirSync('./dist/src/applicationCommands/contextMenuHandlers/');
         for (const file of files) if (file.endsWith('.js')) {
-            this._contextMenuHandlers.set(file.replace('.js', ''), require(`../contextMenuHandlers/${file}`));
+            this._contextMenuHandlers.set(file.replace('.js', ''), require(`../applicationCommands/contextMenuHandlers/${file}`));
         }
 
         this._slashCommands = new Collection();
@@ -52,15 +50,14 @@ export class Semblance extends Client {
         });
 
         this._autoCommands = {};
-        fs.readdir("./dist/src/auto_scripts/", (err, files) => {
+        fs.readdir("./dist/src/autoActions/", (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith(".js")) {
-                const commandFile = require(`../auto_scripts/${file}`), fileName = file.replace(".js", "");
+                const commandFile = require(`../autoActions/${file}`), fileName = file.replace(".js", "");
                 this._autoCommands[fileName] = commandFile;
             }
         });
 
-        this._api = new RESTManager(this);
         this._gameLeaderboard = new GameLeaderboard(this);
         this._voteLeaderboard = new VoteLeaderboard(this);
     }
@@ -106,6 +103,6 @@ export class Semblance extends Client {
     }
 
     public get call() {
-        return this._api.api;
+        return this['api'];
     }
 }
