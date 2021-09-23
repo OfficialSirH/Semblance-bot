@@ -7,11 +7,11 @@
   "dependencies": {
     "@top-gg/sdk": "^3.1.2",
     "bufferutil": "^4.0.3",
-    "discord.js": "github:discordjs/discord.js#6cac03a39408ef14316a898eb81cc998921a8f0f",
+    "discord.js": "github:discordjs/discord.js#839974ca432c70d57e82e9b47334f743e0c20281",
     "dotenv": "^10.0.0",
     "fastify": "^3.21.0",
     "module-alias": "^2.2.2",
-    "mongoose": "^5.13.7",
+    "mongoose": "^6.0.7",
     "node-fetch": "^2.6.1",
     "pm2": "^5.1.1",
     "relative-to-alias": "^2.0.1",

@@ -1,6 +1,6 @@
 import config from '@semblance/config';
 import { GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
-import { rpsGames } from '../../applicationCommands/componentHandlers/rps';
+import { rpsGames } from '../applicationCommands/componentHandlers/rps';
 import { randomColor } from '../constants';
 import { countdownGIF, randomChoice } from '../constants/commands';
 import { Semblance } from '../structures';

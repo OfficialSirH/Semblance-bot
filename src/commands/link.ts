@@ -32,7 +32,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         let playerId: string, playerToken: string;
         [playerId, playerToken] = args;
         const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
-        const dataAlreadyExists = !!(await UserData.findOne({ token }));
+        const dataAlreadyExists = await UserData.findOne({ token });
         if (dataAlreadyExists) return message.channel.send(`The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(SirH).`);
         const updatedUser = !!(await UserData.findOneAndUpdate({ discordId: message.author.id }, { $set: { token, edited_timestamp: Date.now() } }, {new: true}));
         if (updatedUser) {

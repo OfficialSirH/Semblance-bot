@@ -1,15 +1,12 @@
-import { Collection, Message, MessageEmbed, MessageReaction, PartialMessage, PartialUser, Snowflake, TextChannel, User } from "discord.js";
+import { Collection, Message, MessageEmbed, PartialMessage, Snowflake, TextChannel, User } from "discord.js";
 import { randomColor } from ".";
-import { Afk, Game, Information, Reminder, Report, Votes } from "../models";
-import { Semblance } from "../structures";
-import config from '@semblance/config';
+import { Afk, Game, Reminder, Report } from "../models";
+import type { Semblance } from "../structures";
 import { clamp } from "@semblance/lib/utils/math";
 import { UserReminder } from "../models/Reminder";
-import { APIParams } from "@semblance/lib/interfaces/catAndDogAPI";
-import * as querystring from 'querystring';
+import type { APIParams } from "@semblance/lib/interfaces/catAndDogAPI";
 import fetch from 'node-fetch';
 import { GameFormat } from "../models/Game";
-const { currentLogo } = config;
 
 // AFK functions - dontDisturb and removeAfk
 

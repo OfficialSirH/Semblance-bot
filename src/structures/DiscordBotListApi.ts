@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { BotStats } from '@semblance/lib/interfaces/discordBotList';
+import type { BotStats } from '@semblance/lib/interfaces/discordBotList';
 import fetch, { Headers } from 'node-fetch';
 import { APIError } from './ApiError';
 import { stringify } from 'querystring';

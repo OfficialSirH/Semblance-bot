@@ -71,11 +71,7 @@ app.get('/', (_req, res) => { res.redirect('https://officialsirh.github.io/') })
 setInterval(() => checkTweet(client), 2000);
 
 (async () => {
-	await connect(process.env.mongoDBKey, {
-		useNewUrlParser: true,
-		useFindAndModify: false,
-		useUnifiedTopology: true
-	});
+	await connect(process.env.mongoDBKey);
 	await client.login(process.env.token);
 	let address: string;
 	address = await app.listen(8079, '0.0.0.0');

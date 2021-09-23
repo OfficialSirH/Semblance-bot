@@ -1,8 +1,8 @@
 ﻿import fetch from 'node-fetch';
 import { getRole, getChannel, getUser } from '@semblance/lib/utils/resolvers';
 import * as constants from '@semblance/constants';
-import { DMChannel, Message, MessageOptions, NewsChannel, Snowflake, TextBasedChannels, TextChannel, ThreadChannel } from 'discord.js';
-import { Semblance } from '../structures';
+import type { Message, MessageOptions, Snowflake, TextBasedChannels, TextChannel } from 'discord.js';
+import type { Semblance } from '../structures';
 
 module.exports = {
     description: "Lookup something unknown, like an Id or an invite, and hopefully get the meaning behind it!",

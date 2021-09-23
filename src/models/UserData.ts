@@ -16,11 +16,11 @@ export interface UserDataFormat {
 const UserDataSchema = new Schema<UserDataFormat>({
     discordId: {
         type: String,
-        required: 'A user\'s Discord Id is required to create a saved entry'
+        required: true,
     },
     token: {
         type: String,
-        required: 'An HMAC-SHA Token is required to create a saved entry'
+        required: true,
     },
     metabits: {
         type: Number,
@@ -48,7 +48,6 @@ const UserDataSchema = new Schema<UserDataFormat>({
     },
     edited_timestamp: {
         type: Number,
-        default: Date.now
     }
 });
 

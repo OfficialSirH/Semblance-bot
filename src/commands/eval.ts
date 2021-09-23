@@ -1,11 +1,6 @@
 import { MessageEmbed, MessageAttachment, Message } from 'discord.js'; 
 import { randomColor } from '@semblance/constants';
-import * as constants from '@semblance/constants';
-import fetch from 'node-fetch';
-import * as fs from 'fs';
-import config from '@semblance/config'; 
-import { Semblance } from '../structures';
-const { attachments } = config;
+import type { Semblance } from '../structures';
 
 module.exports = {
     description: "Evaluate some code.",
