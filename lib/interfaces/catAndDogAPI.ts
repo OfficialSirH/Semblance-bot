@@ -1,4 +1,4 @@
-export interface APIParams extends Record<string, unknown> {
+export interface AnimalAPIParams extends Record<string, unknown> {
     'has_breeds': boolean;
     'mime_types': string;
     'size': sizeType;

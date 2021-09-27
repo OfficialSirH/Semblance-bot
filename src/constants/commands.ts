@@ -4,9 +4,10 @@ import { Afk, Game, Reminder, Report } from "../models";
 import type { Semblance } from "../structures";
 import { clamp } from "@semblance/lib/utils/math";
 import { UserReminder } from "../models/Reminder";
-import type { APIParams } from "@semblance/lib/interfaces/catAndDogAPI";
+import type { AnimalAPIParams } from "@semblance/lib/interfaces/catAndDogAPI";
 import fetch from 'node-fetch';
 import { GameFormat } from "../models/Game";
+import { DeepLParams, DeepLResponse } from "@semblance/lib/interfaces/deepLAPI";
 
 // AFK functions - dontDisturb and removeAfk
 
@@ -170,11 +171,19 @@ export function guildBookPage(client: Semblance, chosenPage: string | number) {
 }
 
 // imagegen API fetch
-export const fetchCatOrDog = async (query_params: APIParams, wantsCat: boolean) => {
+export const fetchCatOrDog = async (query_params: AnimalAPIParams, wantsCat: boolean) => {
     const API_URL = `https://api.the${wantsCat ? 'cat' : 'dog'}api.com/v1/images/search?${new URLSearchParams(query_params as Record<string, string>)}`,
     API_KEY = wantsCat ? process.env.CAT_API_KEY : process.env.DOG_API_KEY;
 
     return (await fetch(API_URL, { headers: { 'X-API-KEY': API_KEY } })).json();
+}
+
+// deepL API fetch
+export const fetchDeepL = async (query_params: DeepLParams) => {
+    query_params.target_lang = 'en-US';
+    query_params.auth_key = process.env.DEEPL_API_KEY;
+    const API_URL = `https://api.deepl.com/v2/translate?${new URLSearchParams(query_params as Record<string, string>)}`;
+    return (await fetch(API_URL)).json() as Promise<DeepLResponse>;
 }
 
 // game - currentPrice
