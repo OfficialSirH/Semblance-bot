@@ -182,7 +182,7 @@ export const fetchCatOrDog = async (query_params: AnimalAPIParams, wantsCat: boo
 export const fetchDeepL = async (query_params: DeepLParams) => {
     query_params.target_lang = 'en-US';
     query_params.auth_key = process.env.DEEPL_API_KEY;
-    const API_URL = `https://api.deepl.com/v2/translate?${new URLSearchParams(query_params as Record<string, string>)}`;
+    const API_URL = `https://api-free.deepl.com/v2/translate?${new URLSearchParams(query_params as Record<string, string>)}`;
     const translateData = await (await fetch(API_URL)).json() as DeepLResponse;
     return translateData.translations[0];
 }
