@@ -5,6 +5,10 @@ export interface DeepLParams extends Record<string, unknown> {
 }
 
 export interface DeepLResponse {
-    detected_source_language: string;
-    text: string;
+    translations: [
+        {
+            detected_source_language: string;
+            text: string;
+        }
+    ];
 }

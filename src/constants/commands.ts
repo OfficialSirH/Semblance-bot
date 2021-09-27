@@ -183,7 +183,8 @@ export const fetchDeepL = async (query_params: DeepLParams) => {
     query_params.target_lang = 'en-US';
     query_params.auth_key = process.env.DEEPL_API_KEY;
     const API_URL = `https://api.deepl.com/v2/translate?${new URLSearchParams(query_params as Record<string, string>)}`;
-    return (await fetch(API_URL)).json() as Promise<DeepLResponse>;
+    const translateData = await (await fetch(API_URL)).json() as DeepLResponse;
+    return translateData.translations[0];
 }
 
 // game - currentPrice
