@@ -15,7 +15,7 @@ module.exports = {
 }
 
 module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
-    if (args[0].match(messageLinkRegex)) return require('../autoActions/jump').run(client, message, args[0], 1);
+    if (args[0]?.match(messageLinkRegex)) return require('../autoActions/jump').run(client, message, args[0], 1);
     const toggleHandler = await Jump.findOne({ userId: message.author.id });
     const component = new MessageActionRow()
     .addComponents([new MessageButton()
