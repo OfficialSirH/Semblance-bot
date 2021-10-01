@@ -8,7 +8,7 @@ module.exports = {
     usage: {
         "<true/t or false/f>": ""
     },
-    permissionRequired: 5,
+    permissionRequired: 1,
     aliases: ['jump', 'jt'],
     checkArgs: (args: string[]) => args.length >= 0
 }
