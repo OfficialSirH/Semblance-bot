@@ -19,12 +19,12 @@ export async function run(interaction: AutocompleteInteraction, options: Command
         return { type: ['M', 'w', 'd', 'h', 'm'][i], value: parseInt(t) };
     }).filter(t => t.value > 0);
     const responseOptions: ApplicationCommandOptionChoice[] = [];
-    for (let i = 0; i < clamp(99 - timeValues[timeValues.length-1].value, 0, 5) + 1; i++) {
+    for (let i = 0; i < clamp(99 - timeValues.at(-1).value, 0, 5) + 1; i++) {
         responseOptions.push({
             name:  timeValues.map((t, ind) => ind != timeValues.length-1 ? `${t.value}${t.type}` : '').join('') +
-            `${timeValues[timeValues.length-1].value + i}${timeValues[timeValues.length-1].type}`,
+            `${timeValues.at(-1).value + i}${timeValues.at(-1).type}`,
             value: timeValues.map((t, ind) => ind != timeValues.length-1 ? `${t.value}${t.type}` : '').join('') +
-            `${timeValues[timeValues.length-1].value + i}${timeValues[timeValues.length-1].type}`
+            `${timeValues.at(-1).value + i}${timeValues.at(-1).type}`
         });
     }
     return interaction.respond(responseOptions);
