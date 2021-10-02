@@ -18,6 +18,7 @@ export async function run(interaction: AutocompleteInteraction, options: Command
     const timeValues = [months, weeks, days, hours, minutes].map((t, i) => { 
         return { type: ['M', 'w', 'd', 'h', 'm'][i], value: parseInt(t) };
     }).filter(t => t.value > 0);
+    if (timeValues.length === 0) return;
     const responseOptions: ApplicationCommandOptionChoice[] = [];
     for (let i = 0; i < clamp(99 - timeValues.at(-1).value, 0, 5) + 1; i++) {
         responseOptions.push({
