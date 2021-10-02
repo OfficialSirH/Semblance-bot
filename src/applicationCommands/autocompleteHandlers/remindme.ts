@@ -6,7 +6,7 @@ import type { ApplicationCommandOptionChoice, AutocompleteInteraction, CommandIn
 
 export async function run(interaction: AutocompleteInteraction, options: CommandInteractionOptionResolver<AutocompleteInteraction>) {
     const focusedOption = options.getFocused() as string;
-    if (parseInt(focusedOption)) {
+    if (parseInt(focusedOption) && parseInt(focusedOption).toString().length == focusedOption.length) {
         if (focusedOption.length <= 2) {
             const responseOptions = ['m', 'h', 'd', 'w', 'M'].map(o => ({ name: `${focusedOption}${o}`, value: `${focusedOption}${o}` }));
             return interaction.respond(responseOptions);
