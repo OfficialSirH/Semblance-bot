@@ -1,7 +1,7 @@
 import { customIdRegex, getPermissionLevel, properCustomIdRegex } from '@semblance/constants';
-import { ButtonData } from '@semblance/lib/interfaces/Semblance';
-import { Semblance } from "@semblance/src/structures";
-import { GuildMember, MessageComponentInteraction, Constants, Interaction, ContextMenuInteraction } from 'discord.js';
+import type { ButtonData } from '@semblance/lib/interfaces/Semblance';
+import type { Semblance } from "@semblance/src/structures";
+import { GuildMember, MessageComponentInteraction, Constants, Interaction, ContextMenuInteraction, AutocompleteInteraction } from 'discord.js';
 const { Events } = Constants;
 
 export default {
@@ -10,6 +10,7 @@ export default {
 }
 
 export const interactionCreate = async (interaction: Interaction, client: Semblance) => {
+    if (interaction.isAutocomplete()) return autocompleteInteraction(client, interaction);
     if (interaction.isMessageComponent()) return componentInteraction(client, interaction);
     if (interaction.isContextMenu()) return contextMenuInteraction(client, interaction);
     if (!interaction.isCommand()) return;
@@ -36,4 +37,10 @@ const contextMenuInteraction = async (client: Semblance, interaction: ContextMen
     if (!client.contextMenuHandlers.has(interaction.commandName)) return;
     const contextMenuHandler = client.contextMenuHandlers.get(interaction.commandName);
     contextMenuHandler.run(interaction, { options: interaction.options, permissionLevel: getPermissionLevel(interaction.member as GuildMember) });
+}
+
+const autocompleteInteraction = async (client: Semblance, interaction: AutocompleteInteraction) => {
+    if (!client.autocompleteHandlers.has(interaction.commandName)) return;
+    const autocompleteHandler = client.autocompleteHandlers.get(interaction.commandName);
+    autocompleteHandler.run(interaction, interaction.options);
 }

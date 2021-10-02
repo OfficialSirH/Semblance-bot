@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-type infoType = 'beta'
+type Info = 'beta'
     | 'joinbeta'
     | 'update'
     | 'github'
@@ -10,41 +10,41 @@ type infoType = 'beta'
     | 'beyondcount'
     | 'boostercodes';
 
-// interface List {
-//     'boostercodes': string[];
-//     'codes': string[];
-//     'changelog': string;
-//     'cacheList': string[];
-//     'beyondcount': number;
-//     'github': string;
-//     'update': string;
-//     'joinbeta': string;
-//     'beta': string;
-// }
+interface List {
+    'boostercodes': string[];
+    'codes': string[];
+    'changelog': string;
+    'cacheList': string[];
+    'beyondcount': number;
+    'github': string;
+    'update': string;
+    'joinbeta': string;
+    'beta': string;
+}
 
-// export interface InformationFormat<T extends infoType> {
-//     infoType: T;
-//     info: string;
-//     count: number;
-//     updated: boolean;
-//     expired: string;
-//     list: List[T];
-//     footer: string;
-// }
-
-// TODO: Implement better typings for InformationFormat
-
-export interface InformationFormat {
-    infoType: infoType;
+export interface InformationFormat<T extends Info> {
+    infoType: T;
     info: string;
     count: number;
     updated: boolean;
     expired: string;
-    list: any;
+    list: List[T];
     footer: string;
 }
 
-const InformationSchema = new Schema<InformationFormat>({
+// TODO: Implement better typings for InformationFormat
+
+// export interface InformationFormat {
+//     infoType: infoType;
+//     info: string;
+//     count: number;
+//     updated: boolean;
+//     expired: string;
+//     list: any;
+//     footer: string;
+// }
+
+const InformationSchema = new Schema<InformationFormat<Info>>({
     infoType: String,
     info: {
         type: String,
@@ -60,7 +60,7 @@ const InformationSchema = new Schema<InformationFormat>({
     },
     expired: String,
     list: {
-        type: Array,
+        type: Schema.Types.Mixed as any,
         default: []
     },
     footer: {
@@ -69,4 +69,4 @@ const InformationSchema = new Schema<InformationFormat>({
     }
 });
 
-export const Information = model<InformationFormat>("Information", InformationSchema, "Information");
+export const Information = model<InformationFormat<Info>>("Information", InformationSchema, "Information");

@@ -1,18 +1,18 @@
 import type { Semblance } from "@semblance/structures";
-import type { Collection, CommandInteraction, CommandInteractionOptionResolver, Message, MessageComponentInteraction, Snowflake, ConstantsEvents } from "discord.js";
+import type { Collection, CommandInteraction, CommandInteractionOptionResolver, Message, MessageComponentInteraction, Snowflake, ConstantsEvents, ContextMenuInteraction, AutocompleteInteraction } from "discord.js";
 
-export type ContextMenuHandlers = Collection<string, ContextMenuHandler>;
+export interface AutocompleteHandler {
+    run: (interaction: AutocompleteInteraction, options: CommandInteractionOptionResolver<AutocompleteInteraction>) => Promise<void>;
+}
 
 export interface ContextMenuHandler {
     run: (interaction: CommandInteraction, { options, permissionLevel }: ContextMenuHandlerOptions) => Promise<void>;
 }
 
 export interface ContextMenuHandlerOptions {
-    options: CommandInteractionOptionResolver;
+    options: CommandInteractionOptionResolver<ContextMenuInteraction>;
     permissionLevel: number;
 }
-
-export type ComponentHandlers = Collection<string, ComponentHandler>;
 
 export interface ComponentHandler {
     allowOthers?: boolean;
@@ -25,8 +25,6 @@ export interface ButtonData {
     id: Snowflake;
 }
 
-export type SlashCommands = Collection<string, SlashCommand>;
-
 export interface SlashCommand {
     permissionRequired: number,
     run: (client: Semblance, interaction: CommandInteraction, options?: SlashOptions) => Promise<void>;
@@ -34,7 +32,7 @@ export interface SlashCommand {
 
 export interface SlashOptions {
     permissionLevel: number;
-    options: CommandInteractionOptionResolver;
+    options: CommandInteractionOptionResolver<CommandInteraction>;
 }
 
 export type Commands = Record<string, Command>;

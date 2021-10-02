@@ -4,6 +4,7 @@ import 'module-alias/register';
 (async () => await require(`@semblance/config`).config())()
 // Semblance client
 import { Semblance } from '@semblance/structures';
+// import { Client } from 'twitter.js';
 import { Intents, LimitedCollection, Options } from 'discord.js';
 import { checkTweet, playerUpdate, userVote } from '@semblance/events';
 const client = new Semblance({
@@ -76,4 +77,12 @@ setInterval(() => checkTweet(client), 2000);
 	let address: string;
 	address = await app.listen(8079, '0.0.0.0');
     console.log('Semblance has started on: ' + address);
+	// const twClient = new Client({ events: ['SAMPLED_TWEET_CREATE'] });
+	// const twitterCredentials = JSON.parse(process.env.twitter);
+	// await twClient.loginWithBearerToken(twitterCredentials.bearer_token);
+	
+	// twClient.on('', async (tweet) => {
+	
+	// });
+	// TODO: implement twitter.js in beautiful way
 })()

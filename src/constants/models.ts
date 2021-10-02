@@ -3,6 +3,7 @@ import { BoosterRewards, Information } from '@semblance/models';
 import { GuildMember, Message, MessageEmbed, TextChannel } from 'discord.js';
 import config from '@semblance/config';
 import { formattedDate } from '.';
+import { InformationFormat } from '../models/Information';
 const { sirhId, adityaId, c2sGuildId, darwinium } = config;
 
 // BoosterRewards - check dates for booster rewards
@@ -11,7 +12,7 @@ export const checkBoosterRewards = async (client: Semblance) => {
     const now = Date.now();
     boosterRewards = boosterRewards.filter(boosterReward => boosterReward.rewardingDate < now);
     if (boosterRewards.length == 0) return;
-    const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
+    const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' }) as InformationFormat<'boostercodes'>;
     if (darwiniumCodes.list.length == 0) {
         if (darwiniumCodes.updated) {
             boosterChannel(client).send({ content: `<@${sirhId}> <@${adityaId}> No booster codes left!`+

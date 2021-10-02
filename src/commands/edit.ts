@@ -19,20 +19,20 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
         .setTitle(`${args[0].charAt(0).toUpperCase() + args[0].slice(1)} Info Changed!`)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor);
-    let infoHandler: InformationFormat;
+    let infoHandler: InformationFormat<any>;
 
     switch (args[0]) {
         case 'beta':
-            infoHandler = await Information.findOneAndUpdate({ infoType: "beta" }, { $set: { info: args.slice(1).join(" ") } }, { new: true });
+            infoHandler = await Information.findOneAndUpdate({ infoType: "beta" }, { $set: { info: args.slice(1).join(" ") } }, { new: true }) as InformationFormat<'beta'>;
             embed.setDescription(infoHandler.info);
             break;
         case 'update':
-            infoHandler = await Information.findOneAndUpdate({ infoType: "update" }, { $set: { info: args.slice(1).join(" ") } }, { new: true });
+            infoHandler = await Information.findOneAndUpdate({ infoType: "update" }, { $set: { info: args.slice(1).join(" ") } }, { new: true }) as InformationFormat<'update'>;
             embed.setDescription(infoHandler.info);
             break;
         case 'codes':
-            if (args[1] == 'expired') infoHandler = await Information.findOneAndUpdate({ infoType: "codes" }, { $set: { expired: args.slice(2).join(" ") } }, { new: true });
-            else if (args[1] == 'footer') infoHandler = await Information.findOneAndUpdate({ infoType: 'codes' }, { $set: { footer: args.slice(2).join(" ") } }, { new: true });
+            if (args[1] == 'expired') infoHandler = await Information.findOneAndUpdate({ infoType: "codes" }, { $set: { expired: args.slice(2).join(" ") } }, { new: true }) as InformationFormat<'codes'>;
+            else if (args[1] == 'footer') infoHandler = await Information.findOneAndUpdate({ infoType: 'codes' }, { $set: { footer: args.slice(2).join(" ") } }, { new: true }) as InformationFormat<'codes'>;
             else infoHandler = await Information.findOneAndUpdate({ infoType: "codes" }, { $set: { info: args.slice(1).join(" ") } }, { new: true });
             embed.setDescription(infoHandler.info)
                 .addField("Expired Codes", infoHandler.expired)
@@ -61,7 +61,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[])
 }
 
 const listBoosterCodes = async (message: Message) => {
-    const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
+    const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' }) as InformationFormat<'boostercodes'>;
     const list = darwiniumCodes.list.length > 0 ? darwiniumCodes.list.join(', ') : 'None';
     const embed = new MessageEmbed()
     .setTitle(`Booster Codes`)
@@ -72,7 +72,7 @@ const listBoosterCodes = async (message: Message) => {
 }
 const addBoosterCode = async (message: Message, codes: string[]) => {
     if (codes.length == 0) return message.reply("You need to give me a code to add.");
-    const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
+    const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' }) as InformationFormat<'boostercodes'>;
     if (codes.every(c => darwiniumCodes.list.includes(c))) return message.reply("All of the codes you provided are already in the list.");
     codes = codes.filter(c => !darwiniumCodes.list.includes(c));
     darwiniumCodes.list = darwiniumCodes.list.concat(codes);
@@ -88,7 +88,7 @@ const addBoosterCode = async (message: Message, codes: string[]) => {
 
 const removeBoosterCode = async (message: Message, codes: string[]) => {
     if (codes.length == 0) return message.reply("You need to give me a code to remove.");
-    const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' });
+    const darwiniumCodes = await Information.findOne({ infoType: 'boostercodes' }) as InformationFormat<'boostercodes'>;
     if (codes.every(c => !darwiniumCodes.list.includes(c))) return message.reply("All of the codes you provided aren't in the list.");
     codes = codes.filter(c => darwiniumCodes.list.includes(c));
     darwiniumCodes.list = darwiniumCodes.list.filter(c => !codes.includes(c));

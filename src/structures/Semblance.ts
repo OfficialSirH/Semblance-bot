@@ -1,15 +1,16 @@
 import { Client, ClientOptions, Collection } from 'discord.js';
 import * as fs from 'fs';
-import { Commands, Aliases, SlashCommands, ComponentHandlers, ContextMenuHandlers } from '@semblance/lib/interfaces/Semblance';
+import type { Commands, Aliases, AutocompleteHandler, ContextMenuHandler, SlashCommand, ComponentHandler } from '@semblance/lib/interfaces/Semblance';
 import { GameLeaderboard, VoteLeaderboard } from '.';
 import { Game, Votes } from '../models';
 
 export class Semblance extends Client {
     private _gameLeaderboard: GameLeaderboard;
     private _voteLeaderboard: VoteLeaderboard;
-    private _componentHandlers: ComponentHandlers;
-    private _contextMenuHandlers: ContextMenuHandlers;
-    private _slashCommands: SlashCommands;
+    private _componentHandlers: Collection<string, ComponentHandler>;
+    private _contextMenuHandlers: Collection<string, ContextMenuHandler>;
+    private _autocompleteHandlers: Collection<string, AutocompleteHandler>;
+    private _slashCommands: Collection<string, SlashCommand>;
     private _commands: Commands;
     private _aliases: Aliases;
     private _autoCommands: Commands;
@@ -21,8 +22,6 @@ export class Semblance extends Client {
     constructor(options: ClientOptions) {
         super(options);
 
-        this._autoCommands = {};
-
         this._componentHandlers = new Collection();
         fs.readdir('./dist/src/applicationCommands/componentHandlers/', (err, files) => {
             if (err) return console.log(err);
@@ -32,9 +31,15 @@ export class Semblance extends Client {
         });
 
         this._contextMenuHandlers = new Collection();
-        const files = fs.readdirSync('./dist/src/applicationCommands/contextMenuHandlers/');
-        for (const file of files) if (file.endsWith('.js')) {
+        const contextMenuFiles = fs.readdirSync('./dist/src/applicationCommands/contextMenuHandlers/');
+        for (const file of contextMenuFiles) if (file.endsWith('.js')) {
             this._contextMenuHandlers.set(file.replace('.js', ''), require(`../applicationCommands/contextMenuHandlers/${file}`));
+        }
+
+        this._autocompleteHandlers = new Collection();
+        const autocompleteFiles = fs.readdirSync('./dist/src/applicationCommands/autocompleteHandlers/');
+        for (const file of autocompleteFiles) if (file.endsWith('.js')) {
+            this._autocompleteHandlers.set(file.replace('.js', ''), require(`../applicationCommands/autocompleteHandlers/${file}`));
         }
 
         this._slashCommands = new Collection();
@@ -77,6 +82,10 @@ export class Semblance extends Client {
     public get voteLeaderboard() {
         return this._voteLeaderboard;
     }
+
+    public get autocompleteHandlers() {
+        return this._autocompleteHandlers;
+    }   
 
     public get componentHandlers() {
         return this._componentHandlers;

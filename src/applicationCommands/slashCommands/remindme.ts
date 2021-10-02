@@ -2,8 +2,8 @@ import { MessageEmbed, CommandInteraction, User } from 'discord.js';
 import { Reminder } from '@semblance/models';
 import { randomColor, timeInputRegex, formattedDate, timeInputToMs } from '@semblance/constants';
 import type { Semblance } from '@semblance/structures';
-import { TimeLengths } from '@semblance/lib/interfaces/remindme';
-import { UserReminder } from '../../models/Reminder';
+import type { TimeLengths } from '@semblance/lib/interfaces/remindme';
+import type { UserReminder } from '../../models/Reminder';
 
 module.exports = {
     permissionRequired: 0,
@@ -41,7 +41,7 @@ async function create(client: Semblance, interaction: CommandInteraction) {
         user = interaction.member.user as User;
 
 	if (timeAmount == null) return interaction.reply({ content: 'Your input for time is invalid, please try again.', ephemeral: true });
-	const { groups: { months = 0, weeks = 0, days = 0, hours = 0, minutes = 0 }} = timeAmount as unknown as TimeLengths;
+	const { groups: { months = 0, weeks = 0, days = 0, hours = 0, minutes = 0 }} = timeAmount as TimeLengths;
 	if ([months, weeks, days, hours, minutes].every(time => !time)) return interaction.reply({ content: 'Your input for time was invalid, please try again.', ephemeral: true });
 
 	let totalTime = timeInputToMs(months, weeks, days, hours, minutes);
@@ -94,7 +94,7 @@ async function edit(client: Semblance, interaction: CommandInteraction) {
 	let timeAmount: RegExpExecArray, totalTime = 0;
 	if (length) {
 		timeAmount = timeInputRegex.exec(length);
-		const { groups: { months = 0, weeks = 0, days = 0, hours = 0, minutes = 0 }} = timeAmount as unknown as TimeLengths;
+		const { groups: { months = 0, weeks = 0, days = 0, hours = 0, minutes = 0 }} = timeAmount as TimeLengths;
 		if ([months, weeks, days, hours, minutes].every(time => !time)) return interaction.reply({ content: 'Your input for time was invalid, please try again.', ephemeral: true });
 		totalTime = timeInputToMs(months, weeks, days, hours, minutes);
 	}
