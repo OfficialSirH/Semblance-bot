@@ -24,26 +24,20 @@ export const checkBoosterRewards = async (client: Semblance) => {
     boosterRewards.forEach(async boosterReward => {
         const ogCodeLength = darwiniumCodes.list.length, darwiniumCode = darwiniumCodes.list.shift();
         darwiniumCodes.list = darwiniumCodes.list.filter(c => c != darwiniumCode);
-        let failedToFetch: boolean, member: GuildMember;
-        try {
-            member = await client.guilds.cache.get(c2sGuildId).members.fetch(boosterReward.userId);
-        } catch (e) {
-            failedToFetch = true;
-        } finally {
-            if (failedToFetch) return promises.push(boosterReward.remove());        
-            if (!member.roles.cache.has(boosterRole)) return promises.push(boosterReward.remove());
-            member.user.send({ embeds: [new MessageEmbed().setTitle('Booster reward')
-            .setAuthor(member.user.tag, member.user.displayAvatarURL())
-            .setDescription(`Thank you for boosting Cell to Singularity for 2 weeks! As a reward, here's 150 ${darwinium}!\nCode: ||${darwiniumCode}||`)] })
-            .catch(async err => {
-                console.log(`There was an issue with sending the code to ${member.user.tag}: ${err}`);
-                await boosterChannel(client).send({ content: `${member} I had trouble DMing you so instead Aditya or SirH will manually provide you a code. :)`+
-                `\nTip: These errors tend to happen when your DMs are closed. So keeping them open would help us out :D`, allowedMentions: { users: [member.id] } });
-                darwiniumCodes.list.unshift(darwiniumCode);
-            });
-            if (darwiniumCodes.list.length != ogCodeLength) promises.push(Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } }));
-            promises.push(boosterReward.delete());
-        }
+        const member = await client.guilds.cache.get(c2sGuildId).members.fetch(boosterReward.userId).catch(() => 'failed' as const);
+        if (member == 'failed') return promises.push(boosterReward.remove());
+        if (!member.roles.cache.has(boosterRole)) return promises.push(boosterReward.remove());
+        await member.user.send({ embeds: [new MessageEmbed().setTitle('Booster reward')
+        .setAuthor(member.user.tag, member.user.displayAvatarURL())
+        .setDescription(`Thank you for boosting Cell to Singularity for 2 weeks! As a reward, here's 150 ${darwinium}!\nCode: ||${darwiniumCode}||`)] })
+        .catch(async err => {
+            console.log(`There was an issue with sending the code to ${member.user.tag}: ${err}`);
+            await boosterChannel(client).send({ content: `${member} I had trouble DMing you so instead Aditya or SirH will manually provide you a code. :)`+
+            `\nTip: These errors tend to happen when your DMs are closed. So keeping them open would help us out :D`, allowedMentions: { users: [member.id] } });
+            darwiniumCodes.list.unshift(darwiniumCode);
+        });
+        if (darwiniumCodes.list.length != ogCodeLength) promises.push(Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } }));
+        promises.push(boosterReward.delete());
     });
     return Promise.all(promises);
 };

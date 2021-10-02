@@ -10,6 +10,30 @@ type infoType = 'beta'
     | 'beyondcount'
     | 'boostercodes';
 
+// interface List {
+//     'boostercodes': string[];
+//     'codes': string[];
+//     'changelog': string;
+//     'cacheList': string[];
+//     'beyondcount': number;
+//     'github': string;
+//     'update': string;
+//     'joinbeta': string;
+//     'beta': string;
+// }
+
+// export interface InformationFormat<T extends infoType> {
+//     infoType: T;
+//     info: string;
+//     count: number;
+//     updated: boolean;
+//     expired: string;
+//     list: List[T];
+//     footer: string;
+// }
+
+// TODO: Implement better typings for InformationFormat
+
 export interface InformationFormat {
     infoType: infoType;
     info: string;
