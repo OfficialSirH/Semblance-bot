@@ -1,4 +1,4 @@
-import type { TimeLengths } from "@semblance/lib/interfaces/remindme";
+import type { TimeLengthsString } from "@semblance/lib/interfaces/remindme";
 import { clamp } from "@semblance/lib/utils/math";
 import { timeInputRegex } from "@semblance/src/constants";
 import type { ApplicationCommandOptionChoice, AutocompleteInteraction, CommandInteractionOptionResolver } from "discord.js";
@@ -6,14 +6,17 @@ import type { ApplicationCommandOptionChoice, AutocompleteInteraction, CommandIn
 
 export async function run(interaction: AutocompleteInteraction, options: CommandInteractionOptionResolver<AutocompleteInteraction>) {
     const focusedOption = options.getFocused() as string;
-    if (parseInt(focusedOption) && focusedOption.length <= 2) {
-        const responseOptions = ['m', 'h', 'd', 'w', 'M'].map(o => ({ name: `${focusedOption}${o}`, value: `${focusedOption}${o}` }));
-        return interaction.respond(responseOptions);
+    if (parseInt(focusedOption)) {
+        if (focusedOption.length <= 2) {
+            const responseOptions = ['m', 'h', 'd', 'w', 'M'].map(o => ({ name: `${focusedOption}${o}`, value: `${focusedOption}${o}` }));
+            return interaction.respond(responseOptions);
+        }
+        return;
     }
     const timeAmount = timeInputRegex.exec(focusedOption);
-    const { groups: { months = 0, weeks = 0, days = 0, hours = 0, minutes = 0 } } = timeAmount as TimeLengths;
+    const { groups: { months = '0', weeks = '0', days = '0', hours = '0', minutes = '0' } } = timeAmount as TimeLengthsString;
     const timeValues = [months, weeks, days, hours, minutes].map((t, i) => { 
-        return { type: ['M', 'w', 'd', 'h', 'm'][i], value: t };
+        return { type: ['M', 'w', 'd', 'h', 'm'][i], value: parseInt(t) };
     }).filter(t => t.value > 0);
     const responseOptions: ApplicationCommandOptionChoice[] = [];
     for (let i = 0; i < clamp(99 - timeValues[timeValues.length-1].value, 0, 5) + 1; i++) {

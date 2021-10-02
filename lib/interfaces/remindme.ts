@@ -7,3 +7,13 @@ export interface TimeLengths {
         minutes?: number;
     }
 }
+
+export interface TimeLengthsString {
+    groups: {
+        months?: string;
+        weeks?: string;
+        days?: string;
+        hours?: string;
+        minutes?: string;
+    }
+}
