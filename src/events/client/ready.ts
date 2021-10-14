@@ -1,5 +1,6 @@
 import { Information } from '@semblance/models';
-import { MessageEmbed, TextChannel, Constants } from 'discord.js';
+import { MessageEmbed, Constants } from 'discord.js';
+import type { TextChannel } from 'discord.js';
 import config from '@semblance/config';
 import type { Semblance } from '@semblance/src/structures';
 import {
@@ -31,8 +32,8 @@ export const ready = async (client: Semblance) => {
     }, 3600000);
 
     /* Slash Command setup */
-    let slashCommands = await client.application.commands.fetch();
-    slashCommands.filter(c => c.type == 'CHAT_INPUT').forEach(command => client.slashCommands.set(command.id, require(`@semblance/src/applicationCommands/slashCommands/${command.name}.js`)));
+    const slashCommands = await client.application.commands.fetch();
+    slashCommands.filter(c => c.type == 'CHAT_INPUT').forEach(command => client.slashCommands.set(command.id, require(`@semblance/src/applicationCommands/slashCommands/${command.name}.js`).default));
 
     /*
     * Reminder check

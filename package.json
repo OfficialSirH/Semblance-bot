@@ -29,7 +29,7 @@
     "@semblance/events": "./dist/src/events/index",
     "@semblance/constants": "./dist/src/constants/index",
     "@semblance/config": "./dist/config",
-    "@semblance/itemList": "./lib/utils/itemList"
+    "@semblance/itemList": "./dist/lib/utils/itemList"
   },
   "scripts": {
     "start": "pm2-runtime start ecosystem.config.js --env production"

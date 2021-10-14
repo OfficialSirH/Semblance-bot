@@ -1,18 +1,17 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
 	description: "Provides the number of members in the server.",
 	category: 'server',
-	usage: {
-		"": ""
-	},
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (_client, message) => run(message)
+} as Command<'server'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
 	let guild = await message.guild.fetch();
 	let embed = new MessageEmbed()
 	.setTitle("Members")

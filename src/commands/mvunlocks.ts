@@ -1,20 +1,21 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { currentLogo } = config;
 
-module.exports = {
+export default {
     description: 'Information about the unlocking of each reptile and bird',
-    category: 'main',
+    category: 'game',
+    subcategory: 'main',
     aliases: ['reptiles', 'birds', 'mvunlock'],
-    usage: {
-        "": ""
-    },
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    permissionRequired: 0,
+    checkArgs: () => true,
+    run: (_client, message) => run(message)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
     const embed = new MessageEmbed()
         .setTitle("Reptiles and Birds")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())

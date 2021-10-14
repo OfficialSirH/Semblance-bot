@@ -1,21 +1,20 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { currentLogo, trexSkull } = config;
 
-module.exports = {
-    description: "",
+export default {
+    description: "Info on the Mesozoic Valley",
     category: 'game',
     subcategory: 'mesozoic',
-    usage: {
-        "": ""
-    },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (_client, message) => run(message) 
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
     let embed = new MessageEmbed()
         .setTitle(`${trexSkull} Mesozoic Valley`)
         .setColor(randomColor)

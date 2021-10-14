@@ -42,6 +42,8 @@ const client = new Semblance({
 	partials: [ "USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE" ],
 	intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES ]
 });
+// TODO: enable twitter.js implementation to replace the shitty twitter library
+// const twClient = new Client({ events: ['FILTERED_TWEET_CREATE'] });
 // fastify routing
 import fastify from 'fastify';
 const app = fastify();
@@ -59,6 +61,16 @@ for (const file of eventFiles) {
 	if (event.once) client.once(event.name, (...args) => event.exec(...args, client));
 	else client.on(event.name, (...args) => event.exec(...args, client));
 }
+// TODO: enable twitter.js implementation to replace the shitty twitter library
+// import type { TwitterJSEventHandler } from './lib/interfaces/Semblance';
+// const twitterEventFiles = fs.readdirSync('./dist/src/events/twitter').filter(file => file.endsWith('.js'));
+
+// for (const file of twitterEventFiles) {
+// 	const event = require(`./src/events/twitter/${file}`).default as TwitterJSEventHandler;
+// 	if (event.once) twClient.once(event.name, (...args) => event.exec(...args, { client, twClient }));
+// 	else twClient.on(event.name, (...args) => event.exec(...args, { client, twClient }));
+// }
+
 // Listen to model events
 playerUpdate(client);
 userVote(client);
@@ -70,6 +82,7 @@ app.get('/', (_req, res) => { res.redirect('https://officialsirh.github.io/') })
 
 // Check for Tweet from ComputerLunch
 setInterval(() => checkTweet(client), 2000);
+// TODO: remove this really shitty implementation of receiving tweets
 
 (async () => {
 	await connect(process.env.mongoDBKey);
@@ -77,12 +90,7 @@ setInterval(() => checkTweet(client), 2000);
 	let address: string;
 	address = await app.listen(8079, '0.0.0.0');
     console.log('Semblance has started on: ' + address);
-	// const twClient = new Client({ events: ['SAMPLED_TWEET_CREATE'] });
+	// TODO: enable twitter.js implementation to replace the shitty twitter library
 	// const twitterCredentials = JSON.parse(process.env.twitter);
 	// await twClient.loginWithBearerToken(twitterCredentials.bearer_token);
-	
-	// twClient.on('', async (tweet) => {
-	
-	// });
-	// TODO: implement twitter.js in beautiful way
 })()

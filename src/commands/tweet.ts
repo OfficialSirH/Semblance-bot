@@ -1,19 +1,20 @@
-import { Message } from "discord.js";
-import { Semblance } from "../structures";
+import type { Message } from "discord.js";
 import * as Twitter from 'twitter';
+import type { Command } from "@semblance/lib/interfaces/Semblance";
 const twClient = new Twitter(JSON.parse(process.env.twitter));
 
-module.exports = {
+export default {
 	description: "Get the most recent tweet from any twitter user.",
 	category: 'developer',
 	usage: {
 		"<twitter name>": "input the name of a user from twitter."
 	},
 	permissionRequired: 7,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (_client, message, args) => run(message, args)
+} as Command<'developer'>;
 
-module.exports.run = (client: Semblance, message: Message, args: string[]) => {
+const run = (message: Message, args: string[]) => {
 	let screen_name = args[0];
 	if (!screen_name) screen_name = "ComputerLunch";
 	twClient.get('statuses/user_timeline', {

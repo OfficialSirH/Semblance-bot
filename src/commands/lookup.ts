@@ -3,20 +3,21 @@ import { getRole, getChannel, getUser } from '@semblance/lib/utils/resolvers';
 import * as constants from '@semblance/constants';
 import type { Message, MessageOptions, Snowflake, TextBasedChannels, TextChannel } from 'discord.js';
 import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
     description: "Lookup something unknown, like an Id or an invite, and hopefully get the meaning behind it!",
     category: 'admin',
     usage: {
         "<unknown>": "The unknown you'd like to lookup."
     },
-    examples: {},
     aliases: ["bot-lookup", "id-lookup", "invite-lookup", "whatis", "wit", "whatisthis"],
     permissionRequired: 4,
-    checkArgs: (args: string[]) => args.length == 1
-}
+    checkArgs: (args) => args.length == 1,
+    run: (client, message, args) => run(client, message, args)
+} as Command<'admin'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
     message.channel.sendTyping();
 
     const role = getRole(args[0], message.guild);

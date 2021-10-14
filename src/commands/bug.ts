@@ -3,13 +3,14 @@ import { Report, ReportFormat } from '../models/Report';
 import config from '@semblance/config';
 import { getPermissionLevel, randomColor, bugChannels } from '../constants';
 import { promisify } from 'util';
-import { Semblance } from '@semblance/structures';
-
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
+// TODO: replace this GOD awful report command with a report slash command instead of this
 const wait = promisify(setTimeout),
     { prefix, sirhGuildId, c2sGuildId } = config,
     cooldown = new Collection<Snowflake, number>();
 
-module.exports = {
+export default {
     description: "Big epicc bug reporting feature exclusively for C2S server.",
     category: 'c2sServer',
     usage: {
@@ -17,10 +18,11 @@ module.exports = {
     },
     aliases: ['report', 'bugreport'],
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length > 0
-}
+    checkArgs: () => true,
+    run: (client, message, args, identifier, { permissionLevel, content }) => run(client, message, args, identifier, { permissionLevel, content })
+} as Command<'c2sServer'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[], identifier: string, { permissionLevel, content }) => {
+const run = async (client: Semblance, message: Message, args: string[], identifier: string, { permissionLevel, content }) => {
     if (message.guild!.id != c2sGuildId) return;
     if ((identifier == 'report' ?? identifier == 'bug' ?? identifier == 'bugreport') && args[0] == 'help') return help(message, permissionLevel);
     else if (identifier == 'report' ?? identifier == 'bugreport') return report(message, content, client);
@@ -310,30 +312,3 @@ async function attachmentFieldCorrection(client: Semblance, message: Message, re
         });
 
 }
-
-// async function archiveReport(client: Semblance, message: Message, report: ReportFormat) {
-//     let msg = await (message.guild!.channels.cache.get(report.channelId) as TextChannel).messages.fetch(report.messageId);
-//     let author = msg.embeds[0].author;
-//     try {
-//         msg.edit(msg.embeds[0].setAuthor(`${author!.name!.slice(0, author!.name!.indexOf('\n'))}\nArchived Report`, author!.iconURL).setFooter(`Archived Report`));
-//         await Report.findOneAndDelete({ bugId: report.bugId });
-
-//         let reportList = await Report.find({});
-//         let bugIdList = Array.from(reportList.map(r => r.bugId).filter(item => item > report.bugId));
-//         bugIdList.forEach(async (bugId) => {
-//             (message.guild!.channels.cache.get(report.channelId) as TextChannel)!.messages.fetch(report.messageId)
-//                 .then(msg => {
-//                     let author = msg.embeds[0].author;
-//                     msg.edit(msg.embeds[0].setAuthor(`${author!.name!.slice(0, author!.name!.indexOf('\n'))}\nBug Id: #${bugId - 1}`, author!.iconURL).setFooter(`#${bugId - 1}`));
-//                 });
-//             await Report.findOneAndUpdate({ bugId: bugId }, { $set: { bugId: bugId - 1 } }, { new: true });
-//         });
-
-//         message.reply("Report successfully archived(This message will delete in 5 seconds)").then(msg => setInterval(() => msg.delete(), 5000));
-//     }
-//     catch(e) { 
-//         console.error(e);
-//     }
-
-// }
-

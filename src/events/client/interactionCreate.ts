@@ -1,7 +1,8 @@
 import { customIdRegex, getPermissionLevel, properCustomIdRegex } from '@semblance/constants';
 import type { ButtonData } from '@semblance/lib/interfaces/Semblance';
 import type { Semblance } from "@semblance/src/structures";
-import { GuildMember, MessageComponentInteraction, Constants, Interaction, ContextMenuInteraction, AutocompleteInteraction } from 'discord.js';
+import type { GuildMember, MessageComponentInteraction, Interaction, ContextMenuInteraction, AutocompleteInteraction } from 'discord.js';
+import { Constants } from 'discord.js';
 const { Events } = Constants;
 
 export default {
@@ -16,8 +17,8 @@ export const interactionCreate = async (interaction: Interaction, client: Sembla
     if (!interaction.isCommand()) return;
 
     if (client.slashCommands.has(interaction.commandId)) 
-        await client.slashCommands.get(interaction.commandId).run(client, interaction, 
-            { options: interaction.options, permissionLevel: getPermissionLevel(interaction.member as GuildMember) });
+        await client.slashCommands.get(interaction.commandId).run(interaction, 
+            { client, options: interaction.options, permissionLevel: getPermissionLevel(interaction.member as GuildMember) });
     else await interaction.reply('I can\'t find a command for this, something is borked.');
 }
 

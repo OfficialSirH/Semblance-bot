@@ -1,22 +1,21 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
 import { Information } from '../models';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { currentLogo } = config; 
 
-module.exports = {
+export default {
 	description: "Get info on the latest update of C2S.",
 	category: 'game',
 	subcategory: 'other',
-	usage: {
-		"": ""
-	},
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (_client, message) => run(message)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
 	let infoHandler = await Information.findOne({ infoType: "update" });
 	let embed = new MessageEmbed()
 		.setTitle("Steam and Mobile Updates")

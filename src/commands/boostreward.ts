@@ -1,18 +1,21 @@
-import { Message, GuildMember } from "discord.js";
-import { Semblance } from "../structures";
+import type { Message } from "discord.js";
+import { GuildMember } from "discord.js";
+import type { Semblance } from "../structures";
 import { BoosterRewards } from "../models";
 import { formattedDate } from "../constants";
+import type { Command } from "@semblance/lib/interfaces/Semblance";
 
 
-module.exports = {
+export default {
     description: 'interact with booster rewards for users',
     category: 'developer',
     permissionRequired: 7,
     aliases: ['boosterrewards', 'brewards'],
-    checkArgs: (args: string[]) => args.length >= 1,
-}
+    checkArgs: (args) => args.length >= 1,
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+} as Command<'developer'>;
+
+const run = async (client: Semblance, message: Message, args: string[]) => {
     if (!args.length) return message.reply('The following options are:\n`list`\n`add <user id or mention>` or vice versa\n`remove <user id or mention>` or vice versa');
     if (args.includes('list')) return listBoosters(message);
     

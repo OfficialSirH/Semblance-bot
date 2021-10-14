@@ -1,19 +1,18 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Semblance } from '../structures';
-import { Leaderboard } from '@semblance/models';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
 	description: "Get a list of the top voters of the month.",
 	category: 'semblance',
-	usage: {
-		"": ""
-	},
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (client, message) => run(client, message)
+} as Command<'semblance'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message) => {
 	let leaderboard = client.voteLeaderboard.toString();
 	if (!leaderboard) leaderboard = "No one has voted for Semblance :( (or the leaderboard just didn't update)";
 	let embed = new MessageEmbed()

@@ -1,18 +1,18 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor, msToTime } from '@semblance/constants';
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
 	description: "Check the bot's latency.",
 	category: 'semblance',
-	usage: {
-		"": ""
-	},
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (client, message) => run(client, message)
+} as Command<'semblance'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message) => {
 		let uptime = Date.now() - client.readyTimestamp,
 			duration = msToTime(uptime),
 			responseTime = Date.now() - message.createdTimestamp,

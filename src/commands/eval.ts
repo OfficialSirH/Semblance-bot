@@ -1,20 +1,22 @@
-import { MessageEmbed, MessageAttachment, Message } from 'discord.js'; 
+import { MessageEmbed, MessageAttachment } from 'discord.js'; 
 import { randomColor } from '@semblance/constants';
 import type { Semblance } from '../structures';
+import type { Message } from 'discord.js';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
     description: "Evaluate some code.",
     category: 'developer',
     usage: {
         "<code ...>": "The code you want to run through the bot."
     },
-    examples: {},
     aliases: [],
     permissionRequired: 7,
-    checkArgs: (args: string[]) => args.length >= 1
-}
+    checkArgs: (args) => args.length >= 1,
+    run: (client, message, args, _identifier, { content }) => run(client, message, args, { content })
+} as Command<'developer'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[], identifier: string, { permissionLevel, content }) => {
+const run = async (client: Semblance, message: Message, args: string[], { content }) => {
     let embed = new MessageEmbed().setColor(randomColor).addField("📥 Input", `\`\`\`js\n${content.substring(0, 1015)}\`\`\``).setFooter("Feed me code!");
     try {
         let evaled = eval(`(async () => { ${content} })().catch(e => { return "Error: " + e })`);

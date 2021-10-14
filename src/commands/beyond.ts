@@ -1,23 +1,23 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
 import { Information } from '../models';
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { roadMap, currentLogo, earlyBeyondTesters, prefix } = config;
 
-module.exports = {
+export default {
 	description: "Provides info on The Beyond.",
 	category: 'game',
 	subcategory: 'other',
-	usage: {
-		"": ""
-	},
 	aliases: ["roadmap"],
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (_client: Semblance, message: Message, args: string[]) => run(message, args)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message, args: string[]) => {
 	if (args[0] == 'clips' || args.join(" ") == 'sneak peeks' || args[0] == 'sneakpeeks') return clips(message);
 	if (args[0] == 'count' || args[0] == 'counter') return beyondCounter(message);
 	if (args[0] == 'testers') return testerCredits(message);

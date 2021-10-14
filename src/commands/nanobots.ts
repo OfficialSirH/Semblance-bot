@@ -1,22 +1,21 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { currentLogo, nanobots } = config;
 
-module.exports = {
+export default {
   description: "Provides details on nanobots and whatever else about those cute critters",
   category: 'game',
   subcategory: 'main',
   aliases: ['nbts', 'nanobot'],
-  usage: {
-    "": ""
-  },
   permissionRequired: 0,
-  checkArgs: (args: string[]) => args.length >= 0
-}
+  checkArgs: () => true,
+  run: (_client, message) => run(message)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
   let embed = new MessageEmbed()
     .setTitle("Nanobots")
     .setAuthor(message.author.tag, message.author.displayAvatarURL())

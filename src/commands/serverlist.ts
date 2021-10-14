@@ -1,19 +1,22 @@
-import { Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor, guildBookPage } from '@semblance/constants';
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 import { serversPerPage } from '../constants/commands';
 
-module.exports = {
+export default {
 	description: "Lists all servers that Semblance is in.",
 	category: 'developer',
 	usage: {
-		"": ""
+		"page number": ""
 	},
 	permissionRequired: 7,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (client, message, args) => run(client, message, args)
+} as Command<'developer'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
 	const { chosenPage, pageDetails } = guildBookPage(client, args[0]),
 	numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
 

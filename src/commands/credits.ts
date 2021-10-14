@@ -1,18 +1,17 @@
-import { Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js'; 
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Semblance } from '@semblance/structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
 	description: "Lists everyone that has helped with the project of Semblance, including myself(SirH).",
 	category: 'semblance',
-	usage: {
-		"": ""
-	},
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (_client, message) => run(message)
+} as Command<'semblance'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
 	const embed = new MessageEmbed()
 		.setTitle("Credits")
 		.setColor(randomColor)

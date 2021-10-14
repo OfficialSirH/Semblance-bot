@@ -1,18 +1,20 @@
-import { Message, MessageEmbed, TextChannel, MessageMentionTypes } from "discord.js";
-import { Semblance } from "../structures";
+import type { Message, TextChannel, MessageMentionTypes } from "discord.js";
+import { MessageEmbed } from 'discord.js';
 import { attachmentLinkRegex } from '@semblance/constants';
+import type { Command } from "@semblance/lib/interfaces/Semblance";
 
-module.exports = {
+export default {
     description: "Make announcements through Semblance",
     category: 'admin',
     usage: {
         "<'!ar' for anonymous msg> <channel> <msg>": ""
     },
     permissionRequired: 2,
-    checkArgs: (args: string[]) => args.length >= 2
-}
+    checkArgs: (args) => args.length >= 2,
+    run: (_client, message, args, _identifier, { permissionLevel, content }) => run(message, args, { permissionLevel, content })
+} as Command<'admin'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[], identifier: string, { permissionLevel, content }) => {
+const run = async (message: Message, args: string[], { permissionLevel, content }) => {
     message.delete();
     let channel = !message.mentions ? message.channel : message.mentions.channels.first() as TextChannel;
     if (!message.guild.channels.cache.has(channel.id)) return message.reply('Don\'t be using channels from other servers, that\'s not allowed.');
@@ -29,7 +31,7 @@ module.exports.run = async (client: Semblance, message: Message, args: string[],
     
     if (args[args.length - 1] == 'embed') return sendEmbedAnnouncement(channel as TextChannel, message, announcement, !announcement.startsWith('!ar'));
 
-    if (!announcement.startsWith("!ar"))  {
+    if (!announcement.startsWith("!ar") ?? permissionLevel < 7)  {
         announcement += `\n- ${message.author.tag}(${message.author.id})`;
         announcement = announcement.replace(/!ar/, '');
     }

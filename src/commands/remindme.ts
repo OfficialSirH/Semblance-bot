@@ -1,12 +1,13 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor, formattedDate, timeInputRegex, timeInputToMs } from '@semblance/constants';
 import { Reminder } from '@semblance/models';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 import config from '@semblance/config';
-import { TimeLengths } from '@semblance/lib/interfaces/remindme';
+import type { TimeLengths } from '@semblance/lib/interfaces/remindme';
 const { prefix } = config;
 
-module.exports = {
+export default {
 	description: "Set a reminder for yourself.",
 	category: 'utility',
 	usage: {
@@ -16,10 +17,11 @@ module.exports = {
 		"exampleOne": `${prefix}remindme 1h I've got magical stuff to do in 1 hour!`
 	},
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 2
-}
+	checkArgs: (args) => args.length >= 2,
+	run: (_client, message, args) => run(message, args)
+} as Command<'utility'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message, args: string[]) => {
 	let timeAmount = timeInputRegex.exec(args[0]);
 	if (timeAmount == null) return message.reply("Your input for time is invalid, please try again.").then(msg => setTimeout(() =>{ if(!msg.deleted) msg.delete() }, 5000)); 
 	const { groups: { months = 0, weeks = 0, days = 0, hours = 0, minutes = 0 }} = timeAmount as unknown as TimeLengths;

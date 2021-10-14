@@ -1,5 +1,6 @@
 import type { Semblance } from "@semblance/structures";
-import type { Collection, CommandInteraction, CommandInteractionOptionResolver, Message, MessageComponentInteraction, Snowflake, ConstantsEvents, ContextMenuInteraction, AutocompleteInteraction } from "discord.js";
+import type { CommandInteraction, CommandInteractionOptionResolver, Message, MessageComponentInteraction, Snowflake, ConstantsEvents, ContextMenuInteraction, AutocompleteInteraction } from "discord.js";
+import type { Client, ClientEvents } from 'twitter.js';
 
 export interface AutocompleteHandler {
     run: (interaction: AutocompleteInteraction, options: CommandInteractionOptionResolver<AutocompleteInteraction>) => Promise<void>;
@@ -27,27 +28,29 @@ export interface ButtonData {
 
 export interface SlashCommand {
     permissionRequired: number,
-    run: (client: Semblance, interaction: CommandInteraction, options?: SlashOptions) => Promise<void>;
+    run: (interaction: CommandInteraction, extra?: SlashOptions) => Promise<void>;
 }
 
 export interface SlashOptions {
+    client: Semblance;
     permissionLevel: number;
     options: CommandInteractionOptionResolver<CommandInteraction>;
 }
 
-export type Commands = Record<string, Command>;
-
-export interface Command {
+export interface Command<T extends Category> {
     description: string;
-    category: Category;
-    subcategory?: Subcategory;
-    usage: {
+    category: T;
+    subcategory?: T extends 'game' ? Subcategory : undefined;
+    usage?: T extends NoArgCategory ? undefined : {
+        [key: string]: string;
+    },
+    examples?: T extends NoArgCategory ? undefined : {
         [key: string]: string;
     },
     aliases?: string[],
     permissionRequired: number,
-    checkArgs: (args: string[], permissionLevel?: number, content?: string) => boolean;
-    run: (client: Semblance, message: Message, args: string[], identifier?: string, options?: CommandOptions) => void;
+    checkArgs: (args: string[], permissionLevel?: number, content?: string) => T extends NoArgCategory ? true : boolean;
+    run: (client: Semblance, message: Message, args: string[], identifier?: string, options?: CommandOptions) => unknown;
 }
 
 export interface CommandOptions {
@@ -55,7 +58,8 @@ export interface CommandOptions {
     content?: string;
 }
 
-export type Category = 'fun' | 'game' | 'dm' | 'utility' | 'semblance' | 'admin' | 'help' | 'calculator' | 'c2sServer' | 'server';
+export type NoArgCategory = 'help' | 'semblance' | 'auto';
+export type Category = 'fun' | 'game' | 'dm' | 'utility' | 'admin' | 'calculator' | 'c2sServer' | 'server' | 'developer' | 'secret' | NoArgCategory;
 export type Subcategory = 'main' | 'mesozoic' | 'other';
 
 export type Aliases = Record<string, string>;
@@ -67,3 +71,11 @@ export interface EventHandler {
 }
 
 export type EventHandlerExecution<T extends any[]> = (...args: [...T, Semblance]) => Promise<void>;
+
+export interface TwitterJSEventHandler {
+    name: keyof typeof ClientEvents;
+    once?: boolean;
+    exec: TwitterJSEventHandlerExecution<any[]>;
+}
+
+export type TwitterJSEventHandlerExecution<T extends any[]> = (...args: [...T, { client: Semblance, twClient: Client }]) => Promise<void>;

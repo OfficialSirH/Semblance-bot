@@ -1,18 +1,18 @@
-import { MessageEmbed, Message, GuildMember, User, Snowflake } from 'discord.js';
+import type { Message, GuildMember, User, Snowflake } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
 	description: "Get info on a specified user or yourself by default.",
 	category: 'utility',
-	usage: {
-		"": ""
-	},
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (client, message, args) => run(client, message, args)
+} as Command<'utility'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
 	if (args.length == 0) return guildProfileEmbed(message, message.member);
 
 	let userRegexed = /(?<![:\d])(?<id>\d{17,19})(?!\d)/.exec(args[0]);

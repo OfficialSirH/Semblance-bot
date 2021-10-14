@@ -1,14 +1,15 @@
-import { MessageEmbed, User, CommandInteraction, Snowflake } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { User, Snowflake } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import { Game } from '@semblance/models';
-import { Semblance } from '../../structures';
 import { GameFormat } from '../../models/Game';
 import config from '@semblance/config';
+import type { SlashCommand } from '@semblance/lib/interfaces/Semblance';
 const { prefix } = config;
 
-module.exports = {
+export default {
     permissionRequired: 0,
-    run: async (client: Semblance, interaction: CommandInteraction) => {
+    run: async (interaction, { client }) => {
         let player: Snowflake | User = interaction.options.getUser('user') ? interaction.options.getUser('user').id : interaction.member.user.id;
         let statsHandler = await Game.findOne({ player: player as Snowflake });
         if (!statsHandler) return interaction.reply({ content: interaction.options.getUser('user') ? 
@@ -32,7 +33,7 @@ module.exports = {
             .setFooter("Remember to vote for Semblance to gain a production boost!");
         return interaction.reply({ embeds: [embed] });
     }
-}
+} as SlashCommand;
 
 async function currentPrice(userData: GameFormat) {
     if (userData.level == userData.checkedLevel) {

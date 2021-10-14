@@ -1,23 +1,22 @@
 import { bigToName, checkValue, randomColor } from '@semblance/constants';
-import { ItemList } from '@semblance/lib/interfaces/ItemList';
-import { Message, MessageEmbed } from 'discord.js';
-import { Semblance } from '../structures';
+import type { ItemList } from '@semblance/lib/interfaces/ItemList';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const itemList = require('@semblance/itemList') as ItemList;
 
-module.exports = {
-    description: "",
+export default {
+    description: "calculate prices for items in-game",
     category: 'calculator',
-    usage: {
-        "": ""
-    },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 2
-}
+    checkArgs: (args) => args.length >= 2,
+    run: (_client, message, args) => run(message, args)
+} as Command<'calculator'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: any[]) => {
+const run = async (message: Message, args: string[]) => {
     let itemInput: string, level: number | string, currentLevel: number | string;
     [itemInput, level, currentLevel] = args;
-    if (!currentLevel || currentLevel < 0) currentLevel = 0;
+    if (!currentLevel || parseInt(currentLevel) < 0) currentLevel = 0;
     itemInput = itemInput.toLowerCase();
     if (!checkValue(level as string)) return message.reply('Your input for level is invalid');
     if (!checkValue(currentLevel as string)) return message.reply('Your input for current level is invalid');

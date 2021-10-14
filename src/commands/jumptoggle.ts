@@ -1,9 +1,11 @@
-import { Message, MessageActionRow, MessageButton } from 'discord.js';
+import { MessageActionRow, MessageButton } from 'discord.js';
+import type { Message } from 'discord.js';
 import { Jump } from '@semblance/models';
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 import { messageLinkRegex } from '../constants';
 
-module.exports = {
+export default {
     description: "This command toggles a feature that will convert a user's message that contains a message link into an embed that provides the details of the specified message link",
     category: 'admin',
     usage: {
@@ -11,10 +13,11 @@ module.exports = {
     },
     permissionRequired: 1,
     aliases: ['jump', 'jt'],
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (client, message, args) => run(client, message, args)
+} as Command<'admin'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
     if (args[0]?.match(messageLinkRegex)) return require('../autoActions/jump').run(client, message, [args[0]], 1);
     const toggleHandler = await Jump.findOne({ userId: message.author.id });
     const component = new MessageActionRow()

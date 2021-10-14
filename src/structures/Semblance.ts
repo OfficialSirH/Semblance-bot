@@ -1,6 +1,7 @@
-import { Client, ClientOptions, Collection } from 'discord.js';
+import type { Aliases, AutocompleteHandler, ContextMenuHandler, SlashCommand, ComponentHandler, Command, Category } from '@semblance/lib/interfaces/Semblance';
+import type { ClientOptions } from 'discord.js';
+import { Client, Collection } from 'discord.js';
 import * as fs from 'fs';
-import type { Commands, Aliases, AutocompleteHandler, ContextMenuHandler, SlashCommand, ComponentHandler } from '@semblance/lib/interfaces/Semblance';
 import { GameLeaderboard, VoteLeaderboard } from '.';
 import { Game, Votes } from '../models';
 
@@ -11,9 +12,9 @@ export class Semblance extends Client {
     private _contextMenuHandlers: Collection<string, ContextMenuHandler>;
     private _autocompleteHandlers: Collection<string, AutocompleteHandler>;
     private _slashCommands: Collection<string, SlashCommand>;
-    private _commands: Commands;
+    private _commands: Record<string, Command<Category>>;
     private _aliases: Aliases;
-    private _autoCommands: Commands;
+    private _autoCommands: Record<string, Command<Category>>;
     
     /**
      * 
@@ -31,16 +32,20 @@ export class Semblance extends Client {
         });
 
         this._contextMenuHandlers = new Collection();
-        const contextMenuFiles = fs.readdirSync('./dist/src/applicationCommands/contextMenuHandlers/');
-        for (const file of contextMenuFiles) if (file.endsWith('.js')) {
-            this._contextMenuHandlers.set(file.replace('.js', ''), require(`../applicationCommands/contextMenuHandlers/${file}`));
-        }
+        fs.readdir('./dist/src/applicationCommands/contextMenuHandlers/', (err, files) => {
+            if (err) return console.log(err);
+            for (const file of files) if (file.endsWith('.js')) {
+                this._contextMenuHandlers.set(file.replace('.js', ''), require(`../applicationCommands/contextMenuHandlers/${file}`));
+            }
+        });
 
         this._autocompleteHandlers = new Collection();
-        const autocompleteFiles = fs.readdirSync('./dist/src/applicationCommands/autocompleteHandlers/');
-        for (const file of autocompleteFiles) if (file.endsWith('.js')) {
-            this._autocompleteHandlers.set(file.replace('.js', ''), require(`../applicationCommands/autocompleteHandlers/${file}`));
-        }
+        fs.readdir('./dist/src/applicationCommands/autocompleteHandlers/', (err, files) => {
+            if (err) return console.log(err);
+            for (const file of files) if (file.endsWith('.js')) {
+                this._autocompleteHandlers.set(file.replace('.js', ''), require(`../applicationCommands/autocompleteHandlers/${file}`));
+            }
+        });
 
         this._slashCommands = new Collection();
 
@@ -48,7 +53,7 @@ export class Semblance extends Client {
         fs.readdir("./dist/src/commands/", (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith(".js")) {
-                const commandFile = require(`../commands/${file}`), fileName = file.replace(".js", "");
+                const commandFile = require(`../commands/${file}`).default, fileName = file.replace(".js", "");
                 this._commands[fileName] = commandFile;
                 if (commandFile.aliases) for (const alias of commandFile.aliases) this._aliases[alias] = fileName;
             }

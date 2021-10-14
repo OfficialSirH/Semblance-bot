@@ -1,19 +1,21 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 import { Information, InformationFormat } from '../models/Information';
 
-module.exports = {
+export default {
     description: "Used for editing information on the beta and update commands",
     category: 'developer',
     usage: {
         "<beta/update>": "arguments for deciding which information you want to edit"
     },
     permissionRequired: 7,
-    checkArgs: (args: string[]) => args.length >= 1
-}
+    checkArgs: (args) => args.length >= 1,
+    run: (_client, message, args) => run(message, args)
+} as Command<'developer'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message, args: string[]) => {
     if (!args[1] || args[1].length == 0) return message.reply("Why are you trying to put nothing for the information? Come on!");
     let embed = new MessageEmbed()
         .setTitle(`${args[0].charAt(0).toUpperCase() + args[0].slice(1)} Info Changed!`)

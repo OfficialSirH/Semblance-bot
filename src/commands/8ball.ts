@@ -1,17 +1,16 @@
-import { Message } from "discord.js";
-import { Semblance } from "../structures";
+import type { Command } from "@semblance/lib/interfaces/Semblance";
+import type { Message } from "discord.js";
+import type { Semblance } from "../structures";
 
-module.exports = {
+export default {
     description: "See magical stuff",
     category: 'fun',
-    usage: {
-        "": ""
-    },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (client, message, args) => run(client, message, args),
+} as Command<'fun'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (_client: Semblance, message: Message, args: string[]) => {
     if (args.length == 0) return message.reply("Ask any question and Semblance will answer.");
     let randomizedChoice = Math.ceil(Math.random() * 20);
     if (randomizedChoice == 1) return message.reply('It is certain');

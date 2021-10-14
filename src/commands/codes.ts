@@ -1,22 +1,22 @@
-import { Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
 import { Information } from '@semblance/models';
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { currentLogo } = config;
 
-module.exports = {
+export default {
     description: "get all of the ingame codes",
     category: 'game',
     subcategory: 'other',
-    usage: {
-        "": ""
-    },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (client, message, args) => run(client, message, args)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
     const codeHandler = await Information.findOne({ infoType: 'codes' });
     let embed = new MessageEmbed()
         .setTitle("Darwinium Codes")

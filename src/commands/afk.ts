@@ -1,19 +1,22 @@
-import { Message, MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
+import { MessageEmbed } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import { Afk } from '@semblance/models';
-import { Semblance } from '../structures';
 
-module.exports = {
+export default {
 	description: "Set yourself afk so users know you're unavailable when they ping you.",
 	category: 'utility',
 	usage: {
 		"<reason>": "Provide your reason why you're afk, or don't and it'll default 'just because'."
 	},
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (client, message, args) => run(client, message, args)
+} as Command<'utility'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (_client: Semblance, message: Message, args: string[]) => {
 	let reason = (args.length > 0) ? args.join(" ") : "Just because";
 	let afkHandler = await Afk.findOne({ userId: message.author.id });
 	if (!afkHandler) await (new Afk({ userId: message.author.id, reason: reason })).save();

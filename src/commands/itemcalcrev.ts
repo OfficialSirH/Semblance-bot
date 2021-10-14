@@ -1,24 +1,22 @@
-import { readFileSync } from 'fs';
 import { nameToScNo, bigToName, checkValue, randomColor } from '@semblance/constants';
-import { Message, MessageEmbed } from 'discord.js';
-import { Semblance } from '../structures';
-import { ItemList } from '@semblance/lib/interfaces/ItemList';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
+import type { ItemList } from '@semblance/lib/interfaces/ItemList';
 const itemList = require('@semblance/itemList') as ItemList;
 
-module.exports = {
-    description: "",
+export default {
+    description: "calculate the price for a specific level of an item",
     category: 'calculator',
-    usage: {
-        "": ""
-    },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 2
-}
+    checkArgs: (args) => args.length >= 2,
+    run: (_client, message, args) => run(message, args)
+} as Command<'calculator'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: any[]) => {
+const run = async (message: Message, args: string[]) => {
     let itemInput: string, curAmount: string | number, currentLevel: string | number;
     [itemInput, curAmount, currentLevel] = args;
-    if (!currentLevel || currentLevel < 0) currentLevel = 0;
+    if (!currentLevel || parseInt(currentLevel) < 0) currentLevel = 0;
     itemInput = itemInput.toLowerCase();
     if (!checkValue(curAmount as string)) return message.reply('Your input for current amount is invalid'); 
     curAmount = nameToScNo(curAmount as string);

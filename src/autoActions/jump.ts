@@ -1,18 +1,19 @@
-import { MessageEmbed, Message, Snowflake, MessageAttachment, TextChannel, GuildChannel } from 'discord.js';
+import { MessageEmbed, MessageAttachment } from 'discord.js';
+import type { TextChannel, GuildChannel, Message, Snowflake } from 'discord.js';
 import { messageLinkRegex, attachmentLinkRegex } from '@semblance/constants';
 import { Jump } from '@semblance/models';
-import { Semblance } from '@semblance/structures';
+import type { Semblance } from '@semblance/structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
     description: "Converts message links to an embed",
-    usage: {
-        "<MsgLink>":""
-    },
+    category: 'auto',
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (client, message, args) => run(client, message, args)
+} as Command<'auto'>;
 
-module.exports.run = async function(client: Semblance, message: Message, args: string[], recursiveCount = 0) {
+const run = async function(client: Semblance, message: Message, args: string[], recursiveCount = 0) {
     if (recursiveCount == 2) return message.delete();
     if (recursiveCount == 0 && !(await Jump.findOne({ userId: message.author.id }))?.active) return;
     
@@ -57,7 +58,7 @@ module.exports.run = async function(client: Semblance, message: Message, args: s
             content = content.replace(/https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?:@me|\d{17,19}\/)?\d{17,20}\/\d{17,20}/, ``);
             args = content.trim().split(' ');
 
-            module.exports.run(client, message, args, ++recursiveCount);
+            run(client, message, args, ++recursiveCount);
         
         }).catch((err: Error) => console.log(err));
     }).catch(err => console.log(err));

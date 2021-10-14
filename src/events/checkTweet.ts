@@ -7,6 +7,11 @@ const { c2sGuildId, lunchGuildId } = config,
 twClient = new Twitter(JSON.parse(process.env.twitter));
 let current_id = null, screen_name = "ComputerLunch";
 // TODO: get rid of this file after implementing twitter.js
+/**
+ * @deprecated Use twitter.js instead
+ * @param client the main discord client
+ * @returns void
+ */
 export const checkTweet = (client: Semblance) => twClient.get('statuses/user_timeline', {
     screen_name,
     exclude_replies: true,

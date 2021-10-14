@@ -1,16 +1,17 @@
-import { MessageEmbed, CommandInteraction, User } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { User, CommandInteraction } from 'discord.js';
 import { Reminder } from '@semblance/models';
 import { randomColor, timeInputRegex, formattedDate, timeInputToMs } from '@semblance/constants';
-import type { Semblance } from '@semblance/structures';
 import type { TimeLengths } from '@semblance/lib/interfaces/remindme';
 import type { UserReminder } from '../../models/Reminder';
+import type { SlashCommand } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
     permissionRequired: 0,
-    run: async (client: Semblance, interaction: CommandInteraction) => {
+    run: async (interaction) => {
 		let action: string, commandFailed: boolean;
 		try {
-			action = interaction.options.getSubcommand();
+			action = interaction.options.getSubcommand(true);
 		} catch (e) {
 			commandFailed = true;
 			interaction.reply({ content: "You must specify a subcommand.", ephemeral: true });
@@ -18,24 +19,20 @@ module.exports = {
 		if (commandFailed) return;
 		switch (action) {
 			case 'create':
-				return create(client, interaction);
-				break;
+				return create(interaction);
 			case 'edit':
-				return edit(client, interaction);	
-				break;
+				return edit(interaction);
 			case 'delete':
-				return deleteReminder(client, interaction);
-				break;
+				return deleteReminder(interaction);
 			case 'list':
-				return list(client, interaction);
-				break;
+				return list(interaction);
 			default:
 				return interaction.reply({ content: "You must specify a valid subcommand.", ephemeral: true });
 		}
     }
-}
+} as SlashCommand;
 
-async function create(client: Semblance, interaction: CommandInteraction) {
+async function create(interaction: CommandInteraction) {
 		const timeAmount = timeInputRegex.exec(interaction.options.getString('length')),
         reminder = interaction.options.getString('reminder'),
         user = interaction.member.user as User;
@@ -78,7 +75,7 @@ async function create(client: Semblance, interaction: CommandInteraction) {
 	await reminderHandler.save();
 }
 
-async function edit(client: Semblance, interaction: CommandInteraction) {
+async function edit(interaction: CommandInteraction) {
 	const user = interaction.member.user as User,
 	currentReminderData = await Reminder.findOne({ userId: user.id });
 
@@ -121,7 +118,7 @@ async function edit(client: Semblance, interaction: CommandInteraction) {
 	await interaction.reply({ embeds: [embed] });
 }
 
-async function deleteReminder(client: Semblance, interaction: CommandInteraction) {
+async function deleteReminder(interaction: CommandInteraction) {
 	const user = interaction.member.user as User,
 	reminderId = interaction.options.getInteger('reminderid'),
 	currentReminderData = await Reminder.findOne({ userId: user.id });
@@ -145,7 +142,7 @@ async function deleteReminder(client: Semblance, interaction: CommandInteraction
 	await interaction.reply({ embeds: [embed] });
 }
 
-async function list(client: Semblance, interaction: CommandInteraction) {
+async function list(interaction: CommandInteraction) {
 	const user = interaction.member.user as User,
 		currentReminderData = await Reminder.findOne({ userId: user.id });
 

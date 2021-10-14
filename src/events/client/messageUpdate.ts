@@ -1,7 +1,8 @@
-import { GuildChannel, MessageEmbed, Constants, Message } from 'discord.js';
+import { MessageEmbed, Constants } from 'discord.js';
+import type { Message, GuildChannel } from 'discord.js';
 import { getPermissionLevel } from '@semblance/constants';
 import config from '@semblance/config';
-import { Semblance } from '@semblance/src/structures';
+import type { Semblance } from '@semblance/src/structures';
 const { prefix, c2sGuildId } = config;
 const { Events } = Constants;
 

@@ -1,21 +1,22 @@
 import { GuildEmoji, Message, MessageEmbed } from "discord.js";
-import { Semblance } from "../structures";
 import { promises as fs } from 'fs';
 import { randomColor, addableEmojis } from "../constants";
 import config from '@semblance/config';
+import type { Command } from "@semblance/lib/interfaces/Semblance";
 const { prefix } = config;
-
-module.exports = {
+// TODO: rewrite the execution to properly add emojis *only* when they are not already in the server
+export default {
 	description: "Setup Semblance's emojis with this.",
 	category: 'admin',
 	usage: {
 		"": ""
 	},
 	permissionRequired: 6,
-	checkArgs: (args: string[]) => args.length >= 0,
-}
+	checkArgs: () => true,
+	run: (_client, message, args) => run(message, args)
+} as Command<'admin'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message, args: string[]) => {
 	if (args.length == 0 || args[0] != 'add') return message.reply({ embeds: [new MessageEmbed()
 	.setAuthor(message.author.tag, message.author.displayAvatarURL())
 	.setColor(randomColor)

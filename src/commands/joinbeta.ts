@@ -1,23 +1,22 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
 import { Information } from '@semblance/models';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { currentLogo } = config;
 
-module.exports = {
+export default {
     description: "Info on how to become a beta tester",
     category: 'game',
     subcategory: 'other',
-    usage: {
-        "": ""
-    },
     aliases: ['betajoin', 'betaform'],
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (_client, message) => run(message)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
     let infoHandler = await Information.findOne({ infoType: 'joinbeta' });
     let embed = new MessageEmbed()
         .setTitle('Steps to join beta')

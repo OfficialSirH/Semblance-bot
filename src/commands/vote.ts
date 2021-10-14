@@ -1,20 +1,19 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 import config from '@semblance/config';
 const { prefix } = config;
 
-module.exports = {
+export default {
 	description: "Lists websites where you can vote for Semblance.",
 	category: 'semblance',
-	usage: {
-		"": ""
-	},
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (client, message) => run(client, message)
+} as Command<'semblance'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message) => {
 	let embed = new MessageEmbed()
 	.setTitle("Vote")
 	.setColor(randomColor)

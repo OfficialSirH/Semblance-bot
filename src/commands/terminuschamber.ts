@@ -1,22 +1,21 @@
-import { Message, MessageEmbed } from 'discord.js'; 
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { currentLogo, terminusChamber } = config;
 
-module.exports = {
+export default {
     description: "Details on how to obtain each node within the Terminus Chamber",
     category: 'game',
     subcategory: 'main',
-    usage: {
-        "": ""
-    },
     permissionRequired: 0,
     aliases: ['terminus', 'chamber'],
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (_client, message) => run(message)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
     let embed = new MessageEmbed()
         .setTitle("Terminus Chamber")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())

@@ -1,20 +1,19 @@
 import { Message, MessageEmbed } from 'discord.js'; 
 import { randomColor, subcategoryList } from '@semblance/constants';
 import config from '@semblance/config';
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { currentLogo } = config;
 
-module.exports = {
+export default {
     description: "List of all Cell to Singularity related commands",
     category: 'help',
-    usage: {
-        '': ''
-    },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (client, message) => run(client, message)
+} as Command<'help'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message) => {
     const mainCommands = subcategoryList(client, 'game', 'main');
     const mesozoicCommands = subcategoryList(client, 'game', 'mesozoic');
     const otherCommands = subcategoryList(client, 'game', 'other');

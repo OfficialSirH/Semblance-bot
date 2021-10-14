@@ -1,18 +1,17 @@
 import { bigToName, checkValue, nameToScNo, randomColor } from '@semblance/constants';
-import { Message, MessageEmbed } from 'discord.js';
-import { Semblance } from '../structures';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
-    description: "",
+export default {
+    description: "calculate the amount of metabits produced by entropy and ideas",
     category: 'calculator',
-    usage: {
-        "": ""
-    },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 2
-}
+    checkArgs: (args) => args.length >= 2,
+    run: (_client, message, args) => run(message, args)
+} as Command<'calculator'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: any[]) => {
+const run = async (message: Message, args: string[]) => {
     let entropy: string | number, ideas: string | number;
     [entropy, ideas] = args;
     if (!checkValue(entropy as string)) message.reply('Your input for Entropy is invalid');

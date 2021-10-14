@@ -1,10 +1,11 @@
-import { MessageEmbed, CommandInteraction, User } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { User } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Semblance } from '../../structures';
+import type { SlashCommand } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
     permissionRequired: 0,
-    run: async (client: Semblance, interaction: CommandInteraction) => {
+    run: async interaction => {
         let user = interaction.member.user as User,
             embed = new MessageEmbed()
             .setTitle("Credits")
@@ -32,4 +33,4 @@ module.exports = {
             ]);
         return interaction.reply({ embeds: [embed] });
     }
-}
+} as SlashCommand;

@@ -1,4 +1,4 @@
-import { ContextMenuHandlerOptions } from '@semblance/lib/interfaces/Semblance'
+import type { ContextMenuHandlerOptions } from '@semblance/lib/interfaces/Semblance'
 import { ContextMenuInteraction, Message, MessageAttachment, MessageEmbed } from 'discord.js'
 import { randomColor } from '../../constants';
 import fetch from 'node-fetch';

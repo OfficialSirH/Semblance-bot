@@ -1,22 +1,21 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 import config from '@semblance/config';
 const { prefix } = config;
 
-module.exports = {
+export default {
 	description: "Secret",
 	category: 'game',
 	subcategory: 'other',
-	usage: {
-		"": ""
-	},
 	aliases: ['secrets'],
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (_client, message, args) => run(message, args)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message, args: string[]) => {
 	message.delete();
 	if (args[0] == 'fun') return fun(message);
 	let embed = new MessageEmbed()

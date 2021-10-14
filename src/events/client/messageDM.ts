@@ -1,7 +1,7 @@
 import config from '@semblance/config';
 import { parseArgs } from '@semblance/constants';
-import { Semblance } from '@semblance/src/structures';
-import { Message } from 'discord.js';
+import type { Semblance } from '@semblance/src/structures';
+import type { Message } from 'discord.js';
 const { prefix } = config;
 
 export default {

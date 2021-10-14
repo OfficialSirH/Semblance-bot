@@ -1,5 +1,6 @@
-import { Semblance } from "@semblance/src/structures";
-import { Message, MessageEmbed, Constants } from "discord.js";
+import type { Semblance } from "@semblance/src/structures";
+import { MessageEmbed, Constants } from "discord.js";
+import type { Message } from 'discord.js';
 import config from '@semblance/config';
 import { 
 	getPermissionLevel,
@@ -8,11 +9,10 @@ import {
 	removeAfk 
 } from '@semblance/constants';
 import { promisify } from 'util';
-import { BoosterRewards, Information } from '@semblance/models';
+import { Information } from '@semblance/models';
 import { createBoosterRewards } from "@semblance/src/constants/models";
 const { Events } = Constants;
 const { sirhId, prefix, c2sGuildId, sirhGuildId, ignoredGuilds } = config;
-const wait = promisify(setTimeout);
 
 export default {
 	name: Events.MESSAGE_CREATE,
@@ -81,10 +81,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
 		const commandFile = commands[command]
 		if (!commandFile) return;
 		if (commandFile.category == 'dm') { 
-			message.reply('DM commands go in DMs(DM = Direct Message).');
-			await wait(5000);
-			if (message.member.roles.cache.has('718796622867464198')) return message.member.roles.remove('718796622867464198');
-			return;
+			return message.reply('DM commands go in DMs(DM = Direct Message).');
 		}
 		let permissionLevel;
 		const args = parseArgs(content); try { permissionLevel = getPermissionLevel(message.member);

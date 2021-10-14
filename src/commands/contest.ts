@@ -1,25 +1,25 @@
-import { Message, MessageEmbed } from 'discord.js'; 
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js'; 
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { currentLogo, prefix, darwinium } = config; 
 
-module.exports = {
+export default {
     description: "Info on contest winners",
     category: 'game',
     subcategory: 'other',
-    usage: {
-        "": ""
-    },
     aliases: ['limericks'],
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (_client, message, args) => run(message, args)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[], identifier: string) => {
-    if (identifier == 'limericks') return limericks(message);
+const run = async (message: Message, args: string[]) => {
+    const contests = ['limericks'];
+    if (args[0] == 'limericks') return limericks(message);
     message.channel.send({ embeds: [new MessageEmbed().setTitle("Contests").setColor(randomColor)
-    .setDescription(`All of the available contest-related commands are: \n${module.exports.aliases.map((i: string) => `\`${prefix}${i}\``).join('\n')}`)] });
+    .setDescription(`All of the available contest-related commands are: \n${contests.map((i: string) => `\`${prefix}contest ${i}\``).join('\n')}`)] });
 }
 
 function limericks(message: Message) {

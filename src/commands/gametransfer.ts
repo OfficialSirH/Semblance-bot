@@ -1,21 +1,20 @@
 ﻿import { gameTransferPages, randomColor } from "../constants";
 import config from '@semblance/config';
-import { Message, MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
-import { Semblance } from "../structures";
+import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
+import type { Message } from 'discord.js';
+import type { Command } from "@semblance/lib/interfaces/Semblance";
 const { currentLogo } = config;
 
-module.exports = {
+export default {
 	description: "See a step-by-step guide to transfering your game progress into the cloud and onto another device.",
 	category: 'game',
 	subcategory: 'other',
-	usage: {
-		"": ""
-	},
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (_client, message) => run(message)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
 	let embed = new MessageEmbed()
 		.setTitle("Game Transfer")
 		.setColor(randomColor)

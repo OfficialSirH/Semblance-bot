@@ -1,18 +1,18 @@
-import { Guild, Message, MessageEmbed, Snowflake } from 'discord.js';
+import type { Guild, Message, Snowflake } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
 	description: "Provides info on the current server",
 	category: 'server',
-	usage: {
-		"": ""
-	},
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (client, message, args, _identifier, { permissionLevel }) => run(client, message, args, { permissionLevel })
+} as Command<'server'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[], identifier: string, { permissionLevel }) => {
+const run = async (client: Semblance, message: Message, args: string[], { permissionLevel }) => {
 	let guild: Guild;
 	if (args[0] && permissionLevel == 7) {
 		let guildId = /\d{17,20}/.exec(args[0]);

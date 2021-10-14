@@ -1,22 +1,21 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { currentLogo } = config;
 
-module.exports = {
+export default {
     description: "Mesozoic Valley Guide",
     category: 'game',
     subcategory: 'mesozoic',
-    usage: {
-        "": ""
-    },
     aliases: ['mvguide', 'mesozoicguide', 'mesozoicvalleyguide'],
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (_client, message) => run(message)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
     const embed = new MessageEmbed()
         .setTitle(`**Mesozoic Valley Guide**`)
         .setAuthor(message.author.tag, message.author.displayAvatarURL())

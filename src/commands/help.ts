@@ -1,20 +1,20 @@
-import { Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js'; 
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { prefix, sirhId, adityaId, c2sGuildId, currentLogo } = config;
 
-module.exports = {
+export default {
     description: "Lists *all* available commands.",
 	category: 'help',
-    usage: {
-        "": ""
-    },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+	run: (client, message) => run(client, message)
+} as Command<'help'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[], identifier: string, { permissionLevel }) => {
+const run = async (client: Semblance, message: Message) => {
 	const c2sServerCommands = Object.keys(client.commands).filter(key => client.commands[key].category == 'c2sServer').map(key => `**\`${prefix}${key}\`**`);
 	let embed = new MessageEmbed()
 		.setTitle("Semblance Command List")

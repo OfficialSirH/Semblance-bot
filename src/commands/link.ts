@@ -1,23 +1,26 @@
 import { UserData } from '@semblance/models';
 import config from '@semblance/config';
-import { Collection, Message } from 'discord.js';
+import { Collection } from 'discord.js';
 import { createHmac } from 'crypto';
-import { Semblance } from '../structures';
-const { prefix, c2sGuildId } = config; 
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
+import type { Message } from 'discord.js';
+const { c2sGuildId } = config; 
 const cooldown: Collection<string, number> = new Collection(); 
 
-module.exports = {
+export default {
     description: 'used for linking the C2S player\'s game with their Discord account.',
     category: 'dm',
     usage: {
-        "PLAYER_Id": "The user's in-game Id",
+        "PLAYER_ID": "The user's in-game Id",
         "PLAYER_TOKEN": "The user's in-game token"
     },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 2
-}
+    checkArgs: (args) => args.length >= 2,
+    run: (client, message, args) => run(client, message, args)
+} as Command<'dm'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
     if (message.channel.type != 'DM') return;
     const userCooldown = cooldown.get(message.author.id);
     if (userCooldown && userCooldown > Date.now()) return message.channel.send(`You cannot use the link command again for another ${(userCooldown - Date.now())/1000} seconds.`); 

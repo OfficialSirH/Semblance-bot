@@ -1,6 +1,6 @@
-import { ContextMenuHandlerOptions } from '@semblance/lib/interfaces/Semblance';
+import type { ContextMenuHandlerOptions } from '@semblance/lib/interfaces/Semblance';
 import { fetchDeepL } from '@semblance/src/constants/commands';
-import { ContextMenuInteraction, Message } from 'discord.js';
+import type { ContextMenuInteraction } from 'discord.js';
 
 export const run = async (interaction: ContextMenuInteraction, { options }: ContextMenuHandlerOptions) => {
     const message = options.getMessage('message', true),

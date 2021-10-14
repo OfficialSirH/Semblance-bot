@@ -1,20 +1,19 @@
-import { Message, MessageActionRow, MessageButton, MessageEmbed, Snowflake } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import type { Message, Snowflake } from 'discord.js';
 import config from '@semblance/config';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 import { c2sRoles } from '../constants';
 const { currentLogo, c2sGuildId } = config;
 
-module.exports = {
-    description: "",
+export default {
+    description: "see the list of available roles for the c2s server",
     category: 'c2sServer',
-    usage: {
-        "": ""
-    },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (_client, message) => run(message)
+} as Command<'c2sServer'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
     const embed = new MessageEmbed()
         .setTitle("C2S Roles")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())

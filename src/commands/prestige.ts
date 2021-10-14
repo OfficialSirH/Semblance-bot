@@ -1,22 +1,21 @@
-import { Message, MessageEmbed } from "discord.js";
-import { Semblance } from "../structures";
+import { MessageEmbed } from "discord.js";
+import type { Message } from 'discord.js';
 import config from '@semblance/config';
 import { randomColor } from '@semblance/constants';
+import type { Command } from "@semblance/lib/interfaces/Semblance";
 const { currentLogo, prestige, prestigeList, prefix } = config;
 
-module.exports = {
+export default {
     description: "Get info on the Mesozoic Valley prestige.",
     category: 'game',
     subcategory: 'mesozoic',
-    usage: {
-        "": ""
-    },
     aliases: ['prestigelist'],
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (_client, message, args, identifier) => run(message, args, identifier)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[], identifier: string) => {
+const run = async (message: Message, args: string[], identifier: string) => {
     if ((args[0] && args[0].toLowerCase() == 'list') || identifier == 'prestigelist') return sendPrestigeList(message);
     let embed = new MessageEmbed()
         .setTitle("Mesozoic Valley Prestige")

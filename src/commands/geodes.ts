@@ -1,20 +1,19 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import config from '@semblance/config';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { geodeImage, currentLogo } = config;
 
-module.exports = {
+export default {
     description: "Get geode comparisons to show the best value.",
     category: 'game',
     subcategory: 'mesozoic',
-    usage: {
-        "": ""
-    },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (_client, message) => run(message)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
     let embed = new MessageEmbed()
         .setTitle("Geodes Comparison")
         .setAuthor(message.author.tag, message.author.displayAvatarURL())

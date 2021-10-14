@@ -1,18 +1,21 @@
-import { Message, MessageEmbed, User } from 'discord.js'; 
+import type { Message, User } from 'discord.js';
+import { MessageEmbed } from 'discord.js'; 
 import { randomColor } from '@semblance/constants'; 
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
 	description: "See a user's avatar.",
 	category: 'utility',
 	usage: {
 		"<userId/mention>": ""
 	},
 	permissionRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	checkArgs: () => true,
+	run: (client, message, args) => run(client, message, args)
+} as Command<'utility'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
 	let user: string | User;
 	if (!args || args.length == 0) user = message.author;
 	else {

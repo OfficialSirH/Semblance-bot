@@ -1,18 +1,17 @@
-﻿import { Message, MessageEmbed } from 'discord.js'; 
+﻿import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
     description: "Secret command about SirH",
     category: 'secret',
-    usage: {
-        "": ""
-    },
     permissionRequired: 0,
-    aliases: [],
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (client: Semblance, message: Message, args: string[]) => run(client, message, args)
+} as Command<'secret'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
     // Will be implementing some secrets here later, not sure what it will be yet
 }

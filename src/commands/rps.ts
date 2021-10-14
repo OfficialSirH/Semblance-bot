@@ -1,23 +1,26 @@
 import config from '@semblance/config';
-import { GuildMember, Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import type { Message, GuildMember } from 'discord.js';
 import { rpsGames } from '../applicationCommands/componentHandlers/rps';
 import { randomColor } from '../constants';
 import { countdownGIF, randomChoice } from '../constants/commands';
-import { Semblance } from '../structures';
+import type { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { communistSemblance } = config;
 
-module.exports = {
-    description: "",
+export default {
+    description: "rock paper scissors",
     category: 'fun',
     aliases: ['rpsls'],
     usage: {
-        "": ""
+        "rock/paper/scissors": ""
     },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (client, message, args) => run(client, message, args)
+} as Command<'fun'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
     if (args.length == 0) return message.reply('rps stands for "Rock, Paper, Scissors", which you can play with me by choosing one of the **Five** (Don\'t forget Lizard and Spock) and I\'ll choose one as well and we\'ll see who wins, there\'s also secret bonuses. :D');
     if (args[0] == 'multiplayer') return await rpsMultiplayer(message, args.slice(1, args.length).join(' '));
 

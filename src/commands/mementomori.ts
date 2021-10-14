@@ -1,21 +1,20 @@
-import { Message, MessageEmbed } from 'discord.js'; 
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { mementoMori } = config;
 
-module.exports = {
+export default {
     description: "Memento Mori",
     category: 'secret',
-    usage: {
-        "": ""
-    },
     aliases: ['memento', 'unus', 'unusannus'],
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (_client, message, args, identifier) => run(message, args, identifier)
+} as Command<'secret'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[], identifier: string) => {
+const run = async (message: Message, args: string[], identifier: string) => {
     if (identifier == 'mementomori' || identifier == 'unusannus') return sendIt(message);
     if ((identifier == 'memento' && args[0] == 'mori') || (identifier == 'unus' && args[0] == 'mori')) return sendIt(message);
 }

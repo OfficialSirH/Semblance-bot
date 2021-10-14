@@ -1,24 +1,22 @@
 ﻿import * as constants from '@semblance/constants';
 import config from '@semblance/config';
-import { Collection, GuildChannel, ThreadChannel, Message, TextChannel, User } from 'discord.js';
-import { Semblance } from '../structures';
+import type { Collection, Message, GuildChannel, ThreadChannel, TextChannel, User } from 'discord.js';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { c2sGuildId, sirhGuildId } = config;
 
-module.exports = {
+export default {
     description: "Lock the current channel, or all the public channels.",
     category: 'admin',
-    usage: {},
-    examples: {},
-    aliases: [],
     permissionRequired: 2,
-    checkArgs: (args: string[]) => {
+    checkArgs: (args) => {
         if (args[0] == "-public" && args.length == 1) return true;
         if (!args.length) return true;
         return false;
-    }
-}
+    },
+    run: (_client, message, args) => run(message, args)
+} as Command<'admin'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message, args: string[]) => {
     if (args[0] == "-public") {
         let channels: Collection<string, GuildChannel | ThreadChannel>;
         if (message.guild.id == c2sGuildId) {

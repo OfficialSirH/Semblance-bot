@@ -1,24 +1,23 @@
-import { MessageEmbed, Collection, Permissions, Message, User, MessageActionRow, MessageButton, Snowflake } from 'discord.js'; 
-import config from '@semblance/config';
+import { MessageEmbed, Collection, Permissions, MessageActionRow, MessageButton } from 'discord.js';
+import { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import { Game, Information } from '@semblance/models';
-import { Semblance } from '../structures';
-import { GameFormat } from '../models/Game';
+import { Game } from '@semblance/models';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 import { currentPrice } from '../constants/commands';
-const { prefix } = config;
 const cooldownHandler: Collection<string, number> = new Collection();
 
-module.exports = {
+export default {
     description: "An idle-game within Semblance",
     category: 'fun',
     usage: {
         "<help, create, collect, upgrade, leaderboard>": ""
     },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0,
-}
+    checkArgs: () => true,
+    run: (_client, message) => run(message)
+} as Command<'fun'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
     if (!cooldownHandler.get(message.author.id) && !message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) cooldownHandler.set(message.author.id, Date.now());
     else if (((Date.now() - cooldownHandler.get(message.author.id)) / 1000) < 5) {
         return message.reply(`You can't use the game command for another ${((Date.now() - cooldownHandler.get(message.author.id)) / 1000)} seconds.`);

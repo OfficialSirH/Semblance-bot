@@ -1,20 +1,19 @@
-import { MessageEmbed, MessageAttachment, Message } from 'discord.js';
-import { Semblance } from '../structures';
+import { MessageEmbed, MessageAttachment } from 'discord.js';
+import type { Message } from 'discord.js';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 import { randomColor } from '@semblance/constants';
 
-module.exports = {
+export default {
     description: "A detailed explanation of how to obtain Metabits faster",
     category: 'game',
     subcategory: 'main',
-    usage: {
-        "": ""
-    },
     aliases: ["metabit"],
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (_client, message) => run(message)
+} as Command<'game'>;
 
-module.exports.run = async(client: Semblance, message: Message, args: string[]) => {
+const run = async(message: Message) => {
     let metabitAttachment = new MessageAttachment("./src/images/emojis/Metabit.png", "attachment://Metabit.png"),
     embed = new MessageEmbed()
         .setTitle("Ways to earn Metabits faster")

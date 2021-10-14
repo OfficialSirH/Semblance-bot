@@ -1,15 +1,15 @@
-import { CommandInteraction, MessageActionRow, MessageButton } from 'discord.js';
-import type { Semblance } from '../../structures';
+import { MessageActionRow, MessageButton } from 'discord.js';
+import type { SlashCommand } from "@semblance/lib/interfaces/Semblance";
 
-module.exports = {
+export default {
 	permissionRequired: 0,
-	run: async (client: Semblance, interaction: CommandInteraction) => {
+	run: interaction => {
 		const component = new MessageActionRow()
 		.addComponents(new MessageButton()
 			.setStyle('LINK')
 			.setLabel('CLICK ME!')
 			.setEmoji('<:SirUwU:797148051000000512>')
 			.setURL('https://www.patreon.com/SirHDeveloper'));
-		return await interaction.reply({ content: 'Support me on [Patreon](https://www.patreon.com/SirHDeveloper)!', ephemeral: true, components:[component] });
+		return interaction.reply({ content: 'Support me on [Patreon](https://www.patreon.com/SirHDeveloper)!', ephemeral: true, components:[component] });
 	}
-}
+} as SlashCommand;

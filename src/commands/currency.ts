@@ -1,22 +1,21 @@
-﻿import { Message, MessageEmbed } from 'discord.js';
+﻿import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
 import { randomColor } from '@semblance/constants';
 import config from '@semblance/config';
-import { Semblance } from '../structures';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 const { currentLogo, currency, entropy, idea, darwinium, metabit, 
 		fossil, mutagen, darkMatter, stardust, energy, sentience } = config;
 
-module.exports = {
+export default {
 	description: "List all of the ingame currency.",
 	category: 'game',
 	subcategory: 'other',
-	usage: {
-		"": ""
-	},
-	permissonRequired: 0,
-	checkArgs: (args: string[]) => args.length >= 0
-}
+	permissionRequired: 0,
+	checkArgs: () => true,
+	run: (_client, message) => run(message)
+} as Command<'game'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (message: Message) => {
 	let embed = new MessageEmbed()
 		.setTitle("Currency")
 		.setColor(randomColor)

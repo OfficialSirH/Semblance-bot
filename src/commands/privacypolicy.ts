@@ -1,23 +1,19 @@
-import { Message, MessageEmbed } from "discord.js";
-import { Semblance } from "../structures";
+import { MessageEmbed } from "discord.js";
 import { randomColor } from '@semblance/constants';
+import type { Command } from "@semblance/lib/interfaces/Semblance";
 
-module.exports = {
+export default {
     description: "Provides link to Semblance's Privacy Policy",
     category: 'semblance',
-    usage: {
-        "":""
-    },
     aliases: ['pp', 'privacy', 'policy'],
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
-
-module.exports.run = async (client: Semblance, message: Message, args: string[]) => {
-    let embed = new MessageEmbed()
+    checkArgs: () => true,
+    run: (_client, message) => {
+        let embed = new MessageEmbed()
         .setTitle('Privacy Policy')
         .setAuthor(message.author.tag, message.author.displayAvatarURL())
         .setColor(randomColor)
         .setURL("https://github.com/OfficialSirH/Semblance-bot/blob/master/Privacy%20Policy.md");
-    message.channel.send({ embeds: [embed] });
-}
+        message.channel.send({ embeds: [embed] });
+    }
+} as Command<'semblance'>;

@@ -1,18 +1,20 @@
 import { bigToName, checkValue, nameToScNo, randomColor } from '@semblance/constants';
-import { Message, MessageEmbed } from 'discord.js';
-import { Semblance } from '../structures';
+import { MessageEmbed } from 'discord.js';
+import type { Message } from 'discord.js';
+import type { Command } from '@semblance/lib/interfaces/Semblance';
 
-module.exports = {
+export default {
     description: "Provides the production multiplier when given metabit input.",
     category: 'calculator',
     usage: {
         "<metabits>": "Inputting any number of metabits will output the production multiplier."
     },
     permissionRequired: 0,
-    checkArgs: (args: string[]) => args.length >= 0
-}
+    checkArgs: () => true,
+    run: (_client, message, args) => run(message, args)
+} as Command<'calculator'>;
 
-module.exports.run = async (client: Semblance, message: Message, args: any[]) => {
+const run = async (message: Message, args: string[]) => {
     if (args.length == 0) return message.reply(`The usage of this command is metaspeedcalc <metabits> <total meso ranks accumulated> <simulation speed upgrades percentage>`);
     if (args.length == 1) return message.reply('You forgot input for `accumulated meso ranks` and `sim speed upgrades percentage`');
     if (args.length == 2) return message.reply('You forgot input for `sim speed upgrades percentage`');
@@ -20,7 +22,7 @@ module.exports.run = async (client: Semblance, message: Message, args: any[]) =>
     let metabits: string | number = args[0];
     if (!checkValue(metabits as string)) return message.reply('Your input for metabits is invalid');
     metabits = nameToScNo(metabits as string);
-    let dinoRanks = (Math.floor(args[1].replace(/\D/g, '')) > 550) ? 550 : Math.floor(args[1].replace(/\D/g, ''));
+    let dinoRanks = (Math.floor(parseInt(args[1].replace(/\D/g, ''))) > 550) ? 550 : Math.floor(parseInt(args[1].replace(/\D/g, '')));
     let num = 1.0;
 
     if (metabits > 1000.0) {
@@ -58,7 +60,7 @@ module.exports.run = async (client: Semblance, message: Message, args: any[]) =>
     let dinoPrestigeBonus = (dinoRanks == 550) ? 10 : (Math.ceil(dinoRanks / 50) > Math.floor(dinoRanks / 50)) ? Math.floor(dinoRanks / 50) : Math.floor(dinoRanks / 50)-1;
     let dinoranksMulti = 1 + dinoRanks * 0.1 + dinoPrestigeBonus * 0.5;
     num *= dinoranksMulti;
-    let simspeed = (Math.floor(args[2].replace(/\D/g, '')) > 2105) ? 2105 : Math.floor(args[2].replace(/\D/g, ''));
+    let simspeed = (Math.floor(parseInt(args[2].replace(/\D/g, ''))) > 2105) ? 2105 : Math.floor(parseInt(args[2].replace(/\D/g, '')));
     num *= ((simspeed / 100) + 1);
     let embed = new MessageEmbed()
         .setTitle("Multiplier Total")
