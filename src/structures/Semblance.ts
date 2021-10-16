@@ -63,7 +63,7 @@ export class Semblance extends Client {
         fs.readdir("./dist/src/autoActions/", (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith(".js")) {
-                const commandFile = require(`../autoActions/${file}`), fileName = file.replace(".js", "");
+                const commandFile = require(`../autoActions/${file}`).default, fileName = file.replace(".js", "");
                 this._autoCommands[fileName] = commandFile;
             }
         });
