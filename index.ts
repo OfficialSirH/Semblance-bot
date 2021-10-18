@@ -1,6 +1,6 @@
 (await import('dotenv')).config();
-require('source-map-support/register');
-require('module-alias/register');
+await require('source-map-support/register');
+await require('module-alias/register');
 (await import(`@semblance/config`)).config();
 // Semblance client
 import { Semblance } from '@semblance/structures';
@@ -13,8 +13,8 @@ const client = new Semblance({
 		ThreadManager: {
 			sweepInterval: 3600,
 			sweepFilter: LimitedCollection.filterByLifetime({
-			getComparisonTimestamp: e => e.archiveTimestamp,
-			excludeFromSweep: e => !e.archived,
+				getComparisonTimestamp: e => e.archiveTimestamp,
+				excludeFromSweep: e => !e.archived,
 			}),
 		},
 		MessageManager: {
