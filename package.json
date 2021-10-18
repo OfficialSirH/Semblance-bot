@@ -2,9 +2,9 @@
   "name": "semblance",
   "version": "1.0.0",
   "description": "The AI that runs the Reality Engine",
-  "main": "dist/index",
+  "main": "dist/index.js",
   "author": "SirH",
-  "type": "module",
+  "type": "commonjs",
   "dependencies": {
     "@top-gg/sdk": "^3.1.2",
     "bufferutil": "^4.0.3",
@@ -33,8 +33,7 @@
     "@semblance/itemList": "./dist/lib/utils/itemList"
   },
   "scripts": {
-    "test": "pm2 start npm --name \"Semblance\" -- start",
-    "start": "node dist --experimental-loader=./dist/module-alias.js"
+    "start": "pm2 start --name \"Semblance\" dist/ecosystem.config.js"
   },
   "keywords": [],
   "license": "ISC",
