@@ -11,6 +11,7 @@
       "skipLibCheck": true,
       "sourceMap": true,
       "esModuleInterop": false,
+      "resolveJsonModule": true,
       "rootDir": ".",
       "outDir": "dist/",
       "baseUrl": ".",

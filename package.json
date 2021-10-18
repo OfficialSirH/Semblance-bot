@@ -33,7 +33,8 @@
     "@semblance/itemList": "./dist/lib/utils/itemList"
   },
   "scripts": {
-    "start": "pm2-runtime start ecosystem.config.js --env production"
+    "test": "pm2 start npm --name \"Semblance\" -- start",
+    "start": "node dist --experimental-loader=./dist/module-alias.js"
   },
   "keywords": [],
   "license": "ISC",
