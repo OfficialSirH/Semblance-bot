@@ -1,6 +1,6 @@
 (await import('dotenv')).config();
-import 'source-map-support/register';
-import 'module-alias/register';
+(await import('source-map-support')).install();
+(await import('module-alias'));
 (await import(`@semblance/config`)).config();
 // Semblance client
 import { Semblance } from '@semblance/structures';
