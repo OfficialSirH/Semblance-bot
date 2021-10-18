@@ -1,15 +1,6 @@
 (await import('dotenv')).config();
 (await import('source-map-support')).install();
-(await import('module-alias')).addAliases({
-	"@semblance/src": "./src",
-    "@semblance/lib": "./lib",
-    "@semblance/structures": "./src/structures/index",
-    "@semblance/models": "./src/models/index",
-    "@semblance/events": "./src/events/index",
-    "@semblance/constants": "./src/constants/index",
-    "@semblance/config": "./config",
-    "@semblance/itemList": "./lib/utils/itemList"
-});
+(await import('module-alias/register'));
 (await import(`@semblance/config`)).config();
 // Semblance client
 import { Semblance } from '@semblance/structures';
