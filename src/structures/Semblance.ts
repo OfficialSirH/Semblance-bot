@@ -27,7 +27,7 @@ export class Semblance extends Client {
         fs.readdir('./dist/src/applicationCommands/componentHandlers/', async (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith('.js')) {
-                this._componentHandlers.set(file.replace('.js', ''), await import(`./applicationCommands/componentHandlers/${file}`));
+                this._componentHandlers.set(file.replace('.js', ''), await import(`../applicationCommands/componentHandlers/${file}`));
             }
         });
 
