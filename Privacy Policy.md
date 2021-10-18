@@ -12,13 +12,17 @@ For a better experience, while using our Service, I may require you to provide u
  
 ## **Log Data**
  
- • If you were to use the `jump` command in your server, your Discord Guild’s id will be stored for the proper functioning of the command’s feature. 
+ • If you enable `jump` feature for yourself, your user Id will be stored as long as you have the feature enabled for proper functionality. 
 
- • Usage of either the `afk` or `remindme` command will have your optional input, including your user ID, be stored until its use isn’t necessary anymore. 
+ • Usage of either the `afk` or `remindme` command will have your optional input, including your user Id, be stored until the commands' criterias are met(i.e. sending a message in any server with Semblance will end the `afk` command's requirement for your user Id while the `remindme` command will be done once it reaches the specified date/time you provided it or if you decide to remove your reminders from the command). 
 
- • Voting for Semblance on bot listing sites(i.e. Top.gg) and usage of Semblance’s idle-game(`game`) will keep your user ID until a future data reset or if requested.
+ • Voting for Semblance on bot listing sites(i.e. Top.gg) and usage of Semblance’s idle-game(`game`) will keep your user Id until a TBD data reset or if requested.
 
- •  The usage of the `report` command is restricted primarily to the official Cell to Singularity Discord server and stores your user ID until the said report you’ve made is deleted or denied.
+ • The usage of the `report` command is restricted primarily to the official Cell to Singularity Discord server and stores your user Id until the said report you’ve made is deleted or denied.
+
+ • Users that boost the Cell to Singularity Discord server will have their user Id stored until their boost reward is provided 2 weeks afterwards.
+
+ • Users that use the Cell to Singularity feature, Discord Link, will have their user Id stored for functionality of providing roles based on in-game progress until they request for a removal from the Discord Link.
  
 ## **Service Providers**
  
@@ -42,9 +46,9 @@ This Service may contain links to other sites. If you click on a third-party lin
  
 I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
  
-This policy is effective as of 2021-01-23
+This policy is effective as of 2021-10-18
  
 ## **Contact Us**
  
-If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at sirhgamesdev@gmail.com.
+If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at micahbenac52@gmail.com.
 
