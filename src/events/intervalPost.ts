@@ -14,7 +14,7 @@ export const intervalPost = (client: Semblance) => {
                 'Authorization': process.env.discordBotsGGAuth
             },
             body: JSON.stringify(data)
-        })).json();
+        })).json() as { guildCount: number, shardCount: number };
         console.log(`discord.bots.gg response: ${r ? `guilds: ${r.guildCount} - shards: ${r.shardCount}` : r}`);
     }, day);
     

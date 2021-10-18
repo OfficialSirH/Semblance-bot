@@ -6,3 +6,11 @@ export interface AnimalAPIParams extends Record<string, unknown> {
     'limit': number;
 };
 export type sizeType = 'small' | 'medium' | 'large';
+
+export type AnimalAPIResponse = {
+    url: string;
+    breeds: {
+        name: string;
+        temperament: string;
+    }[];
+}[];

@@ -1,13 +1,14 @@
-import { Collection, Message, MessageEmbed, PartialMessage, Snowflake, TextChannel, User } from "discord.js";
+import type { Collection, Message, PartialMessage, Snowflake, TextChannel, User } from "discord.js";
+import { MessageEmbed } from 'discord.js';
 import { randomColor } from ".";
 import { Afk, Game, Reminder, Report } from "../models";
 import type { Semblance } from "../structures";
 import { clamp } from "@semblance/lib/utils/math";
-import { UserReminder } from "../models/Reminder";
-import type { AnimalAPIParams } from "@semblance/lib/interfaces/catAndDogAPI";
+import type { UserReminder } from "../models/Reminder";
+import type { AnimalAPIParams, AnimalAPIResponse } from "@semblance/lib/interfaces/catAndDogAPI";
 import fetch from 'node-fetch';
-import { GameFormat } from "../models/Game";
-import { DeepLParams, DeepLResponse } from "@semblance/lib/interfaces/deepLAPI";
+import type { GameFormat } from "../models/Game";
+import type { DeepLParams, DeepLResponse } from "@semblance/lib/interfaces/deepLAPI";
 
 // AFK functions - dontDisturb and removeAfk
 
@@ -175,7 +176,7 @@ export const fetchCatOrDog = async (query_params: AnimalAPIParams, wantsCat: boo
     const API_URL = `https://api.the${wantsCat ? 'cat' : 'dog'}api.com/v1/images/search?${new URLSearchParams(query_params as Record<string, string>)}`,
     API_KEY = wantsCat ? process.env.CAT_API_KEY : process.env.DOG_API_KEY;
 
-    return (await fetch(API_URL, { headers: { 'X-API-KEY': API_KEY } })).json();
+    return (await fetch(API_URL, { headers: { 'X-API-KEY': API_KEY } })).json() as Promise<AnimalAPIResponse>;
 }
 
 // deepL API fetch

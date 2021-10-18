@@ -1,6 +1,7 @@
-import { sizeType } from "@semblance/lib/interfaces/catAndDogAPI";
-import { ButtonData } from "@semblance/lib/interfaces/Semblance";
-import { MessageComponentInteraction, MessageEmbed } from "discord.js";
+import type { sizeType } from "@semblance/lib/interfaces/catAndDogAPI";
+import type { ButtonData } from "@semblance/lib/interfaces/Semblance";
+import type { MessageComponentInteraction } from "discord.js";
+import { MessageEmbed } from "discord.js";
 import { fetchCatOrDog } from "../../constants/commands";
 
 

@@ -4,6 +4,7 @@ import * as constants from '@semblance/constants';
 import type { Message, MessageOptions, Snowflake, TextBasedChannels, TextChannel } from 'discord.js';
 import type { Semblance } from '../structures';
 import type { Command } from '@semblance/lib/interfaces/Semblance';
+import type { APIInvite, ChannelType, APIUser } from 'discord-api-types';
 
 export default {
     description: "Lookup something unknown, like an Id or an invite, and hopefully get the meaning behind it!",
@@ -31,7 +32,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
         const user = await getUser(args[0], message.guild)
         if (user) {
             if (user.bot) {
-                const botblock = await fetch(`https://botblock.org/api/bots/${user.id}`).then(res => res.json())
+                const botblock = await fetch(`https://botblock.org/api/bots/${user.id}`).then(res => res.json()) as BotBlock;
                 if (botblock.discriminator == "0000") return send(message.channel, `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}). Unfortunately, this bot is not listed on any of BotBlock's bot lists.`)
 
                 const fields = [], add = values => { for (const name in values) fields.push({ name, value: values[name], inline: true }) }
@@ -82,13 +83,13 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
     try {
         let _invite = await client.fetchInvite(args[0]);
         if (_invite) {
-            let invite = await fetch(`https://discordapp.com/api/v8/invites/` + _invite.code + "?with_counts=true").then(res => res.json());
+            let invite = await fetch(`https://discordapp.com/api/v8/invites/` + _invite.code + "?with_counts=true").then(res => res.json()) as APIInvite;
 
             const fields = [], add = values => { for (const name in values) fields.push({ name, value: values[name], inline: true }) }
 
             add({
                 "Guild": `${invite.guild.name} (${invite.guild.id})`,
-                "Channel": `${invite.channel.name} (${invite.channel.type && invite.channel.type !== "0" ? `${invite.channel.type}/` : ""}${invite.channel.id})`,
+                "Channel": `${invite.channel.name} (${invite.channel.type && (invite.channel.type as ChannelType.GuildText) !== 0 ? `${invite.channel.type}/` : ""}${invite.channel.id})`,
                 "Members": `${invite.approximate_presence_count} online, ${invite.approximate_member_count} total`
             })
 
@@ -130,3 +131,23 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
 }
 
 const send = (channel: TextBasedChannels, options: string | MessageOptions) => channel.send(options)
+
+interface BotBlock extends APIUser {
+    owners: string[];
+    list_data: ListData;
+    server_count: number;
+    invite: string;
+}
+
+type ListData = Record<string, ListItem>;
+interface ListItem {
+    error?: string;
+    [0]: {
+        short?: string;
+        prefix?: string;
+        library?: string;
+        website?: string;
+        tags?: string[] | unknown[];
+    };
+    [1]: number;
+}
