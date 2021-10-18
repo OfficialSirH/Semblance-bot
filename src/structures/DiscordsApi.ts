@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events';
-import { BotStats, BotInfo, UserInfo, BotsResponse, BotVotes, UserBots, Widget } from '@semblance/lib/interfaces/discords';
-import { Snowflake } from 'discord.js';
+import type { BotStats, BotInfo, UserInfo, BotsResponse, BotVotes, UserBots, Widget } from '@semblance/lib/interfaces/discords';
+import type { Snowflake } from 'discord.js';
 import fetch, { Headers } from 'node-fetch';
 import { APIError } from './ApiError';
 import { stringify } from 'querystring';
@@ -8,7 +8,7 @@ import { stringify } from 'querystring';
 /**
  * discords.com API Client for Posting stats or Fetching data
  * @example
- * const Discords = require(`./structures/DiscordsAPI`)
+ * const Discords = await import(`./structures/DiscordsAPI`)
  *
  * const api = new Discords.BFDApi('Your discords.com token')
  */

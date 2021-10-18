@@ -1,5 +1,6 @@
-import { Collection, Snowflake } from "discord.js";
-import { BaseLeaderboard, Semblance } from ".";
+import type { Snowflake } from "discord.js";
+import type { Semblance } from ".";
+import { BaseLeaderboard } from ".";
 import { quickSort } from "../constants";
 import { Leaderboard } from "../models";
 import { GameFormat } from "../models/Game";

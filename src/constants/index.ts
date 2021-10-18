@@ -214,12 +214,12 @@ export const getPermissionLevel = function(member: GuildMember) {
     try {
         if ("506458497718812674" === member.user.id || member.user.id == "780995336293711875") return 7;
         // Aditya, SirH //RIP SirH OG: "279080959612026880" === member.user.id // SirH#4297
-        if (member.permissions.has(module.exports.roles.admin)) return 6; // admin
-        if (member.permissions.has(module.exports.roles.exec)) return 5; // exec
-        if (member.permissions.has(module.exports.roles.srmod)) return 4; // sr.mod
-        if (member.permissions.has(module.exports.roles.mod)) return 3; // mod
-        if (member.permissions.has(module.exports.roles.jrmod)) return 2; // jr.mod
-        if (member.permissions.has(module.exports.roles.helper)) return 1; // helper
+        if (member.permissions.has(exports.roles.admin)) return 6; // admin
+        if (member.permissions.has(exports.roles.exec)) return 5; // exec
+        if (member.permissions.has(exports.roles.srmod)) return 4; // sr.mod
+        if (member.permissions.has(exports.roles.mod)) return 3; // mod
+        if (member.permissions.has(exports.roles.jrmod)) return 2; // jr.mod
+        if (member.permissions.has(exports.roles.helper)) return 1; // helper
         return 0; // normal user
     } catch (e) {return 0}
 }

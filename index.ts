@@ -1,7 +1,7 @@
-require('dotenv').config();
+(await import('dotenv')).config();
 import 'source-map-support/register';
 import 'module-alias/register';
-(async () => await require(`@semblance/config`).config())()
+(await import(`@semblance/config`)).config();
 // Semblance client
 import { Semblance } from '@semblance/structures';
 // import { Client } from 'twitter.js';
@@ -57,7 +57,7 @@ import type { EventHandler } from './lib/interfaces/Semblance';
 const eventFiles = fs.readdirSync('./dist/src/events/client').filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
-	const event = require(`./src/events/client/${file}`).default as EventHandler;
+	const event = (await import(`./src/events/client/${file}`)).default as EventHandler;
 	if (event.once) client.once(event.name, (...args) => event.exec(...args, client));
 	else client.on(event.name, (...args) => event.exec(...args, client));
 }
@@ -66,7 +66,7 @@ for (const file of eventFiles) {
 // const twitterEventFiles = fs.readdirSync('./dist/src/events/twitter').filter(file => file.endsWith('.js'));
 
 // for (const file of twitterEventFiles) {
-// 	const event = require(`./src/events/twitter/${file}`).default as TwitterJSEventHandler;
+// 	const event = (await import(`./src/events/twitter/${file}`)).default as TwitterJSEventHandler;
 // 	if (event.once) twClient.once(event.name, (...args) => event.exec(...args, { client, twClient }));
 // 	else twClient.on(event.name, (...args) => event.exec(...args, { client, twClient }));
 // }

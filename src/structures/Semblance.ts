@@ -24,46 +24,46 @@ export class Semblance extends Client {
         super(options);
 
         this._componentHandlers = new Collection();
-        fs.readdir('./dist/src/applicationCommands/componentHandlers/', (err, files) => {
+        fs.readdir('./dist/src/applicationCommands/componentHandlers/', async (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith('.js')) {
-                this._componentHandlers.set(file.replace('.js', ''), require(`../applicationCommands/componentHandlers/${file}`));
+                this._componentHandlers.set(file.replace('.js', ''), await import(`./applicationCommands/componentHandlers/${file}`));
             }
         });
 
         this._contextMenuHandlers = new Collection();
-        fs.readdir('./dist/src/applicationCommands/contextMenuHandlers/', (err, files) => {
+        fs.readdir('./dist/src/applicationCommands/contextMenuHandlers/', async (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith('.js')) {
-                this._contextMenuHandlers.set(file.replace('.js', ''), require(`../applicationCommands/contextMenuHandlers/${file}`));
+                this._contextMenuHandlers.set(file.replace('.js', ''), await import(`../applicationCommands/contextMenuHandlers/${file}`));
             }
         });
 
         this._autocompleteHandlers = new Collection();
-        fs.readdir('./dist/src/applicationCommands/autocompleteHandlers/', (err, files) => {
+        fs.readdir('./dist/src/applicationCommands/autocompleteHandlers/', async (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith('.js')) {
-                this._autocompleteHandlers.set(file.replace('.js', ''), require(`../applicationCommands/autocompleteHandlers/${file}`));
+                this._autocompleteHandlers.set(file.replace('.js', ''), await import(`../applicationCommands/autocompleteHandlers/${file}`));
             }
         });
 
         this._slashCommands = new Collection();
 
         this._commands = {}, this._aliases = {};
-        fs.readdir("./dist/src/commands/", (err, files) => {
+        fs.readdir("./dist/src/commands/", async (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith(".js")) {
-                const commandFile = require(`../commands/${file}`).default, fileName = file.replace(".js", "");
+                const commandFile = (await import(`../commands/${file}`)).default, fileName = file.replace(".js", "");
                 this._commands[fileName] = commandFile;
                 if (commandFile.aliases) for (const alias of commandFile.aliases) this._aliases[alias] = fileName;
             }
         });
 
         this._autoCommands = {};
-        fs.readdir("./dist/src/autoActions/", (err, files) => {
+        fs.readdir("./dist/src/autoActions/", async (err, files) => {
             if (err) return console.log(err);
             for (const file of files) if (file.endsWith(".js")) {
-                const commandFile = require(`../autoActions/${file}`).default, fileName = file.replace(".js", "");
+                const commandFile = (await import(`../autoActions/${file}`)).default, fileName = file.replace(".js", "");
                 this._autoCommands[fileName] = commandFile;
             }
         });

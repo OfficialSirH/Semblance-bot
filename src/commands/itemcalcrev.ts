@@ -2,8 +2,7 @@ import { nameToScNo, bigToName, checkValue, randomColor } from '@semblance/const
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import type { Command } from '@semblance/lib/interfaces/Semblance';
-import type { ItemList } from '@semblance/lib/interfaces/ItemList';
-const itemList = require('@semblance/itemList') as ItemList;
+import { itemList } from '@semblance/itemList';
 
 export default {
     description: "calculate the price for a specific level of an item",
@@ -21,7 +20,7 @@ const run = async (message: Message, args: string[]) => {
     if (!checkValue(curAmount as string)) return message.reply('Your input for current amount is invalid'); 
     curAmount = nameToScNo(curAmount as string);
     let itemCost: number, itemCostType: string;   
-    for (const [key, value] of Object.entries(itemList)) if (itemList[key][itemInput]) {
+    for (const key of Object.keys(itemList)) if (itemList[key][itemInput]) {
         itemCost = itemList[key][itemInput].price;
         itemCostType = key;
     }

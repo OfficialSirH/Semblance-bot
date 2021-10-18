@@ -37,7 +37,7 @@ const run = async (client: Semblance, message: Message) => {
         .setColor(randomColor)
         .setThumbnail(client.user.displayAvatarURL())
         .addFields(
-            { name: `${singularity} Host`, value: [`**OS:** \`Ubuntu ${require('os').release()}\``,
+            { name: `${singularity} Host`, value: [`**OS:** \`Ubuntu ${(await import('os')).release()}\``,
                                     `**Library:** \`discord.js${version}\``,
                                    `**Memory Usage:** \`${usage} MB (${percentageUsed}%)\``].join('\n'), inline: true },
                                    

@@ -7,7 +7,7 @@ import { stringify } from 'querystring';
 /**
  * discordbotlist.com API Client for Posting stats or Fetching data
  * @example
- * const Discordbotlist = require(`./structures/DiscordBotListAPI`)
+ * const Discordbotlist = await import(`./structures/DiscordBotListAPI`)
  *
  * const api = new Discordbotlist.DBLApi('Your discordbotlist.com token')
  */

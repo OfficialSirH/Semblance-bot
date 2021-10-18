@@ -35,6 +35,6 @@ const run = async (message: Message, args: string[]) => {
 
   return message.reply({ embeds:[new MessageEmbed().setTitle("Semblance Notifications")
           .setColor(randomColor)
-          .setDescription(`${module.exports.default.description}\n`+
+          .setDescription(`${exports.default.description}\n`+
           `**How to use:** type \`add\` at the end to get role or \`remove\` to remove it.`)] });
 }

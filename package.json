@@ -4,6 +4,7 @@
   "description": "The AI that runs the Reality Engine",
   "main": "dist/index",
   "author": "SirH",
+  "type": "module",
   "dependencies": {
     "@top-gg/sdk": "^3.1.2",
     "bufferutil": "^4.0.3",
@@ -12,7 +13,7 @@
     "fastify": "^3.22.0",
     "module-alias": "^2.2.2",
     "mongoose": "^6.0.7",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^3.0.0",
     "pm2": "^5.1.2",
     "relative-to-alias": "^2.0.1",
     "source-map-support": "^0.5.20",

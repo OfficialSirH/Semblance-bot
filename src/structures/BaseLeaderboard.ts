@@ -1,5 +1,6 @@
-import { Collection, Snowflake } from 'discord.js';
-import { Semblance } from '.';
+import { Collection } from 'discord.js';
+import type { Snowflake } from 'discord.js';
+import type { Semblance } from '.';
 
 export class BaseLeaderboard {
     list: Collection<Snowflake,number>;

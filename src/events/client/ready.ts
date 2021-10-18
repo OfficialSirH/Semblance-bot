@@ -33,7 +33,7 @@ export const ready = async (client: Semblance) => {
 
     /* Slash Command setup */
     const slashCommands = await client.application.commands.fetch();
-    slashCommands.filter(c => c.type == 'CHAT_INPUT').forEach(command => client.slashCommands.set(command.id, require(`@semblance/src/applicationCommands/slashCommands/${command.name}.js`).default));
+    slashCommands.filter(c => c.type == 'CHAT_INPUT').forEach(async command => client.slashCommands.set(command.id, (await import(`@semblance/src/applicationCommands/slashCommands/${command.name}.js`)).default));
 
     /*
     * Reminder check

@@ -1,9 +1,8 @@
 import { bigToName, checkValue, randomColor } from '@semblance/constants';
-import type { ItemList } from '@semblance/lib/interfaces/ItemList';
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import type { Command } from '@semblance/lib/interfaces/Semblance';
-const itemList = require('@semblance/itemList') as ItemList;
+import { itemList } from '@semblance/itemList';
 
 export default {
     description: "calculate prices for items in-game",
@@ -23,7 +22,7 @@ const run = async (message: Message, args: string[]) => {
     level = Number.parseInt(level as string);
     currentLevel = Number.parseInt(currentLevel as string);
     let itemCost: number, itemCostType: string;
-    for (const [key, value] of Object.entries(itemList)) if (itemList[key][itemInput]) {
+    for (const key of Object.keys(itemList)) if (itemList[key][itemInput]) {
         itemCost = itemList[key][itemInput].price;
         itemCostType = key;
     }

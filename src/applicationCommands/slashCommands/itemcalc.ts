@@ -2,9 +2,8 @@ import { bigToName, checkValue } from '@semblance/constants';
 import { MessageEmbed } from 'discord.js';
 import type { User } from 'discord.js';
 import { randomColor } from '@semblance/constants';
-import type { ItemList } from '@semblance/lib/interfaces/ItemList';
 import type { SlashCommand } from '@semblance/lib/interfaces/Semblance';
-const itemList = require('@semblance/itemList') as ItemList;
+import { itemList } from '@semblance/itemList';
 
 export default {
     permissionRequired: 0,
@@ -21,7 +20,7 @@ export default {
         if (!checkValue(currentLevel as string)) return interaction.reply({ content: "Your input for 'current level' was invalid.", ephemeral: true });
         
         let itemCost: number, itemCostType: string;
-        for (const [key, value] of Object.entries(itemList)) if (itemList[key][itemInput]) {
+        for (const key of Object.keys(itemList)) if (itemList[key][itemInput]) {
             itemCost = itemList[key][itemInput].price;
             itemCostType = key;
         }

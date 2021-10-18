@@ -20,9 +20,9 @@ const run = async (client: Semblance, message: Message, args: string[], { conten
     let embed = new MessageEmbed().setColor(randomColor).addField("📥 Input", `\`\`\`js\n${content.substring(0, 1015)}\`\`\``).setFooter("Feed me code!");
     try {
         let evaled = eval(`(async () => { ${content} })().catch(e => { return "Error: " + e })`);
-        Promise.resolve(evaled).then((result) => {
+        Promise.resolve(evaled).then(async (result) => {
             evaled = result;
-            if (typeof evaled != "string") evaled = require("util").inspect(evaled);
+            if (typeof evaled != "string") evaled = (await import("util")).inspect(evaled);
             let data = { embeds: null, files: [] };
             if (evaled.length > 1015) {
                 let evalOutputFile = new MessageAttachment(Buffer.from(`${evaled}`), 'evalOutput.js');
