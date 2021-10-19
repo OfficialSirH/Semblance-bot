@@ -9,7 +9,7 @@ import {
 } from '@semblance/constants';
 import { intervalPost } from '..';
 import { checkBoosterRewards } from '@semblance/src/constants/models';
-const { c2sGuildId, prefix } = config;
+const { c2sGuildId, prefix, ignoredGuilds } = config;
 const { Events } = Constants;
 
 export default {
@@ -20,7 +20,8 @@ export default {
 
 export const ready = async (client: Semblance) => {
     console.log(`Logged in as ${client.user.tag}!`);
-
+    client.guilds.cache.sweep(guild => ignoredGuilds.includes(guild.id));
+    
     const totalMembers = client.guilds.cache.map(g => g.memberCount).filter(g => g).reduce((total, cur, ind) => total += cur, 0);
     const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
     client.user.setActivity(activity, { type: "WATCHING" });

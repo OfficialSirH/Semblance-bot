@@ -126,7 +126,9 @@ export const messageLinkRegex = /https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.
 export const attachmentLinkRegex = /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i;
 export const customIdRegex = /(?<!.){command:'[a-z]{3,20}',action:'([a-z]|\d){1,20}(-[a-z]{1,20})?',id:'\d{17,20}'(,page:\d{1,3})?}(?!.)/;
 export const properCustomIdRegex = /(?<!.){"command":"[a-z]{3,20}","action":"([a-z]|\d){1,20}(-[a-z]{1,20})?","id":"\d{17,20}"(,"page":\d{1,3})?}(?!.)/;
+// TODO: change the timeinputRegex to be a bit better
 export const timeInputRegex = /(?:(?<months>\d{1,2})M)?(?:(?<weeks>\d{1,2})w)?(?:(?<days>\d{1,2})d)?(?:(?<hours>\d{1,2})h)?(?:(?<minutes>\d{1,2})m)?/;
+export const trelloLinkRegex = /https:\/\/trello\.com\/c\/([0-9]|[A-Z]){8}/i;
 export const onlyUnique = (value: any, index: number, self: any[]) => self.indexOf(value) == index;
 export const parseArgs = (_arguments: string) => (_arguments.match(/\"[^"]+\"|[^ ]+/g) ?? []).map(argument => argument.startsWith("\"") && argument.endsWith("\"") ? argument.slice(1).slice(0, -1) : argument);
 export const lockMessage = (user: User) => `👮 👮 ***CHANNEL IS LOCKED BY ${user}*** 👮 👮`;

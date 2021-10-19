@@ -1,18 +1,18 @@
 import type { Semblance } from "@semblance/src/structures";
-import { MessageEmbed, Constants } from "discord.js";
-import type { Message } from 'discord.js';
+import { MessageEmbed, Constants, MessageActionRow, MessageButton } from "discord.js";
+import type { Message, GuildChannel, TextBasedChannels } from 'discord.js';
 import config from '@semblance/config';
 import { 
 	getPermissionLevel,
 	parseArgs,
 	dontDisturb, 
-	removeAfk 
+	removeAfk, 
+	trelloLinkRegex
 } from '@semblance/constants';
-import { promisify } from 'util';
 import { Information } from '@semblance/models';
 import { createBoosterRewards } from "@semblance/src/constants/models";
 const { Events } = Constants;
-const { sirhId, prefix, c2sGuildId, sirhGuildId, ignoredGuilds } = config;
+const { sirhId, prefix, c2sGuildId, sirhGuildId } = config;
 
 export default {
 	name: Events.MESSAGE_CREATE,
@@ -21,8 +21,9 @@ export default {
 
 export const messageCreate = async (message: Message, client: Semblance) => {
     checkForGitHubUpdate(message);
+	checkForTacoPost(message);
 	if (message.channel.type == 'DM') return client.emit('messageDM', message);
-	if (message.author.bot || ignoredGuilds.includes(message.guild.id)) return;
+	if (message.author.bot) return;
 	if (message.member) {
 		if (message.mentions.users && message.member.id != client.user.id) {
 			dontDisturb(message, message.mentions.users);
@@ -83,7 +84,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
 		if (commandFile.category == 'dm') { 
 			return message.reply('DM commands go in DMs(DM = Direct Message).');
 		}
-		let permissionLevel;
+		let permissionLevel: number;
 		const args = parseArgs(content); try { permissionLevel = getPermissionLevel(message.member);
 		} catch (e) { permissionLevel = (message.author.id == sirhId) ? 7 : 0 }
 		//console.log(`${message.member}: ${permissionLevel}`);
@@ -99,12 +100,25 @@ export const messageCreate = async (message: Message, client: Semblance) => {
 	* Check for GitHub updates
 	*/
 
-	async function checkForGitHubUpdate(message) {
-		if (message.channel.name == 'semblance-updates' && message.guild.id == sirhGuildId && message.author.username == 'GitHub' && message.embeds[0].title.includes('master')) {
-			await Information.findOneAndUpdate({ infoType: "github" }, { $set: { info: message.embeds[0].description, updated: true } });
-			return true;
-		}
-		return false;
+	function checkForGitHubUpdate(message: Message) {
+		if ((message.channel as GuildChannel).name == 'semblance-updates' && message.guild.id == sirhGuildId && message.author.username == 'GitHub' && message.embeds[0].title.includes('master'))
+			return Information.findOneAndUpdate({ infoType: "github" }, { $set: { info: message.embeds[0].description, updated: true } });
+	}
+
+	function checkForTacoPost(message: Message) {
+		if (message.channel.id != '794054990020739113' || message.author.id != '620126394390675466') return;
+		const embed = message.embeds[0];
+		const { title, description } = embed;
+		const link = trelloLinkRegex.exec(description)[0];
+		(message.client.channels.cache.get('900050244857921587') as TextBasedChannels).send({
+			content: title,
+			components: [new MessageActionRow()
+			.addComponents([new MessageButton()
+				.setLabel('View on Trello')
+				.setStyle('LINK')
+				.setURL(link)
+			])]
+		});
 	}
 
 	async function updateBeyondCount() {
