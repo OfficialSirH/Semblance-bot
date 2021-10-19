@@ -106,7 +106,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
 	}
 
 	function checkForTacoPost(message: Message) {
-		if (message.channel.id != '794054990020739113' || message.author.id != '620126394390675466') return;
+		if (message.channel.id != '794054990020739113' || message.author.id != '801130415997059173') return;
 		const embed = message.embeds[0];
 		const { title, description } = embed;
 		const link = trelloLinkRegex.exec(description)[0];
