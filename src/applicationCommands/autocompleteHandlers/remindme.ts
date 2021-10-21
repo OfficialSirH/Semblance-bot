@@ -11,7 +11,7 @@ export async function run(interaction: AutocompleteInteraction, options: Command
         const responseOptions = ['m', 'h', 'd', 'w', 'mo'].map(o => ({ name: `${focusedOption}${o}`, value: `${focusedOption}${o}` }));
         return interaction.respond(responseOptions);
     }
-    
+
     const inputTypes = ['mo', 'w', 'd', 'h', 'm'];
     const timeAmount = timeInputRegex.exec(focusedOption);
     const { groups: { months = '0', weeks = '0', days = '0', hours = '0', minutes = '0' } } = timeAmount as TimeLengthsString;
@@ -25,13 +25,13 @@ export async function run(interaction: AutocompleteInteraction, options: Command
         groups = timeInputAutocompleteAssistantRegex.exec(focusedOption).groups as { previousInputType: string, numInput: string };
     const { previousInputType, numInput } = groups;
 
-    const finalValue = previousInputType && previousInputType != 'm' ? 
+    const finalTime = previousInputType && previousInputType != 'm' ? 
     { type: inputTypes.at(inputTypes.indexOf(previousInputType)+1), value: parseInt(numInput) } : timeValues.at(-1);
-
+    
     const responseOptions: ApplicationCommandOptionChoice[] = [];
     for (let i = 0; i < clamp(99 - timeValues.at(-1).value, 0, 5) + 1; i++) {
         const values = timeValues.map((t, ind) => ind != timeValues.length-1 ? `${t.value}${t.type}` : '').join('') +
-        `${finalValue.value + i}${finalValue.type}`;
+        `${previousInputType && previousInputType != 'm' ? focusedOption.slice(0, focusedOption.lastIndexOf(' ')) : ''}${finalTime.value + i}${finalTime.type}`;
         responseOptions.push({
             name:  values,
             value: values
