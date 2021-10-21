@@ -1,6 +1,6 @@
 import type { Message, User } from 'discord.js';
 import { MessageEmbed } from 'discord.js'; 
-import { randomColor } from '@semblance/constants'; 
+import { getAvatar, randomColor } from '@semblance/constants'; 
 import type { Semblance } from '../structures';
 import type { Command } from '@semblance/lib/interfaces/Semblance';
 
@@ -25,11 +25,10 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
 		user = await client.users.fetch((user as User)?.id, { cache: false });
 		if (!user) return message.reply('I couldn\'t find that user');
 	}
-	let image = `${user.displayAvatarURL({ dynamic: true })}?size=4096`;
 	let embed = new MessageEmbed()
 		.setTitle("Avatar")
 		.setAuthor(user.tag, user.displayAvatarURL())
 		.setColor(randomColor)
-		.setImage(image)
+		.setImage(getAvatar(user))
 	message.channel.send({ embeds: [embed] });
 }
