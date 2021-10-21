@@ -30,8 +30,8 @@ export async function run(interaction: AutocompleteInteraction, options: Command
     
     const responseOptions: ApplicationCommandOptionChoice[] = [];
     for (let i = 0; i < clamp(99 - timeValues.at(-1).value, 0, 5) + 1; i++) {
-        const values = timeValues.map((t, ind) => ind != timeValues.length-1 ? `${t.value}${t.type}` : '').join('') +
-        `${previousInputType && previousInputType != 'm' ? focusedOption.slice(0, focusedOption.lastIndexOf(' ')) : ''}${finalTime.value + i}${finalTime.type}`;
+        const values = timeValues.map((t, ind) => ind != timeValues.length-1 ? `${t.value}${t.type}` : '').join(' ') +
+        ` ${previousInputType && previousInputType != 'm' ? focusedOption.slice(0, focusedOption.lastIndexOf(' ')) : ''} ${finalTime.value + i}${finalTime.type}`;
         responseOptions.push({
             name:  values,
             value: values
