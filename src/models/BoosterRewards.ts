@@ -1,14 +1,14 @@
 import type { Snowflake } from 'discord.js';
-import { Schema, model } from 'mongoose';
+import _ from 'mongoose';
 
 export interface BoosterRewardsFormat {
-    userId: Snowflake;
-    rewardingDate: number;
+  userId: Snowflake;
+  rewardingDate: number;
 }
 
-const BoosterRewardsSchema = new Schema<BoosterRewardsFormat>({
-    userId: String,
-    rewardingDate: Number
-})
+const BoosterRewardsSchema = new _.Schema<BoosterRewardsFormat>({
+  userId: String,
+  rewardingDate: Number,
+});
 
-export const BoosterRewards = model<BoosterRewardsFormat>("BoosterRewards", BoosterRewardsSchema, "BoosterRewards");
+export const BoosterRewards = _.model<BoosterRewardsFormat>('BoosterRewards', BoosterRewardsSchema, 'BoosterRewards');

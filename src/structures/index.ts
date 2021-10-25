@@ -1,6 +1,6 @@
-export { BFDApi } from './DiscordsAPI'; 
-export { DBLApi } from './DiscordBotListAPI';
-export { Semblance } from './Semblance';
-export { BaseLeaderboard } from './BaseLeaderboard';
-export { GameLeaderboard } from './GameLeaderboard';
-export { VoteLeaderboard } from './VoteLeaderboard';
+export { BFDApi } from '#structures/DiscordsAPI';
+export { DBLApi } from '#structures/DiscordBotListAPI';
+export { Semblance } from '#structures/Semblance';
+export { BaseLeaderboard } from '#structures/BaseLeaderboard';
+export { GameLeaderboard } from '#structures/GameLeaderboard';
+export { VoteLeaderboard } from '#structures/VoteLeaderboard';

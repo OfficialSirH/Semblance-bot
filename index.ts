@@ -1,12 +1,12 @@
-require('dotenv').config();
-require('source-map-support/register');
-require('module-alias/register');
-(async () => await require(`@semblance/config`).config())();
+import 'dotenv/config';
+import { install as sourceMapInstall } from 'source-map-support';
+sourceMapInstall();
+await import('#config');
 // Semblance client
-import { Semblance } from '@semblance/structures';
+import { Semblance } from '#structures/Semblance';
 // import { Client } from 'twitter.js';
 import { Intents, LimitedCollection, Options } from 'discord.js';
-import { checkTweet, playerUpdate, userVote } from '@semblance/events';
+import { checkTweet, playerUpdate, userVote } from '#events/index';
 const client = new Semblance({
 	allowedMentions: { parse: [] },
 	makeCache: Options.cacheWithLimits({
@@ -48,25 +48,25 @@ const client = new Semblance({
 import fastify from 'fastify';
 const app = fastify();
 // Database connection import
-import { connect } from 'mongoose';
-import { Afk, Game, Information, Jump, Leaderboard, Reminder, Report, UserData, Votes } from '@semblance/models';
+import mongoose from 'mongoose';
+import '#models/index';
 
 // Listen to client events
-import * as fs from 'fs';
+import * as fs from 'fs/promises';
 import type { EventHandler } from './lib/interfaces/Semblance';
-const eventFiles = fs.readdirSync('./dist/src/events/client').filter(file => file.endsWith('.js'));
+const eventFiles = (await fs.readdir('./dist/src/events/client')).filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
-	const event = require(`./src/events/client/${file}`).default as EventHandler;
+	const event = (await import(`./src/events/client/${file}`)).default as EventHandler;
 	if (event.once) client.once(event.name, (...args) => event.exec(...args, client));
 	else client.on(event.name, (...args) => event.exec(...args, client));
 }
 // TODO: enable twitter.js implementation to replace the shitty twitter library
 // import type { TwitterJSEventHandler } from './lib/interfaces/Semblance';
-// const twitterEventFiles = fs.readdirSync('./dist/src/events/twitter').filter(file => file.endsWith('.js'));
+// const twitterEventFiles = (await fs.readdir('./dist/src/events/twitter')).filter(file => file.endsWith('.js'));
 
 // for (const file of twitterEventFiles) {
-// 	const event = require(`./src/events/twitter/${file}`).default as TwitterJSEventHandler;
+// 	const event = (await import(`./src/events/twitter/${file}`)).default as TwitterJSEventHandler;
 // 	if (event.once) twClient.once(event.name, (...args) => event.exec(...args, { client, twClient }));
 // 	else twClient.on(event.name, (...args) => event.exec(...args, { client, twClient }));
 // }
@@ -75,7 +75,7 @@ for (const file of eventFiles) {
 playerUpdate(client);
 userVote(client);
 
-import router from '@semblance/src/routing/routes';
+import router from '#src/routing/routes/index';
 router(app, client);
 
 app.get('/', (_req, res) => { res.redirect('https://officialsirh.github.io/') });
@@ -84,13 +84,10 @@ app.get('/', (_req, res) => { res.redirect('https://officialsirh.github.io/') })
 setInterval(() => checkTweet(client), 2000);
 // TODO: remove this really shitty implementation of receiving tweets
 
-(async () => {
-	await connect(process.env.mongoDBKey);
-	await client.login(process.env.token);
-	let address: string;
-	address = await app.listen(8079, '0.0.0.0');
-    console.log('Semblance has started on: ' + address);
-	// TODO: enable twitter.js implementation to replace the shitty twitter library
-	// const twitterCredentials = JSON.parse(process.env.twitter);
-	// await twClient.loginWithBearerToken(twitterCredentials.bearer_token);
-})()
+await mongoose.connect(process.env.mongoDBKey);
+await client.login(process.env.token);
+let address = await app.listen(8079, '0.0.0.0');
+console.log('Semblance has started on: ' + address);
+// TODO: enable twitter.js implementation to replace the shitty twitter library
+// const twitterCredentials = JSON.parse(process.env.twitter);
+// await twClient.loginWithBearerToken(twitterCredentials.bearer_token);

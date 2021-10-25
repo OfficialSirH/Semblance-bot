@@ -1,17 +1,17 @@
 import type { Snowflake } from 'discord.js';
-import { Schema, model } from 'mongoose';
+import _ from 'mongoose';
 
 export interface VotesFormat {
-    user: Snowflake;
-    voteCount: number;
+  user: Snowflake;
+  voteCount: number;
 }
 
-const VotesSchema = new Schema<VotesFormat>({
-    user: String,
-    voteCount: {
-        default: 1,
-        type: Number
-    }
+const VotesSchema = new _.Schema<VotesFormat>({
+  user: String,
+  voteCount: {
+    default: 1,
+    type: Number,
+  },
 });
 
-export const Votes = model<VotesFormat>('Votes', VotesSchema, 'Votes');
+export const Votes = _.model<VotesFormat>('Votes', VotesSchema, 'Votes');

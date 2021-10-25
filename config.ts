@@ -1,36 +1,15 @@
-import { MessageAttachment, Snowflake } from 'discord.js';
-import { promises as fs } from 'fs';    
+import { MessageAttachment } from 'discord.js';
+import type { Snowflake } from 'discord.js';
+import * as fs from 'fs/promises';
+
 const attachments = {} as AttachmentList;
 
-export const config = async () => {
-    try {
-        const files = await fs.readdir("./src/images/");
-        for (const file of files) if (file.endsWith('.png') || file.endsWith('.mp4')) {
-            const attachment = new MessageAttachment(`./src/images/${file}`, `attachment://${file}`), attachmentName = file.substring(0, file.indexOf("."));
-            attachments[attachmentName] = attachment;
-        }
-        Object.assign(exports.default, {
-            attachments,
-            currentLogo: attachments['Current_Logo'],
-            sharks: attachments['Sharks'],
-            roadMap: attachments['RoadMap'],
-            terminusChamber: attachments['TerminusChamber'],
-            simStatsLocation: attachments['SimStatsLocation'],
-            geodeImage: attachments['GeodeLevelComparison'],
-            prestige: attachments['Prestige'],
-            prestigeList: attachments['PrestigeList'],
-            archieDance: attachments['ArchieDance'],
-            patreon: attachments['Patreon_Mark_Coral'],
-            communistSemblance: attachments['CommunistSemblance'],
-            nanobots: attachments['Nanobots'],
-            currency: attachments['Currency'],
-            mementoMori: attachments['MementoMori']
-        });
-    }
-    catch(err) {
-        console.log(err);
-    }
+const files = await fs.readdir("./src/images/");
+for (const file of files) if (file.endsWith('.png') || file.endsWith('.mp4')) {
+    const attachment = new MessageAttachment(`./src/images/${file}`, `attachment://${file}`), attachmentName = file.substring(0, file.indexOf("."));
+    attachments[attachmentName] = attachment;
 }
+
 export default {
     prefix: "s!",
     sirhId: "780995336293711875" as Snowflake,
@@ -90,21 +69,21 @@ export default {
     stardust: '<:stardust:808445612013518868>',
     energy: '<:energy:808445587803471922>',
     sentience: '<:sentience:808445599078809670>',
-    attachments: {} as AttachmentList,
-    currentLogo: {} as MessageAttachment,
-    sharks: {} as MessageAttachment,
-    roadMap: {} as MessageAttachment,
-    terminusChamber: {} as MessageAttachment,
-    simStatsLocation: {} as MessageAttachment,
-    geodeImage: {} as MessageAttachment,
-    prestige: {} as MessageAttachment,
-    prestigeList: {} as MessageAttachment,
-    archieDance: {} as MessageAttachment,
-    patreon: {} as MessageAttachment,
-    communistSemblance: {} as MessageAttachment,
-    nanobots: {} as MessageAttachment,
-    currency: {} as MessageAttachment,
-    mementoMori: {} as MessageAttachment
+    attachments,
+    currentLogo: attachments['Current_Logo'],
+    sharks: attachments['Sharks'],
+    roadMap: attachments['RoadMap'],
+    terminusChamber: attachments['TerminusChamber'],
+    simStatsLocation: attachments['SimStatsLocation'],
+    geodeImage: attachments['GeodeLevelComparison'],
+    prestige: attachments['Prestige'],
+    prestigeList: attachments['PrestigeList'],
+    archieDance: attachments['ArchieDance'],
+    patreon: attachments['Patreon_Mark_Coral'],
+    communistSemblance: attachments['CommunistSemblance'],
+    nanobots: attachments['Nanobots'],
+    currency: attachments['Currency'],
+    mementoMori: attachments['MementoMori']
 }
 
 type AttachmentList = Record<string, MessageAttachment>;

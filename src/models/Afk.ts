@@ -1,17 +1,17 @@
 import type { Snowflake } from 'discord.js';
-import { Schema, model } from 'mongoose';
+import _ from 'mongoose';
 
 export interface AFKFormat {
-    userId: Snowflake;
-    reason: string;
+  userId: Snowflake;
+  reason: string;
 }
 
-const AfkSchema = new Schema<AFKFormat>({
-    userId: String,
-    reason: {
-        type: String,
-        default: "Just because"
-    }
-})
+const AfkSchema = new _.Schema<AFKFormat>({
+  userId: String,
+  reason: {
+    type: String,
+    default: 'Just because',
+  },
+});
 
-export const Afk = model<AFKFormat>("Afk", AfkSchema, "Afk");
+export const Afk = _.model<AFKFormat>('Afk', AfkSchema, 'Afk');

@@ -1,22 +1,22 @@
 import type { Snowflake } from 'discord.js';
-import { Schema, model } from 'mongoose';
+import _ from 'mongoose';
 
 export interface LeaderboardFormat {
-    type: leaderboardType;
-    list: rankedUser[]
+  type: leaderboardType;
+  list: rankedUser[];
 }
 
 type leaderboardType = 'game' | 'vote';
 
 interface rankedUser {
-    user: Snowflake;
-    level?: number;
-    voteCount?: number;
+  user: Snowflake;
+  level?: number;
+  voteCount?: number;
 }
 
-const LeaderboardSchema = new Schema<LeaderboardFormat>({
-    type: String,
-    list: Array
+const LeaderboardSchema = new _.Schema<LeaderboardFormat>({
+  type: String,
+  list: Array,
 });
 
-export const Leaderboard = model<LeaderboardFormat>('Leaderboard', LeaderboardSchema, 'Leaderboard');
+export const Leaderboard = _.model<LeaderboardFormat>('Leaderboard', LeaderboardSchema, 'Leaderboard');

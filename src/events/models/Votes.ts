@@ -1,8 +1,8 @@
-import type { Semblance } from '@semblance/structures';
-import { Votes } from '@semblance/models';
+import type { Semblance } from '#structures/Semblance';
+import { Votes } from '#models/Votes';
 
-export const userVote = async (client: Semblance) => { 
-    Votes.on('userVote', user => {
-        client.voteLeaderboard.update(user);
-    });
-}
+export const userVote = async (client: Semblance) => {
+  Votes.on('userVote', user => {
+    client.voteLeaderboard.update(user);
+  });
+};

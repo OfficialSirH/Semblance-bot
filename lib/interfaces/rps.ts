@@ -1,13 +1,13 @@
-import type { Snowflake } from "discord.js";
+import type { Snowflake } from 'discord.js';
 
 export interface RPSGame {
-    player: Player;
-    opponent: Player;
-    timeout: NodeJS.Timeout
+  player: Player;
+  opponent: Player;
+  timeout: NodeJS.Timeout;
 }
 
 export interface Player {
-    choice?: string;
-    id: Snowflake;
-    tag: string;
+  choice?: string;
+  id: Snowflake;
+  tag: string;
 }
