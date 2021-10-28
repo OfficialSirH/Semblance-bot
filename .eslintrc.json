@@ -5,7 +5,8 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:@typescript-eslint/recommended"
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -32,6 +33,17 @@
             "error",
             {
                 "allowEmptyCatch": true
+            }
+        ],
+        "prettier/prettier": [
+            2,
+            {
+                "singleQuote": true,
+                "printWidth": 120,
+                "quoteProps": "as-needed",
+                "trailingComma": "all",
+                "endOfLine": "lf",
+                "arrowParens": "avoid"
             }
         ]
     }
