@@ -26,9 +26,9 @@ export class VoteHandler {
     { hasGame, weekendBonus }: { hasGame?: boolean; weekendBonus?: boolean } = { hasGame: false, weekendBonus: false },
   ) {
     if (weekendBonus)
-      description += `\nAs a voting bonus *and* being the weekend, you have earned ***12*** hours of idle profit for Semblance's Idle Game!`;
+      description += '\nAs a voting bonus *and* being the weekend, you have earned ***12*** hours of idle profit for Semblance\'s Idle Game!';
     else if (hasGame)
-      description += `\nAs a voting bonus, you have earned **6** hours of idle profit for Semblance's Idle Game!`;
+      description += '\nAs a voting bonus, you have earned **6** hours of idle profit for Semblance\'s Idle Game!';
     const embed = new MessageEmbed().setColor(randomColor).setDescription(description);
 
     if (user instanceof User)

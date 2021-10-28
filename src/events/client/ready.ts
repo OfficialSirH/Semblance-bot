@@ -6,14 +6,15 @@ import type { Semblance } from '#structures/Semblance';
 import { checkReminders, randomColor } from '#constants/index';
 import { intervalPost } from '../intervalPost.js';
 import { checkBoosterRewards } from '#constants/models';
+import type { EventHandler } from '#lib/interfaces/Semblance.js';
 const { c2sGuildId, prefix, ignoredGuilds } = config;
 const { Events } = Constants;
 
 export default {
   name: Events.CLIENT_READY,
   once: true,
-  exec: (client: Semblance) => ready(client),
-};
+  exec: (_, client) => ready(client),
+} as EventHandler<'ready'>;
 
 export const ready = async (client: Semblance) => {
   console.log(`Logged in as ${client.user.tag}!`);
@@ -22,15 +23,15 @@ export const ready = async (client: Semblance) => {
   const totalMembers = client.guilds.cache
     .map(g => g.memberCount)
     .filter(g => g)
-    .reduce((total, cur, ind) => (total += cur), 0);
+    .reduce((total, cur) => (total += cur), 0);
   const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
   client.user.setActivity(activity, { type: 'WATCHING' });
 
   setInterval(() => {
-    let totalMembers = client.guilds.cache
+    const totalMembers = client.guilds.cache
       .map(g => g.memberCount)
       .filter(g => g)
-      .reduce((total, cur, ind) => (total += cur), 0);
+      .reduce((total, cur) => (total += cur), 0);
     const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
     if (client.user.presence.activities[0]?.name !== activity) client.user.setActivity(activity, { type: 'WATCHING' });
   }, 3600000);
@@ -60,7 +61,7 @@ export const ready = async (client: Semblance) => {
   Information.findOne({ infoType: 'github' }).then(async infoHandler => {
     if (infoHandler.updated) {
       await Information.findOneAndUpdate({ infoType: 'github' }, { $set: { updated: false } });
-      let embed = new MessageEmbed()
+      const embed = new MessageEmbed()
         .setTitle('Semblance Update')
         .setColor(randomColor)
         .setAuthor(client.user.tag, client.user.displayAvatarURL())

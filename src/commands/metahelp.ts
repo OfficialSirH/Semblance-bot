@@ -14,7 +14,7 @@ export default {
 } as Command<'help'>;
 
 const run = async (message: Message) => {
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Metabit Calculator Help')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)

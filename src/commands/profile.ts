@@ -15,25 +15,22 @@ export default {
 const run = async (client: Semblance, message: Message, args: string[]) => {
   if (args.length == 0) return guildProfileEmbed(message, message.member);
 
-  let userRegexed = /(?<![:\d])(?<id>\d{17,19})(?!\d)/.exec(args[0]);
-  if (!userRegexed) return message.reply("You've provided invalid input");
-  let userId = userRegexed.groups.id as Snowflake;
+  const userRegexed = /(?<![:\d])(?<id>\d{17,19})(?!\d)/.exec(args[0]);
+  if (!userRegexed) return message.reply('You\'ve provided invalid input');
+  const userId = userRegexed.groups.id as Snowflake;
   let member: GuildMember;
   try {
     member = await message.guild.members.fetch({ user: userId, cache: false });
-  } catch (e) {
-    console.log(e);
-  } finally {
-    if (!!member) return guildProfileEmbed(message, member);
+  } catch {}
+    if (member) return guildProfileEmbed(message, member);
 
     try {
-      let user = await client.users.fetch(userId, { cache: false });
-      if (!!user) return userProfileEmbed(message, user);
-      message.reply("Sorry, that user couldn't be found in Discord at all");
+      const user = await client.users.fetch(userId, { cache: false });
+      if (user) return userProfileEmbed(message, user);
+      message.reply('Sorry, that user couldn\'t be found in Discord at all');
     } catch (e) {
       console.log(e);
     }
-  }
 };
 
 async function guildProfileEmbed(message: Message, member: GuildMember) {
@@ -41,7 +38,7 @@ async function guildProfileEmbed(message: Message, member: GuildMember) {
   accountCreated = `${accountCreated.substring(0, 16)}(${daysAgo(member.user.createdAt)})`;
   let accountJoined = `${member.joinedAt}`;
   accountJoined = `${accountJoined.substring(0, 16)}(${daysAgo(member.joinedAt)})`;
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Guild User Profile')
     .setDescription(`User data for ${member}:`)
     .setColor(randomColor)
@@ -59,8 +56,8 @@ async function guildProfileEmbed(message: Message, member: GuildMember) {
 }
 
 async function userProfileEmbed(message: Message, user: User) {
-  let accountCreated = `${message.author.createdAt.toString().substring(0, 16)}(${daysAgo(user.createdTimestamp)})`;
-  let embed = new MessageEmbed()
+  const accountCreated = `${message.author.createdAt.toString().substring(0, 16)}(${daysAgo(user.createdTimestamp)})`;
+  const embed = new MessageEmbed()
     .setTitle('User Profile')
     .setDescription(`User data for ${user}:`)
     .setColor(randomColor)
@@ -76,6 +73,6 @@ async function userProfileEmbed(message: Message, user: User) {
 }
 
 function daysAgo(date: Date | number) {
-  let msToDays = 1000 * 60 * 60 * 24;
+  const msToDays = 1000 * 60 * 60 * 24;
   return `${Math.round((Date.now() - (date as number)) / msToDays)} days ago`;
 }

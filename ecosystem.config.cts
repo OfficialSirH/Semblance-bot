@@ -5,10 +5,10 @@ module.exports = {
         watch: true,
         instances: '1',
         env: {
-            NODE_ENV: "development"
+            NODE_ENV: 'development'
         },
         env_production: {
-            NODE_ENV: "production"
+            NODE_ENV: 'production'
         }
     }],
 

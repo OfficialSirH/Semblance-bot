@@ -5,7 +5,7 @@ import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
-  description: "Check the bot's latency.",
+  description: 'Check the bot\'s latency.',
   category: 'semblance',
   permissionRequired: 0,
   checkArgs: () => true,
@@ -13,7 +13,7 @@ export default {
 } as Command<'semblance'>;
 
 const run = async (client: Semblance, message: Message) => {
-  let uptime = Date.now() - client.readyTimestamp,
+  const uptime = Date.now() - client.readyTimestamp,
     duration = msToTime(uptime),
     responseTime = Date.now() - message.createdTimestamp,
     userAvatar = message.author.displayAvatarURL({ dynamic: true }),

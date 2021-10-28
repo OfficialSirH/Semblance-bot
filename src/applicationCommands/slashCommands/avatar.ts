@@ -6,7 +6,7 @@ import type { SlashCommand } from '#lib/interfaces/Semblance';
 export default {
   permissionRequired: 0,
   run: async (interaction, { client }) => {
-    let user = interaction.options.getUser('user')
+    const user = interaction.options.getUser('user')
         ? await client.users.fetch(interaction.options.getUser('user').id)
         : (interaction.member.user as User),
       author = interaction.member.user as User,

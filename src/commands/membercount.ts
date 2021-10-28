@@ -12,8 +12,8 @@ export default {
 } as Command<'server'>;
 
 const run = async (message: Message) => {
-  let guild = await message.guild.fetch();
-  let embed = new MessageEmbed()
+  const guild = await message.guild.fetch();
+  const embed = new MessageEmbed()
     .setTitle('Members')
     .setColor(randomColor)
     .setDescription(guild.approximateMemberCount.toString())

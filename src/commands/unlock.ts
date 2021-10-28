@@ -24,21 +24,21 @@ const run = async (message: Message, args: string[]) => {
     if (message.guild.id == sirhGuildId)
       channels = message.guild.channels.cache.filter(ch => constants.sirhChannels.includes(ch.id));
     if (!channels.size)
-      return message.channel.send(`🚫 This server doesnt have any public channels configured, unfortunately.`);
+      return message.channel.send('🚫 This server doesnt have any public channels configured, unfortunately.');
     else channels.map(ch => unlockChannel(ch as TextChannel, message.author));
   } else {
-    let success = await unlockChannel(message.channel as TextChannel, message.author);
+    const success = await unlockChannel(message.channel as TextChannel, message.author);
     if (success) message.delete();
-    else message.channel.send(`👮 This channel isn't locked!`);
+    else message.channel.send('👮 This channel isn\'t locked!');
   }
 };
 
 async function unlockChannel(channel: TextChannel, author: User) {
-  let permission = channel.permissionOverwrites.cache.find(po => po.id == channel.guild.roles.everyone.id);
+  const permission = channel.permissionOverwrites.cache.find(po => po.id == channel.guild.roles.everyone.id);
   if (!permission.deny.has('SEND_MESSAGES')) return false;
 
   await channel.edit({ topic: channel.topic.replace(constants.lockMessage(author), '') });
   await permission.edit({ SEND_MESSAGES: null });
-  await channel.send(`👮 ***The channel has been unlocked.***`);
+  await channel.send('👮 ***The channel has been unlocked.***');
   return true;
 }

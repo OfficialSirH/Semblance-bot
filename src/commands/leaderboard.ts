@@ -14,8 +14,8 @@ export default {
 
 const run = async (client: Semblance, message: Message) => {
   let leaderboard = client.voteLeaderboard.toString();
-  if (!leaderboard) leaderboard = "No one has voted for Semblance :( (or the leaderboard just didn't update)";
-  let embed = new MessageEmbed()
+  if (!leaderboard) leaderboard = 'No one has voted for Semblance :( (or the leaderboard just didn\'t update)';
+  const embed = new MessageEmbed()
     .setTitle('Voting Leaderboard')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)

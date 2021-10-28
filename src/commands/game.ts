@@ -30,17 +30,17 @@ const run = async (message: Message) => {
     cooldownHandler.set(message.author.id, Date.now());
   }
 
-  let statsHandler = await Game.findOne({ player: message.author.id }),
-    embed = new MessageEmbed(),
-    cost: number;
+  const statsHandler = await Game.findOne({ player: message.author.id }),
+    embed = new MessageEmbed();
+  let cost: number;
   if (!statsHandler)
     embed
-      .setTitle(`Semblance's Idle-Game`)
+      .setTitle('Semblance\'s Idle-Game')
       .setAuthor(message.author.tag, message.author.displayAvatarURL())
       .setDescription(
         [
           'Use the buttons below to play the game. :D',
-          "If you can't see the buttons, you need to update your Discord.\n",
+          'If you can\'t see the buttons, you need to update your Discord.\n',
           'About - explains the game and its rules',
           'Collect - collect earnings',
           'Upgrade - upgrade profit',
@@ -50,7 +50,7 @@ const run = async (message: Message) => {
       );
   else
     embed
-      .setTitle(`Welcome back to Semblance's Idle-Game!`)
+      .setTitle('Welcome back to Semblance\'s Idle-Game!')
       .setAuthor(message.author.tag, message.author.displayAvatarURL())
       .setColor(randomColor)
       .setThumbnail(message.author.displayAvatarURL())
@@ -85,7 +85,7 @@ const run = async (message: Message) => {
             id: message.author.id,
           }),
         )
-        .setDisabled(!Boolean(statsHandler))
+        .setDisabled(!statsHandler)
         .setStyle('PRIMARY')
         .setEmoji('💵')
         .setLabel('Collect'),
@@ -97,7 +97,7 @@ const run = async (message: Message) => {
             id: message.author.id,
           }),
         )
-        .setDisabled(!Boolean(statsHandler) || statsHandler.money < cost)
+        .setDisabled(!statsHandler || statsHandler.money < cost)
         .setStyle('PRIMARY')
         .setEmoji('⬆')
         .setLabel('Upgrade'),

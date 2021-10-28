@@ -18,7 +18,7 @@ const run = async (client: Semblance, message: Message) => {
   const c2sServerCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'c2sServer')
     .map(key => `**\`${prefix}${key}\`**`);
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Semblance Command List')
     .setColor(randomColor)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
@@ -32,8 +32,8 @@ const run = async (client: Semblance, message: Message) => {
       {
         name: '**-> Slash Commands**',
         value: [
-          "Semblance's Slash Commands can be listed by typing `/`, which if none are visible,",
-          "that's likely due to Semblance not being authorized on the server and a admin will need to click",
+          'Semblance\'s Slash Commands can be listed by typing `/`, which if none are visible,',
+          'that\'s likely due to Semblance not being authorized on the server and a admin will need to click',
           `[here](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot+applications.commands) to authorize Semblance.`,
         ].join(' '),
       },
@@ -96,5 +96,5 @@ const run = async (client: Semblance, message: Message) => {
         .setStyle('SECONDARY'),
     ]),
   ];
-  message.reply({ content: `Here are some lovely commands for you!`, embeds: [embed], components });
+  message.reply({ content: 'Here are some lovely commands for you!', embeds: [embed], components });
 };

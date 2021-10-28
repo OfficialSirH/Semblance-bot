@@ -16,7 +16,7 @@ export default {
 } as Command<'game'>;
 
 const run = async (message: Message) => {
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Terminus Chamber')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

@@ -13,12 +13,12 @@ export default {
 } as Command<'game'>;
 
 const run = async (message: Message) => {
-  let feedbackImage = 'https://i.imgur.com/lKQh5zW.png';
-  let embed = new MessageEmbed()
+  const feedbackImage = 'https://i.imgur.com/lKQh5zW.png';
+  const embed = new MessageEmbed()
     .setTitle('Feedback')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
-    .setDescription("Give feedback for ComputerLunch's game, C2S.")
+    .setDescription('Give feedback for ComputerLunch\'s game, C2S.')
     .setImage(feedbackImage);
   message.channel.send({ embeds: [embed] });
 };

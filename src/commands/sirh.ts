@@ -1,4 +1,5 @@
-﻿import { MessageEmbed } from 'discord.js';
+﻿/* eslint-disable @typescript-eslint/no-unused-vars */
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';

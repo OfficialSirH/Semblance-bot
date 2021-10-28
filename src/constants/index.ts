@@ -14,11 +14,11 @@ import config from '#config';
 const { prefix } = config;
 
 export const getAvatar = (user: User) => {
-  let avatarType = user.avatar.startsWith('a_') ? `${user.avatar}.gif` : `${user.avatar}.png`;
+  const avatarType = user.avatar.startsWith('a_') ? `${user.avatar}.gif` : `${user.avatar}.png`;
   return `https://cdn.discordapp.com/avatars/${user.id}/${avatarType}?size=4096`;
 };
 export const insertionsort = (list: [Snowflake, number][]) => {
-  for (var i = 0; i < list.length; i++) {
+  for (let i = 0; i < list.length; i++) {
     const curItem = list[i];
     let curIndex = i - 1;
     while (curIndex >= 0 && curItem[1] > list[curIndex][1]) {
@@ -51,6 +51,7 @@ const swap = (list: [Snowflake, number][], leftIndex: number, rightIndex: number
   return list;
 };
 const partition = (list: [Snowflake, number][], left: number, right: number) => {
+  // eslint-disable-next-line prefer-const
   let pivot = list[Math.floor((right + left) / 2)][1],
     i = left,
     j = right;
@@ -151,7 +152,7 @@ export const timeInputAutocompleteAssistantRegex =
 export const trelloLinkRegex = /https:\/\/trello\.com\/c\/([0-9]|[A-Z]){8}/i;
 export const onlyUnique = (value: any, index: number, self: any[]) => self.indexOf(value) == index;
 export const parseArgs = (_arguments: string) =>
-  (_arguments.match(/\"[^"]+\"|[^ ]+/g) ?? []).map(argument =>
+  (_arguments.match(/"[^"]+"|[^ ]+/g) ?? []).map(argument =>
     argument.startsWith('"') && argument.endsWith('"') ? argument.slice(1).slice(0, -1) : argument,
   );
 export const lockMessage = (user: User) => `👮 👮 ***CHANNEL IS LOCKED BY ${user}*** 👮 👮`;
@@ -266,7 +267,7 @@ class RandomColor {
         blue += Math.floor(Math.random() * 100);
       }
     }
-    let redString = red.toString(16),
+    const redString = red.toString(16),
       greenString = green.toString(16),
       blueString = blue.toString(16);
     return ('#' + redString + greenString + blueString) as ColorResolvable;

@@ -17,7 +17,7 @@ const run = async (client: Semblance, message: Message) => {
   const mainCommands = subcategoryList(client, 'game', 'main');
   const mesozoicCommands = subcategoryList(client, 'game', 'mesozoic');
   const otherCommands = subcategoryList(client, 'game', 'other');
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('**-> Cell to Singularity Commands**')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

@@ -1,7 +1,7 @@
-import { ButtonData } from '#lib/interfaces/Semblance';
+import type { ButtonData } from '#lib/interfaces/Semblance';
 import { Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed } from 'discord.js';
 import { randomColor, subcategoryList } from '#constants/index';
-import { Semblance } from '#structures/Semblance';
+import type { Semblance } from '#structures/Semblance';
 import config from '#config';
 const { prefix, c2sGuildId, sirhId, adityaId } = config;
 
@@ -10,7 +10,7 @@ export const run = async (
   { action, id }: ButtonData,
   { permissionLevel },
 ) => {
-  let components = [new MessageActionRow()];
+  const components = [new MessageActionRow()];
   if (action != 'help')
     components[0].components = [
       new MessageButton()
@@ -125,7 +125,7 @@ async function help(interaction: MessageComponentInteraction, components: Messag
       .setStyle('PRIMARY'),
     ...components[0].components,
   ];
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Semblance Command List')
     .setColor(randomColor)
     .setAuthor(user.tag, user.displayAvatarURL())
@@ -139,8 +139,8 @@ async function help(interaction: MessageComponentInteraction, components: Messag
       {
         name: '**-> Slash Commands**',
         value: [
-          "Semblance's Slash Commands can be listed by typing `/`, which if none are visible,",
-          "that's likely due to Semblance not being authorized on the server and a admin will need to click",
+          'Semblance\'s Slash Commands can be listed by typing `/`, which if none are visible,',
+          'that\'s likely due to Semblance not being authorized on the server and a admin will need to click',
           `[here](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot+applications.commands) to authorize Semblance.`,
         ].join(' '),
       },
@@ -154,7 +154,7 @@ async function ahelp(interaction: MessageComponentInteraction, components: Messa
   const adminCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'admin')
     .map(key => `**\`${prefix}${key}\`**`);
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setColor(randomColor)
     .setTitle('**-> Admin Commands**')
     .setThumbnail(client.user.displayAvatarURL())
@@ -191,7 +191,7 @@ async function c2shelp(interaction: MessageComponentInteraction, components: Mes
       .setStyle('PRIMARY'),
     ...components[0].components,
   ];
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('**-> Cell to Singularity Commands**')
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
@@ -209,23 +209,23 @@ async function c2shelp(interaction: MessageComponentInteraction, components: Mes
 async function itemhelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   const client = interaction.client as Semblance,
     user = interaction.user;
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Item Calculator Help')
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
     .setDescription(
       `The item calculator's command is done by doing ${prefix}itemcalc <item name> <item level> <current lvl> or ${prefix}itemcalcrev <item name> <currency input> <current lvl>` +
-        ", which any name that has more than one word has to include '-', for example: martian-factory.",
+        ', which any name that has more than one word has to include \'-\', for example: martian-factory.',
     )
     .addFields(
       {
         name: 'itemcalc example',
-        value: `${prefix}itemcalc dna 100 58, this example is taking "dna" to get the specific cost for dna, then "100" is used to specify what level you\'re trying to calculate, finally, "58" specifies the current level the item is at.`,
+        value: `${prefix}itemcalc dna 100 58, this example is taking "dna" to get the specific cost for dna, then "100" is used to specify what level you're trying to calculate, finally, "58" specifies the current level the item is at.`,
       },
       {
         name: 'itemcalcrev example',
-        value: `${prefix}itemcalcrev martian-factory 1E48 148, this example uses the martian-factory for calculating the item\'s specific cost, then "1E48" is fossil input for how many fossils you\'re "spending", finally, "148" is your current level of the item you specified.`,
+        value: `${prefix}itemcalcrev martian-factory 1E48 148, this example uses the martian-factory for calculating the item's specific cost, then "1E48" is fossil input for how many fossils you're "spending", finally, "148" is your current level of the item you specified.`,
       },
     )
     .setFooter('Item Calculator goes brrrr...');
@@ -235,7 +235,7 @@ async function itemhelp(interaction: MessageComponentInteraction, components: Me
 async function largenumbers(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   const client = interaction.client as Semblance,
     user = interaction.user;
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Large Numbers')
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
@@ -253,8 +253,8 @@ async function largenumbers(interaction: MessageComponentInteraction, components
         'SpDc(SeptenDecillion), OcDc(OctoDecillion)',
         'NoDc(NovemDecillion), V(Vigintillion)',
       ].join(',\n') +
-        "\nAll these names are case insensitive, meaning you don't have to type them in the exact correct capilization for it to work;" +
-        " In case someone uses the British format for these names, please note that these are in US format, so they aren't the exact same as yours and if you would like to know what the names are in US format" +
+        '\nAll these names are case insensitive, meaning you don\'t have to type them in the exact correct capilization for it to work;' +
+        ' In case someone uses the British format for these names, please note that these are in US format, so they aren\'t the exact same as yours and if you would like to know what the names are in US format' +
         ', click [here](http://www.thealmightyguru.com/Pointless/BigNumbers.html)',
     )
     .setFooter('Large Numbers go brrrr...');
@@ -264,7 +264,7 @@ async function largenumbers(interaction: MessageComponentInteraction, components
 async function metahelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   const client = interaction.client as Semblance,
     user = interaction.user;
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Metabit Calculator Help')
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
@@ -330,7 +330,7 @@ async function mischelp(
       .setStyle('PRIMARY'),
     ...components[0].components,
   ];
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Miscellaneous Commands')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
@@ -399,7 +399,7 @@ async function calchelp(interaction: MessageComponentInteraction, components: Me
       .setStyle('PRIMARY'),
     ...components[0].components,
   ];
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Calculator Help')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
@@ -412,7 +412,7 @@ async function bughelp(interaction: MessageComponentInteraction, components: Mes
   const client = interaction.client as Semblance,
     user = interaction.user;
 
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Bug Reporting Help')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
@@ -424,13 +424,13 @@ async function bughelp(interaction: MessageComponentInteraction, components: Mes
         '+ Title',
         '\tThis is the title of the bug, just a quick description basically',
         '+ Actual Result',
-        "\tWhat occurs in this bug that shouldn't be occuring normally?",
+        '\tWhat occurs in this bug that shouldn\'t be occuring normally?',
         '+ Expected Result',
         '\tWhat do you think or know should be happening in this situation instead of the actual result?',
         '+ Operating System',
         '\tWhat system are you playing the game on? For example: Windows 10, Android 9, Iphone 12',
         '+ Game Version',
-        "\tWhat is the game's version that you're playing during the cause of this bug?(i.e. 8.06)",
+        '\tWhat is the game\'s version that you\'re playing during the cause of this bug?(i.e. 8.06)',
         '+ FORMAT',
         `\t${prefix}report TITLE`,
         '\tACTUAL_RESULT',
@@ -443,7 +443,7 @@ async function bughelp(interaction: MessageComponentInteraction, components: Mes
         '\nREPORT EXAMPLE:',
         `\t${prefix}report Bad Bug`,
         '\tIt does something bad',
-        "\tIt shouldn't do something bad",
+        '\tIt shouldn\'t do something bad',
         '\tWindows 69',
         '\t4_20',
 
@@ -466,7 +466,7 @@ async function metabits(interaction: MessageComponentInteraction, components: Me
   const client = interaction.client as Semblance,
     user = interaction.user;
 
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Metabits Guide')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
@@ -496,10 +496,10 @@ async function metabits(interaction: MessageComponentInteraction, components: Me
 
         [
           '**Reality Engine:**',
-          "There are upgrades in the Reality Engine that specifically boost your production speed, which you can total up to **2105%** if you got all of the upgrades, now that's a lot! :D",
+          'There are upgrades in the Reality Engine that specifically boost your production speed, which you can total up to **2105%** if you got all of the upgrades, now that\'s a lot! :D',
         ].join('\n'),
 
-        "If you'd like to see the effects all of these have on overall production speed, use the slash command, `/metaspeedcalc`, to play around with the values!",
+        'If you\'d like to see the effects all of these have on overall production speed, use the slash command, `/metaspeedcalc`, to play around with the values!',
       ].join('\n\n'),
     );
   await interaction.update({ embeds: [embed], components });
@@ -509,7 +509,7 @@ async function mesoguide(interaction: MessageComponentInteraction, components: M
   const client = interaction.client as Semblance,
     user = interaction.user;
 
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Mesozoic Valley Guide')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
@@ -525,8 +525,8 @@ async function mesoguide(interaction: MessageComponentInteraction, components: M
       {
         name: '**Starting a new stage**',
         value: [
-          `\`\`\`\nWhen starting a new stage get to your newest dinos as fast as possible completely ignoring all the dinos before the newest 2-3. Then only upgrade these few as far as you can afford in the first 5-10 min.`,
-          `After that focus on completing missions to get geodes.\`\`\``,
+          '```\nWhen starting a new stage get to your newest dinos as fast as possible completely ignoring all the dinos before the newest 2-3. Then only upgrade these few as far as you can afford in the first 5-10 min.',
+          'After that focus on completing missions to get geodes.```',
         ].join(' '),
         inline: true,
       },
@@ -534,19 +534,19 @@ async function mesoguide(interaction: MessageComponentInteraction, components: M
         name: '**Exiting a stage**',
         value: [
           '```\nI recommend only exiting a stage when you have completed all missions.',
-          "Before doing so you should go through all your dinos and try to reach as many milestones as you can for some extra mutagen. Don't underestimate the effect of this, especially at higher stages.",
+          'Before doing so you should go through all your dinos and try to reach as many milestones as you can for some extra mutagen. Don\'t underestimate the effect of this, especially at higher stages.',
           'The milestones are 10, 25, 50, 100, 150, 250, and 500.```',
         ].join('\n'),
       },
       {
         name: '**Missions**',
         value: [
-          `\`\`\`\nThere are four mission types, two of them are a free source of mutagen and traits:`,
-          `- taking a photo of your newest dino`,
-          `- upgrading a certain amount of traits`,
-          `The other two can be a lot more challenging:`,
-          `- upgrading dinos to a particular level - you should just complete this one after the other`,
-          `- producing a certain amount of fossils - there are going to be 1-2 of these per stage, one of them most likely as the last mission with a very high amount of fossils\`\`\``,
+          '```\nThere are four mission types, two of them are a free source of mutagen and traits:',
+          '- taking a photo of your newest dino',
+          '- upgrading a certain amount of traits',
+          'The other two can be a lot more challenging:',
+          '- upgrading dinos to a particular level - you should just complete this one after the other',
+          '- producing a certain amount of fossils - there are going to be 1-2 of these per stage, one of them most likely as the last mission with a very high amount of fossils```',
         ].join('\n'),
         inline: true,
       },
@@ -554,38 +554,38 @@ async function mesoguide(interaction: MessageComponentInteraction, components: M
         name: '**Traits**',
         value: [
           [
-            `\`\`\`\nThis segment is closely connected to the "shop"-part of the guide.`,
-            `Always upgrade the rare (silver) and epic (gold) traits when available because you keep them after you reset on stage 50.`,
-            `The normal traits should only be upgraded for your newest 2 dinos because newer dinos always have a better cost/income ratio. The level depends on which stage you are in.`,
+            '```\nThis segment is closely connected to the "shop"-part of the guide.',
+            'Always upgrade the rare (silver) and epic (gold) traits when available because you keep them after you reset on stage 50.',
+            'The normal traits should only be upgraded for your newest 2 dinos because newer dinos always have a better cost/income ratio. The level depends on which stage you are in.',
           ].join('\n'),
           [
-            `Stage 1-5: lvl 1-2`,
-            `Stage 6-10: lvl 2-3`,
-            `Stage 11-15: lvl 3-4`,
-            `Stage 16-20: lvl 4-5`,
-            `Stage 21-25: lvl 5-6`,
-            `Stage 26-30: lvl 6-7`,
-            `Stage 31-35: lvl 7-8`,
-            `Stage 36-40: lvl 8-9`,
-            `Stage 41-45: lvl 9-10`,
-            `Stage 46-50: lvl 10-11`,
+            'Stage 1-5: lvl 1-2',
+            'Stage 6-10: lvl 2-3',
+            'Stage 11-15: lvl 3-4',
+            'Stage 16-20: lvl 4-5',
+            'Stage 21-25: lvl 5-6',
+            'Stage 26-30: lvl 6-7',
+            'Stage 31-35: lvl 7-8',
+            'Stage 36-40: lvl 8-9',
+            'Stage 41-45: lvl 9-10',
+            'Stage 46-50: lvl 10-11',
           ].join('\n'),
-          `If you have lots of mutagen left, you can of course use that to speed up you progress by upgrading the traits further.\`\`\``,
+          'If you have lots of mutagen left, you can of course use that to speed up you progress by upgrading the traits further.```',
         ].join('\n\n'),
       },
       {
         name: '** The Shop**',
         value: [
-          `\`\`\`\nThe Shop gives you options to buy geodes, traits, and mutagen. When and what to buy is really important because buying too much wastes resources and buying too little wastes time.`,
-          `Only buy diamond geodes, and those only on stage 50 before prestiging, because the contents of the geodes scale with your stage so it is most effective to buy them at 50.`,
-          `Buying traits is the only way of effectively leveling the new traits on higher stages.`,
-          `The shop always offers traits that don’t have an upgrade available. By always buying and instantly upgrading two traits you can get new traits to a high level really fast.`,
-          `There is no need to ever keep more than about 5 times the mutagen needed for the most expensive upgrade you want to get, so you can invest the rest in buying and upgrading traits.`,
-          `The mutagen part of the shop is not needed at any time. If you have an urge to spend darwinium then buy diamond geodes instead.\`\`\``,
+          '```\nThe Shop gives you options to buy geodes, traits, and mutagen. When and what to buy is really important because buying too much wastes resources and buying too little wastes time.',
+          'Only buy diamond geodes, and those only on stage 50 before prestiging, because the contents of the geodes scale with your stage so it is most effective to buy them at 50.',
+          'Buying traits is the only way of effectively leveling the new traits on higher stages.',
+          'The shop always offers traits that don’t have an upgrade available. By always buying and instantly upgrading two traits you can get new traits to a high level really fast.',
+          'There is no need to ever keep more than about 5 times the mutagen needed for the most expensive upgrade you want to get, so you can invest the rest in buying and upgrading traits.',
+          'The mutagen part of the shop is not needed at any time. If you have an urge to spend darwinium then buy diamond geodes instead.```',
         ].join('\n\n'),
         inline: true,
       },
     ])
-    .setFooter(`Thanks to Jojoseis#0001 for making this guide! :D`);
+    .setFooter('Thanks to Jojoseis#0001 for making this guide! :D');
   await interaction.update({ embeds: [embed], components });
 }

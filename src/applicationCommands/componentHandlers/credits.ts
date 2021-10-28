@@ -1,9 +1,8 @@
-import { ButtonData } from '#lib/interfaces/Semblance';
+import type { ButtonData } from '#lib/interfaces/Semblance';
 import { MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed } from 'discord.js';
 
 export const run = async (interaction: MessageComponentInteraction, { action, id }: ButtonData) => {
-  let component: MessageActionRow,
-    embed = new MessageEmbed();
+  const embed = new MessageEmbed();
   const creditComponents = [
     new MessageButton()
       .setCustomId(
@@ -59,14 +58,14 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
   //return console.log(interaction.message.components);
 
   if (action == 'credits') {
-    embed = new MessageEmbed().setTitle('Credits').addFields([
+    embed.setTitle('Credits').addFields([
       { name: 'Developer', value: 'SirH' },
       { name: 'Special Thanks and Organizer', value: 'Aditya' },
       {
         name: 'Artist',
         value: [
           '**Semblance:** cabiie',
-          "**Semblance Beta:** Lemon ([Lemon's Instagram page](https://www.instagram.com/creations_without_limtation/))",
+          '**Semblance Beta:** Lemon ([Lemon\'s Instagram page](https://www.instagram.com/creations_without_limtation/))',
           '**Semblance Revisioned:** StarLuckArt(preview soon:tm:) ([DeviantArt](https://www.deviantart.com/starluckart) and [Personal Site](https://bubblestheprotogen.wixsite.com/starluckart))',
         ].join('\n'),
       },
@@ -87,10 +86,10 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
       .setTitle('Special Thanks')
       .setDescription(
         'Special Thanks to Aditya for motivating me from the very beginning to work on this bot. ' +
-          "If it weren't for him, my bot wouldn't even be at this point right now; running on an actual server, " +
+          'If it weren\'t for him, my bot wouldn\'t even be at this point right now; running on an actual server, ' +
           'built with a better Discord module than previously, and have this many features. He even convinced Hype ' +
-          "to add my bot to Cell to Singularity, which I can't thank him enough for, cause I was too shy to ask Hype. " +
-          "Thanks again, Aditya, you've helped me a lot. :D",
+          'to add my bot to Cell to Singularity, which I can\'t thank him enough for, cause I was too shy to ask Hype. ' +
+          'Thanks again, Aditya, you\'ve helped me a lot. :D',
       );
   else if (action == 'semblance')
     embed.setTitle('Semblance - by cabiie').setImage(interaction.client.user.displayAvatarURL() + '?size=2048');
@@ -100,7 +99,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
       .setImage('https://cdn.discordapp.com/avatars/794049840651960350/b101b9f78fb44d2c0b0c40e53b17e677.png?size=2048');
   else if (action == 'semblancerevisioned')
     embed.setTitle('Semblance Revisioned - by StarLuckArt(WIP/Not previewable yet)');
-  component = new MessageActionRow().addComponents(
+  const component = new MessageActionRow().addComponents(
     creditComponents.filter(c => eval(`(${c.customId})`).action != action),
   );
   interaction.update({ embeds: [embed], components: [component] });

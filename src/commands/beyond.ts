@@ -20,7 +20,7 @@ const run = async (message: Message, args: string[]) => {
   if (args[0] == 'clips' || args.join(' ') == 'sneak peeks' || args[0] == 'sneakpeeks') return clips(message);
   if (args[0] == 'count' || args[0] == 'counter') return beyondCounter(message);
   if (args[0] == 'testers') return testerCredits(message);
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Beyond/Road Map')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
@@ -33,23 +33,23 @@ const run = async (message: Message, args: string[]) => {
 };
 
 async function clips(message) {
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Beyond Clips')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(
       [
-        `[Clip One](https://clips.twitch.tv/CharmingVibrantWatermelonPeoplesChamp)`,
-        `[Clip Two](https://clips.twitch.tv/GracefulSmellyYakDoggo)`,
-        `[Clip Three](https://clips.twitch.tv/BillowingCovertFishFeelsBadMan)`,
-        `[Clip Four](https://clips.twitch.tv/NurturingMushyClintmullinsDuDudu)`,
-        `[Clip Five](https://clips.twitch.tv/MistyAgileWrenLitFam)`,
-        `[Clip Six](https://clips.twitch.tv/AffluentDoubtfulPeachDendiFace)`,
-        `[Clip Seven](https://clips.twitch.tv/CarefulUnusualDootResidentSleeper)`,
-        `[Clip Eight](https://clips.twitch.tv/AbstemiousCreativeChoughJKanStyle)`,
-        `[Clip Nine](https://clips.twitch.tv/WrongGiftedBeefThisIsSparta-wCREhZ-Q_OnJIs24)`,
-        `[Clip Ten](https://clips.twitch.tv/JoyousCarefulCheesePMSTwin-QbCPmpwO_taQfUTe)`,
-        `[Clip Eleven](https://clips.twitch.tv/ConfidentTallAniseSpicyBoy-zSeEcUibWET5R4pc)`,
+        '[Clip One](https://clips.twitch.tv/CharmingVibrantWatermelonPeoplesChamp)',
+        '[Clip Two](https://clips.twitch.tv/GracefulSmellyYakDoggo)',
+        '[Clip Three](https://clips.twitch.tv/BillowingCovertFishFeelsBadMan)',
+        '[Clip Four](https://clips.twitch.tv/NurturingMushyClintmullinsDuDudu)',
+        '[Clip Five](https://clips.twitch.tv/MistyAgileWrenLitFam)',
+        '[Clip Six](https://clips.twitch.tv/AffluentDoubtfulPeachDendiFace)',
+        '[Clip Seven](https://clips.twitch.tv/CarefulUnusualDootResidentSleeper)',
+        '[Clip Eight](https://clips.twitch.tv/AbstemiousCreativeChoughJKanStyle)',
+        '[Clip Nine](https://clips.twitch.tv/WrongGiftedBeefThisIsSparta-wCREhZ-Q_OnJIs24)',
+        '[Clip Ten](https://clips.twitch.tv/JoyousCarefulCheesePMSTwin-QbCPmpwO_taQfUTe)',
+        '[Clip Eleven](https://clips.twitch.tv/ConfidentTallAniseSpicyBoy-zSeEcUibWET5R4pc)',
       ].join('\n'),
     )
     .setFooter('Patience for The Beyond is key');
@@ -58,7 +58,7 @@ async function clips(message) {
 
 async function beyondCounter(message) {
   const beyondCount = await Information.findOne({ infoType: 'beyondcount' });
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Beyond Counter')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
@@ -69,11 +69,11 @@ async function beyondCounter(message) {
 }
 
 function testerCredits(message) {
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Credits to our Early Private Beta Testers!')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(earlyBeyondTesters.join('\n'))
-    .setFooter(`Thank you Early Private Beta Testers for helping the ComputerLunch team with testing The Beyond! :D`);
+    .setFooter('Thank you Early Private Beta Testers for helping the ComputerLunch team with testing The Beyond! :D');
   message.channel.send({ embeds: [embed] });
 }

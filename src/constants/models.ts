@@ -52,7 +52,7 @@ export const checkBoosterRewards = async (client: Semblance) => {
         await boosterChannel(client).send({
           content:
             `${member} I had trouble DMing you so instead Aditya or SirH will manually provide you a code. :)` +
-            `\nTip: These errors tend to happen when your DMs are closed. So keeping them open would help us out :D`,
+            '\nTip: These errors tend to happen when your DMs are closed. So keeping them open would help us out :D',
           allowedMentions: { users: [member.id] },
         });
         darwiniumCodes.list.unshift(darwiniumCode);

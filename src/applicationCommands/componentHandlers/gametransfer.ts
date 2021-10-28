@@ -6,7 +6,7 @@ const { currentLogo } = config;
 
 export const run = async (interaction: MessageComponentInteraction, { action, id }: ButtonData) => {
   const message = interaction.message;
-  let embed = message.embeds[0] as MessageEmbed;
+  const embed = message.embeds[0] as MessageEmbed;
   let currentPage = gameTransferPages.indexOf(embed.image.url);
 
   if (action == 'right') currentPage = currentPage == 4 ? 0 : ++currentPage;

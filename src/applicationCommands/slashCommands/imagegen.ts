@@ -11,7 +11,7 @@ export default {
       wantsCat = interaction.options.getSubcommand() === 'cat';
     } catch (e) {
       commandFailed = true;
-      await interaction.reply({ content: "Something didn't work quite right. Please try again.", ephemeral: true });
+      await interaction.reply({ content: 'Something didn\'t work quite right. Please try again.', ephemeral: true });
     }
     if (commandFailed) return;
     const query_params = {

@@ -45,16 +45,16 @@ async function create(interaction: CommandInteraction) {
   if ([months, weeks, days, hours, minutes].every(time => !time))
     return interaction.reply({ content: 'Your input for time was invalid, please try again.', ephemeral: true });
 
-  let totalTime = timeInputToMs(months, weeks, days, hours, minutes);
+  const totalTime = timeInputToMs(months, weeks, days, hours, minutes);
 
   if (totalTime > 29030400000)
     return interaction.reply({ content: 'You cannot create a reminder for longer than a year', ephemeral: true });
 
-  let currentReminderData = await Reminder.findOne({ userId: user.id });
+  const currentReminderData = await Reminder.findOne({ userId: user.id });
   if (currentReminderData?.reminders.length >= 5)
     return interaction.reply({ content: 'You cannot have more than 5 reminders at a time', ephemeral: true });
 
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Reminder')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
@@ -66,7 +66,7 @@ async function create(interaction: CommandInteraction) {
     .setFooter(`Command called by ${user.tag}`, user.displayAvatarURL());
   await interaction.reply({ embeds: [embed] });
 
-  if (!!currentReminderData)
+  if (currentReminderData)
     return currentReminderData.update({
       reminders: currentReminderData.reminders.concat([
         {
@@ -78,7 +78,7 @@ async function create(interaction: CommandInteraction) {
       ]),
     });
 
-  let reminderHandler = new Reminder({
+  const reminderHandler = new Reminder({
     userId: user.id,
     reminders: [
       {
@@ -97,7 +97,7 @@ async function edit(interaction: CommandInteraction) {
     currentReminderData = await Reminder.findOne({ userId: user.id });
 
   if (!currentReminderData)
-    return interaction.reply({ content: "You don't have any reminders to edit.", ephemeral: true });
+    return interaction.reply({ content: 'You don\'t have any reminders to edit.', ephemeral: true });
 
   const reminderId = interaction.options.getInteger('reminderid'),
     reminder = interaction.options.getString('reminder'),
@@ -133,7 +133,7 @@ async function edit(interaction: CommandInteraction) {
     }),
   });
 
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Edited Reminder')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
@@ -152,7 +152,7 @@ async function deleteReminder(interaction: CommandInteraction) {
     currentReminderData = await Reminder.findOne({ userId: user.id });
 
   if (!currentReminderData)
-    return interaction.reply({ content: "You don't have any reminders to delete.", ephemeral: true });
+    return interaction.reply({ content: 'You don\'t have any reminders to delete.', ephemeral: true });
   if (reminderId > currentReminderData.reminders.length)
     return interaction.reply({ content: 'You must specify a valid reminder ID', ephemeral: true });
 
@@ -168,7 +168,7 @@ async function deleteReminder(interaction: CommandInteraction) {
         }),
     });
 
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Deleted Reminder')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
@@ -181,9 +181,9 @@ async function list(interaction: CommandInteraction) {
   const user = interaction.member.user as User,
     currentReminderData = await Reminder.findOne({ userId: user.id });
 
-  if (!currentReminderData) return interaction.reply({ content: "You don't have any reminders.", ephemeral: true });
+  if (!currentReminderData) return interaction.reply({ content: 'You don\'t have any reminders.', ephemeral: true });
 
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Reminder List')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())

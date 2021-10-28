@@ -8,7 +8,7 @@ export default {
   permissionRequired: 0,
   run: async interaction => {
     let entropy = interaction.options.get('entropy').value,
-      ideas = interaction.options.get('idea').value;
+      ideas = interaction.options.get('idea').value, failed = false;
     if (!checkValue(entropy as string))
       return interaction.reply({ content: 'Your input for entropy was invalid', ephemeral: true });
     if (!checkValue(ideas as string))
@@ -16,10 +16,12 @@ export default {
     try {
       entropy = (entropy as string).match(/[a-z]/i) ? nameToScNo(entropy as string) : parseInt(entropy as string);
       ideas = (ideas as string).match(/[a-z]/i) ? nameToScNo(ideas as string) : parseInt(ideas as string);
-    } catch (err) {
+    } catch {
+      failed = true;
       return interaction.reply({ content: 'Something went wrong, please try again', ephemeral: true });
-    } finally {
-      let metabits = Math.floor(Math.pow((entropy as number) + (ideas as number), 0.3333333333333333) / 10000 - 1),
+    }
+    if (failed) return;
+      const metabits = Math.floor(Math.pow((entropy as number) + (ideas as number), 0.3333333333333333) / 10000 - 1),
         user = interaction.member.user as User,
         embed = new MessageEmbed()
           .setTitle('Metabits Produced')
@@ -31,6 +33,5 @@ export default {
             }`,
           );
       return interaction.reply({ embeds: [embed] });
-    }
   },
 } as SlashCommand;

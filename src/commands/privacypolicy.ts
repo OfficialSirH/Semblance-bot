@@ -3,13 +3,13 @@ import { randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
-  description: "Provides link to Semblance's Privacy Policy",
+  description: 'Provides link to Semblance\'s Privacy Policy',
   category: 'semblance',
   aliases: ['pp', 'privacy', 'policy'],
   permissionRequired: 0,
   checkArgs: () => true,
   run: (_client, message) => {
-    let embed = new MessageEmbed()
+    const embed = new MessageEmbed()
       .setTitle('Privacy Policy')
       .setAuthor(message.author.tag, message.author.displayAvatarURL())
       .setColor(randomColor)

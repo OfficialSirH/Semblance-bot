@@ -1,6 +1,6 @@
 const tips = {
   401: 'You need a token for this endpoint',
-  403: "You don't have access to this endpoint",
+  403: 'You don\'t have access to this endpoint',
 };
 /**
  * API Error

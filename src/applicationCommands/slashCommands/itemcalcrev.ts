@@ -14,7 +14,7 @@ export default {
       curAmount = interaction.options.getString('currency');
 
     if (!checkValue(curAmount as string))
-      return interaction.reply({ content: "Your input for 'currency' is invalid.", ephemeral: true });
+      return interaction.reply({ content: 'Your input for \'currency\' is invalid.', ephemeral: true });
     const convertedAmount = nameToScNo(curAmount);
 
     let itemCost: number, itemCostType: string;
@@ -24,11 +24,11 @@ export default {
         itemCostType = key;
       }
 
-    if (!itemCost) return interaction.reply({ content: "Your input for 'item' was invalid.", ephemeral: true });
-    let num3 = convertedAmount * 0.1499999761581421;
-    let num5 = itemCost * Math.pow(1.149999976158142, currentLevel);
-    let level = Math.floor(Math.log(num3 / num5 + 1) / Math.log(1.149999976158142));
-    let user = interaction.member.user as User,
+    if (!itemCost) return interaction.reply({ content: 'Your input for \'item\' was invalid.', ephemeral: true });
+    const num3 = convertedAmount * 0.1499999761581421;
+    const num5 = itemCost * Math.pow(1.149999976158142, currentLevel);
+    const level = Math.floor(Math.log(num3 / num5 + 1) / Math.log(1.149999976158142));
+    const user = interaction.member.user as User,
       embed = new MessageEmbed()
         .setTitle('Item Calculator Results')
         .setAuthor(user.tag, user.displayAvatarURL())

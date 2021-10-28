@@ -5,13 +5,14 @@ import config from '#config';
 import { getPermissionLevel, parseArgs, dontDisturb, removeAfk, trelloLinkRegex } from '#constants/index';
 import { Information } from '#models/Information';
 import { createBoosterRewards } from '#src/constants/models';
+import type { EventHandler } from '#lib/interfaces/Semblance';
 const { Events } = Constants;
 const { sirhId, prefix, c2sGuildId, sirhGuildId } = config;
 
 export default {
   name: Events.MESSAGE_CREATE,
   exec: (message: Message, client: Semblance) => messageCreate(message, client),
-};
+} as EventHandler<'messageCreate'>;
 
 export const messageCreate = async (message: Message, client: Semblance) => {
   checkForGitHubUpdate(message);
@@ -27,15 +28,15 @@ export const messageCreate = async (message: Message, client: Semblance) => {
   const { commands, aliases, autoCommands } = client;
 
   if (!message.content.toLowerCase().startsWith(`${prefix}afk`)) removeAfk(client, message);
-  for (const [key, value] of Object.entries(autoCommands))
+  for (const key of Object.keys(autoCommands))
     autoCommands[key].run(client, message, parseArgs(message.content));
   //Cell to Singularity Exclusive Code
-  let chName = message.channel.name;
+  const chName = message.channel.name;
 
   if (message.guild.id == c2sGuildId) {
     if (chName == 'booster-chat' && message.type == 'USER_PREMIUM_GUILD_SUBSCRIPTION')
       return createBoosterRewards(message);
-    let msg = message.content.toLowerCase(),
+    const msg = message.content.toLowerCase(),
       suggestionArray = ['suggestion:', 'suggest:', `${prefix}suggestion`, `${prefix}suggest`],
       suggestionRegex = new RegExp(`^(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
 
@@ -45,14 +46,14 @@ export const messageCreate = async (message: Message, client: Semblance) => {
       if (suggestionRegex.exec(msg) != null || getPermissionLevel(message.member) > 0) return;
       else {
         message.delete();
-        let embed = new MessageEmbed().setTitle('Your Suggestion').setDescription(`\`${message.content}\``);
+        const embed = new MessageEmbed().setTitle('Your Suggestion').setDescription(`\`${message.content}\``);
         message.author.send({
           content:
             `Your message in ${message.channel} was deleted due to not having the ` +
-            `suggestion-prefix required with suggestions, which means your message ` +
+            'suggestion-prefix required with suggestions, which means your message ' +
             `*must* start with ${suggestionArray.map(t => `\`${t}\``).join(', ')}. The ` +
-            `reason for the required suggestion-prefixes is to prevent the channel ` +
-            `getting messy due to conversations instead of actual suggestions.`,
+            'reason for the required suggestion-prefixes is to prevent the channel ' +
+            'getting messy due to conversations instead of actual suggestions.',
           embeds: [embed],
         });
       }
@@ -66,7 +67,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
   }
   //End of Cell to Singularity Exclusive Code
   if (message.mentions) {
-    let msgMention = message.content.replace(/!/g, '');
+    const msgMention = message.content.replace(/!/g, '');
     if (
       (msgMention == `<@${client.user.id}> ` || msgMention == `<@${client.user.id}>`) &&
       message.member.id != client.user.id
@@ -85,7 +86,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
     else splitContent = message.content.slice(prefix.length).split(' ');
     const identifier = splitContent.shift().toLowerCase(),
       command = aliases[identifier] || identifier;
-    let content = splitContent.join(' ');
+    const content = splitContent.join(' ');
     const commandFile = commands[command];
     if (!commandFile) return;
     if (commandFile.category == 'dm') {
@@ -98,10 +99,9 @@ export const messageCreate = async (message: Message, client: Semblance) => {
     } catch (e) {
       permissionLevel = message.author.id == sirhId ? 7 : 0;
     }
-    //console.log(`${message.member}: ${permissionLevel}`);
     try {
       if (permissionLevel < commandFile.permissionRequired)
-        return message.channel.send("❌ You don't have permission to do this!");
+        return message.channel.send('❌ You don\'t have permission to do this!');
       if (!commandFile.checkArgs(args, permissionLevel, content))
         return message.channel.send(
           `❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage)
@@ -110,14 +110,14 @@ export const messageCreate = async (message: Message, client: Semblance) => {
         ) as unknown as void;
       commandFile.run(client, message, args, identifier, { permissionLevel, content });
       console.log(command + ' Called by ' + message.author.username + ' in ' + message.guild.name);
-    } catch (e) {}
+    } catch {}
   }
 };
 
-/*
+/**
  * Check for GitHub updates
+ * @deprecated this should be removed as sending updates about the bot isn't necessary
  */
-
 function checkForGitHubUpdate(message: Message) {
   if (
     (message.channel as GuildChannel).name == 'semblance-updates' &&
@@ -131,6 +131,10 @@ function checkForGitHubUpdate(message: Message) {
     );
 }
 
+/**
+ * Check for Taco Post
+ * @deprecated should invite the moderators to my server so they may see the plans there instead
+ */
 function checkForTacoPost(message: Message) {
   if (message.channel.id != '794054990020739113' || message.author.id != '801130415997059173') return;
   const embed = message.embeds[0];
@@ -146,6 +150,10 @@ function checkForTacoPost(message: Message) {
   });
 }
 
+/**
+ * Update the Beyond Count
+ * @deprecated [REDACTED]
+ */
 async function updateBeyondCount() {
   const beyondCount = await Information.findOne({ infoType: 'beyondcount' });
   await Information.findOneAndUpdate({ infoType: 'beyondcount' }, { $set: { count: ++beyondCount.count } });

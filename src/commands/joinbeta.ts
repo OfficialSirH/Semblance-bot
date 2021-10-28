@@ -17,8 +17,8 @@ export default {
 } as Command<'game'>;
 
 const run = async (message: Message) => {
-  let infoHandler = await Information.findOne({ infoType: 'joinbeta' });
-  let embed = new MessageEmbed()
+  const infoHandler = await Information.findOne({ infoType: 'joinbeta' });
+  const embed = new MessageEmbed()
     .setTitle('Steps to join beta')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)

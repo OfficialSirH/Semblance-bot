@@ -5,10 +5,10 @@ import { randomColor } from '#constants/index';
 import { Afk } from '#models/Afk';
 
 export default {
-  description: "Set yourself afk so users know you're unavailable when they ping you.",
+  description: 'Set yourself afk so users know you\'re unavailable when they ping you.',
   category: 'utility',
   usage: {
-    '<reason>': "Provide your reason why you're afk, or don't and it'll default 'just because'.",
+    '<reason>': 'Provide your reason why you\'re afk, or don\'t and it\'ll default \'just because\'.',
   },
   permissionRequired: 0,
   checkArgs: () => true,
@@ -16,12 +16,12 @@ export default {
 } as Command<'utility'>;
 
 const run = async (message: Message, args: string[]) => {
-  let reason = args.length > 0 ? args.join(' ') : 'Just because';
-  let afkHandler = await Afk.findOne({ userId: message.author.id });
+  const reason = args.length > 0 ? args.join(' ') : 'Just because';
+  const afkHandler = await Afk.findOne({ userId: message.author.id });
   if (!afkHandler) await new Afk({ userId: message.author.id, reason: reason }).save();
   else await Afk.findOneAndUpdate({ userId: message.author.id }, { $set: { reason: reason } });
 
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('AFK')
     .setColor(randomColor)
     .setDescription(`You are now afk ${message.author} \n` + `Reason: ${reason}`);

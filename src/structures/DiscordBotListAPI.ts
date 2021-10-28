@@ -29,7 +29,7 @@ export class DBLApi extends EventEmitter {
     };
   }
   async _request(method: string, path: string, body?: any) {
-    var _a;
+    let _a;
     const headers = new Headers();
     if (this.options.token) headers.set('Authorization', this.options.token);
     if (method !== 'GET') headers.set('Content-Type', 'application/json');
@@ -67,7 +67,7 @@ export class DBLApi extends EventEmitter {
    */
   async postStats(stats: BotStats): Promise<BotStats> {
     if (!stats || !stats.guilds) throw new Error('Missing guilds');
-    await this._request('POST', `/bots/794033850665533450/stats`, {
+    await this._request('POST', '/bots/794033850665533450/stats', {
       voice_connections: stats.voice_connections,
       users: stats.users,
       guilds: stats.guilds,

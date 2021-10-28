@@ -5,8 +5,9 @@ export const bigToName = (number: any) => {
   if (number == Infinity) return Infinity;
   if (number == 0) return 0;
   number = number.toExponential(3);
-  let exponential = /(?<base>\d{1,10}(\.\d{1,10})?)e\+?(?<digits>-?\d{1,3})/i.exec(number.toString());
+  const exponential = /(?<base>\d{1,10}(\.\d{1,10})?)e\+?(?<digits>-?\d{1,3})/i.exec(number.toString());
   let {
+    // eslint-disable-next-line prefer-const
     groups: { base, digits },
   } = exponential as unknown as exponential;
   if (digits < 6) return Number(`${base}e${digits}`);
@@ -35,21 +36,22 @@ export const bigToName = (number: any) => {
 };
 /** Converts named values to Scientific Notation values */
 export const nameToScNo = (input: string) => {
-  let checkedInput = /((?<value>\d{1,10})(?<name>\w{1,17}))|(?<scientific>\d{1,10}(\.\d{1,10})?(e\+?-?\d{1,3})?)/i.exec(
+  const checkedInput = /((?<value>\d{1,10})(?<name>\w{1,17}))|(?<scientific>\d{1,10}(\.\d{1,10})?(e\+?-?\d{1,3})?)/i.exec(
     input,
   );
   let {
+    // eslint-disable-next-line prefer-const
     groups: { scientific, value, name },
   } = checkedInput as unknown as valueGrouping;
-  if (!!scientific) return Number.parseFloat(scientific);
+  if (scientific) return Number.parseFloat(scientific);
   value = namedValueSearch(name.toLowerCase());
-  return !!value ? value : Number.parseFloat(input);
+  return value ? value : Number.parseFloat(input);
 };
 /** Checks if the given input is a valid named number or scientific notation */
 export const checkValue = (input: string) =>
   !!/((\d{1,10})(\w{1,17}))|(\d{1,10}(\.\d{1,10})?(e\+?-?\d{1,3})?)/i.exec(input);
 export const namedValueSearch = function (name: string) {
-  for (let namedValue of namedValues) if (namedValue.name.includes(name)) return namedValue.value;
+  for (const namedValue of namedValues) if (namedValue.name.includes(name)) return namedValue.value;
 };
 export const namedValues = [
   {

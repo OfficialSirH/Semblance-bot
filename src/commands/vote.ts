@@ -14,7 +14,7 @@ export default {
 } as Command<'semblance'>;
 
 const run = async (client: Semblance, message: Message) => {
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Vote')
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
@@ -22,7 +22,7 @@ const run = async (client: Semblance, message: Message) => {
       [
         '**Rewardable voting sites**',
         `[Top.gg](https://top.gg/bot/${client.user.id})`,
-        `[Discordbotlist.com](https://discordbotlist.com/bots/semblance)`,
+        '[Discordbotlist.com](https://discordbotlist.com/bots/semblance)',
         `[Discords.com](https://discords.com/bots/bot/${client.user.id})`,
         `[Discord.boats](https://discord.boats/bot/${client.user.id})`,
         '**Unrewardable voting sites**',

@@ -18,7 +18,7 @@ const run = async (client: Semblance, message: Message) => {
   const adminCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'admin')
     .map(key => `**\`${prefix}${key}\`**`);
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setColor(randomColor)
     .setTitle('**-> Admin Commands**')
     .setThumbnail(client.user.displayAvatarURL())

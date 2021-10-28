@@ -7,7 +7,7 @@ import { messageLinkRegex } from '#constants/index';
 
 export default {
   description:
-    "This command toggles a feature that will convert a user's message that contains a message link into an embed that provides the details of the specified message link",
+    'This command toggles a feature that will convert a user\'s message that contains a message link into an embed that provides the details of the specified message link',
   category: 'admin',
   usage: {
     '<true/t or false/f>': '',
@@ -44,7 +44,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
           id: message.author.id,
         }),
       )
-      .setDisabled(!Boolean(toggleHandler?.active))
+      .setDisabled(!toggleHandler?.active)
       .setEmoji('❌')
       .setStyle('DANGER'),
     new MessageButton()

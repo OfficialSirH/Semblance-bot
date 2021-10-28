@@ -15,7 +15,7 @@ export default {
 } as Command<'game'>;
 
 const run = async (message: Message) => {
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Game Transfer')
     .setColor(randomColor)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())

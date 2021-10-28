@@ -10,7 +10,7 @@ export default {
   description: 'Lookup something unknown, like an Id or an invite, and hopefully get the meaning behind it!',
   category: 'admin',
   usage: {
-    '<unknown>': "The unknown you'd like to lookup.",
+    '<unknown>': 'The unknown you\'d like to lookup.',
   },
   aliases: ['bot-lookup', 'id-lookup', 'invite-lookup', 'whatis', 'wit', 'whatisthis'],
   permissionRequired: 4,
@@ -44,17 +44,17 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
             for (const name in values) fields.push({ name, value: values[name], inline: true });
           };
 
-        let lists = Object.keys(botblock.list_data)
+        const lists = Object.keys(botblock.list_data)
           .filter(l => botblock.list_data[l][1] == 200 && !botblock.list_data[l].error)
           .map(l => botblock.list_data[l][0]);
 
-        let listsWithDescriptions = lists.filter(l => Object.keys(l).find(k => k.toLowerCase().includes('short')));
-        let descriptions = listsWithDescriptions
+        const listsWithDescriptions = lists.filter(l => Object.keys(l).find(k => k.toLowerCase().includes('short')));
+        const descriptions = listsWithDescriptions
           .map(l => l[Object.keys(l).find(k => k.toLowerCase().includes('short'))])
           .sort((a, b) => b.length - a.length);
         if (descriptions[0]) add({ Description: descriptions[0] });
 
-        let prefixes = lists
+        const prefixes = lists
           .filter(l => l.prefix)
           .map(l => l.prefix)
           .sort((a, b) => b.length - a.length);
@@ -70,20 +70,20 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
 
         if (lists.find(l => l.library)) add({ Library: lists.find(l => l.library).library });
 
-        let websites = {};
+        const websites = {};
         for (const website of lists.filter(l => l.website).map(l => l.website))
           if (!websites[website]) websites[website] = 1;
           else websites[website] += 1;
-        let websiteKeys = Object.keys(websites).sort((a, b) => websites[b] - websites[a]);
+        const websiteKeys = Object.keys(websites).sort((a, b) => websites[b] - websites[a]);
         if (websiteKeys[0]) add({ Website: websiteKeys[0] });
 
-        let allTags = lists
+        const allTags = lists
           .filter(l => l.tags)
           .map(l => l.tags.filter(t => typeof t == 'string').join(','))
           .join(',')
           .split(',');
         if (allTags.length) {
-          let tags = allTags.filter(t => t.length).filter(constants.onlyUnique);
+          const tags = allTags.filter(t => t.length).filter(constants.onlyUnique);
           if (tags.length) add({ Tags: tags.join(', ') });
         }
 
@@ -120,9 +120,9 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
 
   // invite lookup
   try {
-    let _invite = await client.fetchInvite(args[0]);
+    const _invite = await client.fetchInvite(args[0]);
     if (_invite) {
-      let invite = (await fetch(`https://discordapp.com/api/v8/invites/` + _invite.code + '?with_counts=true').then(
+      const invite = (await fetch('https://discordapp.com/api/v8/invites/' + _invite.code + '?with_counts=true').then(
         res => res.json(),
       )) as APIInvite;
 
@@ -161,7 +161,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
         });
 
       return send(message.channel, {
-        content: `✅ This Id is a Discord invite.`,
+        content: '✅ This Id is a Discord invite.',
         embeds: [
           {
             title: 'Invite Lookup',
@@ -186,18 +186,18 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
 
   // emoji lookup
   try {
-    let res = await fetch(`https://cdn.discordapp.com/emojis/${args[0]}.png`);
+    const res = await fetch(`https://cdn.discordapp.com/emojis/${args[0]}.png`);
     if (res.ok)
       return send(message.channel, `✅ This Id is an emoji Id: https://cdn.discordapp.com/emojis/${args[0]}.png`);
   } catch (e) {}
 
   // message lookup
-  let channels = message.guild.channels.cache
+  const channels = message.guild.channels.cache
     .filter(ch => ['GUILD_TEXT', 'GUILD_NEWS'].includes(ch.type))
     .map(c => c) as TextChannel[];
   for (const ch of channels)
     try {
-      let m = await ch.messages.fetch(args[0] as Snowflake);
+      const m = await ch.messages.fetch(args[0] as Snowflake);
       if (m)
         return send(
           message.channel,

@@ -16,21 +16,23 @@ export default {
     const { user } = interaction,
       gaveChoice = !!interaction.options.getString('choice'),
       gaveOpponent = !!interaction.options.getUser('opponent');
-    let choice = interaction.options.getString('choice'),
-      opponent: User | GuildMember = interaction.options.getUser('opponent');
+    const choice = interaction.options.getString('choice');
+    let opponent: User | GuildMember = interaction.options.getUser('opponent'), failed = false;
     try {
       if (!gaveOpponent) opponent = await interaction.guild.members.fetch(client.user.id);
       else opponent = await interaction.guild.members.fetch(opponent.id);
-    } catch (err) {
+    } catch {
+      failed = true;
       return await interaction.reply({
-        content: "The opponent you choose isn't a part of this guild (or the command just wanted to have an issue).",
+        content: 'The opponent you choose isn\'t a part of this guild (or the command just wanted to have an issue).',
         ephemeral: true,
       });
-    } finally {
+    }
+    if (failed) return;
       if (opponent.id == user.id)
         return interaction.reply({
           content:
-            "Are you this lonely that you chose to face yourself? I'm sorry, but that's not how this game works.",
+            'Are you this lonely that you chose to face yourself? I\'m sorry, but that\'s not how this game works.',
           ephemeral: true,
         });
       if (user.bot && user.id != client.user.id)
@@ -111,8 +113,8 @@ export default {
         semblanceChoice = randomChoice();
       if (opponent.id == client.user.id) {
         if (gaveChoice) {
-          let endTemplate = `${user.tag} chose ${choice} and ${client.user.tag} chose ${semblanceChoice}, leading to `,
-            playerVictory = choiceToOutcome(choice, semblanceChoice);
+          let endTemplate = `${user.tag} chose ${choice} and ${client.user.tag} chose ${semblanceChoice}, leading to `;
+          const playerVictory = choiceToOutcome(choice, semblanceChoice);
 
           if (playerVictory == 'tie')
             endTemplate = `${user.tag} and ${client.user.tag} both chose ${choice} so it's a tie!`;
@@ -148,6 +150,5 @@ export default {
           rpsGames.delete(user.id);
         }, 60000),
       });
-    }
   },
 } as SlashCommand;

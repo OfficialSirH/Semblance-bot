@@ -10,10 +10,10 @@ const { prefix } = config;
 export default {
   permissionRequired: 0,
   run: async (interaction, { client }) => {
-    let playerId: Snowflake = interaction.options.getUser('user')
+    const playerId: Snowflake = interaction.options.getUser('user')
       ? interaction.options.getUser('user').id
       : interaction.member.user.id;
-    let statsHandler = await Game.findOne({ player: playerId });
+    const statsHandler = await Game.findOne({ player: playerId });
     if (!statsHandler)
       return interaction.reply({
         content: interaction.options.getUser('user')
@@ -21,11 +21,11 @@ export default {
           : `You have not created a game yet; if you'd like to create a game, use \`${prefix}game create\``,
         ephemeral: true,
       });
-    let nxtUpgrade = await currentPrice(statsHandler);
+    const nxtUpgrade = await currentPrice(statsHandler);
     let player: User;
     if (interaction.user.id == playerId) player = interaction.user;
     else player = await client.users.fetch(playerId);
-    let embed = new MessageEmbed()
+    const embed = new MessageEmbed()
       .setTitle(`${player.username}'s gamestats`)
       .setAuthor(player.tag, player.displayAvatarURL())
       .setColor(randomColor)

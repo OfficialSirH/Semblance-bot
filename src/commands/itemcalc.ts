@@ -27,7 +27,7 @@ const run = async (message: Message, args: string[]) => {
       itemCost = itemList[key][itemInput].price;
       itemCostType = key;
     }
-  if (!itemCost) return message.reply("Your input for 'item' was invalid.");
+  if (!itemCost) return message.reply('Your input for \'item\' was invalid.');
   let resultingPrice = 0;
   for (let i = currentLevel as number; i < (level as number) + (currentLevel as number); i++) {
     resultingPrice += itemCost * Math.pow(1.149999976158142, i);
@@ -36,7 +36,7 @@ const run = async (message: Message, args: string[]) => {
   // Math.floor(Math.log(resultingPrice)) =  itemCost * (level*Math.log(1.15));
   // (Math.floor(Math.log(resultingPrice) / itemCost)) = level*Math.log(1.15);
   // (Math.floor(Math.log(resultingPrice) / itemCost) / Math.log(1.15)) = level;
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Item Calculator Results')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

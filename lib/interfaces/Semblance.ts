@@ -5,11 +5,11 @@ import type {
   Message,
   MessageComponentInteraction,
   Snowflake,
-  ConstantsEvents,
+  ClientEvents,
   ContextMenuInteraction,
   AutocompleteInteraction,
 } from 'discord.js';
-import type { Client, ClientEvents } from 'twitter.js';
+import type { Client, ClientEventsMapping } from 'twitter.js';
 
 export interface AutocompleteHandler {
   run: (
@@ -93,20 +93,18 @@ export type Category =
   | NoArgCategory;
 export type Subcategory = 'main' | 'mesozoic' | 'other';
 
-export interface EventHandler {
-  name: keyof ConstantsEvents;
-  once?: boolean;
-  exec: EventHandlerExecution<any[]>;
+// the generics - <T extends keyof ClientEvents = keyof ClientEvents>
+export interface EventHandler<T extends keyof ClientEvents = keyof ClientEvents> {
+    name: T;
+    once?: boolean;
+    exec: (...args: [...ClientEvents[T], Semblance]) => Promise<void>;
 }
 
-export type EventHandlerExecution<T extends any[]> = (...args: [...T, Semblance]) => Promise<void>;
-
-export interface TwitterJSEventHandler {
-  name: keyof typeof ClientEvents;
+// TODO: fix up these typings somehow
+export interface TwitterJSEventHandler<T extends keyof ClientEventsMapping = keyof ClientEventsMapping> {
+  name: T;
   once?: boolean;
-  exec: TwitterJSEventHandlerExecution<any[]>;
+  exec: (
+    ...args: [...ClientEventsMapping[T], { client: Semblance; twClient: Client; }]
+  ) => Promise<void>;
 }
-
-export type TwitterJSEventHandlerExecution<T extends any[]> = (
-  ...args: [...T, { client: Semblance; twClient: Client }]
-) => Promise<void>;

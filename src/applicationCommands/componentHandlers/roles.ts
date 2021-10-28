@@ -42,18 +42,18 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
   if (action == 'add-events') {
     await (member.roles as GuildMemberRoleManager).add(c2sRoles.serverEvents);
     await interaction.reply({
-      content: "Server Events role successfully added! Now you'll receive notifications for our server events! :D",
+      content: 'Server Events role successfully added! Now you\'ll receive notifications for our server events! :D',
       ephemeral: true,
     });
   } else if (action == 'remove-events') {
     await (member.roles as GuildMemberRoleManager).remove(c2sRoles.serverEvents);
     await interaction.reply({
       content:
-        "Server Events role successfully removed. You'll stop receiveing notifications for our server events. :(",
+        'Server Events role successfully removed. You\'ll stop receiveing notifications for our server events. :(',
       ephemeral: true,
     });
   }
-  let embed = message.embeds[0].setThumbnail(currentLogo.name);
+  const embed = message.embeds[0].setThumbnail(currentLogo.name);
   await message.edit({ embeds: [embed], components });
 };
 

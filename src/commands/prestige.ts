@@ -17,7 +17,7 @@ export default {
 
 const run = async (message: Message, args: string[], identifier: string) => {
   if ((args[0] && args[0].toLowerCase() == 'list') || identifier == 'prestigelist') return sendPrestigeList(message);
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Mesozoic Valley Prestige')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
@@ -27,12 +27,12 @@ const run = async (message: Message, args: string[], identifier: string) => {
       'Prestige in the Mesozoic Valley is unlocked at rank 50, which is also the rank that is recommended to purchase the diamond geode. ' +
         `Prestige also allows you to keep your Mutagen. Type \`${prefix}prestigelist\` or \`${prefix}prestige list\` for a list of all Prestige!`,
     )
-    .setFooter("Footer goes brrr... I don't understand this meme.");
+    .setFooter('Footer goes brrr... I don\'t understand this meme.');
   message.channel.send({ embeds: [embed], files: [currentLogo, prestige] });
 };
 
 function sendPrestigeList(message: Message) {
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Mesozoic Valley Prestige List')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

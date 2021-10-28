@@ -21,12 +21,12 @@ const run = async (message: Message, args: string[], identifier: string) => {
 };
 
 async function sendIt(message: Message) {
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Memento Mori')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
     .setImage(mementoMori.name)
-    .setDescription(`[The Goodbye](https://www.youtube.com/watch?v=aDQ3nfBbPWM)`);
+    .setDescription('[The Goodbye](https://www.youtube.com/watch?v=aDQ3nfBbPWM)');
   message.channel.send({ embeds: [embed], files: [mementoMori] });
   setTimeout(() => {
     if (!message.deleted) message.delete();

@@ -5,8 +5,8 @@ import type { Semblance } from '#structures/Semblance';
 import type { TextChannel } from 'discord.js';
 const { c2sGuildId, lunchGuildId } = config,
   twClient = new Twitter(JSON.parse(process.env.twitter));
-let current_id = null,
-  screen_name = 'ComputerLunch';
+let current_id = null;
+const screen_name = 'ComputerLunch';
 // TODO: get rid of this file after implementing twitter.js
 /**
  * @deprecated Use twitter.js instead
@@ -21,11 +21,11 @@ export const checkTweet = (client: Semblance) =>
       exclude_replies: true,
       count: 1,
     },
-    async (error, tweets, response) => {
+    async (error, tweets) => {
       if (error) {
         return console.log(error);
       }
-      let tweet = tweets[0];
+      const tweet = tweets[0];
       try {
         if (tweet.id_str !== current_id && current_id) {
           fetch(process.env.C2SWebhook, {
@@ -49,7 +49,7 @@ export const checkTweet = (client: Semblance) =>
             `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`,
           );
         }
-      } catch (error) {}
+      } catch {}
       current_id = tweet.id_str;
     },
   );

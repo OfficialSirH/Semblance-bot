@@ -11,13 +11,13 @@ export class GameLeaderboard extends BaseLeaderboard {
   }
 
   public async initialize(list: GameFormat[]) {
-    if (this._initialized) throw new Error(`GameLeaderboard is already initialized`);
+    if (this._initialized) throw new Error('GameLeaderboard is already initialized');
     const sortedList = quickSort(
       list.map(data => [data.player, data.level]),
       0,
       list.length - 1,
     ).filter((item, ind) => ind < 20);
-    if (!!list)
+    if (list)
       await Leaderboard.findOneAndUpdate(
         { type: 'game' },
         {

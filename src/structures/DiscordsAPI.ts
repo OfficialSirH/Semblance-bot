@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import type { BotStats, BotInfo, UserInfo, BotsResponse, BotVotes, UserBots, Widget } from '#lib/interfaces/discords';
+import type { BotInfo, UserInfo, BotVotes, UserBots, Widget } from '#lib/interfaces/discords';
 import type { Snowflake } from 'discord.js';
 import fetch, { Headers } from 'node-fetch';
 import { APIError } from '#structures/ApiError';
@@ -15,7 +15,7 @@ import { stringify } from 'querystring';
 export class BFDApi extends EventEmitter {
   private options: {
     token: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   /**
    * Create botsfordiscord.com API instance
@@ -30,7 +30,7 @@ export class BFDApi extends EventEmitter {
     };
   }
   async _request(method: string, path: string, body?: any) {
-    var _a;
+    let _a;
     const headers = new Headers();
     if (this.options.token) headers.set('Authorization', this.options.token);
     if (method !== 'GET') headers.set('Content-Type', 'application/json');
@@ -64,7 +64,7 @@ export class BFDApi extends EventEmitter {
    */
   async postStats(serverCount: number): Promise<number> {
     if (!serverCount) throw new Error('Missing Server Count');
-    await this._request('POST', `/bot/794033850665533450`, {
+    await this._request('POST', '/bot/794033850665533450', {
       server_count: serverCount,
     });
     return serverCount;
@@ -87,7 +87,7 @@ export class BFDApi extends EventEmitter {
    * await client.getVotes() // returns bot's vote info
    */
   async getVotes(): Promise<BotVotes> {
-    return this._request('GET', `/bot/794033850665533450/votes`);
+    return this._request('GET', '/bot/794033850665533450/votes');
   }
   /**
    * Get bot's widget

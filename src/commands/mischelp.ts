@@ -27,7 +27,7 @@ const run = async (client: Semblance, message: Message) => {
     semblanceCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'semblance')
       .map(key => `**\`${prefix}${key}\`**`);
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Miscellaneous Commands')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)

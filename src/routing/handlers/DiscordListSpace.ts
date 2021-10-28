@@ -35,7 +35,7 @@ export class DiscordListSpace extends VoteHandler {
     });
 
     let votingUser = await Votes.findOne({ user: user.id });
-    if (!!votingUser)
+    if (votingUser)
       votingUser = await Votes.findOneAndUpdate(
         { user: user.id },
         { $set: { voteCount: votingUser.voteCount + 1 } },

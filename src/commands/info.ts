@@ -15,10 +15,10 @@ export default {
 } as Command<'semblance'>;
 
 const run = async (client: Semblance, message: Message) => {
-  let uptime = Date.now() - client.readyTimestamp;
-  let duration = msToTime(uptime);
-  let responseTime = Date.now() - message.createdTimestamp;
-  let totalMembers = client.guilds.cache.reduce((total, cur) => (total += cur.memberCount), 0);
+  const uptime = Date.now() - client.readyTimestamp;
+  const duration = msToTime(uptime);
+  const responseTime = Date.now() - message.createdTimestamp;
+  const totalMembers = client.guilds.cache.reduce((total, cur) => (total += cur.memberCount), 0);
   const usage = Math.round((process.memoryUsage().heapUsed / Math.pow(1024, 2)) * 100) / 100;
   const percentageUsed = Math.round((usage / 1000) * 10000) / 100;
   let guilds: number, users: number, shardCount: number;
@@ -35,7 +35,7 @@ const run = async (client: Semblance, message: Message) => {
     users = client.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b);
     shardCount = 0;
   }
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle(`Bot Information - ${client.user.tag}`)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
@@ -83,8 +83,8 @@ const run = async (client: Semblance, message: Message) => {
     `${mutagen} Links`,
     [
       `- [Semblance Invite](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot+applications.commands)`,
-      `- [Semblance Support/Main](https://discord.gg/XFMaTn6taf)`,
-      `- [Cell to Singularity](https://discord.gg/celltosingularity)`,
+      '- [Semblance Support/Main](https://discord.gg/XFMaTn6taf)',
+      '- [Cell to Singularity](https://discord.gg/celltosingularity)',
     ].join('\n'),
     true,
   );

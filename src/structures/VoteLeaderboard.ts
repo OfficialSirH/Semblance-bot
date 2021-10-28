@@ -11,13 +11,13 @@ export class VoteLeaderboard extends BaseLeaderboard {
   }
 
   public async initialize(list: VotesFormat[]) {
-    if (this._initialized) throw new Error(`VoteLeaderboard is already initialized`);
+    if (this._initialized) throw new Error('VoteLeaderboard is already initialized');
     const sortedList = quickSort(
       list.map(data => [data.user, data.voteCount]),
       0,
       list.length - 1,
     ).filter((item, ind) => ind < 20);
-    if (!!list)
+    if (list)
       await Leaderboard.findOneAndUpdate(
         { type: 'vote' },
         {

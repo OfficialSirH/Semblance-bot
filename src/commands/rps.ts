@@ -23,17 +23,17 @@ export default {
 const run = async (client: Semblance, message: Message, args: string[]) => {
   if (args.length == 0)
     return message.reply(
-      "rps stands for \"Rock, Paper, Scissors\", which you can play with me by choosing one of the **Five** (Don't forget Lizard and Spock) and I'll choose one as well and we'll see who wins, there's also secret bonuses. :D",
+      'rps stands for "Rock, Paper, Scissors", which you can play with me by choosing one of the **Five** (Don\'t forget Lizard and Spock) and I\'ll choose one as well and we\'ll see who wins, there\'s also secret bonuses. :D',
     );
   if (args[0] == 'multiplayer') return await rpsMultiplayer(message, args.slice(1, args.length).join(' '));
 
-  let randomFailure = Math.ceil(Math.random() * 100);
+  const randomFailure = Math.ceil(Math.random() * 100);
   if (randomFailure == 100) return message.reply('***Error Ocurred... rebooting, try again in a moment.***');
-  let sembRandomness = Math.ceil(Math.random() * 5),
+  const sembRandomness = Math.ceil(Math.random() * 5),
     sembChoice = convertNumberToChoice(sembRandomness);
-  let playerChoice = args[0].toLowerCase();
+  const playerChoice = args[0].toLowerCase();
   if (playerChoice == 'senate') {
-    let embed = new MessageEmbed()
+    const embed = new MessageEmbed()
       .setDescription('I *am* the senate, which means ***WE*** win this round!')
       .setImage(communistSemblance.name);
     return message.reply({ embeds: [embed], files: [communistSemblance] });
@@ -163,16 +163,17 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
   const { client } = message;
   if (rpsGames.has(message.author.id))
     return message.reply('You have an RPS game still running, please finish your previous game first');
-  let opponent: GuildMember;
+  let opponent: GuildMember, failed = false;
   try {
     if (chosenOpponent.length == 0) opponent = await message.guild.members.fetch(client.user.id);
     else opponent = (await message.guild.members.fetch({ query: chosenOpponent })).first();
   } catch (err) {
-    return message.reply('The chosen user does not exist.');
-  } finally {
+    failed = true;
+  }
+  if (failed) return message.reply('The chosen user does not exist.');
     if (opponent.id == message.author.id)
       return message.reply(
-        "Are you this lonely that you chose to face yourself? I'm sorry, but that's not how this game works.",
+        'Are you this lonely that you chose to face yourself? I\'m sorry, but that\'s not how this game works.',
       );
     if (opponent.user.bot && opponent.user.id != client.user.id)
       return message.reply(
@@ -278,5 +279,4 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
         rpsGames.delete(message.author.id);
       }, 60000),
     });
-  }
 }

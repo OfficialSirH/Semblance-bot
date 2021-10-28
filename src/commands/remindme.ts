@@ -22,7 +22,7 @@ export default {
 } as Command<'utility'>;
 
 const run = async (message: Message, args: string[]) => {
-  let timeAmount = timeInputRegex.exec(args[0]);
+  const timeAmount = timeInputRegex.exec(args[0]);
   if (timeAmount == null)
     return message.reply('Your input for time is invalid, please try again.').then(msg =>
       setTimeout(() => {
@@ -39,14 +39,14 @@ const run = async (message: Message, args: string[]) => {
       }, 5000),
     );
 
-  let reminder = args.splice(1, args.length).join(' ');
-  let totalTime = timeInputToMs(months, weeks, days, hours, minutes);
+  const reminder = args.splice(1, args.length).join(' ');
+  const totalTime = timeInputToMs(months, weeks, days, hours, minutes);
 
   if (totalTime > 29030400000) return message.reply('You cannot create a reminder for longer than a year');
   const currentReminderData = await Reminder.findOne({ userId: message.author.id });
   if (currentReminderData?.reminders.length >= 5)
     return message.reply('You cannot have more than 5 reminders at a time');
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Reminder')
     .setColor(randomColor)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
@@ -58,7 +58,7 @@ const run = async (message: Message, args: string[]) => {
     );
   message.channel.send({ embeds: [embed] });
 
-  if (!!currentReminderData)
+  if (currentReminderData)
     return currentReminderData.update({
       reminders: currentReminderData.reminders.concat([
         {
@@ -70,7 +70,7 @@ const run = async (message: Message, args: string[]) => {
       ]),
     });
 
-  let reminderHandler = new Reminder({
+  const reminderHandler = new Reminder({
     userId: message.author.id,
     reminders: [
       {

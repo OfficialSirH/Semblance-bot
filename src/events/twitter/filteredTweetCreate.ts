@@ -7,8 +7,8 @@ import config from '#config';
 
 export default {
   name: ClientEvents.FILTERED_TWEET_CREATE,
-  exec: async (tweet: Tweet, { client }) => filteredTweetCreate(client, tweet),
-} as TwitterJSEventHandler;
+  exec: async (tweet, { client }) => filteredTweetCreate(client, tweet),
+} as TwitterJSEventHandler<'filteredTweetCreate'>;
 
 export const filteredTweetCreate = async (client: Semblance, tweet: Tweet) => {
   const c2sTwitterChannel = client.guilds.cache

@@ -17,7 +17,7 @@ export default {
 
 const run = async (message: Message, args: string[]) => {
   const codeHandler = await Information.findOne({ infoType: 'codes' });
-  let embed = new MessageEmbed()
+  const embed = new MessageEmbed()
     .setTitle('Darwinium Codes')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

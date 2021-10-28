@@ -15,10 +15,10 @@ import type { DeepLParams, DeepLResponse } from '#lib/interfaces/deepLAPI';
 export const dontDisturb = async function (message: Message, mentioned: Collection<string, User>) {
   mentioned.forEach(async user => {
     if (message.author.id == user.id) return;
-    let afkHandler = await Afk.findOne({ userId: user.id });
+    const afkHandler = await Afk.findOne({ userId: user.id });
     if (!afkHandler) return;
-    let reason = afkHandler.reason;
-    let embed = new MessageEmbed()
+    const reason = afkHandler.reason;
+    const embed = new MessageEmbed()
       .setTitle('Currently Afk')
       .setColor(randomColor)
       .setThumbnail(user.displayAvatarURL())
@@ -30,7 +30,7 @@ export const dontDisturb = async function (message: Message, mentioned: Collecti
 
 export async function removeAfk(client: Semblance, message: Message) {
   if (message.author.id == client.user.id) return;
-  let afkHandler = await Afk.findOneAndDelete({ userId: message.author.id });
+  const afkHandler = await Afk.findOneAndDelete({ userId: message.author.id });
   if (afkHandler) message.reply('You are no longer AFK');
 }
 
@@ -91,15 +91,15 @@ export const correctReportList = async function (
   message: Message | PartialMessage,
   messageId: Snowflake,
 ) {
-  let deletedReport = await Report.findOneAndDelete({ messageId: messageId });
+  const deletedReport = await Report.findOneAndDelete({ messageId: messageId });
   if (!deletedReport) return;
-  let reportList = await Report.find({});
-  let bugIdList = Array.from(reportList.map(r => r.bugId).filter(item => item > deletedReport.bugId));
+  const reportList = await Report.find({});
+  const bugIdList = Array.from(reportList.map(r => r.bugId).filter(item => item > deletedReport.bugId));
   bugIdList.forEach(async bugId => {
-    let report = await Report.findOneAndUpdate({ bugId: bugId }, { $set: { bugId: bugId - 1 } }, { new: true });
+    const report = await Report.findOneAndUpdate({ bugId: bugId }, { $set: { bugId: bugId - 1 } }, { new: true });
     try {
       (message.guild.channels.cache.get(report.channelId) as TextChannel).messages.fetch(report.messageId).then(msg => {
-        let author = msg.embeds[0].author;
+        const author = msg.embeds[0].author;
         msg.edit({
           embeds: [
             msg.embeds[0]
@@ -172,7 +172,7 @@ export const serversPerPage = 50;
 
 export function guildBookPage(client: Semblance, chosenPage: string | number) {
   chosenPage = Number.parseInt(chosenPage as string);
-  let guildBook = {},
+  const guildBook = {},
     numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
 
   if (!chosenPage) chosenPage = 1;
@@ -180,7 +180,7 @@ export function guildBookPage(client: Semblance, chosenPage: string | number) {
 
   for (let i = 0; i < numOfPages; i++) {
     guildBook[`page_${i + 1}`] = {};
-    let loopCount =
+    const loopCount =
       client.guilds.cache.size < serversPerPage - 1 + i * serversPerPage
         ? client.guilds.cache.size - 1
         : serversPerPage - 1 + i * serversPerPage;

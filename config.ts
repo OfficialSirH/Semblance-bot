@@ -4,15 +4,15 @@ import * as fs from 'fs/promises';
 
 const attachments = {} as AttachmentList;
 
-const files = await fs.readdir("./src/images/");
+const files = await fs.readdir('./src/images/');
 for (const file of files) if (file.endsWith('.png') || file.endsWith('.mp4')) {
-    const attachment = new MessageAttachment(`./src/images/${file}`, `attachment://${file}`), attachmentName = file.substring(0, file.indexOf("."));
+    const attachment = new MessageAttachment(`./src/images/${file}`, `attachment://${file}`), attachmentName = file.substring(0, file.indexOf('.'));
     attachments[attachmentName] = attachment;
 }
 
 export default {
-    prefix: "s!",
-    sirhId: "780995336293711875" as Snowflake,
+    prefix: 's!',
+    sirhId: '780995336293711875' as Snowflake,
     // organizer
     adityaId: '506458497718812674' as Snowflake,
     // artist
@@ -24,14 +24,14 @@ export default {
     sampedrakoId: '651370672911679498' as Snowflake,
     hardikId: '552102291616956416' as Snowflake,
     // servers
-    c2sGuildId: "488478892873744385" as Snowflake,
+    c2sGuildId: '488478892873744385' as Snowflake,
     lunchGuildId: '796153726586454077' as Snowflake,
-    sirhGuildId: "794054988224659490" as Snowflake,
-    ignoredGuilds: ["264445053596991498",
-        "439866052684283905",
-        "450100127256936458",
-        "110373943822540800",
-        "374071874222686211"] as Snowflake[],
+    sirhGuildId: '794054988224659490' as Snowflake,
+    ignoredGuilds: ['264445053596991498',
+        '439866052684283905',
+        '450100127256936458',
+        '110373943822540800',
+        '374071874222686211'] as Snowflake[],
     // Early Private Beta Testers of the Beyond
     earlyBeyondTesters: [
         'Maxence#6028',
@@ -84,6 +84,6 @@ export default {
     nanobots: attachments['Nanobots'],
     currency: attachments['Currency'],
     mementoMori: attachments['MementoMori']
-}
+};
 
 type AttachmentList = Record<string, MessageAttachment>;

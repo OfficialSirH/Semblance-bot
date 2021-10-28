@@ -39,7 +39,7 @@ const client = new Semblance({
 			})
 		},
 	}),
-	partials: [ "USER", "CHANNEL", "GUILD_MEMBER", "MESSAGE" ],
+	partials: [ 'USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE' ],
 	intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES ]
 });
 // TODO: enable twitter.js implementation to replace the shitty twitter library
@@ -78,7 +78,7 @@ userVote(client);
 import router from '#src/routing/routes/index';
 router(app, client);
 
-app.get('/', (_req, res) => { res.redirect('https://officialsirh.github.io/') });
+app.get('/', (_req, res) => { res.redirect('https://officialsirh.github.io/'); });
 
 // Check for Tweet from ComputerLunch
 setInterval(() => checkTweet(client), 2000);
@@ -86,7 +86,7 @@ setInterval(() => checkTweet(client), 2000);
 
 await mongoose.connect(process.env.mongoDBKey);
 await client.login(process.env.token);
-let address = await app.listen(8079, '0.0.0.0');
+const address = await app.listen(8079, '0.0.0.0');
 console.log('Semblance has started on: ' + address);
 // TODO: enable twitter.js implementation to replace the shitty twitter library
 // const twitterCredentials = JSON.parse(process.env.twitter);

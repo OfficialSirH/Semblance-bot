@@ -11,7 +11,7 @@ export default {
   permissionRequired: 0,
   checkArgs: () => true,
   run: (_client, message) => {
-    let embed = new MessageEmbed()
+    const embed = new MessageEmbed()
       .setTitle(`${trexBadge}Tyrannosaurus Rex`)
       .setColor(randomColor)
       .setThumbnail(currentLogo.name)

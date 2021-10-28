@@ -16,8 +16,8 @@ export default {
 } as Command<'game'>;
 
 const run = async (message: Message) => {
-  let infoHandler = await Information.findOne({ infoType: 'update' });
-  let embed = new MessageEmbed()
+  const infoHandler = await Information.findOne({ infoType: 'update' });
+  const embed = new MessageEmbed()
     .setTitle('Steam and Mobile Updates')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)

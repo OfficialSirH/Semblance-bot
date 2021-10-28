@@ -1,5 +1,5 @@
 import { customIdRegex, getPermissionLevel, properCustomIdRegex } from '#constants/index';
-import type { ButtonData } from '#lib/interfaces/Semblance';
+import type { ButtonData, EventHandler } from '#lib/interfaces/Semblance';
 import type { Semblance } from '#src/structures';
 import type {
   GuildMember,
@@ -14,7 +14,7 @@ const { Events } = Constants;
 export default {
   name: Events.INTERACTION_CREATE,
   exec: (interaction: Interaction, client: Semblance) => interactionCreate(interaction, client),
-};
+} as EventHandler<'interactionCreate'>;
 
 export const interactionCreate = async (interaction: Interaction, client: Semblance) => {
   if (interaction.isAutocomplete()) return autocompleteInteraction(client, interaction);
@@ -28,7 +28,7 @@ export const interactionCreate = async (interaction: Interaction, client: Sembla
       options: interaction.options,
       permissionLevel: getPermissionLevel(interaction.member as GuildMember),
     });
-  else await interaction.reply("I can't find a command for this, something is borked.");
+  else await interaction.reply('I can\'t find a command for this, something is borked.');
 };
 
 async function componentInteraction(client: Semblance, interaction: MessageComponentInteraction) {
@@ -39,12 +39,11 @@ async function componentInteraction(client: Semblance, interaction: MessageCompo
     return console.log(
       `Detected oddly received custom Id from a button:\nCustom Id: \n${interaction.customId}\nuser Id: ${interaction.user.id}`,
     );
-  const { action, id } = data;
   if (!client.componentHandlers.has(data.command)) return;
   const componentHandler = client.componentHandlers.get(data.command);
-  if (interaction.user.id != id && !componentHandler.allowOthers)
+  if (interaction.user.id != data.id && !componentHandler.allowOthers)
     return await interaction.reply({
-      content: "This command wasn't called by you so you can't use it",
+      content: 'This command wasn\'t called by you so you can\'t use it',
       ephemeral: true,
     });
   componentHandler.run(interaction, data, { permissionLevel: getPermissionLevel(interaction.member as GuildMember) });

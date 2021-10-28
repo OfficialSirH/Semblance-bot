@@ -13,15 +13,14 @@ export default {
 } as Command<'admin'>;
 
 const run = async (message: Message, args: string[]) => {
-  let channelRegex = /\d{17,20}/.exec(args[0]),
-    channelId: Snowflake,
-    purgeNum: number = Number.parseInt(args[1]);
+  const channelRegex = /\d{17,20}/.exec(args[0]);
   if (!channelRegex) return message.reply('The channel you specified is invalid');
-  channelId = channelRegex[0] as Snowflake;
+  const channelId = channelRegex[0] as Snowflake;
+  let purgeNum = Number.parseInt(args[1]);
   if (!purgeNum) return message.reply('That value for purge amount is invalid');
   purgeNum = purgeNum > 100 ? 100 : purgeNum;
-  let channel = message.guild.channels.cache.get(channelId) as TextChannel;
-  if (!channel) return message.reply("That channel doesn't exist in this server");
+  const channel = message.guild.channels.cache.get(channelId) as TextChannel;
+  if (!channel) return message.reply('That channel doesn\'t exist in this server');
 
   channel.bulkDelete(purgeNum).catch(console.error);
 };

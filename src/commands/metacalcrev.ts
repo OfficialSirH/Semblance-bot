@@ -21,7 +21,7 @@ const run = async (message: Message, args: string[]) => {
   let metabits: string | number = args[0];
   if (!checkValue(metabits as string)) return message.reply('Your input for metabits was invalid');
   metabits = nameToScNo(metabits as string);
-  let accumulated = Math.floor(Math.pow(((metabits as number) + 1) * 10000, 1 / 0.3333333333333333)),
+  const accumulated = Math.floor(Math.pow(((metabits as number) + 1) * 10000, 1 / 0.3333333333333333)),
     embed = new MessageEmbed()
       .setTitle('Accumulation Requirements')
       .setColor(randomColor)

@@ -30,7 +30,7 @@ export const run = async (interaction: MessageComponentInteraction, { action, id
       description = `${player.tag} chose ${player.choice} and ${opponent.tag} chose ${opponent.choice}`;
 
     if (playerVictory == 'tie')
-      embed.setDescription(`${player.tag} and ${opponent.tag} both chose ${player.choice}`).setTitle(`tie!`);
+      embed.setDescription(`${player.tag} and ${opponent.tag} both chose ${player.choice}`).setTitle('tie!');
     else if (playerVictory) embed.setDescription(description).setTitle(`${player.tag} wins!`);
     else embed.setDescription(description).setTitle(`${opponent.tag} wins!`);
 

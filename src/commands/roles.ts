@@ -21,11 +21,11 @@ const run = async (message: Message) => {
       .setDescription(
         [
           '**Reality Expert**: This role is gained upon sending a screenshot of 1 trillion accumulated metabits from your ***stats page*** to <#496430259114082304>.',
-          "**Paleontologist**: This role is gained once you've unlocked and sent a screenshot of the T-rex to <#496430259114082304>.",
-          "**Beta Tester**: This role is gained when you've joined and sent proof of being part of the beta program for C2S to <#496430259114082304>.",
-          "**Server Events**: This role can be obtained by pressing the button below, which this role means you'll get pinged for events happening in the server.",
-          "**Martian Council**: This role is ***unobtainable*** as it's a moderator role so please stop asking how to get this role.",
-          `**All of the other new roles**: https://canary.discord.com/channels/488478892873744385/496430259114082304/892369818387365910`,
+          '**Paleontologist**: This role is gained once you\'ve unlocked and sent a screenshot of the T-rex to <#496430259114082304>.',
+          '**Beta Tester**: This role is gained when you\'ve joined and sent proof of being part of the beta program for C2S to <#496430259114082304>.',
+          '**Server Events**: This role can be obtained by pressing the button below, which this role means you\'ll get pinged for events happening in the server.',
+          '**Martian Council**: This role is ***unobtainable*** as it\'s a moderator role so please stop asking how to get this role.',
+          '**All of the other new roles**: https://canary.discord.com/channels/488478892873744385/496430259114082304/892369818387365910',
         ].join('\n\n'),
       )
       .setFooter('*Epic* roles.'),

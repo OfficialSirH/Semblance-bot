@@ -13,8 +13,8 @@ export default {
 } as Command<'semblance'>;
 
 const run = async (message: Message) => {
-  let changelogHandler = await Information.findOne({ infoType: 'changelog' });
-  let embed = new MessageEmbed()
+  const changelogHandler = await Information.findOne({ infoType: 'changelog' });
+  const embed = new MessageEmbed()
     .setTitle('Changelog')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

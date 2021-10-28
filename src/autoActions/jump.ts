@@ -28,7 +28,7 @@ const run = async function (client: Semblance, message: Message, args: string[],
   client.guilds
     .fetch(guildId)
     .then(guild => {
-      let channel = guild.channels.cache.get(channelId);
+      const channel = guild.channels.cache.get(channelId);
       if ((channel as TextChannel)!.nsfw ?? guild.id != message!.guild!.id) return;
 
       if (recursiveCount == 0)
@@ -39,10 +39,10 @@ const run = async function (client: Semblance, message: Message, args: string[],
       (channel as TextChannel)!.messages
         .fetch(messageId)
         .then(async msg => {
-          let attachmentLink = attachmentLinkRegex.exec(msg.content);
-          if (attachmentLink != null) msg.content = msg.content.replace(attachmentLink[0], ``);
+          const attachmentLink = attachmentLinkRegex.exec(msg.content);
+          if (attachmentLink != null) msg.content = msg.content.replace(attachmentLink[0], '');
 
-          let embed = new MessageEmbed()
+          const embed = new MessageEmbed()
             .setAuthor(msg.author.username, msg.author.displayAvatarURL())
             .setThumbnail(message.author.displayAvatarURL())
             .setDescription(msg.content)
@@ -50,8 +50,8 @@ const run = async function (client: Semblance, message: Message, args: string[],
             .setFooter(`#${(msg.channel as GuildChannel).name} quoted by ${message.author.tag}`)
             .setTimestamp(msg.createdTimestamp);
           if (msg.embeds[0] && attachmentLink == null) {
-            let title = msg.embeds[0].title ? msg.embeds[0].title : 'no title';
-            embed.addField(`*Contains embed titled: ${title}*`, `\u200b`);
+            const title = msg.embeds[0].title ? msg.embeds[0].title : 'no title';
+            embed.addField(`*Contains embed titled: ${title}*`, '\u200b');
             if (msg.embeds[0].image) embed.setImage(msg.embeds[0].image.url);
           }
 
@@ -66,7 +66,7 @@ const run = async function (client: Semblance, message: Message, args: string[],
 
           content = content.replace(
             /https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?:@me|\d{17,19}\/)?\d{17,20}\/\d{17,20}/,
-            ``,
+            '',
           );
           args = content.trim().split(' ');
 

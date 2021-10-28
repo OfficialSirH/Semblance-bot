@@ -8,7 +8,7 @@ export default {
   run: interaction => {
     if (!interaction.options.getString('question'))
       return interaction.reply('Ask any question with this command and Semblance will answer.');
-    let randomizedChoice = Math.ceil(Math.random() * 20),
+    const randomizedChoice = Math.ceil(Math.random() * 20),
       user = interaction.member.user as User;
     const embed = new MessageEmbed()
       .setTitle('8ball')
@@ -30,7 +30,7 @@ export default {
     if (randomizedChoice == 13) description += 'Better not tell you now.';
     if (randomizedChoice == 14) description += 'Cannot predict now.';
     if (randomizedChoice == 15) description += 'Concentrate and ask again.';
-    if (randomizedChoice == 16) description += "Don't count on it.";
+    if (randomizedChoice == 16) description += 'Don\'t count on it.';
     if (randomizedChoice == 17) description += 'My reply is no.';
     if (randomizedChoice == 18) description += 'My sources say no.';
     if (randomizedChoice == 19) description += 'Outlook not so good.';

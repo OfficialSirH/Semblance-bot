@@ -29,7 +29,7 @@ const run = (message: Message, args: string[]) => {
         message.reply('Sorry, either your input was invalid or the back-end went haywire.');
         return console.log(error);
       }
-      let tweet = tweets[0];
+      const tweet = tweets[0];
       try {
         if (tweet) {
           setTimeout(() => {

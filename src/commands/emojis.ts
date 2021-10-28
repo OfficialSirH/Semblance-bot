@@ -6,7 +6,7 @@ import type { Command } from '#lib/interfaces/Semblance';
 const { prefix } = config;
 // TODO: rewrite the execution to properly add emojis *only* when they are not already in the server
 export default {
-  description: "Setup Semblance's emojis with this.",
+  description: 'Setup Semblance\'s emojis with this.',
   category: 'admin',
   usage: {
     '': '',
@@ -28,17 +28,17 @@ const run = async (message: Message, args: string[]) => {
     });
   try {
     const files = await fs.readdir('./src/images/emojis');
-    let fileNames = [],
+    const fileNames = [],
       addedEmojis: GuildEmoji[] = [];
-    for (let file of files) fileNames.push(file.replace('.png', '').toLowerCase());
-    for (let fileName of fileNames)
+    for (const file of files) fileNames.push(file.replace('.png', '').toLowerCase());
+    for (const fileName of fileNames)
       if (!message.guild.emojis.cache.map(e => e.name).includes(fileName)) {
         addedEmojis.push(
           await message.guild.emojis.create(`./src/images/emojis/${files[fileNames.indexOf(fileName)]}`, fileName),
         );
       }
 
-    let embed = new MessageEmbed()
+    const embed = new MessageEmbed()
       .setTitle('New Emojis Added!')
       .setAuthor(message.author.tag, message.author.displayAvatarURL())
       .setColor(randomColor)
