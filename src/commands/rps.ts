@@ -23,7 +23,7 @@ export default {
 const run = async (client: Semblance, message: Message, args: string[]) => {
   if (args.length == 0)
     return message.reply(
-      'rps stands for "Rock, Paper, Scissors", which you can play with me by choosing one of the **Five** (Don\'t forget Lizard and Spock) and I\'ll choose one as well and we\'ll see who wins, there\'s also secret bonuses. :D',
+      "rps stands for \"Rock, Paper, Scissors\", which you can play with me by choosing one of the **Five** (Don't forget Lizard and Spock) and I'll choose one as well and we'll see who wins, there's also secret bonuses. :D",
     );
   if (args[0] == 'multiplayer') return await rpsMultiplayer(message, args.slice(1, args.length).join(' '));
 
@@ -163,7 +163,8 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
   const { client } = message;
   if (rpsGames.has(message.author.id))
     return message.reply('You have an RPS game still running, please finish your previous game first');
-  let opponent: GuildMember, failed = false;
+  let opponent: GuildMember,
+    failed = false;
   try {
     if (chosenOpponent.length == 0) opponent = await message.guild.members.fetch(client.user.id);
     else opponent = (await message.guild.members.fetch({ query: chosenOpponent })).first();
@@ -171,112 +172,112 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
     failed = true;
   }
   if (failed) return message.reply('The chosen user does not exist.');
-    if (opponent.id == message.author.id)
-      return message.reply(
-        'Are you this lonely that you chose to face yourself? I\'m sorry, but that\'s not how this game works.',
-      );
-    if (opponent.user.bot && opponent.user.id != client.user.id)
-      return message.reply(
-        `You can't face a bot (except for me) so what are you doing trying to fight, ${opponent.user.tag}?`,
-      );
-    const components = [
-        new MessageActionRow().addComponents([
-          new MessageButton()
-            .setLabel('Rock')
-            .setCustomId(
-              JSON.stringify({
-                command: 'rps',
-                action: 'rock',
-                id: message.author.id,
-              }),
-            )
-            .setEmoji('🪨')
-            .setStyle('SECONDARY'),
-          new MessageButton()
-            .setLabel('Paper')
-            .setCustomId(
-              JSON.stringify({
-                command: 'rps',
-                action: 'paper',
-                id: message.author.id,
-              }),
-            )
-            .setEmoji('📄')
-            .setStyle('SECONDARY'),
-          new MessageButton()
-            .setLabel('Scissors')
-            .setCustomId(
-              JSON.stringify({
-                command: 'rps',
-                action: 'scissors',
-                id: message.author.id,
-              }),
-            )
-            .setEmoji('✂')
-            .setStyle('SECONDARY'),
-          new MessageButton()
-            .setLabel('Lizard')
-            .setCustomId(
-              JSON.stringify({
-                command: 'rps',
-                action: 'lizard',
-                id: message.author.id,
-              }),
-            )
-            .setEmoji('🦎')
-            .setStyle('SECONDARY'),
-          new MessageButton()
-            .setLabel('Spock')
-            .setCustomId(
-              JSON.stringify({
-                command: 'rps',
-                action: 'spock',
-                id: message.author.id,
-              }),
-            )
-            .setEmoji('👽')
-            .setStyle('SECONDARY'),
-        ]),
-      ],
-      awaitingText = `Awaiting for **${message.author.tag}** and **${opponent.user.tag}**`,
-      semblanceChoice = randomChoice(),
-      embed = new MessageEmbed()
-        .setTitle(`${message.author.tag} has challenged ${opponent.user.tag} to Rock, Paper, Scissors, Lizard, Spock!`)
-        .setThumbnail(countdownGIF)
-        .setColor(randomColor)
-        .setDescription('Make your choice with one of the buttons below.');
+  if (opponent.id == message.author.id)
+    return message.reply(
+      "Are you this lonely that you chose to face yourself? I'm sorry, but that's not how this game works.",
+    );
+  if (opponent.user.bot && opponent.user.id != client.user.id)
+    return message.reply(
+      `You can't face a bot (except for me) so what are you doing trying to fight, ${opponent.user.tag}?`,
+    );
+  const components = [
+      new MessageActionRow().addComponents([
+        new MessageButton()
+          .setLabel('Rock')
+          .setCustomId(
+            JSON.stringify({
+              command: 'rps',
+              action: 'rock',
+              id: message.author.id,
+            }),
+          )
+          .setEmoji('🪨')
+          .setStyle('SECONDARY'),
+        new MessageButton()
+          .setLabel('Paper')
+          .setCustomId(
+            JSON.stringify({
+              command: 'rps',
+              action: 'paper',
+              id: message.author.id,
+            }),
+          )
+          .setEmoji('📄')
+          .setStyle('SECONDARY'),
+        new MessageButton()
+          .setLabel('Scissors')
+          .setCustomId(
+            JSON.stringify({
+              command: 'rps',
+              action: 'scissors',
+              id: message.author.id,
+            }),
+          )
+          .setEmoji('✂')
+          .setStyle('SECONDARY'),
+        new MessageButton()
+          .setLabel('Lizard')
+          .setCustomId(
+            JSON.stringify({
+              command: 'rps',
+              action: 'lizard',
+              id: message.author.id,
+            }),
+          )
+          .setEmoji('🦎')
+          .setStyle('SECONDARY'),
+        new MessageButton()
+          .setLabel('Spock')
+          .setCustomId(
+            JSON.stringify({
+              command: 'rps',
+              action: 'spock',
+              id: message.author.id,
+            }),
+          )
+          .setEmoji('👽')
+          .setStyle('SECONDARY'),
+      ]),
+    ],
+    awaitingText = `Awaiting for **${message.author.tag}** and **${opponent.user.tag}**`,
+    semblanceChoice = randomChoice(),
+    embed = new MessageEmbed()
+      .setTitle(`${message.author.tag} has challenged ${opponent.user.tag} to Rock, Paper, Scissors, Lizard, Spock!`)
+      .setThumbnail(countdownGIF)
+      .setColor(randomColor)
+      .setDescription('Make your choice with one of the buttons below.');
 
-    let rpsMessage: Message;
-    if (opponent.id == client.user.id)
-      rpsMessage = await message.reply({
-        content: `Awaiting for **${message.author.tag}**`,
-        embeds: [embed],
-        components,
-      });
-    else rpsMessage = await message.reply({ content: awaitingText, embeds: [embed], components });
-
-    rpsGames.set(message.author.id, {
-      player: {
-        id: message.author.id,
-        tag: message.author.tag,
-      },
-      opponent: {
-        id: opponent.id,
-        tag: opponent.user.tag,
-        choice: opponent.id == client.user.id ? semblanceChoice : '',
-      },
-      timeout: setTimeout(async () => {
-        if (rpsGames.has(message.author.id))
-          await rpsMessage.edit({
-            content: null,
-            embeds: [
-              rpsMessage.embeds[0]
-                .setTitle('RPS game has timed out')
-                .setDescription('Someone took too long to make a choice. :('),
-            ],
-            components: [],
-          });
-        rpsGames.delete(message.author.id);
-      }, 60000),
+  let rpsMessage: Message;
+  if (opponent.id == client.user.id)
+    rpsMessage = await message.reply({
+      content: `Awaiting for **${message.author.tag}**`,
+      embeds: [embed],
+      components,
     });
+  else rpsMessage = await message.reply({ content: awaitingText, embeds: [embed], components });
+
+  rpsGames.set(message.author.id, {
+    player: {
+      id: message.author.id,
+      tag: message.author.tag,
+    },
+    opponent: {
+      id: opponent.id,
+      tag: opponent.user.tag,
+      choice: opponent.id == client.user.id ? semblanceChoice : '',
+    },
+    timeout: setTimeout(async () => {
+      if (rpsGames.has(message.author.id))
+        await rpsMessage.edit({
+          content: null,
+          embeds: [
+            rpsMessage.embeds[0]
+              .setTitle('RPS game has timed out')
+              .setDescription('Someone took too long to make a choice. :('),
+          ],
+          components: [],
+        });
+      rpsGames.delete(message.author.id);
+    }, 60000),
+  });
 }

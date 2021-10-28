@@ -24,7 +24,7 @@ const run = (message: Message, args: string[]) => {
       exclude_replies: false,
       count: 1,
     },
-    async (error, tweets, response) => {
+    async (error, tweets) => {
       if (error) {
         message.reply('Sorry, either your input was invalid or the back-end went haywire.');
         return console.log(error);

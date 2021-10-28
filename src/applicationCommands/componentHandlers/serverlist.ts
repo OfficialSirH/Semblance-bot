@@ -4,7 +4,7 @@ import { guildBookPage, randomColor } from '#constants/index';
 import { serversPerPage } from '#constants/commands';
 import { Semblance } from '#structures/Semblance';
 
-export const run = async (interaction: MessageComponentInteraction, { action, id, page }: ServerlistButtonData) => {
+export const run = async (interaction: MessageComponentInteraction, { action, page }: ServerlistButtonData) => {
   const { client, user } = interaction,
     numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
 

@@ -1,15 +1,16 @@
 /** Converts large numbers to named values */
-export const bigToName = (number: any) => {
-  number = Number.parseFloat(number);
+export const bigToName = (number: string | number) => {
+  number = Number.parseFloat(number as string);
   if (Number.isNaN(number)) return 0;
   if (number == Infinity) return Infinity;
   if (number == 0) return 0;
   number = number.toExponential(3);
-  const exponential = /(?<base>\d{1,10}(\.\d{1,10})?)e\+?(?<digits>-?\d{1,3})/i.exec(number.toString());
+  const exponential = /(?<base>\d{1,10}(\.\d{1,10})?)e\+?(?<digits>-?\d{1,3})/i.exec(number);
   let {
     // eslint-disable-next-line prefer-const
     groups: { base, digits },
   } = exponential as unknown as exponential;
+  number = parseInt(number);
   if (digits < 6) return Number(`${base}e${digits}`);
   if (digits % 3 != 0 && digits < 66) (number *= Math.pow(10, digits % 3)), (digits -= digits % 3);
   if (digits >= 6 && digits < 9) return `${number} Million(E${digits})`;
@@ -36,9 +37,8 @@ export const bigToName = (number: any) => {
 };
 /** Converts named values to Scientific Notation values */
 export const nameToScNo = (input: string) => {
-  const checkedInput = /((?<value>\d{1,10})(?<name>\w{1,17}))|(?<scientific>\d{1,10}(\.\d{1,10})?(e\+?-?\d{1,3})?)/i.exec(
-    input,
-  );
+  const checkedInput =
+    /((?<value>\d{1,10})(?<name>\w{1,17}))|(?<scientific>\d{1,10}(\.\d{1,10})?(e\+?-?\d{1,3})?)/i.exec(input);
   let {
     // eslint-disable-next-line prefer-const
     groups: { scientific, value, name },

@@ -81,7 +81,7 @@ export const createBoosterRewards = async (message: Message) => {
         }! You will receive your booster reward on ${formattedDate(br.rewardingDate)}`,
       ),
     )
-    .catch(err =>
+    .catch(() =>
       message.channel.send({
         content: `<@${sirhId}> the automated rewarder failed at creating the scheduled reward for ${message.author.username}`,
         allowedMentions: { users: [sirhId] },

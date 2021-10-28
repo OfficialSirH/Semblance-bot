@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import {
   MessageEmbed,
   MessageAttachment,
@@ -52,13 +53,13 @@ async function help(message: Message, permissionLevel: number) {
     '+ Title',
     '\tThis is the title of the bug, just a quick description basically',
     '+ Actual Result',
-    '\tWhat occurs in this bug that shouldn\'t be occuring normally?',
+    "\tWhat occurs in this bug that shouldn't be occuring normally?",
     '+ Expected Result',
     '\tWhat do you think or know should be happening in this situation instead of the actual result?',
     '+ Operating System',
     '\tWhat system are you playing the game on? For example: Windows 10, Android 9, Iphone 12',
     '+ Game Version',
-    '\tWhat is the game\'s version that you\'re playing during the cause of this bug?(i.e. 8.06)',
+    "\tWhat is the game's version that you're playing during the cause of this bug?(i.e. 8.06)",
     '+ FORMAT',
     `\t${prefix}report TITLE`,
     '\tACTUAL_RESULT',
@@ -71,7 +72,7 @@ async function help(message: Message, permissionLevel: number) {
     '\nREPORT EXAMPLE:',
     `\t${prefix}report Bad Bug`,
     '\tIt does something bad',
-    '\tIt shouldn\'t do something bad',
+    "\tIt shouldn't do something bad",
     '\tWindows 69',
     '\t4_20',
 
@@ -88,7 +89,7 @@ async function help(message: Message, permissionLevel: number) {
   if (permissionLevel > 0)
     description = description.concat([
       '\nAPPROVING AND DENYING BUGS:',
-      '+ \'approve\' or \'deny\'',
+      "+ 'approve' or 'deny'",
       '+ reason(optional)',
       `EXAMPLE: ${prefix}bug 69 approve nice`,
     ]);
@@ -98,7 +99,7 @@ async function help(message: Message, permissionLevel: number) {
     .setColor(randomColor)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setDescription(description.join('\n'))
-    .setFooter('That\'s a feature, not a bug!');
+    .setFooter("That's a feature, not a bug!");
   message.channel.send({ embeds: [embed] });
 }
 
@@ -127,7 +128,7 @@ async function report(message: Message, content: string, client: Semblance) {
       };
       message.author.send(
         [
-          'You\'re missing some input for the report, remember that each subject is separated through new lines,',
+          "You're missing some input for the report, remember that each subject is separated through new lines,",
           `which can be done with SHIFT + ENTER on PC or pressing the enter key on mobile. Check out \`${prefix}report help\` for more details.\n`,
           `\`\`\`diff\n${missingContent()}\n\`\`\``,
         ].join(' '),
@@ -142,7 +143,7 @@ async function report(message: Message, content: string, client: Semblance) {
     contentList[3].length < 1 ??
     contentList[4].length < 1
   )
-    return message.reply('You missed some content in your report, please don\'t leave fields empty.').then(msg =>
+    return message.reply("You missed some content in your report, please don't leave fields empty.").then(msg =>
       setTimeout(() => {
         if (!msg.deleted) msg.delete();
       }, 10000),
@@ -183,8 +184,11 @@ async function report(message: Message, content: string, client: Semblance) {
   let attachmentURL = 'none';
   if (message.attachments.size > 0) {
     const attachment = new MessageAttachment(message.attachments.map(a => a)[0].proxyURL, 'Image.png');
-    (client.guilds.cache
-      .get(sirhGuildId)?.channels.cache.find((c: GuildChannel) => c.name == 'image-storage') as TextChannel)
+    (
+      client.guilds.cache
+        .get(sirhGuildId)
+        ?.channels.cache.find((c: GuildChannel) => c.name == 'image-storage') as TextChannel
+    )
       ?.send({ files: [attachment] })
       .then(msg => (attachmentURL = msg.attachments.map(a => a)[0].proxyURL));
     const videoType = ['.mov', '.mp4', '.mkv', '.webm'],
@@ -228,7 +232,7 @@ async function report(message: Message, content: string, client: Semblance) {
           [
             `Your report's Id: ${currentBugId}`,
             `Attaching an attachment: \`${prefix}bug ${currentBugId} attach (YouTube, Imgur, or Discord attachment link here if you don't have attachment)\`(NOTE: You *don't* need to place the parentheses around the link)`,
-            '**attach either an image or video(must be under 50 MB) with your attach command if the optional choices aren\'t available**',
+            "**attach either an image or video(must be under 50 MB) with your attach command if the optional choices aren't available**",
           ].join('\n'),
         )
         .setFooter('Thank you for your considerable help towards Cell to Singularity, we appreciate it. :)'),
@@ -249,7 +253,7 @@ async function bug(client: Semblance, message: Message, permissionLevel: number,
   report = await Report.findOne({ bugId: providedId as unknown as number });
   if (!report && !!providedId.match(/\d{17,21}/)) report = await Report.findOne({ messageId: providedId });
   if (!report)
-    return message.reply('The Id you specified doesn\'t exist.').then(msg => {
+    return message.reply("The Id you specified doesn't exist.").then(msg => {
       setTimeout(() => {
         if (!msg.deleted) msg.delete();
       }, 5000);
@@ -283,8 +287,8 @@ async function addAttachment(
   attachment: MessageAttachment | string | null,
 ) {
   if (getPermissionLevel(message.member as GuildMember) == 0 && report.User != message.author.id)
-    return message.reply('You don\'t have permission to add attachments to other people\'s reports.');
-  if (!attachment) return message.reply('You didn\'t send any attachment nor a link');
+    return message.reply("You don't have permission to add attachments to other people's reports.");
+  if (!attachment) return message.reply("You didn't send any attachment nor a link");
   else if (typeof attachment == 'string') {
     attachmentFieldCorrection(client, message, report, attachment);
   } else {
@@ -334,7 +338,7 @@ async function deleteReproduce(message: Message, report: ReportFormat, args: str
       const reproduceField = msg.embeds[0].fields[4].value.split('\n');
       const itemIndex = reproduceField.findIndex(item => item.includes(args.join(' ')));
       if (itemIndex == -1)
-        return message.reply('That reproduce item doesn\'t exist.').then(m =>
+        return message.reply("That reproduce item doesn't exist.").then(m =>
           setTimeout(() => {
             if (!m.deleted) m.delete();
           }, 20000),
@@ -423,7 +427,7 @@ async function fixUpReports(
           { new: true },
         );
       } else {
-        const m = await user.send({ embeds: [msg.embeds[0].setColor('#D72020').addField('Denial Message', reason)] }); // <-- Denied Reports
+        await user.send({ embeds: [msg.embeds[0].setColor('#D72020').addField('Denial Message', reason)] }); // <-- Denied Reports
         await Report.findOneAndDelete({ messageId: report.messageId });
       }
       msg.delete();
@@ -449,7 +453,9 @@ async function attachmentFieldCorrection(client: Semblance, message: Message, re
   } else
     try {
       attachment = new MessageAttachment(item);
-      await (client.guilds.cache.get(sirhGuildId)?.channels.cache.get('794054989860700179') as TextChannel)?.send({ files: [attachment as MessageAttachment] }); // <== Uses Id of #image-storage from SirH's server.then(msg => (attachmentURL = msg.attachments.map(a => a)[0].proxyURL));
+      await (client.guilds.cache.get(sirhGuildId)?.channels.cache.get('794054989860700179') as TextChannel)?.send({
+        files: [attachment as MessageAttachment],
+      }); // <== Uses Id of #image-storage from SirH's server.then(msg => (attachmentURL = msg.attachments.map(a => a)[0].proxyURL));
 
       const videoType = ['.mov', '.mp4', '.mkv', '.webm'],
         imageType = ['.png', '.jpg', '.jpeg', '.gif'];

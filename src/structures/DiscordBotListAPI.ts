@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import type { BotStats } from '#lib/interfaces/discordBotList';
 import fetch, { Headers } from 'node-fetch';
 import { APIError } from '#structures/ApiError';
-import { stringify } from 'querystring';
+import { ParsedUrlQueryInput, stringify } from 'querystring';
 
 /**
  * discordbotlist.com API Client for Posting stats or Fetching data
@@ -14,7 +14,7 @@ import { stringify } from 'querystring';
 export class DBLApi extends EventEmitter {
   private options: {
     token: string;
-    [key: string]: any;
+    [key: string]: unknown;
   };
   /**
    * Create discordbotlist.com API instance
@@ -28,8 +28,8 @@ export class DBLApi extends EventEmitter {
       ...options,
     };
   }
-  async _request(method: string, path: string, body?: any) {
-    let _a;
+  private async _request(method: string, path: string, body?: ParsedUrlQueryInput) {
+    let _a: string;
     const headers = new Headers();
     if (this.options.token) headers.set('Authorization', this.options.token);
     if (method !== 'GET') headers.set('Content-Type', 'application/json');
@@ -40,7 +40,7 @@ export class DBLApi extends EventEmitter {
       headers,
       body: body && method !== 'GET' ? JSON.stringify(body) : null,
     });
-    let responseBody;
+    let responseBody: unknown;
     if (
       (_a = response.headers.get('Content-Type')) === null || _a === void 0 ? void 0 : _a.startsWith('application/json')
     ) {

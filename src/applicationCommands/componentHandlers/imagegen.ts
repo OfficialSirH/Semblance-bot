@@ -4,7 +4,7 @@ import type { MessageComponentInteraction } from 'discord.js';
 import { MessageEmbed } from 'discord.js';
 import { fetchCatOrDog } from '#constants/commands';
 
-export const run = async (interaction: MessageComponentInteraction, { action, id }: ButtonData) => {
+export const run = async (interaction: MessageComponentInteraction, { action }: ButtonData) => {
   const wantsCat = action === 'refresh-cat',
     query_params = {
       has_breeds: true,

@@ -4,7 +4,7 @@ import { gameTransferPages } from '#constants/commands';
 import config from '#config';
 const { currentLogo } = config;
 
-export const run = async (interaction: MessageComponentInteraction, { action, id }: ButtonData) => {
+export const run = async (interaction: MessageComponentInteraction, { action }: ButtonData) => {
   const message = interaction.message;
   const embed = message.embeds[0] as MessageEmbed;
   let currentPage = gameTransferPages.indexOf(embed.image.url);

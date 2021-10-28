@@ -5,7 +5,7 @@ import { ClientEvents } from 'twitter.js';
 export default {
   name: ClientEvents.READY,
   once: true,
-  exec: (client) => ready(client),
+  exec: client => ready(client),
 } as TwitterJSEventHandler<'ready'>;
 
 export const ready = async (client: Client) => {

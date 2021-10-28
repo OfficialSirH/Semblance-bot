@@ -1,9 +1,9 @@
 import { EventEmitter } from 'events';
-import type { BotInfo, UserInfo, BotVotes, UserBots, Widget } from '#lib/interfaces/discords';
+import type { BotInfo, UserInfo, BotVotes, UserBots, Widget, DiscordsInterfaces } from '#lib/interfaces/discords';
 import type { Snowflake } from 'discord.js';
 import fetch, { Headers } from 'node-fetch';
 import { APIError } from '#structures/ApiError';
-import { stringify } from 'querystring';
+import { stringify, ParsedUrlQueryInput } from 'querystring';
 
 /**
  * discords.com API Client for Posting stats or Fetching data
@@ -29,8 +29,8 @@ export class BFDApi extends EventEmitter {
       ...options,
     };
   }
-  async _request(method: string, path: string, body?: any) {
-    let _a;
+  async _request(method: string, path: string, body?: ParsedUrlQueryInput) {
+    let _a: string;
     const headers = new Headers();
     if (this.options.token) headers.set('Authorization', this.options.token);
     if (method !== 'GET') headers.set('Content-Type', 'application/json');
@@ -41,11 +41,11 @@ export class BFDApi extends EventEmitter {
       headers,
       body: body && method !== 'GET' ? JSON.stringify(body) : null,
     });
-    let responseBody;
+    let responseBody: DiscordsInterfaces;
     if (
       (_a = response.headers.get('Content-Type')) === null || _a === void 0 ? void 0 : _a.startsWith('application/json')
     ) {
-      responseBody = await response.json();
+      responseBody = (await response.json()) as DiscordsInterfaces;
     } else {
       responseBody = await response.text();
     }
@@ -78,7 +78,7 @@ export class BFDApi extends EventEmitter {
    */
   async getBot(id: Snowflake): Promise<BotInfo> {
     if (!id) throw new Error('Id Missing');
-    return this._request('GET', `/bot/${id}`);
+    return this._request('GET', `/bot/${id}`) as Promise<BotInfo>;
   }
   /**
    * Get bot's vote info
@@ -87,7 +87,7 @@ export class BFDApi extends EventEmitter {
    * await client.getVotes() // returns bot's vote info
    */
   async getVotes(): Promise<BotVotes> {
-    return this._request('GET', '/bot/794033850665533450/votes');
+    return this._request('GET', '/bot/794033850665533450/votes') as Promise<BotVotes>;
   }
   /**
    * Get bot's widget
@@ -100,9 +100,9 @@ export class BFDApi extends EventEmitter {
    */
   async getBotWidget(id: Snowflake, width: number, theme: string): Promise<Widget> {
     if (!id) throw new Error('Id Missing');
-    if (!width && !theme) return this._request('GET', `/bot/${id}/widget`);
-    if (!width) return this._request('GET', `/bot/${id}/widget`, { theme });
-    if (!theme) return this._request('GET', `/bot/${id}/widget`, { width });
+    if (!width && !theme) return this._request('GET', `/bot/${id}/widget`) as Promise<Widget>;
+    if (!width) return this._request('GET', `/bot/${id}/widget`, { theme }) as Promise<Widget>;
+    if (!theme) return this._request('GET', `/bot/${id}/widget`, { width }) as Promise<Widget>;
   }
   /**
    * Get user info
@@ -115,7 +115,7 @@ export class BFDApi extends EventEmitter {
    */
   async getUser(id: Snowflake): Promise<UserInfo> {
     if (!id) throw new Error('Id Missing');
-    return this._request('GET', `/user/${id}`);
+    return this._request('GET', `/user/${id}`) as Promise<UserInfo>;
   }
 
   /**
@@ -129,6 +129,6 @@ export class BFDApi extends EventEmitter {
    */
   async getUserBots(id: Snowflake): Promise<UserBots> {
     if (!id) throw new Error('Id Missing');
-    return this._request('GET', `/user/${id}/bots`);
+    return this._request('GET', `/user/${id}/bots`) as Promise<UserBots>;
   }
 }

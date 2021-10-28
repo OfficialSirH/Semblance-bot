@@ -1,7 +1,6 @@
 import type { Semblance } from '#structures/Semblance';
 import type {
   CommandInteraction,
-  CommandInteractionOptionResolver,
   Message,
   MessageComponentInteraction,
   Snowflake,
@@ -12,18 +11,15 @@ import type {
 import type { Client, ClientEventsMapping } from 'twitter.js';
 
 export interface AutocompleteHandler {
-  run: (
-    interaction: AutocompleteInteraction,
-    options: CommandInteractionOptionResolver<AutocompleteInteraction>,
-  ) => Promise<void>;
+  run: (interaction: AutocompleteInteraction, options: AutocompleteInteraction['options']) => Promise<void>;
 }
 
 export interface ContextMenuHandler {
-  run: (interaction: CommandInteraction, { options, permissionLevel }: ContextMenuHandlerOptions) => Promise<void>;
+  run: (interaction: ContextMenuInteraction, { options, permissionLevel }: ContextMenuHandlerOptions) => Promise<void>;
 }
 
 export interface ContextMenuHandlerOptions {
-  options: CommandInteractionOptionResolver<ContextMenuInteraction>;
+  options: ContextMenuInteraction['options'];
   permissionLevel: number;
 }
 
@@ -50,7 +46,7 @@ export interface SlashCommand {
 export interface SlashOptions {
   client: Semblance;
   permissionLevel: number;
-  options: CommandInteractionOptionResolver<CommandInteraction>;
+  options: CommandInteraction['options'];
 }
 
 export interface Command<T extends Category> {
@@ -95,16 +91,14 @@ export type Subcategory = 'main' | 'mesozoic' | 'other';
 
 // the generics - <T extends keyof ClientEvents = keyof ClientEvents>
 export interface EventHandler<T extends keyof ClientEvents = keyof ClientEvents> {
-    name: T;
-    once?: boolean;
-    exec: (...args: [...ClientEvents[T], Semblance]) => Promise<void>;
+  name: T;
+  once?: boolean;
+  exec: (...args: [...ClientEvents[T], Semblance]) => Promise<void>;
 }
 
 // TODO: fix up these typings somehow
 export interface TwitterJSEventHandler<T extends keyof ClientEventsMapping = keyof ClientEventsMapping> {
   name: T;
   once?: boolean;
-  exec: (
-    ...args: [...ClientEventsMapping[T], { client: Semblance; twClient: Client; }]
-  ) => Promise<void>;
+  exec: (...args: [...ClientEventsMapping[T], { client: Semblance; twClient: Client }]) => Promise<void>;
 }

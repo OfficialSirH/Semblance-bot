@@ -12,10 +12,10 @@ export default {
   subcategory: 'other',
   permissionRequired: 0,
   checkArgs: () => true,
-  run: (_client, message, args) => run(message, args),
+  run: (_client, message) => run(message),
 } as Command<'game'>;
 
-const run = async (message: Message, args: string[]) => {
+const run = async (message: Message) => {
   const codeHandler = await Information.findOne({ infoType: 'codes' });
   const embed = new MessageEmbed()
     .setTitle('Darwinium Codes')

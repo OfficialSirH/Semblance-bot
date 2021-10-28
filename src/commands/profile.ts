@@ -16,21 +16,21 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
   if (args.length == 0) return guildProfileEmbed(message, message.member);
 
   const userRegexed = /(?<![:\d])(?<id>\d{17,19})(?!\d)/.exec(args[0]);
-  if (!userRegexed) return message.reply('You\'ve provided invalid input');
+  if (!userRegexed) return message.reply("You've provided invalid input");
   const userId = userRegexed.groups.id as Snowflake;
   let member: GuildMember;
   try {
     member = await message.guild.members.fetch({ user: userId, cache: false });
   } catch {}
-    if (member) return guildProfileEmbed(message, member);
+  if (member) return guildProfileEmbed(message, member);
 
-    try {
-      const user = await client.users.fetch(userId, { cache: false });
-      if (user) return userProfileEmbed(message, user);
-      message.reply('Sorry, that user couldn\'t be found in Discord at all');
-    } catch (e) {
-      console.log(e);
-    }
+  try {
+    const user = await client.users.fetch(userId, { cache: false });
+    if (user) return userProfileEmbed(message, user);
+    message.reply("Sorry, that user couldn't be found in Discord at all");
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 async function guildProfileEmbed(message: Message, member: GuildMember) {

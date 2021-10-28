@@ -1,3 +1,4 @@
+// TODO: improve stat posting handlers and error handling
 import fetch from 'node-fetch';
 import { BFDApi, DBLApi, Semblance } from '#structures/index';
 import * as TopggSDK from '@top-gg/sdk';
@@ -60,13 +61,13 @@ export const intervalPost = (client: Semblance) => {
   setInterval(() => {
     if (client.shard != null && client.shard)
       dbl.postStats({
-        users: client.guilds.cache.reduce((acc, cur, ind) => (acc += cur.memberCount), 0),
+        users: client.guilds.cache.reduce((acc, cur) => (acc += cur.memberCount), 0),
         guilds: client.guilds.cache.size,
         shard_id: client.shard.ids[0],
       });
     else
       dbl.postStats({
-        users: client.guilds.cache.reduce((acc, cur, ind) => (acc += cur.memberCount), 0),
+        users: client.guilds.cache.reduce((acc, cur) => (acc += cur.memberCount), 0),
         guilds: client.guilds.cache.size,
       });
   }, day);

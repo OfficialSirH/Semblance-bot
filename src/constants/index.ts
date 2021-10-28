@@ -150,7 +150,7 @@ export const timeInputRegex =
 export const timeInputAutocompleteAssistantRegex =
   /(?:\d{1,2}(?<previousInputType>mo|w|d|h|m) )?(?<numInput>\d{1,2})(?![\s\S])/;
 export const trelloLinkRegex = /https:\/\/trello\.com\/c\/([0-9]|[A-Z]){8}/i;
-export const onlyUnique = (value: any, index: number, self: any[]) => self.indexOf(value) == index;
+export const onlyUnique = (value: unknown, index: number, self: unknown[]) => self.indexOf(value) == index;
 export const parseArgs = (_arguments: string) =>
   (_arguments.match(/"[^"]+"|[^ ]+/g) ?? []).map(argument =>
     argument.startsWith('"') && argument.endsWith('"') ? argument.slice(1).slice(0, -1) : argument,

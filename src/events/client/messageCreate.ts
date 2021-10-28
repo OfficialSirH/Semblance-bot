@@ -25,11 +25,13 @@ export const messageCreate = async (message: Message, client: Semblance) => {
     }
   }
 
-  const { commands, aliases, autoCommands } = client;
+  const { commands, aliases } = client;
 
   if (!message.content.toLowerCase().startsWith(`${prefix}afk`)) removeAfk(client, message);
-  for (const key of Object.keys(autoCommands))
-    autoCommands[key].run(client, message, parseArgs(message.content));
+
+  // disabling this and later will completely remove it
+  // for (const key of Object.keys(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
+
   //Cell to Singularity Exclusive Code
   const chName = message.channel.name;
 
@@ -42,6 +44,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
 
     if (msg.includes('beyond') && !msg.includes(`${prefix}beyond`)) updateBeyondCount();
 
+    // TODO: create 'suggest' guild slash command
     if (chName == 'suggestions') {
       if (suggestionRegex.exec(msg) != null || getPermissionLevel(message.member) > 0) return;
       else {
@@ -72,10 +75,9 @@ export const messageCreate = async (message: Message, client: Semblance) => {
       (msgMention == `<@${client.user.id}> ` || msgMention == `<@${client.user.id}>`) &&
       message.member.id != client.user.id
     ) {
-      message.reply(
+      return message.reply(
         `My command prefix is ${prefix}, which you can start off with ${prefix}help for all of my commands. :D`,
       );
-      return;
     }
   }
 
@@ -96,18 +98,18 @@ export const messageCreate = async (message: Message, client: Semblance) => {
     const args = parseArgs(content);
     try {
       permissionLevel = getPermissionLevel(message.member);
-    } catch (e) {
+    } catch {
       permissionLevel = message.author.id == sirhId ? 7 : 0;
     }
     try {
       if (permissionLevel < commandFile.permissionRequired)
-        return message.channel.send('❌ You don\'t have permission to do this!');
+        return message.channel.send("❌ You don't have permission to do this!");
       if (!commandFile.checkArgs(args, permissionLevel, content))
         return message.channel.send(
           `❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage)
             .map(a => ' ' + a)
             .join('')}\`, for additional help, see \`${prefix}help\`.`,
-        ) as unknown as void;
+        );
       commandFile.run(client, message, args, identifier, { permissionLevel, content });
       console.log(command + ' Called by ' + message.author.username + ' in ' + message.guild.name);
     } catch {}

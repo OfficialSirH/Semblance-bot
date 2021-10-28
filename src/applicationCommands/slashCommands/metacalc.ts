@@ -8,7 +8,8 @@ export default {
   permissionRequired: 0,
   run: async interaction => {
     let entropy = interaction.options.get('entropy').value,
-      ideas = interaction.options.get('idea').value, failed = false;
+      ideas = interaction.options.get('idea').value,
+      failed = false;
     if (!checkValue(entropy as string))
       return interaction.reply({ content: 'Your input for entropy was invalid', ephemeral: true });
     if (!checkValue(ideas as string))
@@ -21,17 +22,17 @@ export default {
       return interaction.reply({ content: 'Something went wrong, please try again', ephemeral: true });
     }
     if (failed) return;
-      const metabits = Math.floor(Math.pow((entropy as number) + (ideas as number), 0.3333333333333333) / 10000 - 1),
-        user = interaction.member.user as User,
-        embed = new MessageEmbed()
-          .setTitle('Metabits Produced')
-          .setColor(randomColor)
-          .setAuthor(user.tag, user.displayAvatarURL())
-          .setDescription(
-            `Entropy Input: ${entropy}\nIdea Input: ${ideas}\n\nMetabits Produced: ${
-              metabits < 1 ? 0 : bigToName(metabits)
-            }`,
-          );
-      return interaction.reply({ embeds: [embed] });
+    const metabits = Math.floor(Math.pow((entropy as number) + (ideas as number), 0.3333333333333333) / 10000 - 1),
+      user = interaction.member.user as User,
+      embed = new MessageEmbed()
+        .setTitle('Metabits Produced')
+        .setColor(randomColor)
+        .setAuthor(user.tag, user.displayAvatarURL())
+        .setDescription(
+          `Entropy Input: ${entropy}\nIdea Input: ${ideas}\n\nMetabits Produced: ${
+            metabits < 1 ? 0 : bigToName(metabits)
+          }`,
+        );
+    return interaction.reply({ embeds: [embed] });
   },
 } as SlashCommand;

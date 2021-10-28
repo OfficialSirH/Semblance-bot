@@ -1,5 +1,5 @@
 import type { Snowflake } from 'discord.js';
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { FastifyRequest } from 'fastify';
 
 export interface APIOptions {
   /**
@@ -305,3 +305,4 @@ export interface DiscordsVote {
 }
 
 export type DiscordsRequest = FastifyRequest<{ Body: DiscordsVote }>;
+export type DiscordsInterfaces = BotInfo | UserInfo | BotVotes | UserBots | Widget;

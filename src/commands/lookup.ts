@@ -1,7 +1,7 @@
 ﻿import fetch from 'node-fetch';
 import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
 import * as constants from '#constants/index';
-import type { Message, MessageOptions, Snowflake, TextBasedChannels, TextChannel } from 'discord.js';
+import type { Message, MessageOptions, Snowflake, TextBasedChannels, TextChannel, User } from 'discord.js';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
 import type { APIInvite, ChannelType, APIUser } from 'discord-api-types';
@@ -10,7 +10,7 @@ export default {
   description: 'Lookup something unknown, like an Id or an invite, and hopefully get the meaning behind it!',
   category: 'admin',
   usage: {
-    '<unknown>': 'The unknown you\'d like to lookup.',
+    '<unknown>': "The unknown you'd like to lookup.",
   },
   aliases: ['bot-lookup', 'id-lookup', 'invite-lookup', 'whatis', 'wit', 'whatisthis'],
   permissionRequired: 4,
@@ -87,7 +87,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
           if (tags.length) add({ Tags: tags.join(', ') });
         }
 
-        let owners: any = await Promise.all(
+        let owners: string[] | User[] = await Promise.all(
           botblock.owners
             .filter(o => !o.includes('#'))
             .filter(constants.onlyUnique)

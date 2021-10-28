@@ -9,7 +9,8 @@ type Info =
   | 'changelog'
   | 'cacheList'
   | 'beyondcount'
-  | 'boostercodes';
+  | 'boostercodes'
+  | 'Mixed';
 
 interface List {
   boostercodes: string[];
@@ -21,9 +22,10 @@ interface List {
   update: string;
   joinbeta: string;
   beta: string;
+  Mixed: typeof _.Schema.Types.Mixed;
 }
 
-export interface InformationFormat<T extends Info> {
+export interface InformationFormat<T extends Info = Info> {
   infoType: T;
   info: string;
   count: number;
@@ -45,7 +47,7 @@ export interface InformationFormat<T extends Info> {
 //     footer: string;
 // }
 
-const InformationSchema = new _.Schema<InformationFormat<Info>>({
+const InformationSchema = new _.Schema<InformationFormat<'Mixed'>>({
   infoType: String,
   info: {
     type: String,
@@ -60,10 +62,7 @@ const InformationSchema = new _.Schema<InformationFormat<Info>>({
     default: false,
   },
   expired: String,
-  list: {
-    type: _.Schema.Types.Mixed as any,
-    default: [],
-  },
+  list: _.Schema.Types.Mixed,
   footer: {
     type: String,
     default: 'Much emptiness',

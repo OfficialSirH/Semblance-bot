@@ -1,3 +1,4 @@
+// TODO: remove jump structure and collection
 import type { Snowflake } from 'discord.js';
 import _ from 'mongoose';
 

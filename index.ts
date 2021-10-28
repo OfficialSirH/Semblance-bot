@@ -8,39 +8,27 @@ import { Semblance } from '#structures/Semblance';
 import { Intents, LimitedCollection, Options } from 'discord.js';
 import { checkTweet, playerUpdate, userVote } from '#events/index';
 const client = new Semblance({
-	allowedMentions: { parse: [] },
-	makeCache: Options.cacheWithLimits({
-		ThreadManager: {
-			sweepInterval: 3600,
-			sweepFilter: LimitedCollection.filterByLifetime({
-				getComparisonTimestamp: e => e.archiveTimestamp,
-				excludeFromSweep: e => !e.archived,
-			}),
-		},
-		MessageManager: {
-			sweepInterval: 60,
-			sweepFilter: LimitedCollection.filterByLifetime({
-				lifetime: 30,
-				getComparisonTimestamp: m => m.editedTimestamp ?? m.createdTimestamp,
-			})
-		},
-		GuildMemberManager: {
-			sweepInterval: 60,
-			sweepFilter: LimitedCollection.filterByLifetime({
-				lifetime: 30,
-				getComparisonTimestamp: () => Date.now() - 60000
-			})
-		},
-		UserManager: {
-			sweepInterval: 60,
-			sweepFilter: LimitedCollection.filterByLifetime({
-				lifetime: 30,
-				getComparisonTimestamp: () => Date.now() - 60000
-			})
-		},
-	}),
-	partials: [ 'USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE' ],
-	intents: [ Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES ]
+  allowedMentions: { parse: [] },
+  makeCache: Options.cacheWithLimits({
+    ThreadManager: {
+      sweepInterval: 3600,
+      sweepFilter: LimitedCollection.filterByLifetime({
+        getComparisonTimestamp: e => e.archiveTimestamp,
+        excludeFromSweep: e => !e.archived,
+      }),
+    },
+    MessageManager: {
+      sweepInterval: 60,
+      sweepFilter: LimitedCollection.filterByLifetime({
+        lifetime: 30,
+        getComparisonTimestamp: m => m.editedTimestamp ?? m.createdTimestamp,
+      }),
+    },
+    GuildMemberManager: 0,
+    UserManager: 0,
+  }),
+  partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE'],
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
 });
 // TODO: enable twitter.js implementation to replace the shitty twitter library
 // const twClient = new Client({ events: ['FILTERED_TWEET_CREATE'] });
@@ -57,9 +45,9 @@ import type { EventHandler } from './lib/interfaces/Semblance';
 const eventFiles = (await fs.readdir('./dist/src/events/client')).filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
-	const event = (await import(`./src/events/client/${file}`)).default as EventHandler;
-	if (event.once) client.once(event.name, (...args) => event.exec(...args, client));
-	else client.on(event.name, (...args) => event.exec(...args, client));
+  const event = (await import(`./src/events/client/${file}`)).default as EventHandler;
+  if (event.once) client.once(event.name, (...args) => event.exec(...args, client));
+  else client.on(event.name, (...args) => event.exec(...args, client));
 }
 // TODO: enable twitter.js implementation to replace the shitty twitter library
 // import type { TwitterJSEventHandler } from './lib/interfaces/Semblance';
@@ -78,7 +66,9 @@ userVote(client);
 import router from '#src/routing/routes/index';
 router(app, client);
 
-app.get('/', (_req, res) => { res.redirect('https://officialsirh.github.io/'); });
+app.get('/', (_req, res) => {
+  res.redirect('https://officialsirh.github.io/');
+});
 
 // Check for Tweet from ComputerLunch
 setInterval(() => checkTweet(client), 2000);

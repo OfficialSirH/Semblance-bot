@@ -22,7 +22,7 @@ const run = async (message: Message, args: string[]) => {
     .setTitle(`${args[0].charAt(0).toUpperCase() + args[0].slice(1)} Info Changed!`)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor);
-  let infoHandler: InformationFormat<any>;
+  let infoHandler: InformationFormat;
 
   switch (args[0]) {
     case 'beta':
@@ -86,7 +86,7 @@ const run = async (message: Message, args: string[]) => {
       embed.setDescription(infoHandler.info);
       break;
     default:
-      return message.channel.send('What are you trying to type? The options are `beta`, `update`, and \'codes\'');
+      return message.channel.send("What are you trying to type? The options are `beta`, `update`, and 'codes'");
   }
   message.channel.send({ embeds: [embed] });
 };
@@ -128,7 +128,7 @@ const removeBoosterCode = async (message: Message, codes: string[]) => {
   if (codes.length == 0) return message.reply('You need to give me a code to remove.');
   const darwiniumCodes = (await Information.findOne({ infoType: 'boostercodes' })) as InformationFormat<'boostercodes'>;
   if (codes.every(c => !darwiniumCodes.list.includes(c)))
-    return message.reply('All of the codes you provided aren\'t in the list.');
+    return message.reply("All of the codes you provided aren't in the list.");
   codes = codes.filter(c => darwiniumCodes.list.includes(c));
   darwiniumCodes.list = darwiniumCodes.list.filter(c => !codes.includes(c));
   await Information.findOneAndUpdate(

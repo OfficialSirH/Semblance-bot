@@ -1,16 +1,10 @@
 import type { TimeLengthsString } from '#lib/interfaces/remindme';
 import { clamp } from '#lib/utils/math';
 import { timeInputRegex, timeInputAutocompleteAssistantRegex } from '#constants/index';
-import type {
-  ApplicationCommandOptionChoice,
-  AutocompleteInteraction,
-  CommandInteractionOptionResolver,
-} from 'discord.js';
+import type { ApplicationCommandOptionChoice } from 'discord.js';
+import { AutocompleteHandler } from '#lib/interfaces/Semblance';
 
-export async function run(
-  interaction: AutocompleteInteraction,
-  options: CommandInteractionOptionResolver<AutocompleteInteraction>,
-) {
+export const run: AutocompleteHandler['run'] = async (interaction, options) => {
   const focusedOption = options.getFocused() as string;
   if (parseInt(focusedOption) && parseInt(focusedOption).toString().length == focusedOption.length) {
     if (focusedOption.length > 2) return;
@@ -59,4 +53,4 @@ export async function run(
     });
   }
   return interaction.respond(responseOptions);
-}
+};

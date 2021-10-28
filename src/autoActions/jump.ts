@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { MessageEmbed, MessageAttachment } from 'discord.js';
 import type { TextChannel, GuildChannel, Message, Snowflake } from 'discord.js';
 import { messageLinkRegex, attachmentLinkRegex } from '#constants/index';
@@ -13,7 +14,14 @@ export default {
   run: (client, message, args) => run(client, message, args),
 } as Command<'auto'>;
 
-const run = async function (client: Semblance, message: Message, args: string[], recursiveCount = 0) {
+/**
+ * @deprecated remove automatic actions in favor of full rewrite to only interactions
+ * @param client discord.js client
+ * @param message discord.js message object
+ * @param args message arguments
+ * @param recursiveCount the amount of loops of the recursive function
+ */
+const run = async (client: Semblance, message: Message, args: string[], recursiveCount = 0) => {
   if (recursiveCount == 2) return message.delete();
   if (recursiveCount == 0 && !(await Jump.findOne({ userId: message.author.id }))?.active) return;
 
