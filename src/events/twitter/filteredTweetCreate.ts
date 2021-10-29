@@ -7,7 +7,7 @@ import config from '#config';
 
 export default {
   name: ClientEvents.FILTERED_TWEET_CREATE,
-  exec: async (tweet, { client }) => filteredTweetCreate(client, tweet),
+  exec: async (tweet, _matchedRules, { client }) => filteredTweetCreate(client, tweet),
 } as TwitterJSEventHandler<'filteredTweetCreate'>;
 
 export const filteredTweetCreate = async (client: Semblance, tweet: Tweet) => {

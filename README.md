@@ -1,4 +1,4 @@
-![servers](https://api.discordlist.space/v2/bots/794033850665533450/badge?property=servers&style=plastic&color=informational) ![prefix](https://api.discordlist.space/v2/bots/794033850665533450/badge?property=prefix&style=plastic&color=7289DA) [![chat](https://img.shields.io/discord/794054988224659490?color=%237289DA&logo=discord&logoColor=white)](https://discord.gg/XFMaTn6taf) [![dependencies](https://img.shields.io/david/officialsirh/semblance-bot?style=plastic)](https://david-dm.org/officialsirh/semblance-bot)
+![servers](https://api.discordlist.space/v2/bots/794033850665533450/badge?property=servers&style=plastic&color=informational) ![prefix](https://api.discordlist.space/v2/bots/794033850665533450/badge?property=prefix&style=plastic&color=7289DA) [![chat](https://img.shields.io/discord/794054988224659490?color=%237289DA&logo=discord&logoColor=white)](https://discord.gg/XFMaTn6taf) ![Dependencies](https://img.shields.io/librariesio/github/OfficialSirH/Semblance-bot?style=plastic)
 
 ## **Who is Semblance?**
 

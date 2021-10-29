@@ -9,5 +9,5 @@ export default {
 } as TwitterJSEventHandler<'ready'>;
 
 export const ready = async (client: Client) => {
-  await client.filteredTweets.addRules([{ value: 'from:ComputerLunch' }]);
+  await client.filteredStreamRules.create({ value: 'from:ComputerLunch' });
 };
