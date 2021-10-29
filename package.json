@@ -8,7 +8,7 @@
   "dependencies": {
     "@top-gg/sdk": "^3.1.2",
     "bufferutil": "^4.0.5",
-    "discord.js": "github:OfficialSirH/discord.js",
+    "discord.js": "^13.3.0-dev.1635465892.5d987ee",
     "dotenv": "^10.0.0",
     "erlpack": "github:discord/erlpack",
     "fastify": "^3.22.1",
@@ -62,7 +62,6 @@
   "license": "ISC",
   "devDependencies": {
     "@types/node": "^16.11.6",
-    "@types/node-fetch": "^3.0.3",
     "@types/source-map-support": "^0.5.4",
     "@types/twitter": "^1.7.0",
     "@types/ws": "^8.2.0",
