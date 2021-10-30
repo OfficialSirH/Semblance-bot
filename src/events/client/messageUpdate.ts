@@ -12,7 +12,7 @@ export default {
 } as EventHandler<'messageUpdate'>;
 
 export const messageUpdate = async (newMsg: Message | PartialMessage) => {
-  if (newMsg?.guild.id != c2sGuildId || (newMsg.channel as GuildChannel).name != 'suggestions' || !newMsg.content)
+  if (newMsg?.guild?.id != c2sGuildId || (newMsg.channel as GuildChannel).name != 'suggestions' || !newMsg.content)
     return;
 
   const msg = newMsg.content.toLowerCase(),

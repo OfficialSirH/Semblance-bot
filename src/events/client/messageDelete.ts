@@ -17,7 +17,7 @@ export default {
 
 export const messageDelete = async (message: Message, client: Semblance) => {
   if (
-    message.guild.id != c2sGuildId ??
+    message.guild?.id != c2sGuildId ??
     (message.channel.id != bugChannels.queue && message.channel.id != bugChannels.approved)
   )
     return;
