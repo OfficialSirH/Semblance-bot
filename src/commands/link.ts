@@ -9,11 +9,11 @@ const { c2sGuildId } = config;
 const cooldown: Collection<string, number> = new Collection();
 
 export default {
-  description: 'used for linking the C2S player\'s game with their Discord account.',
+  description: "used for linking the C2S player's game with their Discord account.",
   category: 'dm',
   usage: {
-    PLAYER_ID: 'The user\'s in-game Id',
-    PLAYER_TOKEN: 'The user\'s in-game token',
+    PLAYER_ID: "The user's in-game Id",
+    PLAYER_TOKEN: "The user's in-game token",
   },
   permissionRequired: 0,
   checkArgs: args => args.length >= 2,
@@ -64,7 +64,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
   newUser.save(function (err) {
     if (err)
       return message.channel.send(
-        'An error occured, either you provided incorrect input or something randomly didn\'t want to work.',
+        "An error occured, either you provided incorrect input or something randomly didn't want to work.",
       );
     message.channel.send(
       'The link was successful, now you can use the Discord button in-game to upload your progress.',

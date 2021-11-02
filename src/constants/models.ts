@@ -12,7 +12,9 @@ export const checkBoosterRewards = async (client: Semblance) => {
   const now = Date.now();
   boosterRewards = boosterRewards.filter(boosterReward => boosterReward.rewardingDate < now);
   if (boosterRewards.length == 0) return;
-  const darwiniumCodes = (await Information.findOne({ infoType: 'boostercodes' })) as InformationFormat<'boostercodes'>;
+  const darwiniumCodes = (await Information.findOne({
+    infoType: 'boostercodes',
+  })) as InformationFormat<'boostercodes'>;
   if (darwiniumCodes.list.length == 0) {
     if (darwiniumCodes.updated) {
       boosterChannel(client).send({
@@ -71,9 +73,14 @@ export const boosterRole = '660930089990488099';
 
 // BoosterRewards - create automatic booster rewards for author of message
 export const createBoosterRewards = async (message: Message) => {
-  const boosterReward = await BoosterRewards.findOne({ userId: message.author.id });
+  const boosterReward = await BoosterRewards.findOne({
+    userId: message.author.id,
+  });
   if (boosterReward) return;
-  BoosterRewards.create({ userId: message.author.id, rewardingDate: Date.now() + 1000 * 60 * 60 * 24 * 14 })
+  BoosterRewards.create({
+    userId: message.author.id,
+    rewardingDate: Date.now() + 1000 * 60 * 60 * 24 * 14,
+  })
     .then(br =>
       message.channel.send(
         `Thank you for boosting the server, ${

@@ -5,7 +5,7 @@ import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
-  description: 'See a user\'s avatar.',
+  description: "See a user's avatar.",
   category: 'utility',
   usage: {
     '<userId/mention>': '',
@@ -25,7 +25,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
       if (!userId) return message.reply('The provided input is invalid');
       user = await client.users.fetch(userId, { cache: false });
     }
-    if (!user) return message.reply('I couldn\'t find that user');
+    if (!user) return message.reply("I couldn't find that user");
   }
   const embed = new MessageEmbed()
     .setTitle('Avatar')

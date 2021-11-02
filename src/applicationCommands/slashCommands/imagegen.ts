@@ -11,7 +11,10 @@ export default {
       wantsCat = interaction.options.getSubcommand() === 'cat';
     } catch (e) {
       commandFailed = true;
-      await interaction.reply({ content: 'Something didn\'t work quite right. Please try again.', ephemeral: true });
+      await interaction.reply({
+        content: "Something didn't work quite right. Please try again.",
+        ephemeral: true,
+      });
     }
     if (commandFailed) return;
     const query_params = {
@@ -24,7 +27,11 @@ export default {
 
     const images = await fetchCatOrDog(query_params, wantsCat);
 
-    if (images.length === 0) return interaction.reply({ content: 'No images found.', ephemeral: true });
+    if (images.length === 0)
+      return interaction.reply({
+        content: 'No images found.',
+        ephemeral: true,
+      });
 
     const image = images[0],
       image_url = image.url,

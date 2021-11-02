@@ -14,7 +14,10 @@ export default {
       simSpeed = options.getInteger('speed_upgrades') ? clamp(options.getInteger('speed_upgrades'), 0, 2105) : 0;
 
     if (!checkValue(metabits))
-      return interaction.reply({ content: 'Your input for metabits was invalid', ephemeral: true });
+      return interaction.reply({
+        content: 'Your input for metabits was invalid',
+        ephemeral: true,
+      });
     const metabitCount = nameToScNo(metabits);
     let num = 1.0;
 

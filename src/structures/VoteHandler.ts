@@ -23,7 +23,10 @@ export class VoteHandler {
   public async sendVotedEmbed(
     user: Snowflake | User,
     description: string,
-    { hasGame, weekendBonus }: { hasGame?: boolean; weekendBonus?: boolean } = { hasGame: false, weekendBonus: false },
+    { hasGame, weekendBonus }: { hasGame?: boolean; weekendBonus?: boolean } = {
+      hasGame: false,
+      weekendBonus: false,
+    },
   ) {
     if (weekendBonus)
       description +=

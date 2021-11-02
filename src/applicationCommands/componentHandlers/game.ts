@@ -1,165 +1,166 @@
-import type { ButtonData } from '#lib/interfaces/Semblance';
-import { Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed } from 'discord.js';
+import type { ComponentHandler } from '#lib/interfaces/Semblance';
+import type { Message, MessageComponentInteraction } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { Game } from '#models/Game';
-import { filterAction, randomColor } from '#constants/index';
-import config from '#config';
-import { GameFormat } from '#models/Game';
+import { filterAction, prefix, randomColor } from '#constants/index';
+import type { GameFormat } from '#models/Game';
 import type { Semblance } from '#structures/Semblance';
 import { currentPrice } from '#constants/commands';
-const { prefix } = config;
 
-export const run = async (interaction: MessageComponentInteraction, { action, id }: ButtonData) => {
-  const game = await Game.findOne({ player: id });
-  let cost: number, components: MessageActionRow[];
-  if (game) cost = await currentPrice(game);
+export default {
+  buttonHandle: async (interaction, { action, id }) => {
+    const game = await Game.findOne({ player: id });
+    let cost: number, components: MessageActionRow[];
+    if (game) cost = await currentPrice(game);
 
-  const mainComponents = [
-      new MessageActionRow().addComponents(
-        new MessageButton()
-          .setCustomId(
-            JSON.stringify({
-              command: 'game',
-              action: 'about',
-              id,
-            }),
-          )
-          .setStyle('PRIMARY')
-          .setEmoji('❔')
-          .setLabel('About'),
-        new MessageButton()
-          .setCustomId(
-            JSON.stringify({
-              command: 'game',
-              action: 'collect',
-              id,
-            }),
-          )
-          .setDisabled(!game)
-          .setStyle('PRIMARY')
-          .setEmoji('💵')
-          .setLabel('Collect'),
-        new MessageButton()
-          .setCustomId(
-            JSON.stringify({
-              command: 'game',
-              action: 'upgrade',
-              id,
-            }),
-          )
-          .setDisabled(!game || game.money < cost)
-          .setStyle('PRIMARY')
-          .setEmoji('⬆')
-          .setLabel('Upgrade'),
-        new MessageButton()
-          .setCustomId(
-            JSON.stringify({
-              command: 'game',
-              action: 'leaderboard',
-              id,
-            }),
-          )
-          .setStyle('PRIMARY')
-          .setEmoji('🏅')
-          .setLabel('Leaderboard'),
-        new MessageButton()
-          .setCustomId(
-            JSON.stringify({
-              command: 'game',
-              action: 'vote',
-              id,
-            }),
-          )
-          .setStyle('PRIMARY')
-          .setEmoji('💰')
-          .setLabel('Voting Sites'),
-      ),
-    ],
-    endComponents = [
-      new MessageActionRow().addComponents(
-        new MessageButton()
-          .setCustomId(
-            JSON.stringify({
-              command: 'game',
-              action: 'stats',
-              id,
-            }),
-          )
-          .setDisabled(!game)
-          .setStyle('PRIMARY')
-          .setEmoji('🔢')
-          .setLabel('Stats'),
-        new MessageButton()
-          .setCustomId(
-            JSON.stringify({
-              command: 'game',
-              action: 'graph',
-              id,
-            }),
-          )
-          .setStyle('PRIMARY')
-          .setEmoji('📈')
-          .setLabel('Graph'),
-        new MessageButton()
-          .setCustomId(
-            JSON.stringify({
-              command: 'game',
-              action: 'create',
-              id,
-            }),
-          )
-          .setEmoji(game ? '⛔' : '🌎')
-          .setLabel(game ? 'Reset Progress' : 'Create new game')
-          .setStyle(game ? 'DANGER' : 'SUCCESS'),
-        new MessageButton()
-          .setCustomId(
-            JSON.stringify({
-              command: 'game',
-              action: 'close',
-              id,
-            }),
-          )
-          .setEmoji('🚫')
-          .setLabel('Close')
-          .setStyle('SECONDARY'),
-      ),
-    ];
-  if (['about', 'collect', 'upgrade', 'leaderboard', 'vote'].includes(action)) components = endComponents;
-  else if (action == 'stats') components = mainComponents;
-  else components = filterAction(endComponents, action);
-  //if (action != 'collect') filterAction(components, action);
+    const mainComponents = [
+        new MessageActionRow().addComponents(
+          new MessageButton()
+            .setCustomId(
+              JSON.stringify({
+                command: 'game',
+                action: 'about',
+                id,
+              }),
+            )
+            .setStyle('PRIMARY')
+            .setEmoji('❔')
+            .setLabel('About'),
+          new MessageButton()
+            .setCustomId(
+              JSON.stringify({
+                command: 'game',
+                action: 'collect',
+                id,
+              }),
+            )
+            .setDisabled(!game)
+            .setStyle('PRIMARY')
+            .setEmoji('💵')
+            .setLabel('Collect'),
+          new MessageButton()
+            .setCustomId(
+              JSON.stringify({
+                command: 'game',
+                action: 'upgrade',
+                id,
+              }),
+            )
+            .setDisabled(!game || game.money < cost)
+            .setStyle('PRIMARY')
+            .setEmoji('⬆')
+            .setLabel('Upgrade'),
+          new MessageButton()
+            .setCustomId(
+              JSON.stringify({
+                command: 'game',
+                action: 'leaderboard',
+                id,
+              }),
+            )
+            .setStyle('PRIMARY')
+            .setEmoji('🏅')
+            .setLabel('Leaderboard'),
+          new MessageButton()
+            .setCustomId(
+              JSON.stringify({
+                command: 'game',
+                action: 'vote',
+                id,
+              }),
+            )
+            .setStyle('PRIMARY')
+            .setEmoji('💰')
+            .setLabel('Voting Sites'),
+        ),
+      ],
+      endComponents = [
+        new MessageActionRow().addComponents(
+          new MessageButton()
+            .setCustomId(
+              JSON.stringify({
+                command: 'game',
+                action: 'stats',
+                id,
+              }),
+            )
+            .setDisabled(!game)
+            .setStyle('PRIMARY')
+            .setEmoji('🔢')
+            .setLabel('Stats'),
+          new MessageButton()
+            .setCustomId(
+              JSON.stringify({
+                command: 'game',
+                action: 'graph',
+                id,
+              }),
+            )
+            .setStyle('PRIMARY')
+            .setEmoji('📈')
+            .setLabel('Graph'),
+          new MessageButton()
+            .setCustomId(
+              JSON.stringify({
+                command: 'game',
+                action: 'create',
+                id,
+              }),
+            )
+            .setEmoji(game ? '⛔' : '🌎')
+            .setLabel(game ? 'Reset Progress' : 'Create new game')
+            .setStyle(game ? 'DANGER' : 'SUCCESS'),
+          new MessageButton()
+            .setCustomId(
+              JSON.stringify({
+                command: 'game',
+                action: 'close',
+                id,
+              }),
+            )
+            .setEmoji('🚫')
+            .setLabel('Close')
+            .setStyle('SECONDARY'),
+        ),
+      ];
+    if (['about', 'collect', 'upgrade', 'leaderboard', 'vote'].includes(action)) components = endComponents;
+    else if (action == 'stats') components = mainComponents;
+    else components = filterAction(endComponents, action);
+    //if (action != 'collect') filterAction(components, action);
 
-  switch (action) {
-    case 'create':
-      game ? askConfirmation(interaction) : create(interaction, components);
-      break;
-    case 'reset':
-      create(interaction, components);
-      break;
-    case 'about':
-      about(interaction, components);
-      break;
-    case 'collect':
-      collect(interaction, components);
-      break;
-    case 'upgrade':
-      upgrade(interaction, components);
-      break;
-    case 'leaderboard':
-      leaderboard(interaction, components);
-      break;
-    case 'vote':
-      votes(interaction, components);
-      break;
-    case 'stats':
-      stats(interaction, components, game);
-      break;
-    case 'graph':
-      graph(interaction, components);
-      break;
-    case 'close':
-      (interaction.message as Message).delete();
-  }
-};
+    switch (action) {
+      case 'create':
+        game ? askConfirmation(interaction) : create(interaction, components);
+        break;
+      case 'reset':
+        create(interaction, components);
+        break;
+      case 'about':
+        about(interaction, components);
+        break;
+      case 'collect':
+        collect(interaction, components);
+        break;
+      case 'upgrade':
+        upgrade(interaction, components);
+        break;
+      case 'leaderboard':
+        leaderboard(interaction, components);
+        break;
+      case 'vote':
+        votes(interaction, components);
+        break;
+      case 'stats':
+        stats(interaction, components, game);
+        break;
+      case 'graph':
+        graph(interaction, components);
+        break;
+      case 'close':
+        (interaction.message as Message).delete();
+    }
+  },
+} as ComponentHandler;
 
 async function askConfirmation(interaction: MessageComponentInteraction) {
   const { user } = interaction;
@@ -188,11 +189,15 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
         .setStyle('SECONDARY'),
     ),
   ];
-  await interaction.update({ content: 'Are you sure you want to reset your progress?', embeds: [], components });
+  await interaction.update({
+    content: 'Are you sure you want to reset your progress?',
+    embeds: [],
+    components,
+  });
 }
 
 async function create(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const { user } = interaction;
+  const { user, client } = interaction;
   const percent = (Math.round(Math.random() * 25) + 25) / 100 + 1;
   const startingProfits = Math.random() * 0.05 + 0.05;
   await Game.findOneAndDelete({ player: user.id });
@@ -208,10 +213,12 @@ async function create(interaction: MessageComponentInteraction, components: Mess
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(
-      `Game Successfully created! Now you can start collecting Random-Bucks by typing \`${prefix}game collect\` and upgrade your Random-Bucks with \`${prefix}game upgrade\`\n\n` +
+      `Game Successfully created! Now you can start collecting Random-Bucks by typing '${prefix(
+        client,
+      )} game collect' and upgrade your Random-Bucks with \`${prefix(client)} game upgrade\`\n\n` +
         `Price Increase: ${(creationHandler.percentIncrease - 1) * 100}%\n` +
         `Starting Profits: ${creationHandler.idleProfit.toFixed(3)}/sec\n\n` +
-        'Reminder, don\'t be constantly spamming and creating a new game just cause your RNG stats aren\'t perfect \n',
+        "Reminder, don't be constantly spamming and creating a new game just cause your RNG stats aren't perfect \n",
     )
     .setFooter('Enjoy idling!');
   components = components.map(c => {
@@ -226,11 +233,11 @@ async function create(interaction: MessageComponentInteraction, components: Mess
 async function about(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   const { user } = interaction;
   const embed = new MessageEmbed()
-    .setTitle('What\'s Semblance\'s Idle-Game about?')
+    .setTitle("What's Semblance's Idle-Game about?")
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(
-      'SIG, AKA Semblance\'s Idle-Game, is an RNG idle-game that uses a currency called Random-Bucks \n' +
+      "SIG, AKA Semblance's Idle-Game, is an RNG idle-game that uses a currency called Random-Bucks \n" +
         `which yes, I asked Semblance whether or not I should use Random-Bucks as the name by using \`${prefix}8ball\`. ` +
         'If you\'re confused by the acronym RNG, it\'s an acronym for "Random Number Generation/Generator", which ' +
         'means that everything is kind of random and runs on random chance in the game. Everything that is random ' +
@@ -248,7 +255,12 @@ async function collect(interaction: MessageComponentInteraction, components: Mes
   const collected = collectionHandler.idleProfit * ((currentCollection - collectionHandler.idleCollection) / 1000);
   collectionHandler = await Game.findOneAndUpdate(
     { player: user.id },
-    { $set: { money: collectionHandler.money + collected, idleCollection: currentCollection } },
+    {
+      $set: {
+        money: collectionHandler.money + collected,
+        idleCollection: currentCollection,
+      },
+    },
     { new: true },
   );
   const embed = new MessageEmbed()
@@ -327,7 +339,7 @@ async function leaderboard(interaction: MessageComponentInteraction, components:
   let leaderboard = (interaction.client as Semblance).gameLeaderboard.toString();
   if (!leaderboard) leaderboard = 'There is currently no one who has upgraded their income.';
   const embed = new MessageEmbed()
-    .setTitle('Semblance\'s idle-game leaderboard')
+    .setTitle("Semblance's idle-game leaderboard")
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(`${leaderboard}`)
@@ -364,7 +376,7 @@ async function votes(interaction: MessageComponentInteraction, components: Messa
 async function stats(interaction: MessageComponentInteraction, components: MessageActionRow[], game: GameFormat) {
   const { user } = interaction;
   const embed = new MessageEmbed()
-    .setTitle('Welcome back to Semblance\'s Idle-Game!')
+    .setTitle("Welcome back to Semblance's Idle-Game!")
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
@@ -372,7 +384,10 @@ async function stats(interaction: MessageComponentInteraction, components: Messa
       { name: 'Level', value: game.level.toString() },
       { name: 'Random-Bucks', value: game.money.toFixed(3).toString() },
       { name: 'Percent Increase', value: game.percentIncrease.toString() },
-      { name: 'Next Upgrade Cost', value: (await currentPrice(game)).toFixed(3).toString() },
+      {
+        name: 'Next Upgrade Cost',
+        value: (await currentPrice(game)).toFixed(3).toString(),
+      },
       { name: 'Idle Profit', value: game.idleProfit.toFixed(3).toString() },
     ])
     .setFooter('Remember to vote for Semblance to gain a production boost!');
@@ -382,7 +397,7 @@ async function stats(interaction: MessageComponentInteraction, components: Messa
 async function graph(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   const { user } = interaction;
   const embed = new MessageEmbed()
-    .setTitle('Graphed Data of Semblance\'s Idle Game')
+    .setTitle("Graphed Data of Semblance's Idle Game")
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(

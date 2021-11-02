@@ -11,15 +11,24 @@ export default {
       ideas = interaction.options.get('idea').value,
       failed = false;
     if (!checkValue(entropy as string))
-      return interaction.reply({ content: 'Your input for entropy was invalid', ephemeral: true });
+      return interaction.reply({
+        content: 'Your input for entropy was invalid',
+        ephemeral: true,
+      });
     if (!checkValue(ideas as string))
-      return interaction.reply({ content: 'Your input for ideas was invalid', ephemeral: true });
+      return interaction.reply({
+        content: 'Your input for ideas was invalid',
+        ephemeral: true,
+      });
     try {
       entropy = (entropy as string).match(/[a-z]/i) ? nameToScNo(entropy as string) : parseInt(entropy as string);
       ideas = (ideas as string).match(/[a-z]/i) ? nameToScNo(ideas as string) : parseInt(ideas as string);
     } catch {
       failed = true;
-      return interaction.reply({ content: 'Something went wrong, please try again', ephemeral: true });
+      return interaction.reply({
+        content: 'Something went wrong, please try again',
+        ephemeral: true,
+      });
     }
     if (failed) return;
     const metabits = Math.floor(Math.pow((entropy as number) + (ideas as number), 0.3333333333333333) / 10000 - 1),

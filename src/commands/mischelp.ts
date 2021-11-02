@@ -1,10 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { randomColor } from '#constants/index';
-import config from '#config';
+import { prefix, randomColor } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
-const { prefix } = config;
 
 export default {
   description: 'List all miscelaneous commands',
@@ -17,16 +15,16 @@ export default {
 const run = async (client: Semblance, message: Message) => {
   const serverCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'server')
-      .map(key => `**\`${prefix}${key}\`**`),
+      .map(key => `**${prefix(client)} ${key}**`),
     funCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'fun')
-      .map(key => `**\`${prefix}${key}\`**`),
+      .map(key => `**${prefix(client)} ${key}**`),
     utilityCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'utility')
-      .map(key => `**\`${prefix}${key}\`**`),
+      .map(key => `**${prefix(client)} ${key}**`),
     semblanceCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'semblance')
-      .map(key => `**\`${prefix}${key}\`**`);
+      .map(key => `**${prefix(client)} ${key}**`);
   const embed = new MessageEmbed()
     .setTitle('Miscellaneous Commands')
     .setThumbnail(client.user.displayAvatarURL())

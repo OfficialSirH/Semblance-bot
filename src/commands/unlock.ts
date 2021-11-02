@@ -29,7 +29,7 @@ const run = async (message: Message, args: string[]) => {
   } else {
     const success = await unlockChannel(message.channel as TextChannel, message.author);
     if (success) message.delete();
-    else message.channel.send('👮 This channel isn\'t locked!');
+    else message.channel.send("👮 This channel isn't locked!");
   }
 };
 
@@ -37,7 +37,9 @@ async function unlockChannel(channel: TextChannel, author: User) {
   const permission = channel.permissionOverwrites.cache.find(po => po.id == channel.guild.roles.everyone.id);
   if (!permission.deny.has('SEND_MESSAGES')) return false;
 
-  await channel.edit({ topic: channel.topic.replace(constants.lockMessage(author), '') });
+  await channel.edit({
+    topic: channel.topic.replace(constants.lockMessage(author), ''),
+  });
   await permission.edit({ SEND_MESSAGES: null });
   await channel.send('👮 ***The channel has been unlocked.***');
   return true;

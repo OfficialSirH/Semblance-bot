@@ -1,29 +1,29 @@
 import { GuildEmoji, Message, MessageEmbed } from 'discord.js';
-import { promises as fs } from 'fs';
-import { randomColor, addableEmojis } from '#constants/index';
-import config from '#config';
+import * as fs from 'fs/promises';
+import { randomColor, addableEmojis, prefix } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
-const { prefix } = config;
+import { Semblance } from '#structures/Semblance';
+
 // TODO: rewrite the execution to properly add emojis *only* when they are not already in the server
 export default {
-  description: 'Setup Semblance\'s emojis with this.',
+  description: "Setup Semblance's emojis with this.",
   category: 'admin',
   usage: {
     '': '',
   },
   permissionRequired: 6,
   checkArgs: () => true,
-  run: (_client, message, args) => run(message, args),
+  run: (client, message, args) => run(client, message, args),
 } as Command<'admin'>;
 
-const run = async (message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
   if (args.length == 0 || args[0] != 'add')
     return message.reply({
       embeds: [
         new MessageEmbed()
           .setAuthor(message.author.tag, message.author.displayAvatarURL())
           .setColor(randomColor)
-          .setDescription(`type \`${prefix}emojis add\` to add these emojis:\n${addableEmojis.join(' ')}`),
+          .setDescription(`type '${prefix(client)} emojis add' to add these emojis:\n${addableEmojis.join(' ')}`),
       ],
     });
   try {
@@ -46,7 +46,9 @@ const run = async (message: Message, args: string[]) => {
     message.channel.send({ embeds: [embed] });
   } catch (err) {
     message.reply(
-      `hmmmm, something didn't work properly during the process. If this occurs again, please report this issue in the support server(\`${prefix}support\`)`,
+      `hmmmm, something didn't work properly during the process. If this occurs again, please report this issue in the support server(${prefix(
+        client,
+      )} support)`,
     );
   }
 };

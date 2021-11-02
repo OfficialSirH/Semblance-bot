@@ -1,8 +1,6 @@
-export { Afk } from '#models/Afk';
 export { BoosterRewards } from '#models/BoosterRewards';
 export { Game } from '#models/Game';
 export { Information } from '#models/Information';
-export { Jump } from '#models/Jump';
 export { Leaderboard } from '#models/Leaderboard';
 export { Reminder } from '#models/Reminder';
 export { Report } from '#models/Report';

@@ -8,7 +8,7 @@
   "dependencies": {
     "@top-gg/sdk": "^3.1.2",
     "bufferutil": "^4.0.5",
-    "discord.js": "^13.3.0-dev.1635465892.5d987ee",
+    "discord.js": "^13.3.1",
     "dotenv": "^10.0.0",
     "erlpack": "github:discord/erlpack",
     "fastify": "^3.22.1",
@@ -53,7 +53,8 @@
     "start": "npm run build && pm2 start --name \"Semblance\" dist/ecosystem.config.cjs",
     "reload": "npm run build && pm2 reload dist/ecosystem.config.cjs",
     "build": "npm i && tsc",
-    "prettier": "prettier --write src/**/*.ts lib/**/*.ts",
+    "setup": "npm run lint:fix && npm run prettier",
+    "prettier": "prettier --write index.ts config.ts src/**/*.ts lib/**/*.ts",
     "lint": "eslint --ext ts",
     "lint:fix": "eslint --ext ts --fix",
     "prepare": "husky install"

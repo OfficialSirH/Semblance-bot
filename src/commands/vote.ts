@@ -1,9 +1,7 @@
 import { Message, MessageEmbed } from 'discord.js';
-import { randomColor } from '#constants/index';
+import { prefix, randomColor } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
-import config from '#config';
-const { prefix } = config;
 
 export default {
   description: 'Lists websites where you can vote for Semblance.',
@@ -32,7 +30,9 @@ const run = async (client: Semblance, message: Message) => {
       ].join('\n'),
     ) // Old Semblance Id: 668688939888148480
     .setFooter(
-      `Thanks, ${message.author.tag}, for considering to support my bot through voting, you may also support me with ${prefix}patreon :D`,
+      `Thanks, ${
+        message.author.tag
+      }, for considering to support my bot through voting, you may also support me with ${prefix(client)} patreon :D`,
       message.author.displayAvatarURL(),
     );
   message.channel.send({ embeds: [embed] });

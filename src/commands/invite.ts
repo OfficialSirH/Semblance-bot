@@ -23,5 +23,5 @@ const run = (client: Semblance, message: Message) => {
         '\n\n[Semblance Support server](https://discord.gg/XFMaTn6taf)',
     )
     .setFooter('Spread the word about Semblance!');
-  message.author.send({ embeds: [embed] }).catch(() => message.reply('I can\'t DM you!'));
+  message.author.send({ embeds: [embed] }).catch(() => message.reply("I can't DM you!"));
 };

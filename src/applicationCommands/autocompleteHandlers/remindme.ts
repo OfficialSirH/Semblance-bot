@@ -37,7 +37,10 @@ export const run: AutocompleteHandler['run'] = async (interaction, options) => {
 
   const finalTime =
     previousInputType && previousInputType != 'm'
-      ? { type: inputTypes.at(inputTypes.indexOf(previousInputType) + 1), value: parseInt(numInput) }
+      ? {
+          type: inputTypes.at(inputTypes.indexOf(previousInputType) + 1),
+          value: parseInt(numInput),
+        }
       : timeValues.at(-1);
 
   const responseOptions: ApplicationCommandOptionChoice[] = [];

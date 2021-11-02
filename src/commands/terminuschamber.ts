@@ -34,5 +34,8 @@ const run = async (message: Message) => {
         '**Red Cube** - ||Terraform Mars||',
       ].join('\n'),
     );
-  message.channel.send({ embeds: [embed], files: [currentLogo, terminusChamber] });
+  message.channel.send({
+    embeds: [embed],
+    files: [currentLogo, terminusChamber],
+  });
 };

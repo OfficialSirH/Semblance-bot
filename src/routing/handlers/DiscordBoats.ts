@@ -19,7 +19,11 @@ export class DiscordBoats extends VoteHandler {
     if (playerData)
       playerData = await Game.findOneAndUpdate(
         { player: vote.user.id },
-        { $set: { money: playerData.money + playerData.idleProfit * (3600 * 6) } },
+        {
+          $set: {
+            money: playerData.money + playerData.idleProfit * (3600 * 6),
+          },
+        },
         { new: true },
       );
 

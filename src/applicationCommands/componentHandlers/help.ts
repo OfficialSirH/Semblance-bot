@@ -1,85 +1,87 @@
-import type { ButtonData } from '#lib/interfaces/Semblance';
-import { Message, MessageActionRow, MessageButton, MessageComponentInteraction, MessageEmbed } from 'discord.js';
-import { randomColor, subcategoryList } from '#constants/index';
+import type { ComponentHandler } from '#lib/interfaces/Semblance';
+import type { Message, MessageComponentInteraction } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { prefix, randomColor, subcategoryList } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
 import config from '#config';
-const { prefix, c2sGuildId, sirhId, adityaId } = config;
+const { c2sGuildId, sirhId, adityaId } = config;
 
-export const run = async (
-  interaction: MessageComponentInteraction,
-  { action, id }: ButtonData,
-  { permissionLevel },
-) => {
-  const components = [new MessageActionRow()];
-  if (action != 'help')
-    components[0].components = [
-      new MessageButton()
-        .setCustomId(
-          JSON.stringify({
-            command: 'help',
-            action: 'help',
-            id,
-          }),
-        )
-        .setLabel('Back')
-        .setEmoji('⬅️')
-        .setStyle('SECONDARY'),
-      new MessageButton()
-        .setCustomId(
-          JSON.stringify({
-            command: 'help',
-            action: 'close',
-            id,
-          }),
-        )
-        .setLabel('Close')
-        .setEmoji('🚫')
-        .setStyle('SECONDARY'),
-    ];
-  else
-    components[0].components.push(
-      new MessageButton()
-        .setCustomId(
-          JSON.stringify({
-            command: 'help',
-            action: 'close',
-            id,
-          }),
-        )
-        .setLabel('Close')
-        .setEmoji('🚫')
-        .setStyle('SECONDARY'),
-    );
+export default {
+  selectHandle: async (interaction, { name, id }) => {
+    interaction.reply('select not implemented yet');
+  },
+  buttonHandle: async (interaction, { action, id }, { permissionLevel }) => {
+    const components = [new MessageActionRow()];
+    if (action != 'help')
+      components[0].components = [
+        new MessageButton()
+          .setCustomId(
+            JSON.stringify({
+              command: 'help',
+              action: 'help',
+              id,
+            }),
+          )
+          .setLabel('Back')
+          .setEmoji('⬅️')
+          .setStyle('SECONDARY'),
+        new MessageButton()
+          .setCustomId(
+            JSON.stringify({
+              command: 'help',
+              action: 'close',
+              id,
+            }),
+          )
+          .setLabel('Close')
+          .setEmoji('🚫')
+          .setStyle('SECONDARY'),
+      ];
+    else
+      components[0].components.push(
+        new MessageButton()
+          .setCustomId(
+            JSON.stringify({
+              command: 'help',
+              action: 'close',
+              id,
+            }),
+          )
+          .setLabel('Close')
+          .setEmoji('🚫')
+          .setStyle('SECONDARY'),
+      );
 
-  // Main Help Page
-  if (action == 'c2shelp') return c2shelp(interaction, components);
-  if (action == 'calculator') return calchelp(interaction, components);
-  if (action == 'mischelp') return mischelp(interaction, components, permissionLevel);
-  if (action == 'bug') return bughelp(interaction, components);
+    // Main Help Page
+    if (action == 'c2shelp') return c2shelp(interaction, components);
+    if (action == 'calculator') return calchelp(interaction, components);
+    if (action == 'mischelp') return mischelp(interaction, components, permissionLevel);
+    if (action == 'bug') return bughelp(interaction, components);
 
-  // Cell to Singularity Help Page
-  if (action == 'metabits') return metabits(interaction, components);
-  if (action == 'mesoguide') return mesoguide(interaction, components);
+    // Cell to Singularity Help Page
+    if (action == 'metabits') return metabits(interaction, components);
+    if (action == 'mesoguide') return mesoguide(interaction, components);
 
-  // Calculator Help Page
-  if (action == 'largenumbers') return largenumbers(interaction, components);
-  if (action == 'metahelp') return metahelp(interaction, components);
-  if (action == 'itemhelp') return itemhelp(interaction, components);
+    // Calculator Help Page
+    if (action == 'largenumbers') return largenumbers(interaction, components);
+    if (action == 'metahelp') return metahelp(interaction, components);
+    if (action == 'itemhelp') return itemhelp(interaction, components);
 
-  // Misc Help Page
-  if (action == 'ahelp') return ahelp(interaction, components);
+    // Misc Help Page
+    if (action == 'ahelp') return ahelp(interaction, components);
 
-  // Back and Close Actions
-  if (action == 'help') return help(interaction, components);
-  if (action == 'close') (interaction.message as Message).delete();
-};
+    // Back and Close Actions
+    if (action == 'help') return help(interaction, components);
+    if (action == 'close') (interaction.message as Message).delete();
+  },
+} as ComponentHandler;
 
 async function help(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   const client = interaction.client as Semblance,
     user = interaction.user;
   const c2sServerCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'c2sServer')
-    .map(key => `**\`${prefix}${key}\`**`);
+    .map(key => `**${prefix(client)} ${key}**`);
   components[0].components = [
     new MessageButton()
       .setCustomId(
@@ -139,13 +141,15 @@ async function help(interaction: MessageComponentInteraction, components: Messag
       {
         name: '**-> Slash Commands**',
         value: [
-          'Semblance\'s Slash Commands can be listed by typing `/`, which if none are visible,',
-          'that\'s likely due to Semblance not being authorized on the server and a admin will need to click',
+          "Semblance's Slash Commands can be listed by typing `/`, which if none are visible,",
+          "that's likely due to Semblance not being authorized on the server and a admin will need to click",
           `[here](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot+applications.commands) to authorize Semblance.`,
         ].join(' '),
       },
     )
-    .setFooter(`Stay Cellular! If you really like the work I've done to Semblance, then check out ${prefix}patreon :D`);
+    .setFooter(
+      `Stay Cellular! If you really like the work I've done to Semblance, then check out ${prefix(client)} patreon :D`,
+    );
   await interaction.update({ embeds: [embed], components });
 }
 
@@ -153,7 +157,7 @@ async function ahelp(interaction: MessageComponentInteraction, components: Messa
   const client = interaction.client as Semblance;
   const adminCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'admin')
-    .map(key => `**\`${prefix}${key}\`**`);
+    .map(key => `**${prefix(client)} ${key}**`);
   const embed = new MessageEmbed()
     .setColor(randomColor)
     .setTitle('**-> Admin Commands**')
@@ -215,17 +219,25 @@ async function itemhelp(interaction: MessageComponentInteraction, components: Me
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
     .setDescription(
-      `The item calculator's command is done by doing ${prefix}itemcalc <item name> <item level> <current lvl> or ${prefix}itemcalcrev <item name> <currency input> <current lvl>` +
-        ', which any name that has more than one word has to include \'-\', for example: martian-factory.',
+      `The item calculator's command is done by doing ${prefix(
+        client,
+      )} itemcalc <item name> <item level> <current lvl> or ${prefix(
+        client,
+      )} itemcalcrev <item name> <currency input> <current lvl>` +
+        ", which any name that has more than one word has to include '-', for example: martian-factory.",
     )
     .addFields(
       {
         name: 'itemcalc example',
-        value: `${prefix}itemcalc dna 100 58, this example is taking "dna" to get the specific cost for dna, then "100" is used to specify what level you're trying to calculate, finally, "58" specifies the current level the item is at.`,
+        value: `${prefix(
+          client,
+        )} itemcalc dna 100 58, this example is taking "dna" to get the specific cost for dna, then "100" is used to specify what level you're trying to calculate, finally, "58" specifies the current level the item is at.`,
       },
       {
         name: 'itemcalcrev example',
-        value: `${prefix}itemcalcrev martian-factory 1E48 148, this example uses the martian-factory for calculating the item's specific cost, then "1E48" is fossil input for how many fossils you're "spending", finally, "148" is your current level of the item you specified.`,
+        value: `${prefix(
+          client,
+        )} itemcalcrev martian-factory 1E48 148, this example uses the martian-factory for calculating the item's specific cost, then "1E48" is fossil input for how many fossils you're "spending", finally, "148" is your current level of the item you specified.`,
       },
     )
     .setFooter('Item Calculator goes brrrr...');
@@ -253,8 +265,8 @@ async function largenumbers(interaction: MessageComponentInteraction, components
         'SpDc(SeptenDecillion), OcDc(OctoDecillion)',
         'NoDc(NovemDecillion), V(Vigintillion)',
       ].join(',\n') +
-        '\nAll these names are case insensitive, meaning you don\'t have to type them in the exact correct capilization for it to work;' +
-        ' In case someone uses the British format for these names, please note that these are in US format, so they aren\'t the exact same as yours and if you would like to know what the names are in US format' +
+        "\nAll these names are case insensitive, meaning you don't have to type them in the exact correct capilization for it to work;" +
+        " In case someone uses the British format for these names, please note that these are in US format, so they aren't the exact same as yours and if you would like to know what the names are in US format" +
         ', click [here](http://www.thealmightyguru.com/Pointless/BigNumbers.html)',
     )
     .setFooter('Large Numbers go brrrr...');
@@ -271,7 +283,7 @@ async function metahelp(interaction: MessageComponentInteraction, components: Me
     .setAuthor(user.tag, user.displayAvatarURL())
     .setDescription(
       'The Metabit Calculator supports Scientific Notation, which means you can type numbers like 1E25, as well as names for numbers like million all the way to vigintillion;' +
-        ` Use ${prefix}largenumbers to get more info on large numbers.`,
+        ` Use ${prefix(client)} largenumbers to get more info on large numbers.`,
     )
     .addFields(
       {
@@ -286,11 +298,13 @@ async function metahelp(interaction: MessageComponentInteraction, components: Me
       },
       {
         name: 'metacalc example',
-        value: `${prefix}metacalc 1E23 1.59E49, this example shows 1E23 entropy and 1.59E49 ideas being used for input.`,
+        value: `${prefix(
+          client,
+        )} metacalc 1E23 1.59E49, this example shows 1E23 entropy and 1.59E49 ideas being used for input.`,
       },
       {
         name: 'metacalcrev example',
-        value: `${prefix}metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`,
+        value: `${prefix(client)} metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`,
       },
     )
     .setFooter('Metabit Calculator goes brrr.');
@@ -306,16 +320,16 @@ async function mischelp(
     user = interaction.user;
   const serverCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'server')
-      .map(key => `**\`${prefix}${key}\`**`),
+      .map(key => `**${prefix(client)} ${key}**`),
     funCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'fun')
-      .map(key => `**\`${prefix}${key}\`**`),
+      .map(key => `**${prefix(client)} ${key}**`),
     utilityCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'utility')
-      .map(key => `**\`${prefix}${key}\`**`),
+      .map(key => `**${prefix(client)} ${key}**`),
     semblanceCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'semblance')
-      .map(key => `**\`${prefix}${key}\`**`);
+      .map(key => `**${prefix(client)} ${key}**`);
   components[0].components = [
     new MessageButton()
       .setCustomId(
@@ -365,7 +379,7 @@ async function calchelp(interaction: MessageComponentInteraction, components: Me
     user = interaction.user,
     calculatorCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'calculator')
-      .map(key => `**\`${prefix}${key}\`**`);
+      .map(key => `**${prefix(client)} ${key}**`);
   components[0].components = [
     new MessageButton()
       .setCustomId(
@@ -424,38 +438,38 @@ async function bughelp(interaction: MessageComponentInteraction, components: Mes
         '+ Title',
         '\tThis is the title of the bug, just a quick description basically',
         '+ Actual Result',
-        '\tWhat occurs in this bug that shouldn\'t be occuring normally?',
+        "\tWhat occurs in this bug that shouldn't be occuring normally?",
         '+ Expected Result',
         '\tWhat do you think or know should be happening in this situation instead of the actual result?',
         '+ Operating System',
         '\tWhat system are you playing the game on? For example: Windows 10, Android 9, Iphone 12',
         '+ Game Version',
-        '\tWhat is the game\'s version that you\'re playing during the cause of this bug?(i.e. 8.06)',
+        "\tWhat is the game's version that you're playing during the cause of this bug?(i.e. 8.06)",
         '+ FORMAT',
-        `\t${prefix}report TITLE`,
+        '\t@Semblance report TITLE',
         '\tACTUAL_RESULT',
         '\tEXPECTED_RESULT',
         '\tSYSTEM_INFO',
         '\tGAME_VERSION',
         '- OR',
-        `\t${prefix}report TITLE | ACTUAL_RESULT | EXPECTED_RESULT | SYSTEM_INFO | GAME_VERSION`,
+        '\t@Semblance report TITLE | ACTUAL_RESULT | EXPECTED_RESULT | SYSTEM_INFO | GAME_VERSION',
 
         '\nREPORT EXAMPLE:',
-        `\t${prefix}report Bad Bug`,
+        '\t@Semblance report Bad Bug',
         '\tIt does something bad',
-        '\tIt shouldn\'t do something bad',
+        "\tIt shouldn't do something bad",
         '\tWindows 69',
         '\t4_20',
 
         '\nWHAT IF I HAVE THE SAME BUG OCCURING AS ANOTHER USER WHO HAS ALREADY REPORTED IT?',
         '+ FORMAT:',
-        `\t${prefix}bug BUG_Id reproduce SYSTEM_INFO | GAME_VERSION`,
+        '\t@Semblance bug BUG_Id reproduce SYSTEM_INFO | GAME_VERSION',
         '- OR',
-        `\t${prefix}bug BUG_Id reproduce SYSTEM_INFO`,
+        '\t@Semblance bug BUG_Id reproduce SYSTEM_INFO',
         '\tGAME_VERSION',
 
         '\nREPRODUCE EXAMPLE:',
-        `\t${prefix}bug 360 reproduce Android 420 | 4_69`,
+        '\t@Semblance bug 360 reproduce Android 420 | 4_69',
         '```',
       ].join('\n'),
     );
@@ -496,10 +510,10 @@ async function metabits(interaction: MessageComponentInteraction, components: Me
 
         [
           '**Reality Engine:**',
-          'There are upgrades in the Reality Engine that specifically boost your production speed, which you can total up to **2105%** if you got all of the upgrades, now that\'s a lot! :D',
+          "There are upgrades in the Reality Engine that specifically boost your production speed, which you can total up to **2105%** if you got all of the upgrades, now that's a lot! :D",
         ].join('\n'),
 
-        'If you\'d like to see the effects all of these have on overall production speed, use the slash command, `/metaspeedcalc`, to play around with the values!',
+        "If you'd like to see the effects all of these have on overall production speed, use the slash command, `/metaspeedcalc`, to play around with the values!",
       ].join('\n\n'),
     );
   await interaction.update({ embeds: [embed], components });
@@ -534,7 +548,7 @@ async function mesoguide(interaction: MessageComponentInteraction, components: M
         name: '**Exiting a stage**',
         value: [
           '```\nI recommend only exiting a stage when you have completed all missions.',
-          'Before doing so you should go through all your dinos and try to reach as many milestones as you can for some extra mutagen. Don\'t underestimate the effect of this, especially at higher stages.',
+          "Before doing so you should go through all your dinos and try to reach as many milestones as you can for some extra mutagen. Don't underestimate the effect of this, especially at higher stages.",
           'The milestones are 10, 25, 50, 100, 150, 250, and 500.```',
         ].join('\n'),
       },

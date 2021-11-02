@@ -1,7 +1,15 @@
-import type { Collection, Message, PartialMessage, Snowflake, TextChannel, User } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
-import { randomColor } from './index.js';
-import { Afk, Game, Reminder, Report } from '#models/index';
+import {
+  Client,
+  Guild,
+  GuildChannel,
+  Message,
+  MessageEmbed,
+  PartialMessage,
+  Snowflake,
+  TextChannel,
+  User,
+} from 'discord.js';
+import { Game, Reminder, Report } from '#models/index';
 import type { Semblance } from '#structures/Semblance';
 import { clamp } from '#lib/utils/math';
 import type { UserReminder } from '../models/Reminder';
@@ -9,30 +17,7 @@ import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndD
 import fetch from 'node-fetch';
 import type { GameFormat } from '#models/Game';
 import type { DeepLParams, DeepLResponse } from '#lib/interfaces/deepLAPI';
-
-// AFK functions - dontDisturb and removeAfk
-
-export const dontDisturb = async function (message: Message, mentioned: Collection<string, User>) {
-  mentioned.forEach(async user => {
-    if (message.author.id == user.id) return;
-    const afkHandler = await Afk.findOne({ userId: user.id });
-    if (!afkHandler) return;
-    const reason = afkHandler.reason;
-    const embed = new MessageEmbed()
-      .setTitle('Currently Afk')
-      .setColor(randomColor)
-      .setThumbnail(user.displayAvatarURL())
-      .setDescription(`${user.tag} is currently afk`)
-      .addField('Reason', `${reason}`);
-    message.reply({ embeds: [embed] });
-  });
-};
-
-export async function removeAfk(client: Semblance, message: Message) {
-  if (message.author.id == client.user.id) return;
-  const afkHandler = await Afk.findOneAndDelete({ userId: message.author.id });
-  if (afkHandler) message.reply('You are no longer AFK');
-}
+import { messageLinkRegex, attachmentLinkRegex } from '#constants/index';
 
 // gametransfer pages
 
@@ -87,7 +72,7 @@ export const checkReminders = async (client: Semblance) => {
 // bug functions and constants - correctReportList and CHANNELS
 
 export const correctReportList = async function (
-  client: Semblance,
+  _client: Semblance,
   message: Message | PartialMessage,
   messageId: Snowflake,
 ) {
@@ -170,7 +155,7 @@ export const randomChoice = () => ['rock', 'paper', 'scissors', 'lizard', 'spock
 
 export const serversPerPage = 50;
 
-export function guildBookPage(client: Semblance, chosenPage: string | number) {
+export function guildBookPage(client: Client, chosenPage: string | number) {
   chosenPage = Number.parseInt(chosenPage as string);
   const guildBook = {},
     numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
@@ -240,3 +225,43 @@ export async function currentPrice(userData: GameFormat) {
   }
   return userData.cost == 0 ? userData.baseCost : userData.cost;
 }
+
+export const messageLinkJump = async (input: string, user: User, currentGuild: Guild, client: Client) => {
+  const messageLink = messageLinkRegex.exec(input);
+  if (messageLink == null) return 'No message link found.';
+  const {
+    groups: { guildId, channelId, messageId },
+  } = messageLink;
+
+  const guild = client.guilds.cache.get(guildId);
+  const channel = guild.channels.cache.get(channelId) as TextChannel;
+  if (channel.nsfw ?? guild.id != currentGuild.id) return 'This channel is not allowed to be jumped to';
+
+  const msg = await channel.messages.fetch(messageId).catch(err => {
+    console.log(err);
+    return 'No message found.';
+  });
+  if (typeof msg == 'string') return msg;
+  const attachmentLink = attachmentLinkRegex.exec(msg.content);
+  if (attachmentLink != null) msg.content = msg.content.replace(attachmentLink[0], '');
+
+  const embed = new MessageEmbed()
+    .setAuthor(msg.author.username, msg.author.displayAvatarURL())
+    .setThumbnail(user.displayAvatarURL())
+    .setDescription(msg.content)
+    .addField('Jump', `[Go to message!](${msg.url})`)
+    .setFooter(`#${(msg.channel as GuildChannel).name} quoted by ${user.tag}`)
+    .setTimestamp(msg.createdTimestamp);
+  if (msg.embeds[0] && attachmentLink == null) {
+    const title = msg.embeds[0].title ? msg.embeds[0].title : 'no title';
+    embed.addField(`*Contains embed titled: ${title}*`, '\u200b');
+    if (msg.embeds[0].image) embed.setImage(msg.embeds[0].image.url);
+  }
+
+  if (!embed.image && (msg.attachments.size > 0 ?? !attachmentLink))
+    embed.setImage(
+      msg.attachments.size > 0 ? msg.attachments.map(a => a.url).filter(item => item)[0] : attachmentLink[0],
+    );
+
+  return { embeds: [embed] };
+};

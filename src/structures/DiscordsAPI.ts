@@ -101,8 +101,14 @@ export class BFDApi extends EventEmitter {
   async getBotWidget(id: Snowflake, width: number, theme: string): Promise<Widget> {
     if (!id) throw new Error('Id Missing');
     if (!width && !theme) return this._request('GET', `/bot/${id}/widget`) as Promise<Widget>;
-    if (!width) return this._request('GET', `/bot/${id}/widget`, { theme }) as Promise<Widget>;
-    if (!theme) return this._request('GET', `/bot/${id}/widget`, { width }) as Promise<Widget>;
+    if (!width)
+      return this._request('GET', `/bot/${id}/widget`, {
+        theme,
+      }) as Promise<Widget>;
+    if (!theme)
+      return this._request('GET', `/bot/${id}/widget`, {
+        width,
+      }) as Promise<Widget>;
   }
   /**
    * Get user info

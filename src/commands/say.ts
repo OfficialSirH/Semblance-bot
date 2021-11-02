@@ -7,7 +7,7 @@ export default {
   description: 'Make announcements through Semblance',
   category: 'admin',
   usage: {
-    '<\'!ar\' for anonymous msg> <channel> <msg>': '',
+    "<'!ar' for anonymous msg> <channel> <msg>": '',
   },
   permissionRequired: 2,
   checkArgs: args => args.length >= 2,
@@ -19,7 +19,7 @@ const run = async (message: Message, args: string[], { permissionLevel, content 
   message.delete();
   const channel = !message.mentions ? message.channel : (message.mentions.channels.first() as TextChannel);
   if (!message.guild.channels.cache.has(channel.id))
-    return message.reply('Don\'t be using channels from other servers, that\'s not allowed.');
+    return message.reply("Don't be using channels from other servers, that's not allowed.");
   args.splice(args.indexOf(`<#${channel.id}>`), 1);
   let announcement = args.join(' ');
 
@@ -43,7 +43,7 @@ const run = async (message: Message, args: string[], { permissionLevel, content 
   }
   if (announcement.length > 2000) return message.reply('Your input was too long');
   channel.send(messageOptions).catch(() =>
-    message.reply('Something went wrong with the message, you might\'ve typed too many characters.').then(msg =>
+    message.reply("Something went wrong with the message, you might've typed too many characters.").then(msg =>
       setTimeout(() => {
         if (!msg.deleted) msg.delete();
       }, 5000),
@@ -62,7 +62,7 @@ async function sendEmbedAnnouncement(channel: TextChannel, message: Message, ann
   if (identity) embed.setAuthor(message.author.tag, message.author.displayAvatarURL());
 
   channel.send({ embeds: [embed] }).catch(() =>
-    message.reply('Something went wrong with the message, you might\'ve typed too many characters.').then(msg =>
+    message.reply("Something went wrong with the message, you might've typed too many characters.").then(msg =>
       setTimeout(() => {
         if (!msg.deleted) msg.delete();
       }, 5000),

@@ -1,9 +1,7 @@
-import config from '#config';
-import { parseArgs } from '#constants/index';
+import { parseArgs, prefix } from '#constants/index';
 import { EventHandler } from '#lib/interfaces/Semblance';
 import type { Semblance } from '#structures/Semblance';
 import type { Message } from 'discord.js';
-const { prefix } = config;
 
 export default {
   name: 'messageDM',
@@ -12,10 +10,10 @@ export default {
 
 export const messageDM = (message: Message, client: Semblance) => {
   const { commands, aliases } = client;
-  if (message.content.toLowerCase().startsWith(prefix) || message.content.match(`^<@!?${client.user.id}> `)) {
+  if (message.content.match(`^<@!?${client.user.id}> `)) {
     let splitContent = message.content.split(' ');
     if (splitContent[0].match(`^<@!?${client.user.id}>`)) splitContent.shift();
-    else splitContent = message.content.slice(prefix.length).split(' ');
+    else splitContent = message.content.slice(prefix(client).length).split(' ');
     const identifier = splitContent.shift().toLowerCase(),
       command = aliases[identifier] || identifier;
     const content = splitContent.join(' ');
@@ -27,9 +25,9 @@ export const messageDM = (message: Message, client: Semblance) => {
         if (commandFile.checkArgs(args)) commandFile.run(client, message, args, identifier, { content });
         else
           message.channel.send(
-            `❌ Invalid arguments! Usage is \`${prefix}${command}${Object.keys(commandFile.usage)
+            `❌ Invalid arguments! Usage is ${prefix(client)} ${command}${Object.keys(commandFile.usage)
               .map(a => ' ' + a)
-              .join('')}\`, for additional help, see \`${prefix}help\`.`,
+              .join('')}, for additional help, see ${prefix(client)} help.`,
           );
       } catch {}
     }

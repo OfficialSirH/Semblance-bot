@@ -35,12 +35,12 @@ const run = async (message: Message) => {
   let cost: number;
   if (!statsHandler)
     embed
-      .setTitle('Semblance\'s Idle-Game')
+      .setTitle("Semblance's Idle-Game")
       .setAuthor(message.author.tag, message.author.displayAvatarURL())
       .setDescription(
         [
           'Use the buttons below to play the game. :D',
-          'If you can\'t see the buttons, you need to update your Discord.\n',
+          "If you can't see the buttons, you need to update your Discord.\n",
           'About - explains the game and its rules',
           'Collect - collect earnings',
           'Upgrade - upgrade profit',
@@ -50,16 +50,28 @@ const run = async (message: Message) => {
       );
   else
     embed
-      .setTitle('Welcome back to Semblance\'s Idle-Game!')
+      .setTitle("Welcome back to Semblance's Idle-Game!")
       .setAuthor(message.author.tag, message.author.displayAvatarURL())
       .setColor(randomColor)
       .setThumbnail(message.author.displayAvatarURL())
       .addFields([
         { name: 'Level', value: statsHandler.level.toString() },
-        { name: 'Random-Bucks', value: statsHandler.money.toFixed(3).toString() },
-        { name: 'Percent Increase', value: statsHandler.percentIncrease.toString() },
-        { name: 'Next Upgrade Cost', value: (await currentPrice(statsHandler)).toFixed(3).toString() },
-        { name: 'Idle Profit', value: statsHandler.idleProfit.toFixed(3).toString() },
+        {
+          name: 'Random-Bucks',
+          value: statsHandler.money.toFixed(3).toString(),
+        },
+        {
+          name: 'Percent Increase',
+          value: statsHandler.percentIncrease.toString(),
+        },
+        {
+          name: 'Next Upgrade Cost',
+          value: (await currentPrice(statsHandler)).toFixed(3).toString(),
+        },
+        {
+          name: 'Idle Profit',
+          value: statsHandler.idleProfit.toFixed(3).toString(),
+        },
       ])
       .setFooter('Remember to vote for Semblance to gain a production boost!'),
       (cost = await currentPrice(statsHandler));

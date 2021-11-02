@@ -53,10 +53,18 @@ const run = async (client: Semblance, message: Message, args: string[], { permis
     .setColor(randomColor)
     .addFields([
       { name: 'Owner', value: owner.toString(), inline: true },
-      { name: 'Channel Categories', value: categoryChannel.toString(), inline: true },
+      {
+        name: 'Channel Categories',
+        value: categoryChannel.toString(),
+        inline: true,
+      },
       { name: 'Text Channels', value: textChannel.toString(), inline: true },
       { name: 'Voice Channels', value: voiceChannel.toString(), inline: true },
-      { name: 'Members', value: fetchedGuild.approximateMemberCount.toString(), inline: true },
+      {
+        name: 'Members',
+        value: fetchedGuild.approximateMemberCount.toString(),
+        inline: true,
+      },
       { name: 'Roles', value: roleCount.toString(), inline: true },
       { name: 'Role List', value: canRoleListWork, inline: false },
     ])

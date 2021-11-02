@@ -5,7 +5,7 @@ import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
-  description: 'Check the bot\'s latency.',
+  description: "Check the bot's latency.",
   category: 'semblance',
   permissionRequired: 0,
   checkArgs: () => true,

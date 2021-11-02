@@ -20,7 +20,7 @@ const run = async (message: Message, args: string[]) => {
   if (!purgeNum) return message.reply('That value for purge amount is invalid');
   purgeNum = purgeNum > 100 ? 100 : purgeNum;
   const channel = message.guild.channels.cache.get(channelId) as TextChannel;
-  if (!channel) return message.reply('That channel doesn\'t exist in this server');
+  if (!channel) return message.reply("That channel doesn't exist in this server");
 
   channel.bulkDelete(purgeNum).catch(console.error);
 };

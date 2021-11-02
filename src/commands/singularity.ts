@@ -21,13 +21,13 @@ const run = async (message: Message) => {
     .setThumbnail(currentLogo.name)
     .setDescription(
       [
-        '**What is the Singularity?**\nSo you\'ve reached the singularity upgrade and the simulation crashed for some reason? well let me just tell you that the simulation didn\'t actually crash; I just wanted to prank you and restart all your work ***mwuahahahaha***... but seriously, it\'s a new journey from here out now. You can gain metabits (prestige currency), which will boost your earnings the more you collect.',
+        "**What is the Singularity?**\nSo you've reached the singularity upgrade and the simulation crashed for some reason? well let me just tell you that the simulation didn't actually crash; I just wanted to prank you and restart all your work ***mwuahahahaha***... but seriously, it's a new journey from here out now. You can gain metabits (prestige currency), which will boost your earnings the more you collect.",
         [
           '**Quick Singularity Speedrun Guide:**\n',
 
           '**Basic Information:**',
           'I recommend at least 1e12(AKA, 1 trillion) metabits.',
-          'Read and practice first, it\'s probably not going to work on first try. Buy you are going to get faster every run.\n',
+          "Read and practice first, it's probably not going to work on first try. Buy you are going to get faster every run.\n",
 
           '**1.** Start',
           '**2.** Click really fast for 1 sec to unlock the evolution tree and get your first Amino Acid',
@@ -41,7 +41,7 @@ const run = async (message: Message) => {
           '\t- go to the "Civilization"-tab and buy the newest civilization once with the "max" setting',
           '**7.** 🎉 Party 🎉\n',
 
-          '**If you\'re still having difficulties, here are some stuff to improve on, but be aware that these may be a bit tricky to execute:**',
+          "**If you're still having difficulties, here are some stuff to improve on, but be aware that these may be a bit tricky to execute:**",
           '\t- Only buy the animals from the main tree',
           '\t- ignore the mammal and reptile evolution tree extensions',
           '\t- Fast switch from Entropy to Ideas',

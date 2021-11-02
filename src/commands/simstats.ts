@@ -23,5 +23,8 @@ const run = async (message: Message) => {
     .setDescription(
       'Clicking your currency(Image 1) will open the Semblance/Reality Engine, which looking towards the left side of the engine will have a sliding button(Image 2) that will show your game stats.',
     );
-  message.channel.send({ embeds: [embed], files: [currentLogo, simStatsLocation] });
+  message.channel.send({
+    embeds: [embed],
+    files: [currentLogo, simStatsLocation],
+  });
 };

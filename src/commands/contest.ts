@@ -1,9 +1,10 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { randomColor } from '#constants/index';
+import { prefix, randomColor } from '#constants/index';
 import config from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-const { currentLogo, prefix, darwinium } = config;
+import { Semblance } from '#structures/Semblance';
+const { currentLogo, darwinium } = config;
 
 export default {
   description: 'Info on contest winners',
@@ -12,10 +13,10 @@ export default {
   aliases: ['limericks'],
   permissionRequired: 0,
   checkArgs: () => true,
-  run: (_client, message, args) => run(message, args),
+  run: (client, message, args) => run(client, message, args),
 } as Command<'game'>;
 
-const run = async (message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
   const contests = ['limericks'];
   if (args[0] == 'limericks') return limericks(message);
   message.channel.send({
@@ -25,7 +26,7 @@ const run = async (message: Message, args: string[]) => {
         .setColor(randomColor)
         .setDescription(
           `All of the available contest-related commands are: \n${contests
-            .map((i: string) => `\`${prefix}contest ${i}\``)
+            .map((i: string) => `\`${prefix(client)} contest ${i}\``)
             .join('\n')}`,
         ),
     ],
@@ -53,10 +54,10 @@ function limericks(message: Message) {
         'Nuestro amigo noct\u00EDvago\n\n' +
         `**3rd Place(500 ${darwinium}):** Daenerys - \n` +
         'Quite tall stands the mighty elephant\n' +
-        'What\'s more, it\'s also intelligent\n' +
+        "What's more, it's also intelligent\n" +
         'Enjoys a banana\n' +
         'In the dry savannah\n' +
-        'This beast\'s huge trunk sure is elegant\n\n' +
+        "This beast's huge trunk sure is elegant\n\n" +
         `**Honorable Mention(200 ${darwinium}):** Theorian - \n` +
         'From stars we come and to stars we go\n' +
         'The entropy of life can never slow\n' +

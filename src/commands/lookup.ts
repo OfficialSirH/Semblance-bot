@@ -147,7 +147,9 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
         });
       if (invite.guild.features.length) add({ Features: invite.guild.features.join(', ') });
       if (invite.guild.vanity_url_code)
-        add({ 'Original Vanity URL': `https://discord.gg/${invite.guild.vanity_url_code}` });
+        add({
+          'Original Vanity URL': `https://discord.gg/${invite.guild.vanity_url_code}`,
+        });
       if (invite.guild.description) add({ Description: invite.guild.description });
       if (invite.guild.verification_level)
         add({

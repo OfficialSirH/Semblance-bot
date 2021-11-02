@@ -16,7 +16,7 @@ import { getPermissionLevel, randomColor, bugChannels } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
 // TODO: replace this GOD awful report command with a report slash command instead of this
-const { prefix, sirhGuildId, c2sGuildId } = config,
+const { sirhGuildId, c2sGuildId } = config,
   cooldown = new Collection<Snowflake, number>();
 
 export default {
@@ -61,16 +61,16 @@ async function help(message: Message, permissionLevel: number) {
     '+ Game Version',
     "\tWhat is the game's version that you're playing during the cause of this bug?(i.e. 8.06)",
     '+ FORMAT',
-    `\t${prefix}report TITLE`,
+    '\t@Semblance report TITLE',
     '\tACTUAL_RESULT',
     '\tEXPECTED_RESULT',
     '\tSYSTEM_INFO',
     '\tGAME_VERSION',
     '- OR',
-    `\t${prefix}report TITLE | ACTUAL_RESULT | EXPECTED_RESULT | SYSTEM_INFO | GAME_VERSION`,
+    '\t@Semblance report TITLE | ACTUAL_RESULT | EXPECTED_RESULT | SYSTEM_INFO | GAME_VERSION',
 
     '\nREPORT EXAMPLE:',
-    `\t${prefix}report Bad Bug`,
+    '\t@Semblance report Bad Bug',
     '\tIt does something bad',
     "\tIt shouldn't do something bad",
     '\tWindows 69',
@@ -78,20 +78,20 @@ async function help(message: Message, permissionLevel: number) {
 
     '\nWHAT IF I HAVE THE SAME BUG OCCURING AS ANOTHER USER WHO HAS ALREADY REPORTED IT?',
     '+ FORMAT:',
-    `\t${prefix}bug BUG_Id reproduce SYSTEM_INFO | GAME_VERSION`,
+    '\t@Semblance bug BUG_Id reproduce SYSTEM_INFO | GAME_VERSION',
     '- OR',
-    `\t${prefix}bug BUG_Id reproduce SYSTEM_INFO`,
+    '\t@Semblance bug BUG_Id reproduce SYSTEM_INFO',
     '\tGAME_VERSION',
 
     '\nREPRODUCE EXAMPLE:',
-    `\t${prefix}bug 360 reproduce Android 420 | 4_69`,
+    '\t@Semblance bug 360 reproduce Android 420 | 4_69',
   ];
   if (permissionLevel > 0)
     description = description.concat([
       '\nAPPROVING AND DENYING BUGS:',
       "+ 'approve' or 'deny'",
       '+ reason(optional)',
-      `EXAMPLE: ${prefix}bug 69 approve nice`,
+      'EXAMPLE: @Semblance bug 69 approve nice',
     ]);
   description.push('```');
   const embed = new MessageEmbed()
@@ -129,7 +129,7 @@ async function report(message: Message, content: string, client: Semblance) {
       message.author.send(
         [
           "You're missing some input for the report, remember that each subject is separated through new lines,",
-          `which can be done with SHIFT + ENTER on PC or pressing the enter key on mobile. Check out \`${prefix}report help\` for more details.\n`,
+          'which can be done with SHIFT + ENTER on PC or pressing the enter key on mobile. Check out `@Semblance report help` for more details.\n',
           `\`\`\`diff\n${missingContent()}\n\`\`\``,
         ].join(' '),
       );
@@ -177,7 +177,10 @@ async function report(message: Message, content: string, client: Semblance) {
       { name: 'Expected Result', value: contentList[2] },
       { name: 'Operating System', value: contentList[3] },
       { name: 'Game Version', value: contentList[4] },
-      { name: 'Can Reproduce', value: 'Currently no one else has reproduced this bug.' },
+      {
+        name: 'Can Reproduce',
+        value: 'Currently no one else has reproduced this bug.',
+      },
     )
     .setFooter(`#${currentBugId}`)
     .setTimestamp(Date.now());
@@ -231,7 +234,7 @@ async function report(message: Message, content: string, client: Semblance) {
         .setDescription(
           [
             `Your report's Id: ${currentBugId}`,
-            `Attaching an attachment: \`${prefix}bug ${currentBugId} attach (YouTube, Imgur, or Discord attachment link here if you don't have attachment)\`(NOTE: You *don't* need to place the parentheses around the link)`,
+            `Attaching an attachment: \`@Semblance bug ${currentBugId} attach (YouTube, Imgur, or Discord attachment link here if you don't have attachment)\`(NOTE: You *don't* need to place the parentheses around the link)`,
             "**attach either an image or video(must be under 50 MB) with your attach command if the optional choices aren't available**",
           ].join('\n'),
         )
@@ -296,13 +299,17 @@ async function addAttachment(
 
     const storedMsg = await (client.guilds.cache
       .get(sirhGuildId)!
-      .channels.cache.get('794054989860700179') as TextChannel)!.send({ files: [attachment] }); // <== Uses Id of #image-storage from SirH's server
+      .channels.cache.get('794054989860700179') as TextChannel)!.send({
+      files: [attachment],
+    }); // <== Uses Id of #image-storage from SirH's server
     attachmentURL = storedMsg.attachments.map(a => a)[0].proxyURL;
 
     (message.guild!.channels.cache.get(report.channelId) as TextChannel)!.messages.fetch(report.messageId).then(msg => {
       const attachmentsField = msg.embeds[0].fields[5];
       if (!attachmentsField) {
-        msg.edit({ embeds: [msg.embeds[0].addField('Attachments', `1. [${attachment.name}](${attachmentURL})`)] });
+        msg.edit({
+          embeds: [msg.embeds[0].addField('Attachments', `1. [${attachment.name}](${attachmentURL})`)],
+        });
       } else if (attachmentsField.name == 'Approval Message' ?? attachmentsField.name == 'Denial Message') {
         msg.embeds[0].fields.push(attachmentsField);
         msg.edit({
@@ -427,7 +434,9 @@ async function fixUpReports(
           { new: true },
         );
       } else {
-        await user.send({ embeds: [msg.embeds[0].setColor('#D72020').addField('Denial Message', reason)] }); // <-- Denied Reports
+        await user.send({
+          embeds: [msg.embeds[0].setColor('#D72020').addField('Denial Message', reason)],
+        }); // <-- Denied Reports
         await Report.findOneAndDelete({ messageId: report.messageId });
       }
       msg.delete();

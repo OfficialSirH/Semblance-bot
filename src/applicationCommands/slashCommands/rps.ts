@@ -122,8 +122,18 @@ export default {
         else endTemplate += `${client.user.tag}'s victory!`;
 
         return await interaction.reply(endTemplate);
-      } else await interaction.reply({ content: `Awaiting for **${user.tag}**`, embeds: [embed], components });
-    } else await interaction.reply({ content: awaitingText, embeds: [embed], components });
+      } else
+        await interaction.reply({
+          content: `Awaiting for **${user.tag}**`,
+          embeds: [embed],
+          components,
+        });
+    } else
+      await interaction.reply({
+        content: awaitingText,
+        embeds: [embed],
+        components,
+      });
     const rpsMessage = (await interaction.fetchReply()) as Message;
     rpsGames.set(user.id, {
       player: {

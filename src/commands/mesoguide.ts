@@ -41,7 +41,7 @@ const run = async (message: Message) => {
         name: '**Exiting a stage**',
         value: [
           '```\nI recommend only exiting a stage when you have completed all missions.',
-          'Before doing so you should go through all your dinos and try to reach as many milestones as you can for some extra mutagen. Don\'t underestimate the effect of this, especially at higher stages.',
+          "Before doing so you should go through all your dinos and try to reach as many milestones as you can for some extra mutagen. Don't underestimate the effect of this, especially at higher stages.",
           'The milestones are 10, 25, 50, 100, 150, 250, and 500.```',
         ].join('\n'),
       },

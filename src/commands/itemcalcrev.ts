@@ -26,7 +26,7 @@ const run = async (message: Message, args: string[]) => {
       itemCostType = key;
     }
 
-  if (!itemCost) return message.reply('Your input for \'item\' was invalid.');
+  if (!itemCost) return message.reply("Your input for 'item' was invalid.");
   const num3 = (curAmount as number) * 0.1499999761581421;
   const num5 = itemCost * Math.pow(1.149999976158142, currentLevel as number);
   const level = Math.floor(Math.log(num3 / num5 + 1) / Math.log(1.149999976158142));

@@ -1,10 +1,11 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { randomColor } from '#constants/index';
+import { prefix, randomColor } from '#constants/index';
 import config from '#config';
 import { Information } from '#models/Information';
 import type { Command } from '#lib/interfaces/Semblance';
-const { roadMap, currentLogo, earlyBeyondTesters, prefix } = config;
+import type { Semblance } from '#structures/Semblance';
+const { roadMap, currentLogo, earlyBeyondTesters } = config;
 
 export default {
   description: 'Provides info on The Beyond.',
@@ -13,10 +14,10 @@ export default {
   aliases: ['roadmap'],
   permissionRequired: 0,
   checkArgs: () => true,
-  run: (_client, message, args) => run(message, args),
+  run: (client, message, args) => run(client, message, args),
 } as Command<'game'>;
 
-const run = async (message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
   if (args[0] == 'clips' || args.join(' ') == 'sneak peeks' || args[0] == 'sneakpeeks') return clips(message);
   if (args[0] == 'count' || args[0] == 'counter') return beyondCounter(message);
   if (args[0] == 'testers') return testerCredits(message);
@@ -27,12 +28,14 @@ const run = async (message: Message, args: string[]) => {
     .setImage(roadMap.name)
     .setDescription(
       'Summer 2021. Anyone who wants to give any complaints about the length of the release date can email their complaint to ImAWhinyKaren@gmail.com' +
-        `\n\n\`${prefix}beyond sneak peeks\` for sneak peeks\n\n\`${prefix}beyond count\` to see the amount of times that The Beyond has been mentioned by the community of C2S.`,
+        `\n\n\`${prefix(client)} beyond sneak peeks\` for sneak peeks\n\n\`${prefix(
+          client,
+        )} beyond count\` to see the amount of times that The Beyond has been mentioned by the community of C2S.`,
     );
   message.channel.send({ embeds: [embed], files: [currentLogo, roadMap] });
 };
 
-async function clips(message) {
+async function clips(message: Message) {
   const embed = new MessageEmbed()
     .setTitle('Beyond Clips')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
@@ -56,7 +59,7 @@ async function clips(message) {
   message.channel.send({ embeds: [embed] });
 }
 
-async function beyondCounter(message) {
+async function beyondCounter(message: Message) {
   const beyondCount = await Information.findOne({ infoType: 'beyondcount' });
   const embed = new MessageEmbed()
     .setTitle('Beyond Counter')
@@ -68,7 +71,7 @@ async function beyondCounter(message) {
   message.channel.send({ embeds: [embed] });
 }
 
-function testerCredits(message) {
+function testerCredits(message: Message) {
   const embed = new MessageEmbed()
     .setTitle('Credits to our Early Private Beta Testers!')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())

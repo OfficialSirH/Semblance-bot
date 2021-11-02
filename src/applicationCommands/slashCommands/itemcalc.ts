@@ -12,14 +12,28 @@ export default {
       currentLevel = interaction.options.get('current_level').value;
     const levelGains = interaction.options.get('level_gains').value;
 
-    if (!itemInput) return interaction.reply({ content: 'You forgot input for \'item\'.', ephemeral: true });
-    if (!levelGains) return interaction.reply({ content: 'You forgot input for \'level\'.', ephemeral: true });
+    if (!itemInput)
+      return interaction.reply({
+        content: "You forgot input for 'item'.",
+        ephemeral: true,
+      });
+    if (!levelGains)
+      return interaction.reply({
+        content: "You forgot input for 'level'.",
+        ephemeral: true,
+      });
     if (!currentLevel || currentLevel < 0) currentLevel = 0;
     itemInput = (itemInput as string).toLowerCase();
     if (!checkValue(levelGains as string))
-      return interaction.reply({ content: 'Your input for \'level\' was invalid.', ephemeral: true });
+      return interaction.reply({
+        content: "Your input for 'level' was invalid.",
+        ephemeral: true,
+      });
     if (!checkValue(currentLevel as string))
-      return interaction.reply({ content: 'Your input for \'current level\' was invalid.', ephemeral: true });
+      return interaction.reply({
+        content: "Your input for 'current level' was invalid.",
+        ephemeral: true,
+      });
 
     let itemCost: number, itemCostType: string;
     for (const key of Object.keys(itemList))
@@ -28,7 +42,11 @@ export default {
         itemCostType = key;
       }
 
-    if (!itemCost) return interaction.reply({ content: 'Your input for \'item\' was invalid.', ephemeral: true });
+    if (!itemCost)
+      return interaction.reply({
+        content: "Your input for 'item' was invalid.",
+        ephemeral: true,
+      });
     let resultingPrice = 0;
 
     for (let i = currentLevel as number; i < (levelGains as number) + (currentLevel as number); i++) {

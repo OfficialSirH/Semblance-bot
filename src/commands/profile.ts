@@ -48,7 +48,11 @@ async function guildProfileEmbed(message: Message, member: GuildMember) {
       { name: 'Discriminator', value: member.user.discriminator, inline: true },
       { name: 'Bot', value: member.user.bot.toString(), inline: true },
       { name: 'User Id', value: member.id, inline: true },
-      { name: 'Highest Rank', value: member.roles.highest.toString(), inline: true },
+      {
+        name: 'Highest Rank',
+        value: member.roles.highest.toString(),
+        inline: true,
+      },
       { name: 'Created', value: accountCreated, inline: true },
       { name: 'Joined', value: accountJoined, inline: true },
     ]);

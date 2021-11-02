@@ -14,7 +14,10 @@ export default {
       action = interaction.options.getSubcommand(true);
     } catch (e) {
       commandFailed = true;
-      interaction.reply({ content: 'You must specify a subcommand.', ephemeral: true });
+      interaction.reply({
+        content: 'You must specify a subcommand.',
+        ephemeral: true,
+      });
     }
     if (commandFailed) return;
     switch (action) {
@@ -27,7 +30,10 @@ export default {
       case 'list':
         return list(interaction);
       default:
-        return interaction.reply({ content: 'You must specify a valid subcommand.', ephemeral: true });
+        return interaction.reply({
+          content: 'You must specify a valid subcommand.',
+          ephemeral: true,
+        });
     }
   },
 } as SlashCommand;
@@ -38,21 +44,33 @@ async function create(interaction: CommandInteraction) {
     user = interaction.member.user as User;
 
   if (timeAmount == null)
-    return interaction.reply({ content: 'Your input for time is invalid, please try again.', ephemeral: true });
+    return interaction.reply({
+      content: 'Your input for time is invalid, please try again.',
+      ephemeral: true,
+    });
   const {
     groups: { months = 0, weeks = 0, days = 0, hours = 0, minutes = 0 },
   } = timeAmount as TimeLengths;
   if ([months, weeks, days, hours, minutes].every(time => !time))
-    return interaction.reply({ content: 'Your input for time was invalid, please try again.', ephemeral: true });
+    return interaction.reply({
+      content: 'Your input for time was invalid, please try again.',
+      ephemeral: true,
+    });
 
   const totalTime = timeInputToMs(months, weeks, days, hours, minutes);
 
   if (totalTime > 29030400000)
-    return interaction.reply({ content: 'You cannot create a reminder for longer than a year', ephemeral: true });
+    return interaction.reply({
+      content: 'You cannot create a reminder for longer than a year',
+      ephemeral: true,
+    });
 
   const currentReminderData = await Reminder.findOne({ userId: user.id });
   if (currentReminderData?.reminders.length >= 5)
-    return interaction.reply({ content: 'You cannot have more than 5 reminders at a time', ephemeral: true });
+    return interaction.reply({
+      content: 'You cannot have more than 5 reminders at a time',
+      ephemeral: true,
+    });
 
   const embed = new MessageEmbed()
     .setTitle('Reminder')
@@ -97,16 +115,25 @@ async function edit(interaction: CommandInteraction) {
     currentReminderData = await Reminder.findOne({ userId: user.id });
 
   if (!currentReminderData)
-    return interaction.reply({ content: 'You don\'t have any reminders to edit.', ephemeral: true });
+    return interaction.reply({
+      content: "You don't have any reminders to edit.",
+      ephemeral: true,
+    });
 
   const reminderId = interaction.options.getInteger('reminderid'),
     reminder = interaction.options.getString('reminder'),
     length = interaction.options.getString('length');
 
   if (!reminder && !length)
-    return interaction.reply({ content: 'You must specify a reminder or a length', ephemeral: true });
+    return interaction.reply({
+      content: 'You must specify a reminder or a length',
+      ephemeral: true,
+    });
   if (reminderId > currentReminderData.reminders.length)
-    return interaction.reply({ content: 'You must specify a valid reminder ID', ephemeral: true });
+    return interaction.reply({
+      content: 'You must specify a valid reminder ID',
+      ephemeral: true,
+    });
 
   let timeAmount: RegExpExecArray,
     totalTime = 0;
@@ -116,7 +143,10 @@ async function edit(interaction: CommandInteraction) {
       groups: { months = 0, weeks = 0, days = 0, hours = 0, minutes = 0 },
     } = timeAmount as TimeLengths;
     if ([months, weeks, days, hours, minutes].every(time => !time))
-      return interaction.reply({ content: 'Your input for time was invalid, please try again.', ephemeral: true });
+      return interaction.reply({
+        content: 'Your input for time was invalid, please try again.',
+        ephemeral: true,
+      });
     totalTime = timeInputToMs(months, weeks, days, hours, minutes);
   }
 
@@ -152,9 +182,15 @@ async function deleteReminder(interaction: CommandInteraction) {
     currentReminderData = await Reminder.findOne({ userId: user.id });
 
   if (!currentReminderData)
-    return interaction.reply({ content: 'You don\'t have any reminders to delete.', ephemeral: true });
+    return interaction.reply({
+      content: "You don't have any reminders to delete.",
+      ephemeral: true,
+    });
   if (reminderId > currentReminderData.reminders.length)
-    return interaction.reply({ content: 'You must specify a valid reminder ID', ephemeral: true });
+    return interaction.reply({
+      content: 'You must specify a valid reminder ID',
+      ephemeral: true,
+    });
 
   const deletedReminder = currentReminderData.reminders.find(reminder => reminder.reminderId == reminderId);
   if (currentReminderData.reminders.length == 1) await currentReminderData.delete();
@@ -181,7 +217,11 @@ async function list(interaction: CommandInteraction) {
   const user = interaction.member.user as User,
     currentReminderData = await Reminder.findOne({ userId: user.id });
 
-  if (!currentReminderData) return interaction.reply({ content: 'You don\'t have any reminders.', ephemeral: true });
+  if (!currentReminderData)
+    return interaction.reply({
+      content: "You don't have any reminders.",
+      ephemeral: true,
+    });
 
   const embed = new MessageEmbed()
     .setTitle('Reminder List')

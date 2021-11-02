@@ -3,9 +3,7 @@ import type { Message } from 'discord.js';
 import { randomColor, formattedDate, timeInputRegex, timeInputToMs } from '#constants/index';
 import { Reminder } from '#models/Reminder';
 import type { Command } from '#lib/interfaces/Semblance';
-import config from '#config';
 import type { TimeLengths } from '#lib/interfaces/remindme';
-const { prefix } = config;
 
 export default {
   description: 'Set a reminder for yourself.',
@@ -14,7 +12,7 @@ export default {
     '<time(3M2w5d6h4m)> <reminder>': '',
   },
   examples: {
-    exampleOne: `${prefix}remindme 1h I've got magical stuff to do in 1 hour!`,
+    exampleOne: "@semblance remindme 1h I've got magical stuff to do in 1 hour!",
   },
   permissionRequired: 0,
   checkArgs: args => args.length >= 2,
@@ -43,7 +41,9 @@ const run = async (message: Message, args: string[]) => {
   const totalTime = timeInputToMs(months, weeks, days, hours, minutes);
 
   if (totalTime > 29030400000) return message.reply('You cannot create a reminder for longer than a year');
-  const currentReminderData = await Reminder.findOne({ userId: message.author.id });
+  const currentReminderData = await Reminder.findOne({
+    userId: message.author.id,
+  });
   if (currentReminderData?.reminders.length >= 5)
     return message.reply('You cannot have more than 5 reminders at a time');
   const embed = new MessageEmbed()

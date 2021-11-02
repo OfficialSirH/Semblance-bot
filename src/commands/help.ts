@@ -1,10 +1,10 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import config from '#config';
-import { randomColor } from '#constants/index';
+import { prefix, randomColor } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
-const { prefix, sirhId, adityaId, c2sGuildId } = config;
+const { sirhId, adityaId, c2sGuildId } = config;
 
 export default {
   description: 'Lists *all* available commands.',
@@ -17,7 +17,7 @@ export default {
 const run = async (client: Semblance, message: Message) => {
   const c2sServerCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'c2sServer')
-    .map(key => `**\`${prefix}${key}\`**`);
+    .map(key => `**${prefix(client)} ${key}**`);
   const embed = new MessageEmbed()
     .setTitle('Semblance Command List')
     .setColor(randomColor)
@@ -32,13 +32,15 @@ const run = async (client: Semblance, message: Message) => {
       {
         name: '**-> Slash Commands**',
         value: [
-          'Semblance\'s Slash Commands can be listed by typing `/`, which if none are visible,',
-          'that\'s likely due to Semblance not being authorized on the server and a admin will need to click',
+          "Semblance's Slash Commands can be listed by typing `/`, which if none are visible,",
+          "that's likely due to Semblance not being authorized on the server and a admin will need to click",
           `[here](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot+applications.commands) to authorize Semblance.`,
         ].join(' '),
       },
     )
-    .setFooter(`Stay Cellular! If you really like the work I've done to Semblance, then check out ${prefix}patreon :D`);
+    .setFooter(
+      `Stay Cellular! If you really like the work I've done to Semblance, then check out ${prefix(client)} patreon :D`,
+    );
   const components = [
     new MessageActionRow().addComponents([
       new MessageButton()
@@ -96,5 +98,9 @@ const run = async (client: Semblance, message: Message) => {
         .setStyle('SECONDARY'),
     ]),
   ];
-  message.reply({ content: 'Here are some lovely commands for you!', embeds: [embed], components });
+  message.reply({
+    content: 'Here are some lovely commands for you!',
+    embeds: [embed],
+    components,
+  });
 };

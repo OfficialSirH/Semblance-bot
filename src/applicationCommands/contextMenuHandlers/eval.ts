@@ -8,7 +8,10 @@ export const run = async (
   { options, permissionLevel }: ContextMenuHandlerOptions,
 ) => {
   if (permissionLevel < 7)
-    return interaction.reply({ content: 'You do not have permission to use this command.', ephemeral: true });
+    return interaction.reply({
+      content: 'You do not have permission to use this command.',
+      ephemeral: true,
+    });
   const message = options.getMessage('message', true) as Message;
   let content: string;
 

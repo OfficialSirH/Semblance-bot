@@ -6,7 +6,7 @@ import type { Command } from '#lib/interfaces/Semblance';
 const { patreon } = config;
 
 export default {
-  description: 'Provides the link to SirH\'s Patreon page.',
+  description: "Provides the link to SirH's Patreon page.",
   category: 'semblance',
   permissionRequired: 0,
   checkArgs: () => true,
@@ -23,8 +23,8 @@ const run = async (message: Message) => {
       [
         'The rewards for becoming a patreon are:',
         '- You get access to Semblance Beta',
-        '- You get a hoisted role in my Discord server (SirH\'s Stuff)',
-        '- (Soon:tm:) Get a 2x boosted income in Semblance\'s Idle-Game',
+        "- You get a hoisted role in my Discord server (SirH's Stuff)",
+        "- (Soon:tm:) Get a 2x boosted income in Semblance's Idle-Game",
         '- Make me very happy',
       ].join('\n'),
     );

@@ -37,7 +37,10 @@ const addBooster = async (message: Message, user: string | GuildMember) => {
       `That user is already listed to receive an automated reward on ${formattedDate(boosterRewards.rewardingDate)}`,
     );
 
-  boosterRewards = new BoosterRewards({ userId, rewardingDate: Date.now() + 1000 * 60 * 60 * 24 * 14 });
+  boosterRewards = new BoosterRewards({
+    userId,
+    rewardingDate: Date.now() + 1000 * 60 * 60 * 24 * 14,
+  });
   await boosterRewards.save();
   message.reply(`That user will now receive an automated reward on ${formattedDate(boosterRewards.rewardingDate)}`);
 };

@@ -10,12 +10,18 @@ export default {
     let metabits = interaction.options.get('metabit').value,
       failed = false;
     if (!checkValue(metabits as string))
-      return interaction.reply({ content: 'Your input for metabits was invalid', ephemeral: true });
+      return interaction.reply({
+        content: 'Your input for metabits was invalid',
+        ephemeral: true,
+      });
     try {
       metabits = (metabits as string).match(/[a-z]/i) ? nameToScNo(metabits as string) : parseInt(metabits as string);
     } catch {
       failed = true;
-      return interaction.reply({ content: 'Your input for metabits was invalid', ephemeral: true });
+      return interaction.reply({
+        content: 'Your input for metabits was invalid',
+        ephemeral: true,
+      });
     }
     if (failed) return;
     const accumulated = Math.floor(Math.pow(((metabits as number) + 1) * 10000, 1 / 0.3333333333333333)),

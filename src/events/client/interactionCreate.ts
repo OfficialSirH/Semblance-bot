@@ -1,5 +1,5 @@
 import { customIdRegex, getPermissionLevel, properCustomIdRegex } from '#constants/index';
-import type { ButtonData, EventHandler } from '#lib/interfaces/Semblance';
+import type { ButtonData, EventHandler, SelectData } from '#lib/interfaces/Semblance';
 import type { Semblance } from '#src/structures';
 import type {
   GuildMember,
@@ -13,7 +13,7 @@ const { Events } = Constants;
 
 export default {
   name: Events.INTERACTION_CREATE,
-  exec: (interaction: Interaction, client: Semblance) => interactionCreate(interaction, client),
+  exec: (interaction, client) => interactionCreate(interaction, client),
 } as EventHandler<'interactionCreate'>;
 
 export const interactionCreate = async (interaction: Interaction, client: Semblance) => {
@@ -28,11 +28,11 @@ export const interactionCreate = async (interaction: Interaction, client: Sembla
       options: interaction.options,
       permissionLevel: getPermissionLevel(interaction.member as GuildMember),
     });
-  else await interaction.reply('I can\'t find a command for this, something is borked.');
+  else await interaction.reply("I can't find a command for this, something is borked.");
 };
 
 async function componentInteraction(client: Semblance, interaction: MessageComponentInteraction) {
-  let data: ButtonData;
+  let data: ButtonData | SelectData;
   if (interaction.customId.match(properCustomIdRegex)) data = JSON.parse(interaction.customId);
   else if (interaction.customId.match(customIdRegex)) data = eval(`(${interaction.customId})`);
   else
@@ -43,10 +43,16 @@ async function componentInteraction(client: Semblance, interaction: MessageCompo
   const componentHandler = client.componentHandlers.get(data.command);
   if (interaction.user.id != data.id && !componentHandler.allowOthers)
     return await interaction.reply({
-      content: 'This command wasn\'t called by you so you can\'t use it',
+      content: "This command wasn't called by you so you can't use it",
       ephemeral: true,
     });
-  componentHandler.run(interaction, data, { permissionLevel: getPermissionLevel(interaction.member as GuildMember) });
+  if (interaction.isButton())
+    return componentHandler.buttonHandle(interaction, data as ButtonData, {
+      permissionLevel: getPermissionLevel(interaction.member as GuildMember),
+    });
+  componentHandler.selectHandle(interaction, data as SelectData, {
+    permissionLevel: getPermissionLevel(interaction.member as GuildMember),
+  });
 }
 
 const contextMenuInteraction = async (client: Semblance, interaction: ContextMenuInteraction) => {
@@ -61,5 +67,5 @@ const contextMenuInteraction = async (client: Semblance, interaction: ContextMen
 const autocompleteInteraction = async (client: Semblance, interaction: AutocompleteInteraction) => {
   if (!client.autocompleteHandlers.has(interaction.commandName)) return;
   const autocompleteHandler = client.autocompleteHandlers.get(interaction.commandName);
-  autocompleteHandler.run(interaction, interaction.options);
+  autocompleteHandler.run(interaction, interaction.options, client);
 };

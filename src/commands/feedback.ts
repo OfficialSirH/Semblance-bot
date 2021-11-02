@@ -18,7 +18,7 @@ const run = async (message: Message) => {
     .setTitle('Feedback')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
-    .setDescription('Give feedback for ComputerLunch\'s game, C2S.')
+    .setDescription("Give feedback for ComputerLunch's game, C2S.")
     .setImage(feedbackImage);
   message.channel.send({ embeds: [embed] });
 };

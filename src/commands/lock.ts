@@ -38,7 +38,9 @@ async function lockChannel(channel: TextChannel, author: User) {
   const permission = channel.permissionOverwrites.cache.find(po => po.id == channel.guild.roles.everyone.id);
   if (permission.deny.has('SEND_MESSAGES')) return false;
 
-  await channel.edit({ topic: `${channel.topic || ''}\n\n${constants.lockMessage(author)}` });
+  await channel.edit({
+    topic: `${channel.topic || ''}\n\n${constants.lockMessage(author)}`,
+  });
   await permission.edit({ SEND_MESSAGES: false });
   await channel.send('👮 ***The channel has been locked.***');
   return true;

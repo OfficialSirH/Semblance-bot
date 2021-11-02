@@ -44,5 +44,9 @@ const run = async (message: Message) => {
       .setEmoji('➡️')
       .setStyle('PRIMARY'),
   ]);
-  message.channel.send({ embeds: [embed], files: [currentLogo], components: [component] });
+  message.channel.send({
+    embeds: [embed],
+    files: [currentLogo],
+    components: [component],
+  });
 };

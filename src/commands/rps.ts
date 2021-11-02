@@ -254,7 +254,12 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
       embeds: [embed],
       components,
     });
-  else rpsMessage = await message.reply({ content: awaitingText, embeds: [embed], components });
+  else
+    rpsMessage = await message.reply({
+      content: awaitingText,
+      embeds: [embed],
+      components,
+    });
 
   rpsGames.set(message.author.id, {
     player: {

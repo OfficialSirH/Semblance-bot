@@ -27,7 +27,7 @@ const run = async (message: Message, args: string[]) => {
   if (randomizedChoice == 13) return message.reply('Better not tell you now.');
   if (randomizedChoice == 14) return message.reply('Cannot predict now.');
   if (randomizedChoice == 15) return message.reply('Concentrate and ask again.');
-  if (randomizedChoice == 16) return message.reply('Don\'t count on it.');
+  if (randomizedChoice == 16) return message.reply("Don't count on it.");
   if (randomizedChoice == 17) return message.reply('My reply is no.');
   if (randomizedChoice == 18) return message.reply('My sources say no.');
   if (randomizedChoice == 19) return message.reply('Outlook not so good.');

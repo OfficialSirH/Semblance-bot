@@ -22,7 +22,7 @@ const run = async (message: Message) => {
         name: 'Artist',
         value: [
           '**Semblance:** cabiie',
-          '**Semblance Beta:** Lemon ([Lemon\'s Instagram page](https://www.instagram.com/creations_without_limtation/))',
+          "**Semblance Beta:** Lemon ([Lemon's Instagram page](https://www.instagram.com/creations_without_limtation/))",
           '**Semblance Revisioned:** StarLuckArt(preview soon:tm:) ([DeviantArt](https://www.deviantart.com/starluckart) and [Personal Site](https://bubblestheprotogen.wixsite.com/starluckart))',
         ].join('\n'),
       },

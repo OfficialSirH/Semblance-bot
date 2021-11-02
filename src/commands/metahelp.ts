@@ -1,19 +1,19 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { randomColor } from '#constants/index';
+import { prefix, randomColor } from '#constants/index';
 import config from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-const { currentLogo, prefix } = config;
+const { currentLogo } = config;
 
 export default {
   description: 'help for metabit calculators',
   category: 'help',
   permissionRequired: 0,
   checkArgs: () => true,
-  run: (_client, message) => run(message),
+  run: (client, message) => run(client, message),
 } as Command<'help'>;
 
-const run = async (message: Message) => {
+const run = async (client, message: Message) => {
   const embed = new MessageEmbed()
     .setTitle('Metabit Calculator Help')
     .setColor(randomColor)
@@ -21,7 +21,7 @@ const run = async (message: Message) => {
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setDescription(
       'The Metabit Calculator supports Scientific Notation, which means you can type numbers like 1E25, as well as names for numbers like million all the way to vigintillion;' +
-        ` Use ${prefix}largenumbers to get more info on large numbers.`,
+        ` Use ${prefix(client)} largenumbers to get more info on large numbers.`,
     )
     .addFields(
       {

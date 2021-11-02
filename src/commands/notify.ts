@@ -7,10 +7,10 @@ const { sirhGuildId } = config;
 
 export default {
   description:
-    'This command will give you the the notification role for Semblance related announcements(Only SirH\'s server)',
+    "This command will give you the the notification role for Semblance related announcements(Only SirH's server)",
   category: 'utility',
   usage: {
-    '<add/remove>': 'Gives the notification role or removes it depending on if you typed \'add\' or \'remove\'',
+    '<add/remove>': "Gives the notification role or removes it depending on if you typed 'add' or 'remove'",
   },
   permissionRequired: 0,
   checkArgs: () => true,
@@ -18,7 +18,7 @@ export default {
 } as Command<'utility'>;
 
 const run = async (message: Message, args: string[]) => {
-  if (message.guild.id != sirhGuildId) return message.reply('This command is exclusive to SirH\'s server.');
+  if (message.guild.id != sirhGuildId) return message.reply("This command is exclusive to SirH's server.");
   const sembNotifications = message.guild.roles.cache.find(r => r.name == 'Semblance Notifications');
   const hasRole = message.member.roles.cache.has(sembNotifications.id);
 

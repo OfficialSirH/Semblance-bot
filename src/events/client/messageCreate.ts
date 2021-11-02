@@ -1,36 +1,23 @@
 import type { Semblance } from '#src/structures';
-import { MessageEmbed, Constants, MessageActionRow, MessageButton } from 'discord.js';
-import type { Message, GuildChannel, TextBasedChannels } from 'discord.js';
+import { Constants } from 'discord.js';
+import type { Message } from 'discord.js';
 import config from '#config';
-import { getPermissionLevel, parseArgs, dontDisturb, removeAfk, trelloLinkRegex } from '#constants/index';
-import { Information } from '#models/Information';
+import { getPermissionLevel, parseArgs, prefix } from '#constants/index';
 import { createBoosterRewards } from '#src/constants/models';
 import type { EventHandler } from '#lib/interfaces/Semblance';
 const { Events } = Constants;
-const { sirhId, prefix, c2sGuildId, sirhGuildId } = config;
+const { sirhId, c2sGuildId, sirhGuildId } = config;
 
 export default {
   name: Events.MESSAGE_CREATE,
-  exec: (message: Message, client: Semblance) => messageCreate(message, client),
+  exec: (message, client) => messageCreate(message, client),
 } as EventHandler<'messageCreate'>;
 
 export const messageCreate = async (message: Message, client: Semblance) => {
-  checkForGitHubUpdate(message);
-  checkForTacoPost(message);
   if (message.channel.type == 'DM') return client.emit('messageDM', message);
   if (message.author.bot) return;
-  if (message.member) {
-    if (message.mentions.users && message.member.id != client.user.id) {
-      dontDisturb(message, message.mentions.users);
-    }
-  }
 
   const { commands, aliases } = client;
-
-  if (!message.content.toLowerCase().startsWith(`${prefix}afk`)) removeAfk(client, message);
-
-  // disabling this and later will completely remove it
-  // for (const key of Object.keys(autoCommands)) autoCommands[key].run(client, message, parseArgs(message.content));
 
   //Cell to Singularity Exclusive Code
   const chName = message.channel.name;
@@ -38,29 +25,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
   if (message.guild.id == c2sGuildId) {
     if (chName == 'booster-chat' && message.type == 'USER_PREMIUM_GUILD_SUBSCRIPTION')
       return createBoosterRewards(message);
-    const msg = message.content.toLowerCase(),
-      suggestionArray = ['suggestion:', 'suggest:', `${prefix}suggestion`, `${prefix}suggest`],
-      suggestionRegex = new RegExp(`^(?:${prefix})?suggest(?:ions|ion)?:?`, 'i');
 
-    if (msg.includes('beyond') && !msg.includes(`${prefix}beyond`)) updateBeyondCount();
-
-    // TODO: create 'suggest' guild slash command
-    if (chName == 'suggestions') {
-      if (suggestionRegex.exec(msg) != null || getPermissionLevel(message.member) > 0) return;
-      else {
-        message.delete();
-        const embed = new MessageEmbed().setTitle('Your Suggestion').setDescription(`\`${message.content}\``);
-        message.author.send({
-          content:
-            `Your message in ${message.channel} was deleted due to not having the ` +
-            'suggestion-prefix required with suggestions, which means your message ' +
-            `*must* start with ${suggestionArray.map(t => `\`${t}\``).join(', ')}. The ` +
-            'reason for the required suggestion-prefixes is to prevent the channel ' +
-            'getting messy due to conversations instead of actual suggestions.',
-          embeds: [embed],
-        });
-      }
-    }
     if (chName == 'share-your-prestige' && message.attachments.size == 0 && getPermissionLevel(message.member) == 0)
       message.delete();
     if (chName != 'semblance' && getPermissionLevel(message.member) == 0) return;
@@ -76,13 +41,16 @@ export const messageCreate = async (message: Message, client: Semblance) => {
       message.member.id != client.user.id
     ) {
       return message.reply(
-        `My command prefix is ${prefix}, which you can start off with ${prefix}help for all of my commands. :D`,
+        "Heyyo, I'm Semblance! I provide as much info as I possibly can for the simulation so you'll never be clueless in your adventure! " +
+          ` you can either use \`/help query: *type anything here*\` or use ${prefix(
+            client,
+          )} help. Have fun and stay cellular!`,
       );
     }
   }
 
   //commands start here
-  if (message.content.toLowerCase().startsWith(prefix) || message.content.match(`^<@!?${client.user.id}> `)) {
+  if (message.content.match(`^<@!?${client.user.id}> `)) {
     let splitContent = message.content.split(' ');
     if (splitContent[0].match(`^<@!?${client.user.id}>`)) splitContent.shift();
     else splitContent = message.content.slice(prefix.length).split(' ');
@@ -110,53 +78,11 @@ export const messageCreate = async (message: Message, client: Semblance) => {
             .map(a => ' ' + a)
             .join('')}\`, for additional help, see \`${prefix}help\`.`,
         );
-      commandFile.run(client, message, args, identifier, { permissionLevel, content });
+      commandFile.run(client, message, args, identifier, {
+        permissionLevel,
+        content,
+      });
       console.log(command + ' Called by ' + message.author.username + ' in ' + message.guild.name);
     } catch {}
   }
 };
-
-/**
- * Check for GitHub updates
- * @deprecated this should be removed as sending updates about the bot isn't necessary
- */
-function checkForGitHubUpdate(message: Message) {
-  if (
-    (message.channel as GuildChannel).name == 'semblance-updates' &&
-    message.guild.id == sirhGuildId &&
-    message.author.username == 'GitHub' &&
-    message.embeds[0].title.includes('master')
-  )
-    return Information.findOneAndUpdate(
-      { infoType: 'github' },
-      { $set: { info: message.embeds[0].description, updated: true } },
-    );
-}
-
-/**
- * Check for Taco Post
- * @deprecated should invite the moderators to my server so they may see the plans there instead
- */
-function checkForTacoPost(message: Message) {
-  if (message.channel.id != '794054990020739113' || message.author.id != '801130415997059173') return;
-  const embed = message.embeds[0];
-  const { title, description } = embed;
-  const link = trelloLinkRegex.exec(description)[0];
-  (message.client.channels.cache.get('900050244857921587') as TextBasedChannels).send({
-    content: title,
-    components: [
-      new MessageActionRow().addComponents([
-        new MessageButton().setLabel('View on Trello').setStyle('LINK').setURL(link),
-      ]),
-    ],
-  });
-}
-
-/**
- * Update the Beyond Count
- * @deprecated [REDACTED]
- */
-async function updateBeyondCount() {
-  const beyondCount = await Information.findOne({ infoType: 'beyondcount' });
-  await Information.findOneAndUpdate({ infoType: 'beyondcount' }, { $set: { count: ++beyondCount.count } });
-}

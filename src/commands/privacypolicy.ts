@@ -3,7 +3,7 @@ import { randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
-  description: 'Provides link to Semblance\'s Privacy Policy',
+  description: "Provides link to Semblance's Privacy Policy",
   category: 'semblance',
   aliases: ['pp', 'privacy', 'policy'],
   permissionRequired: 0,

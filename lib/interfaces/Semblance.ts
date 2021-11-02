@@ -7,11 +7,17 @@ import type {
   ClientEvents,
   ContextMenuInteraction,
   AutocompleteInteraction,
+  MessageOptions,
+  InteractionReplyOptions,
 } from 'discord.js';
 import type { Client, ClientEventsMapping } from 'twitter.js';
 
 export interface AutocompleteHandler {
-  run: (interaction: AutocompleteInteraction, options: AutocompleteInteraction['options']) => Promise<void>;
+  run: (
+    interaction: AutocompleteInteraction,
+    options: AutocompleteInteraction['options'],
+    client: Semblance,
+  ) => Promise<void>;
 }
 
 export interface ContextMenuHandler {
@@ -25,9 +31,14 @@ export interface ContextMenuHandlerOptions {
 
 export interface ComponentHandler {
   allowOthers?: boolean;
-  run: (
+  buttonHandle?: (
     interaction: MessageComponentInteraction,
     data: ButtonData,
+    { permissionLevel }: { permissionLevel: number },
+  ) => Promise<void>;
+  selectHandle?: (
+    interaction: MessageComponentInteraction,
+    data: SelectData,
     { permissionLevel }: { permissionLevel: number },
   ) => Promise<void>;
 }
@@ -35,6 +46,12 @@ export interface ComponentHandler {
 export interface ButtonData {
   command: string;
   action: string;
+  id: Snowflake;
+}
+
+export interface SelectData {
+  command: string;
+  name: string;
   id: Snowflake;
 }
 
@@ -48,6 +65,11 @@ export interface SlashOptions {
   permissionLevel: number;
   options: CommandInteraction['options'];
 }
+
+export type QueriedInfoBuilder = (
+  interaction: CommandInteraction,
+  client: Semblance,
+) => Promise<string | MessageOptions | InteractionReplyOptions> | string | MessageOptions | InteractionReplyOptions;
 
 export interface Command<T extends Category> {
   description: string;

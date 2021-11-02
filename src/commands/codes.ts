@@ -36,5 +36,9 @@ const run = async (message: Message) => {
       .setLabel('View Expired Codes')
       .setStyle('PRIMARY'),
   ]);
-  message.channel.send({ embeds: [embed], files: [currentLogo], components: [component] });
+  message.channel.send({
+    embeds: [embed],
+    files: [currentLogo],
+    components: [component],
+  });
 };

@@ -19,7 +19,11 @@ export class Discords extends VoteHandler {
     if (playerData)
       playerData = await Game.findOneAndUpdate(
         { player: vote.user },
-        { $set: { money: playerData.money + playerData.idleProfit * (3600 * 6) } },
+        {
+          $set: {
+            money: playerData.money + playerData.idleProfit * (3600 * 6),
+          },
+        },
         { new: true },
       );
 

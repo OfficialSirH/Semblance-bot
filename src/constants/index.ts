@@ -1,17 +1,18 @@
-﻿import { Subcategory } from '#lib/interfaces/Semblance';
-import {
+﻿import type { Subcategory } from '#lib/interfaces/Semblance';
+import type {
+  Client,
   ColorResolvable,
   GuildMember,
   MessageActionRow,
   MessageButton,
-  Permissions,
   RoleResolvable,
   Snowflake,
   User,
 } from 'discord.js';
-import { Semblance } from '../structures';
-import config from '#config';
-const { prefix } = config;
+import { Permissions } from 'discord.js';
+import type { Semblance } from '../structures';
+
+export const prefix = (client: Client) => `<@${client.user.id}>`;
 
 export const getAvatar = (user: User) => {
   const avatarType = user.avatar.startsWith('a_') ? `${user.avatar}.gif` : `${user.avatar}.png`;
@@ -276,8 +277,6 @@ class RandomColor {
 export const randomColor = RandomColor.randomColor;
 // Command related functions and constants
 export {
-  dontDisturb,
-  removeAfk,
   gameTransferPages,
   checkReminders,
   correctReportList,

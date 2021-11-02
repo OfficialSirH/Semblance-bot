@@ -5,6 +5,7 @@ import type {
   ComponentHandler,
   Command,
   Category,
+  QueriedInfoBuilder,
 } from '#lib/interfaces/Semblance';
 import type { ClientOptions } from 'discord.js';
 import { Client, Collection } from 'discord.js';
@@ -18,10 +19,10 @@ export class Semblance extends Client {
   private _componentHandlers: Collection<string, ComponentHandler>;
   private _contextMenuHandlers: Collection<string, ContextMenuHandler>;
   private _autocompleteHandlers: Collection<string, AutocompleteHandler>;
+  private _infoBuilders: Collection<string, QueriedInfoBuilder>;
   private _slashCommands: Collection<string, SlashCommand>;
   private _commands: Record<string, Command<Category>>;
   private _aliases: Record<string, string>;
-  private _autoCommands: Record<string, Command<Category>>;
 
   /**
    *
@@ -37,7 +38,7 @@ export class Semblance extends Client {
         if (file.endsWith('.js')) {
           this._componentHandlers.set(
             file.replace('.js', ''),
-            await import(`../applicationCommands/componentHandlers/${file}`),
+            (await import(`../applicationCommands/componentHandlers/${file}`)).default,
           );
         }
     });
@@ -67,6 +68,7 @@ export class Semblance extends Client {
     });
 
     this._slashCommands = new Collection();
+    this._infoBuilders = new Collection();
 
     (this._commands = {}), (this._aliases = {});
     fs.readdir('./dist/src/commands/', async (err, files) => {
@@ -77,17 +79,6 @@ export class Semblance extends Client {
             fileName = file.replace('.js', '');
           this._commands[fileName] = commandFile;
           if (commandFile.aliases) for (const alias of commandFile.aliases) this._aliases[alias] = fileName;
-        }
-    });
-
-    this._autoCommands = {};
-    fs.readdir('./dist/src/autoActions/', async (err, files) => {
-      if (err) return console.log(err);
-      for (const file of files)
-        if (file.endsWith('.js')) {
-          const commandFile = (await import(`../autoActions/${file}`)).default,
-            fileName = file.replace('.js', '');
-          this._autoCommands[fileName] = commandFile;
         }
     });
 
@@ -128,16 +119,16 @@ export class Semblance extends Client {
     return this._slashCommands;
   }
 
+  public get infoBuilders() {
+    return this._infoBuilders;
+  }
+
   public get commands() {
     return this._commands;
   }
 
   public get aliases() {
     return this._aliases;
-  }
-
-  public get autoCommands() {
-    return this._autoCommands;
   }
 
   public get call() {

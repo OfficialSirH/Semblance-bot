@@ -27,7 +27,11 @@ export class TopGG extends VoteHandler {
     if (playerData)
       playerData = await Game.findOneAndUpdate(
         { player: vote.user },
-        { $set: { money: playerData.money + playerData.idleProfit * earningsBonus } },
+        {
+          $set: {
+            money: playerData.money + playerData.idleProfit * earningsBonus,
+          },
+        },
         { new: true },
       );
 

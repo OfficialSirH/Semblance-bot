@@ -92,7 +92,9 @@ const run = async (message: Message, args: string[]) => {
 };
 
 const listBoosterCodes = async (message: Message) => {
-  const darwiniumCodes = (await Information.findOne({ infoType: 'boostercodes' })) as InformationFormat<'boostercodes'>;
+  const darwiniumCodes = (await Information.findOne({
+    infoType: 'boostercodes',
+  })) as InformationFormat<'boostercodes'>;
   const list = darwiniumCodes.list.length > 0 ? darwiniumCodes.list.join(', ') : 'None';
   const embed = new MessageEmbed()
     .setTitle('Booster Codes')
@@ -103,7 +105,9 @@ const listBoosterCodes = async (message: Message) => {
 };
 const addBoosterCode = async (message: Message, codes: string[]) => {
   if (codes.length == 0) return message.reply('You need to give me a code to add.');
-  const darwiniumCodes = (await Information.findOne({ infoType: 'boostercodes' })) as InformationFormat<'boostercodes'>;
+  const darwiniumCodes = (await Information.findOne({
+    infoType: 'boostercodes',
+  })) as InformationFormat<'boostercodes'>;
   if (codes.every(c => darwiniumCodes.list.includes(c)))
     return message.reply('All of the codes you provided are already in the list.');
   codes = codes.filter(c => !darwiniumCodes.list.includes(c));
@@ -126,7 +130,9 @@ const addBoosterCode = async (message: Message, codes: string[]) => {
 
 const removeBoosterCode = async (message: Message, codes: string[]) => {
   if (codes.length == 0) return message.reply('You need to give me a code to remove.');
-  const darwiniumCodes = (await Information.findOne({ infoType: 'boostercodes' })) as InformationFormat<'boostercodes'>;
+  const darwiniumCodes = (await Information.findOne({
+    infoType: 'boostercodes',
+  })) as InformationFormat<'boostercodes'>;
   if (codes.every(c => !darwiniumCodes.list.includes(c)))
     return message.reply("All of the codes you provided aren't in the list.");
   codes = codes.filter(c => darwiniumCodes.list.includes(c));

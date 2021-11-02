@@ -3,9 +3,7 @@ import type { User, Snowflake } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { Game } from '#models/Game';
 import type { GameFormat } from '#models/Game';
-import config from '#config';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
-const { prefix } = config;
 
 export default {
   permissionRequired: 0,
@@ -18,7 +16,7 @@ export default {
       return interaction.reply({
         content: interaction.options.getUser('user')
           ? 'This user does not exist'
-          : `You have not created a game yet; if you'd like to create a game, use \`${prefix}game create\``,
+          : "You have not created a game yet; if you'd like to create a game, use `@Semblance game create`",
         ephemeral: true,
       });
     const nxtUpgrade = await currentPrice(statsHandler);
@@ -33,7 +31,10 @@ export default {
       .addFields([
         { name: 'Level', value: statsHandler.level.toString() },
         { name: 'Random-Bucks', value: statsHandler.money.toString() },
-        { name: 'Percent Increase', value: statsHandler.percentIncrease.toString() },
+        {
+          name: 'Percent Increase',
+          value: statsHandler.percentIncrease.toString(),
+        },
         { name: 'Next Upgrade Cost', value: nxtUpgrade.toString() },
         { name: 'Idle Profit', value: statsHandler.idleProfit.toString() },
       ])

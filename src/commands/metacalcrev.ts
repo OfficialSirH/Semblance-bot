@@ -1,22 +1,23 @@
-import { bigToName, checkValue, nameToScNo, randomColor } from '#constants/index';
+import { bigToName, checkValue, nameToScNo, prefix, randomColor } from '#constants/index';
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import type { Command } from '#lib/interfaces/Semblance';
-import config from '#config';
-const { prefix } = config;
+import type { Semblance } from '#structures/Semblance';
 
 export default {
   description: 'calculate the required entropy/ideas for the specified metabits',
   category: 'calculator',
   permissionRequired: 0,
   checkArgs: () => true,
-  run: (_client, message, args) => run(message, args),
+  run: (client, message, args) => run(client, message, args),
 } as Command<'calculator'>;
 
-const run = async (message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
   if (args.length == 0)
     return message.reply(
-      `an example of \`${prefix}metacalcrev\` is \`${prefix}metacalcrev 500M\`, which means an input of 500 million metabits which will output the amount of entropy and ideas you'd need an accumulation of.`,
+      `an example of ${prefix(client)} metacalcrev is ${prefix(
+        client,
+      )} metacalcrev 500M, which means an input of 500 million metabits which will output the amount of entropy and ideas you'd need an accumulation of.`,
     );
   let metabits: string | number = args[0];
   if (!checkValue(metabits as string)) return message.reply('Your input for metabits was invalid');
