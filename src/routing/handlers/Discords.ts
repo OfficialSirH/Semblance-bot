@@ -1,8 +1,8 @@
 import { Votes, Game } from '#models/index';
 import type { DiscordsRequest } from '#lib/interfaces/discords';
-import type { Semblance } from '#src/structures';
+import type { Semblance } from '#structures/Semblance';
 import type { FastifyReply } from 'fastify';
-import { VoteHandler } from '#src/structures/VoteHandler';
+import { VoteHandler } from '#structures/VoteHandler';
 
 export class Discords extends VoteHandler {
   constructor(client: Semblance) {

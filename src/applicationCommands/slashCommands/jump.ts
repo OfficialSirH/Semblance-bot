@@ -1,5 +1,5 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
-import { messageLinkJump } from '#src/constants/commands';
+import { messageLinkJump } from '#constants/commands';
 
 export default {
   permissionRequired: 0,

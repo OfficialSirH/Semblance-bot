@@ -1,5 +1,5 @@
 import type { ContextMenuHandlerOptions } from '#lib/interfaces/Semblance';
-import { fetchDeepL } from '#src/constants/commands';
+import { fetchDeepL } from '#constants/commands';
 import type { ContextMenuInteraction } from 'discord.js';
 
 export const run = async (interaction: ContextMenuInteraction, { options }: ContextMenuHandlerOptions) => {

@@ -1,5 +1,5 @@
 import type { TwitterJSEventHandler } from '#lib/interfaces/Semblance';
-import type { Semblance } from '#src/structures';
+import type { Semblance } from '#structures/Semblance';
 import type { Tweet } from 'twitter.js';
 import type { TextBasedChannels } from 'discord.js';
 import { ClientEvents } from 'twitter.js';

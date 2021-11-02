@@ -1,8 +1,8 @@
 import { Votes, Game } from '#models/index';
 import type { DBLRequest } from '#lib/interfaces/discordBotList';
-import type { Semblance } from '#src/structures';
+import type { Semblance } from '#structures/Semblance';
 import type { FastifyReply } from 'fastify';
-import { VoteHandler } from '#src/structures/VoteHandler';
+import { VoteHandler } from '#structures/VoteHandler';
 
 export class DiscordBotList extends VoteHandler {
   constructor(client: Semblance) {

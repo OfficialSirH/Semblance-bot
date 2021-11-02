@@ -1,5 +1,5 @@
 import type { Command } from '#lib/interfaces/Semblance';
-import { messageLinkJump } from '#src/constants/commands';
+import { messageLinkJump } from '#constants/commands';
 
 export default {
   description: 'This command can create a direct jump/preview of a message link',

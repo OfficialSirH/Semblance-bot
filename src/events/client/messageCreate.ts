@@ -1,9 +1,9 @@
-import type { Semblance } from '#src/structures';
+import type { Semblance } from '#structures/Semblance';
 import { Constants } from 'discord.js';
 import type { Message } from 'discord.js';
 import config from '#config';
 import { getPermissionLevel, parseArgs, prefix } from '#constants/index';
-import { createBoosterRewards } from '#src/constants/models';
+import { createBoosterRewards } from '#constants/models';
 import type { EventHandler } from '#lib/interfaces/Semblance';
 const { Events } = Constants;
 const { sirhId, c2sGuildId, sirhGuildId } = config;

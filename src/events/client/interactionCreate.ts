@@ -1,6 +1,6 @@
 import { customIdRegex, getPermissionLevel, properCustomIdRegex } from '#constants/index';
 import type { ButtonData, EventHandler, SelectData } from '#lib/interfaces/Semblance';
-import type { Semblance } from '#src/structures';
+import type { Semblance } from '#structures/Semblance';
 import type {
   GuildMember,
   MessageComponentInteraction,

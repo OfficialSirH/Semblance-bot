@@ -2,7 +2,7 @@ import { Votes, Game } from '#models/index';
 import type { TGGRequest } from '#lib/interfaces/topGG';
 import type { Semblance } from '#structures/Semblance';
 import type { FastifyReply } from 'fastify';
-import { VoteHandler } from '#src/structures/VoteHandler';
+import { VoteHandler } from '#structures/VoteHandler';
 
 export class TopGG extends VoteHandler {
   constructor(client: Semblance) {
