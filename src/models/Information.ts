@@ -1,16 +1,6 @@
 import _ from 'mongoose';
 
-type Info =
-  | 'beta'
-  | 'joinbeta'
-  | 'update'
-  | 'github'
-  | 'codes'
-  | 'changelog'
-  | 'cacheList'
-  | 'beyondcount'
-  | 'boostercodes'
-  | 'Mixed';
+type Info = 'beta' | 'joinbeta' | 'update' | 'codes' | 'changelog' | 'boostercodes' | 'Mixed';
 
 interface List {
   boostercodes: string[];
@@ -34,18 +24,6 @@ export interface InformationFormat<T extends Info = Info> {
   list: List[T];
   footer: string;
 }
-
-// TODO: Implement better typings for InformationFormat
-
-// export interface InformationFormat {
-//     infoType: infoType;
-//     info: string;
-//     count: number;
-//     updated: boolean;
-//     expired: string;
-//     list: any;
-//     footer: string;
-// }
 
 const InformationSchema = new _.Schema<InformationFormat<'Mixed'>>({
   infoType: String,

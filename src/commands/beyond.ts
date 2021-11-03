@@ -2,7 +2,6 @@ import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
 import config from '#config';
-import { Information } from '#models/Information';
 import type { Command } from '#lib/interfaces/Semblance';
 import type { Semblance } from '#structures/Semblance';
 const { roadMap, currentLogo, earlyBeyondTesters } = config;
@@ -60,12 +59,15 @@ async function clips(message: Message) {
 }
 
 async function beyondCounter(message: Message) {
-  const beyondCount = await Information.findOne({ infoType: 'beyondcount' });
   const embed = new MessageEmbed()
     .setTitle('Beyond Counter')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
-    .setDescription(`The Beyond has been mentioned ${beyondCount.count} time(s) since ${new Date(1611959542848)}`)
+    .setDescription(
+      `The Beyond has been mentioned 5203 time(s) since ${new Date(1611959542848)} all the way till ${new Date(
+        1635971517445,
+      )}`,
+    )
     .setFooter('Since')
     .setTimestamp(1611959542848);
   message.channel.send({ embeds: [embed] });

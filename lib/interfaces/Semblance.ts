@@ -113,7 +113,6 @@ export interface EventHandler<T extends keyof ClientEvents = keyof ClientEvents>
   exec: (...args: [...ClientEvents[T], Semblance]) => Promise<void>;
 }
 
-// TODO: fix up these typings somehow
 export interface TwitterJSEventHandler<T extends keyof ClientEventsMapping = keyof ClientEventsMapping> {
   name: T;
   once?: boolean;

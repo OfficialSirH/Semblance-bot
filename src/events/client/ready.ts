@@ -1,9 +1,7 @@
-import { Information } from '#models/Information';
-import { MessageEmbed, Constants } from 'discord.js';
-import type { TextChannel } from 'discord.js';
+import { Constants } from 'discord.js';
 import config from '#config';
 import type { Semblance } from '#structures/Semblance';
-import { checkReminders, randomColor } from '#constants/index';
+import { checkReminders } from '#constants/index';
 import { intervalPost } from '../intervalPost.js';
 import { checkBoosterRewards } from '#constants/models';
 import type { EventHandler } from '#lib/interfaces/Semblance.js';
@@ -73,21 +71,6 @@ export const ready = async (client: Semblance) => {
   setInterval(() => {
     checkBoosterRewards(client);
   }, 1000 * 60 * 60 * 12);
-
-  Information.findOne({ infoType: 'github' }).then(async infoHandler => {
-    if (infoHandler.updated) {
-      await Information.findOneAndUpdate({ infoType: 'github' }, { $set: { updated: false } });
-      const embed = new MessageEmbed()
-        .setTitle('Semblance Update')
-        .setColor(randomColor)
-        .setAuthor(client.user.tag, client.user.displayAvatarURL())
-        .setDescription(`**${infoHandler.info}**`);
-
-      (client.guilds.cache.get(c2sGuildId).channels.cache.find(c => c.name == 'semblance') as TextChannel).send({
-        embeds: [embed],
-      });
-    }
-  });
 
   await client.initializeLeaderboards();
   intervalPost(client);
