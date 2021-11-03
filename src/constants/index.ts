@@ -79,7 +79,7 @@ export const filterAction = (components: MessageActionRow[], action: string) =>
 export const subcategoryList = (client: Semblance, category: string, subcategory: Subcategory) =>
   Object.keys(client.commands)
     .filter(key => client.commands[key].category == category && client.commands[key].subcategory == subcategory)
-    .map(key => `**\`${prefix}${key}\`**`)
+    .map(key => `**\`${prefix(client)}${key}\`**`)
     .join(', ');
 export const emojis = {
   entropy: '<:entropy:742748357163745413>',
@@ -143,9 +143,9 @@ export const messageLinkRegex =
 export const attachmentLinkRegex =
   /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i;
 export const customIdRegex =
-  /(?<!.){command:'[a-z]{3,20}',action:'([a-z]|\d){1,20}(-[a-z]{1,20})?',id:'\d{17,20}'(,page:\d{1,3})?}(?!.)/;
+  /(?<!.){command:'[a-z]{3,20}',action:'([a-z]|\d){1,20}(-([a-z]|\d){1,20})?',id:'\d{17,20}'(,page:\d{1,3})?}(?!.)/;
 export const properCustomIdRegex =
-  /(?<!.){"command":"[a-z]{3,20}","action":"([a-z]|\d){1,20}(-[a-z]{1,20})?","id":"\d{17,20}"(,"page":\d{1,3})?}(?!.)/;
+  /(?<!.){"command":"[a-z]{3,20}","action":"([a-z]|\d){1,20}(-([a-z]|\d){1,20})?","id":"\d{17,20}"(,"page":\d{1,3})?}(?!.)/;
 export const timeInputRegex =
   /(?:(?<months>\d{1,2})mo )?(?:(?<weeks>\d{1,2})w )?(?:(?<days>\d{1,2})d )?(?:(?<hours>\d{1,2})h )?(?:(?<minutes>\d{1,2})m)?/;
 export const timeInputAutocompleteAssistantRegex =

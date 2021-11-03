@@ -138,5 +138,10 @@ const run = async (message: Message) => {
     ),
   ];
 
-  return message.channel.send({ embeds: [embed], components });
+  return message.channel.send({
+    content:
+      "ATTENTION: text-based commands are now deprecated and will be replaced with slash commands only in the near future. If you don't know what that means, it means that you should start using `/game` instead.",
+    embeds: [embed],
+    components,
+  });
 };

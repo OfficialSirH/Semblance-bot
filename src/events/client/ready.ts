@@ -17,9 +17,8 @@ export default {
 } as EventHandler<'ready'>;
 
 export const ready = async (client: Semblance) => {
-  const { c2sGuildId, ignoredGuilds } = config;
+  const { c2sGuildId } = config;
   console.log(`Logged in as ${client.user.tag}!`);
-  client.guilds.cache.sweep(guild => ignoredGuilds.includes(guild.id));
 
   const totalMembers = client.guilds.cache
     .map(g => g.memberCount)

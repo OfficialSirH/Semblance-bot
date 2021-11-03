@@ -99,7 +99,8 @@ const run = async (client: Semblance, message: Message) => {
     ]),
   ];
   message.reply({
-    content: 'Here are some lovely commands for you!',
+    content:
+      'Text-based commands are now deprecated and you should instead use slash commands as commands like this one will be gone in the near future. You can see commands with `/help query: INPUT_HERE`.',
     embeds: [embed],
     components,
   });

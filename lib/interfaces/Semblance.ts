@@ -2,13 +2,14 @@ import type { Semblance } from '#structures/Semblance';
 import type {
   CommandInteraction,
   Message,
-  MessageComponentInteraction,
   Snowflake,
   ClientEvents,
   ContextMenuInteraction,
   AutocompleteInteraction,
   MessageOptions,
   InteractionReplyOptions,
+  ButtonInteraction,
+  SelectMenuInteraction,
 } from 'discord.js';
 import type { Client, ClientEventsMapping } from 'twitter.js';
 
@@ -32,26 +33,20 @@ export interface ContextMenuHandlerOptions {
 export interface ComponentHandler {
   allowOthers?: boolean;
   buttonHandle?: (
-    interaction: MessageComponentInteraction,
-    data: ButtonData,
-    { permissionLevel }: { permissionLevel: number },
+    interaction: ButtonInteraction,
+    data: CustomIdData,
+    { client, permissionLevel }: { client: Semblance; permissionLevel: number },
   ) => Promise<void>;
   selectHandle?: (
-    interaction: MessageComponentInteraction,
-    data: SelectData,
-    { permissionLevel }: { permissionLevel: number },
+    interaction: SelectMenuInteraction,
+    data: CustomIdData,
+    { client, permissionLevel }: { client: Semblance; permissionLevel: number },
   ) => Promise<void>;
 }
 
-export interface ButtonData {
+export interface CustomIdData {
   command: string;
   action: string;
-  id: Snowflake;
-}
-
-export interface SelectData {
-  command: string;
-  name: string;
   id: Snowflake;
 }
 
@@ -67,7 +62,7 @@ export interface SlashOptions {
 }
 
 export type QueriedInfoBuilder = (
-  interaction: CommandInteraction,
+  interaction: CommandInteraction | ButtonInteraction | SelectMenuInteraction,
   client: Semblance,
 ) => Promise<string | MessageOptions | InteractionReplyOptions> | string | MessageOptions | InteractionReplyOptions;
 

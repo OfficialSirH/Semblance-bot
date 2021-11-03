@@ -1,5 +1,5 @@
 import { customIdRegex, getPermissionLevel, properCustomIdRegex } from '#constants/index';
-import type { ButtonData, EventHandler, SelectData } from '#lib/interfaces/Semblance';
+import type { CustomIdData, EventHandler } from '#lib/interfaces/Semblance';
 import type { Semblance } from '#structures/Semblance';
 import type {
   GuildMember,
@@ -32,7 +32,7 @@ export const interactionCreate = async (interaction: Interaction, client: Sembla
 };
 
 async function componentInteraction(client: Semblance, interaction: MessageComponentInteraction) {
-  let data: ButtonData | SelectData;
+  let data: CustomIdData;
   if (interaction.customId.match(properCustomIdRegex)) data = JSON.parse(interaction.customId);
   else if (interaction.customId.match(customIdRegex)) data = eval(`(${interaction.customId})`);
   else
@@ -47,12 +47,15 @@ async function componentInteraction(client: Semblance, interaction: MessageCompo
       ephemeral: true,
     });
   if (interaction.isButton())
-    return componentHandler.buttonHandle(interaction, data as ButtonData, {
+    return componentHandler.buttonHandle(interaction, data, {
+      client,
       permissionLevel: getPermissionLevel(interaction.member as GuildMember),
     });
-  componentHandler.selectHandle(interaction, data as SelectData, {
-    permissionLevel: getPermissionLevel(interaction.member as GuildMember),
-  });
+  if (interaction.isSelectMenu())
+    componentHandler.selectHandle(interaction, data, {
+      client,
+      permissionLevel: getPermissionLevel(interaction.member as GuildMember),
+    });
 }
 
 const contextMenuInteraction = async (client: Semblance, interaction: ContextMenuInteraction) => {

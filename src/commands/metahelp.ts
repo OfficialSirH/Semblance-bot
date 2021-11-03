@@ -3,6 +3,7 @@ import type { Message } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
 import config from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
+import type { Semblance } from '#structures/Semblance';
 const { currentLogo } = config;
 
 export default {
@@ -13,7 +14,7 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'help'>;
 
-const run = async (client, message: Message) => {
+const run = async (client: Semblance, message: Message) => {
   const embed = new MessageEmbed()
     .setTitle('Metabit Calculator Help')
     .setColor(randomColor)
@@ -36,11 +37,13 @@ const run = async (client, message: Message) => {
       },
       {
         name: 'metacalc example',
-        value: `${prefix}metacalc 1E23 1.59E49, this example shows 1E23 entropy and 1.59E49 ideas being used for input.`,
+        value: `${prefix(
+          client,
+        )}metacalc 1E23 1.59E49, this example shows 1E23 entropy and 1.59E49 ideas being used for input.`,
       },
       {
         name: 'metacalcrev example',
-        value: `${prefix}metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`,
+        value: `${prefix(client)}metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`,
       },
     )
     .setFooter('Metabit Calculator goes brrr.');

@@ -7,8 +7,19 @@ import config from '#config';
 const { c2sGuildId, sirhId, adityaId } = config;
 
 export default {
-  selectHandle: async (interaction, { name, id }) => {
-    interaction.reply('select not implemented yet');
+  selectHandle: async (interaction, { id }, { client }) => {
+    if (interaction.user.id != id) return;
+    const query = interaction.values[0];
+    (interaction.message.components as MessageActionRow[]).forEach(component =>
+      component.components[0].setDisabled(true),
+    );
+    interaction.channel.messages.edit(interaction.message.id, {
+      components: interaction.message.components as MessageActionRow[],
+    });
+    if (!client.infoBuilders.has(query)) return interaction.reply({ content: 'Invalid query.', ephemeral: true });
+    const info = await client.infoBuilders.get(query)(interaction, client);
+    if (typeof info == 'string') return interaction.reply({ content: info });
+    interaction.reply(info);
   },
   buttonHandle: async (interaction, { action, id }, { permissionLevel }) => {
     const components = [new MessageActionRow()];

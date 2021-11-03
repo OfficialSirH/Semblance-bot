@@ -1,4 +1,4 @@
-import type { ButtonData, ComponentHandler } from '#lib/interfaces/Semblance';
+import type { CustomIdData, ComponentHandler } from '#lib/interfaces/Semblance';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { guildBookPage, randomColor } from '#constants/index';
 import { serversPerPage } from '#constants/commands';
@@ -79,6 +79,6 @@ export default {
   },
 } as ComponentHandler;
 
-interface ServerlistButtonData extends ButtonData {
+interface ServerlistButtonData extends CustomIdData {
   page: number;
 }

@@ -26,7 +26,7 @@ export const intervalPost = (client: Semblance) => {
     bfd.postStats(client.guilds.cache.size);
   }, day);
 
-  const discordListBaseURL = 'https://api.discordlist.space';
+  const discordListBaseURL = 'https://api.discordlist.space/v2';
   setInterval(() => {
     const data = { server_count: client.guilds.cache.size };
     fetch(discordListBaseURL + '/bots/' + client.user.id, {
