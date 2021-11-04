@@ -10,10 +10,11 @@ export default {
 
 export const messageDM = (message: Message, client: Semblance) => {
   const { commands, aliases } = client;
-  if (message.content.match(`^<@!?${client.user.id}> `)) {
+  // s! is deprecated and should be removed in the future
+  if (message.content.startsWith('s!') || message.content.match(`^<@!?${client.user.id}> `)) {
     let splitContent = message.content.split(' ');
     if (splitContent[0].match(`^<@!?${client.user.id}>`)) splitContent.shift();
-    else splitContent = message.content.slice(prefix(client).length).split(' ');
+    else splitContent = message.content.slice(2).split(' ');
     const identifier = splitContent.shift().toLowerCase(),
       command = aliases[identifier] || identifier;
     const content = splitContent.join(' ');
