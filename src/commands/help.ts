@@ -99,8 +99,7 @@ const run = async (client: Semblance, message: Message) => {
     ]),
   ];
   message.reply({
-    content:
-      'Text-based commands are now deprecated and you should instead use slash commands as commands like this one will be gone in the near future. You can see commands with `/help query: INPUT_HERE`.',
+    content: 'side note: if your Discord client supports it, you can use: `/help query: INPUT_HERE` instead.',
     embeds: [embed],
     components,
   });
