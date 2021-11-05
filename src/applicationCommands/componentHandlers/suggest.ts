@@ -3,6 +3,7 @@ import type { TextBasedChannels } from 'discord.js';
 import { MessageActionRow, MessageEmbed } from 'discord.js';
 
 export default {
+  allowOthers: true,
   buttonHandle: async (interaction, { action, id }, { permissionLevel, client }) => {
     if (permissionLevel == 0) return interaction.reply("You don't have permission to use this button!");
     if (!['accept', 'deny'].includes(action)) return interaction.reply("Something ain't working right");
