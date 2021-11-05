@@ -1,7 +1,7 @@
 import type { Message } from 'discord.js';
 import type { Semblance } from '#structures/Semblance';
 import { MessageEmbed } from 'discord.js';
-import { randomColor } from '#constants/index';
+import { prefix, randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
@@ -15,7 +15,7 @@ export default {
 const run = async (client: Semblance, message: Message) => {
   const adminCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'admin')
-    .map(key => `**\`@Semblance ${key}\`**`);
+    .map(key => `**\`${prefix}${key}\`**`);
   const embed = new MessageEmbed()
     .setColor(randomColor)
     .setTitle('**-> Admin Commands**')

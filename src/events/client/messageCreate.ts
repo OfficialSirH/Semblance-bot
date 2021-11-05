@@ -43,9 +43,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
     ) {
       return message.reply(
         "Heyyo, I'm Semblance! I provide as much info as I possibly can for the simulation so you'll never be clueless in your adventure! " +
-          ` you can either use \`/help query: *type anything here*\` or use ${prefix(
-            client,
-          )} help. Have fun and stay cellular!`,
+          ` you can either use \`/help query: *type anything here*\` or use ${prefix} help. Have fun and stay cellular!`,
       );
     }
   }
@@ -76,9 +74,9 @@ export const messageCreate = async (message: Message, client: Semblance) => {
         return message.channel.send("❌ You don't have permission to do this!");
       if (!commandFile.checkArgs(args, permissionLevel, content))
         return message.channel.send(
-          `❌ Invalid arguments! Usage is '${prefix(client)}${command}${Object.keys(commandFile.usage)
+          `❌ Invalid arguments! Usage is '${prefix}${command}${Object.keys(commandFile.usage)
             .map(a => ' ' + a)
-            .join('')}', for additional help, see '${prefix(client)}help'.`,
+            .join('')}', for additional help, see '${prefix}help'.`,
         );
       commandFile.run(client, message, args, identifier, {
         permissionLevel,

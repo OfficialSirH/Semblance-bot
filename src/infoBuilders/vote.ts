@@ -22,9 +22,7 @@ export const build: QueriedInfoBuilder = interaction => {
       ].join('\n'),
     ) // Old Semblance Id: 668688939888148480
     .setFooter(
-      `Thanks, ${
-        interaction.user.tag
-      }, for considering to support my bot through voting, you may also support me with ${prefix(client)}patreon :D`,
+      `Thanks, ${interaction.user.tag}, for considering to support my bot through voting, you may also support me with ${prefix}patreon :D`,
       interaction.user.displayAvatarURL(),
     );
   return { embeds: [embed] };

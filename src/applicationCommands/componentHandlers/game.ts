@@ -197,7 +197,7 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
 }
 
 async function create(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const { user, client } = interaction;
+  const { user } = interaction;
   const percent = (Math.round(Math.random() * 25) + 25) / 100 + 1;
   const startingProfits = Math.random() * 0.05 + 0.05;
   await Game.findOneAndDelete({ player: user.id });
@@ -213,9 +213,7 @@ async function create(interaction: MessageComponentInteraction, components: Mess
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(
-      `Game Successfully created! Now you can start collecting Random-Bucks by typing '${prefix(
-        client,
-      )} game collect' and upgrade your Random-Bucks with \`${prefix(client)} game upgrade\`\n\n` +
+      `Game Successfully created! Now you can start collecting Random-Bucks by typing '${prefix} game collect' and upgrade your Random-Bucks with \`${prefix} game upgrade\`\n\n` +
         `Price Increase: ${(creationHandler.percentIncrease - 1) * 100}%\n` +
         `Starting Profits: ${creationHandler.idleProfit.toFixed(3)}/sec\n\n` +
         "Reminder, don't be constantly spamming and creating a new game just cause your RNG stats aren't perfect \n",
@@ -231,16 +229,14 @@ async function create(interaction: MessageComponentInteraction, components: Mess
 }
 
 async function about(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const { user, client } = interaction;
+  const { user } = interaction;
   const embed = new MessageEmbed()
     .setTitle("What's Semblance's Idle-Game about?")
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(
       "SIG, AKA Semblance's Idle-Game, is an RNG idle-game that uses a currency called Random-Bucks \n" +
-        `which yes, I asked Semblance whether or not I should use Random-Bucks as the name by using \`${prefix(
-          client,
-        )}8ball\`. ` +
+        `which yes, I asked Semblance whether or not I should use Random-Bucks as the name by using \`${prefix}8ball\`. ` +
         'If you\'re confused by the acronym RNG, it\'s an acronym for "Random Number Generation/Generator", which ' +
         'means that everything is kind of random and runs on random chance in the game. Everything that is random ' +
         'within this game is the cost multiplier per upgrade, starting profits, and the amount your profits increase.\n\n' +
@@ -279,7 +275,7 @@ async function collect(interaction: MessageComponentInteraction, components: Mes
 
 async function upgrade(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   await interaction.deferUpdate();
-  const { user, client } = interaction,
+  const { user } = interaction,
     message = interaction.message as Message;
   let upgradeHandler = await Game.findOne({ player: user.id });
   const previousLevel = upgradeHandler.level;
@@ -331,9 +327,7 @@ async function upgrade(interaction: MessageComponentInteraction, components: Mes
       )} Random-Bucks.\n\nYour current profit is ${upgradeHandler.idleProfit.toFixed(3)} Random-Bucks/sec.`,
     )
     .setFooter(
-      `Upgrades will raise your rank in the '${prefix(client)}game leaderboard', also, '${prefix(
-        client,
-      )}game upgrade max' will upgrade the max amount you're able to upgrade.`,
+      `Upgrades will raise your rank in the '${prefix}game leaderboard', also, '${prefix}game upgrade max' will upgrade the max amount you're able to upgrade.`,
     );
   await message.edit({ embeds: [embed], components });
 }
@@ -371,9 +365,7 @@ async function votes(interaction: MessageComponentInteraction, components: Messa
         ].join('\n'),
       )
       .setFooter(
-        `Thanks, ${user.tag}, for considering to support my bot through voting, you may also support me with ${prefix(
-          client,
-        )}patreon :D`,
+        `Thanks, ${user.tag}, for considering to support my bot through voting, you may also support me with ${prefix}patreon :D`,
         user.displayAvatarURL(),
       );
   interaction.update({ embeds: [embed], components });

@@ -1,7 +1,7 @@
 import { Constants } from 'discord.js';
 import config from '#config';
 import type { Semblance } from '#structures/Semblance';
-import { checkReminders } from '#constants/index';
+import { checkReminders, prefix } from '#constants/index';
 import { intervalPost } from '../intervalPost.js';
 import { checkBoosterRewards } from '#constants/models';
 import type { EventHandler } from '#lib/interfaces/Semblance.js';
@@ -22,7 +22,7 @@ export const ready = async (client: Semblance) => {
     .map(g => g.memberCount)
     .filter(g => g)
     .reduce((total, cur) => (total += cur), 0);
-  const activity = `@semblance help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
+  const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
   client.user.setActivity(activity, { type: 'WATCHING' });
 
   setInterval(() => {
@@ -30,7 +30,7 @@ export const ready = async (client: Semblance) => {
       .map(g => g.memberCount)
       .filter(g => g)
       .reduce((total, cur) => (total += cur), 0);
-    const activity = `@semblance help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
+    const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
     if (client.user.presence.activities[0]?.name !== activity) client.user.setActivity(activity, { type: 'WATCHING' });
   }, 3600000);
 

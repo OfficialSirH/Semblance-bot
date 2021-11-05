@@ -1,6 +1,5 @@
 ﻿import type { Subcategory } from '#lib/interfaces/Semblance';
 import type {
-  Client,
   ColorResolvable,
   GuildMember,
   MessageActionRow,
@@ -12,7 +11,8 @@ import type {
 import { Permissions } from 'discord.js';
 import type { Semblance } from '../structures';
 
-export const prefix = (client: Client) => `<@${client.user.id}>`;
+export const prefix = 's!';
+//export const prefix = '@Semblance ';
 
 export const getAvatar = (user: User) => {
   const avatarType = user.avatar.startsWith('a_') ? `${user.avatar}.gif` : `${user.avatar}.png`;
@@ -79,7 +79,7 @@ export const filterAction = (components: MessageActionRow[], action: string) =>
 export const subcategoryList = (client: Semblance, category: string, subcategory: Subcategory) =>
   Object.keys(client.commands)
     .filter(key => client.commands[key].category == category && client.commands[key].subcategory == subcategory)
-    .map(key => `**\`${prefix(client)}${key}\`**`)
+    .map(key => `**\`${prefix}${key}\`**`)
     .join(', ');
 export const emojis = {
   entropy: '<:entropy:742748357163745413>',

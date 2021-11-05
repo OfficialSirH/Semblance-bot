@@ -12,7 +12,7 @@ import {
 } from 'discord.js';
 import { Report, ReportFormat } from '#models/Report';
 import config from '#config';
-import { getPermissionLevel, randomColor, bugChannels } from '#constants/index';
+import { getPermissionLevel, randomColor, bugChannels, prefix } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
 // TODO: replace this GOD awful report command with a report slash command instead of this
@@ -61,16 +61,16 @@ async function help(message: Message, permissionLevel: number) {
     '+ Game Version',
     "\tWhat is the game's version that you're playing during the cause of this bug?(i.e. 8.06)",
     '+ FORMAT',
-    '\t@Semblance report TITLE',
+    `\t${prefix}report TITLE`,
     '\tACTUAL_RESULT',
     '\tEXPECTED_RESULT',
     '\tSYSTEM_INFO',
     '\tGAME_VERSION',
     '- OR',
-    '\t@Semblance report TITLE | ACTUAL_RESULT | EXPECTED_RESULT | SYSTEM_INFO | GAME_VERSION',
+    `\t${prefix}report TITLE | ACTUAL_RESULT | EXPECTED_RESULT | SYSTEM_INFO | GAME_VERSION`,
 
     '\nREPORT EXAMPLE:',
-    '\t@Semblance report Bad Bug',
+    `\t${prefix}report Bad Bug`,
     '\tIt does something bad',
     "\tIt shouldn't do something bad",
     '\tWindows 69',
@@ -78,20 +78,20 @@ async function help(message: Message, permissionLevel: number) {
 
     '\nWHAT IF I HAVE THE SAME BUG OCCURING AS ANOTHER USER WHO HAS ALREADY REPORTED IT?',
     '+ FORMAT:',
-    '\t@Semblance bug BUG_Id reproduce SYSTEM_INFO | GAME_VERSION',
+    `\t${prefix}bug BUG_Id reproduce SYSTEM_INFO | GAME_VERSION`,
     '- OR',
-    '\t@Semblance bug BUG_Id reproduce SYSTEM_INFO',
+    `\t${prefix}bug BUG_Id reproduce SYSTEM_INFO`,
     '\tGAME_VERSION',
 
     '\nREPRODUCE EXAMPLE:',
-    '\t@Semblance bug 360 reproduce Android 420 | 4_69',
+    `\t${prefix}bug 360 reproduce Android 420 | 4_69`,
   ];
   if (permissionLevel > 0)
     description = description.concat([
       '\nAPPROVING AND DENYING BUGS:',
       "+ 'approve' or 'deny'",
       '+ reason(optional)',
-      'EXAMPLE: @Semblance bug 69 approve nice',
+      `EXAMPLE: ${prefix}bug 69 approve nice`,
     ]);
   description.push('```');
   const embed = new MessageEmbed()
@@ -129,7 +129,7 @@ async function report(message: Message, content: string, client: Semblance) {
       message.author.send(
         [
           "You're missing some input for the report, remember that each subject is separated through new lines,",
-          'which can be done with SHIFT + ENTER on PC or pressing the enter key on mobile. Check out `@Semblance report help` for more details.\n',
+          `which can be done with SHIFT + ENTER on PC or pressing the enter key on mobile. Check out \`${prefix}report help\` for more details.\n`,
           `\`\`\`diff\n${missingContent()}\n\`\`\``,
         ].join(' '),
       );
@@ -234,7 +234,7 @@ async function report(message: Message, content: string, client: Semblance) {
         .setDescription(
           [
             `Your report's Id: ${currentBugId}`,
-            `Attaching an attachment: \`@Semblance bug ${currentBugId} attach (YouTube, Imgur, or Discord attachment link here if you don't have attachment)\`(NOTE: You *don't* need to place the parentheses around the link)`,
+            `Attaching an attachment: \`${prefix}bug ${currentBugId} attach (YouTube, Imgur, or Discord attachment link here if you don't have attachment)\`(NOTE: You *don't* need to place the parentheses around the link)`,
             "**attach either an image or video(must be under 50 MB) with your attach command if the optional choices aren't available**",
           ].join('\n'),
         )

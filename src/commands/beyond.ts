@@ -27,9 +27,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
     .setImage(roadMap.name)
     .setDescription(
       'Summer 2021. Anyone who wants to give any complaints about the length of the release date can email their complaint to ImAWhinyKaren@gmail.com' +
-        `\n\n\`${prefix(client)} beyond sneak peeks\` for sneak peeks\n\n\`${prefix(
-          client,
-        )} beyond count\` to see the amount of times that The Beyond has been mentioned by the community of C2S.`,
+        `\n\n\`${prefix} beyond sneak peeks\` for sneak peeks\n\n\`${prefix} beyond count\` to see the amount of times that The Beyond has been mentioned by the community of C2S.`,
     );
   message.channel.send({ embeds: [embed], files: [currentLogo, roadMap] });
 };

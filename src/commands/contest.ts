@@ -26,7 +26,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
         .setColor(randomColor)
         .setDescription(
           `All of the available contest-related commands are: \n${contests
-            .map((i: string) => `\`${prefix(client)} contest ${i}\``)
+            .map((i: string) => `\`${prefix} contest ${i}\``)
             .join('\n')}`,
         ),
     ],

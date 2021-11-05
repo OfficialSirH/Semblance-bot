@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { randomColor, formattedDate, timeInputRegex, timeInputToMs } from '#constants/index';
+import { randomColor, formattedDate, timeInputRegex, timeInputToMs, prefix } from '#constants/index';
 import { Reminder } from '#models/Reminder';
 import type { Command } from '#lib/interfaces/Semblance';
 import type { TimeLengths } from '#lib/interfaces/remindme';
@@ -12,7 +12,7 @@ export default {
     '<time(3M2w5d6h4m)> <reminder>': '',
   },
   examples: {
-    exampleOne: "@semblance remindme 1h I've got magical stuff to do in 1 hour!",
+    exampleOne: `${prefix}remindme 1h I've got magical stuff to do in 1 hour!`,
   },
   permissionRequired: 0,
   checkArgs: args => args.length >= 2,

@@ -22,7 +22,7 @@ const run = async (client: Semblance, message: Message) => {
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setDescription(
       'The Metabit Calculator supports Scientific Notation, which means you can type numbers like 1E25, as well as names for numbers like million all the way to vigintillion;' +
-        ` Use ${prefix(client)} largenumbers to get more info on large numbers.`,
+        ` Use ${prefix} largenumbers to get more info on large numbers.`,
     )
     .addFields(
       {
@@ -37,13 +37,11 @@ const run = async (client: Semblance, message: Message) => {
       },
       {
         name: 'metacalc example',
-        value: `${prefix(
-          client,
-        )}metacalc 1E23 1.59E49, this example shows 1E23 entropy and 1.59E49 ideas being used for input.`,
+        value: `${prefix}metacalc 1E23 1.59E49, this example shows 1E23 entropy and 1.59E49 ideas being used for input.`,
       },
       {
         name: 'metacalcrev example',
-        value: `${prefix(client)}metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`,
+        value: `${prefix}metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`,
       },
     )
     .setFooter('Metabit Calculator goes brrr.');

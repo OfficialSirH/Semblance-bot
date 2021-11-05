@@ -26,9 +26,9 @@ export const messageDM = (message: Message, client: Semblance) => {
         if (commandFile.checkArgs(args)) commandFile.run(client, message, args, identifier, { content });
         else
           message.channel.send(
-            `❌ Invalid arguments! Usage is ${prefix(client)} ${command}${Object.keys(commandFile.usage)
+            `❌ Invalid arguments! Usage is ${prefix} ${command}${Object.keys(commandFile.usage)
               .map(a => ' ' + a)
-              .join('')}, for additional help, see ${prefix(client)} help.`,
+              .join('')}, for additional help, see ${prefix} help.`,
           );
       } catch {}
     }

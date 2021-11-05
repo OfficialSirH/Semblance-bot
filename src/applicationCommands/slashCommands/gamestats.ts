@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import type { User, Snowflake } from 'discord.js';
-import { randomColor } from '#constants/index';
+import { prefix, randomColor } from '#constants/index';
 import { Game } from '#models/Game';
 import type { GameFormat } from '#models/Game';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
@@ -16,7 +16,7 @@ export default {
       return interaction.reply({
         content: interaction.options.getUser('user')
           ? 'This user does not exist'
-          : "You have not created a game yet; if you'd like to create a game, use `@Semblance game create`",
+          : `You have not created a game yet; if you'd like to create a game, use \`${prefix}game create\``,
         ephemeral: true,
       });
     const nxtUpgrade = await currentPrice(statsHandler);
