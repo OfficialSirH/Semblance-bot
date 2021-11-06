@@ -6,7 +6,7 @@ export default {
   allowOthers: true,
   buttonHandle: async (interaction, { action, id }, { permissionLevel, client }) => {
     if (permissionLevel == 0) return interaction.reply("You don't have permission to use this button!");
-    if (!['accept', 'deny'].includes(action)) return interaction.reply("Something ain't working right");
+    if (!['accept', 'deny', 'silent-deny'].includes(action)) return interaction.reply("Something ain't working right");
     (interaction.message.components as MessageActionRow[]).forEach(component =>
       component.components.forEach(c => c.setDisabled(true)),
     );
@@ -14,6 +14,7 @@ export default {
       content: `${action != 'accept' ? 'denied' : 'accepted'} by ${interaction.user}`,
       components: interaction.message.components as MessageActionRow[],
     });
+    if (action == 'silent-deny') return;
     const user = await client.users.fetch(id);
     if (action == 'accept') {
       user.send(
@@ -21,7 +22,7 @@ export default {
           'Note: This does not mean that your suggestion is guranteed to be added in the game or implemented into the server(depending on the type of suggestion). ' +
           'It just means that your suggestion has been accepted into being shown in the suggestions channel where the team may consider your suggestion.',
       );
-      (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannels).send({
+      return (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannels).send({
         embeds: [
           new MessageEmbed()
             .setAuthor(user.tag, user.displayAvatarURL())

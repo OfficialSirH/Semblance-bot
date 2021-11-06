@@ -32,6 +32,17 @@ export default {
               id: interaction.user.id,
             }),
           ),
+        new MessageButton()
+          .setLabel('Silent Deny')
+          .setStyle('DANGER')
+          .setEmoji('❌')
+          .setCustomId(
+            JSON.stringify({
+              command: 'suggest',
+              action: 'silent-deny',
+              id: interaction.user.id,
+            }),
+          ),
       ]);
 
     (interaction.guild.channels.cache.find(c => c.name == 'suggestion-review') as TextBasedChannels).send({
