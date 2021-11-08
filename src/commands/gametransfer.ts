@@ -1,9 +1,8 @@
 ﻿import { gameTransferPages, randomColor } from '#constants/index';
-import config from '#config';
+import { currentLogo } from '#config';
 import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
 import type { Message } from 'discord.js';
 import type { Command } from '#lib/interfaces/Semblance';
-const { currentLogo } = config;
 
 export default {
   description: 'See a step-by-step guide to transfering your game progress into the cloud and onto another device.',

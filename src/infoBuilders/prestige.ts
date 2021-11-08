@@ -1,10 +1,9 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
 import { MessageEmbed } from 'discord.js';
-import config from '#config';
+import { prestige, currentLogo } from '#config';
 
 export const build: QueriedInfoBuilder = interaction => {
-  const { prestige, currentLogo } = config;
   const embed = new MessageEmbed()
     .setTitle('Mesozoic Valley Prestige')
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())

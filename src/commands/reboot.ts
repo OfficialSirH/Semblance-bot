@@ -1,9 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import config from '#config';
+import { currentLogo } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-const { currentLogo } = config;
 
 export default {
   description: 'info on rebooting your in-game simulation',

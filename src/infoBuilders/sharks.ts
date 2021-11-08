@@ -1,10 +1,9 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
 import { MessageEmbed } from 'discord.js';
-import config from '#config';
+import { sharks, currentLogo } from '#config';
 
 export const build: QueriedInfoBuilder = () => {
-  const { sharks, currentLogo } = config;
   const embed = new MessageEmbed()
     .setTitle('Sharks')
     .setColor(randomColor)

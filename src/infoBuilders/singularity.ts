@@ -1,10 +1,9 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
 import { MessageEmbed } from 'discord.js';
-import config from '#config';
+import { singularity, currentLogo } from '#config';
 
 export const build: QueriedInfoBuilder = () => {
-  const { singularity, currentLogo } = config;
   const embed = new MessageEmbed()
     .setTitle(`${singularity}Singularity`)
     .setColor(randomColor)

@@ -1,9 +1,8 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { MessageEmbed } from 'discord.js';
-import config from '#config';
+import { currentLogo, geodeImage } from '#config';
 
 export const build: QueriedInfoBuilder = interaction => {
-  const { currentLogo, geodeImage } = config;
   const embed = new MessageEmbed()
     .setTitle('Geodes Comparison')
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())

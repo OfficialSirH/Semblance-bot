@@ -1,9 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import config from '#config';
+import { mementoMori } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-const { mementoMori } = config;
 
 export default {
   description: 'Memento Mori',

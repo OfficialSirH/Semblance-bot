@@ -1,10 +1,9 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
-import config from '#config';
+import { sirhId, adityaId, c2sGuildId } from '#config';
 import { prefix, randomColor } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
-const { sirhId, adityaId, c2sGuildId } = config;
 
 export default {
   description: 'Lists *all* available commands.',

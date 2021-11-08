@@ -1,10 +1,9 @@
 import { Semblance } from '#structures/Semblance';
 import { BoosterRewards, Information } from '#models/index';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import config from '#config';
+import { sirhId, adityaId, c2sGuildId, darwinium } from '#config';
 import { formattedDate } from './index.js';
 import type { InformationFormat } from '#models/Information';
-const { sirhId, adityaId, c2sGuildId, darwinium } = config;
 
 // BoosterRewards - check dates for booster rewards
 export const checkBoosterRewards = async (client: Semblance) => {

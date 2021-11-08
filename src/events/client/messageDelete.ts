@@ -1,13 +1,12 @@
 import { bugChannels, correctReportList } from '#constants/index';
 import { Report } from '#models/Report';
-import config from '#config';
+import { c2sGuildId } from '#config';
 import { promisify } from 'util';
 import type { Semblance } from '#structures/Semblance';
 import { Constants } from 'discord.js';
 import type { Message, PartialMessage } from 'discord.js';
 import type { EventHandler } from '#lib/interfaces/Semblance';
 const { Events } = Constants;
-const { c2sGuildId } = config;
 const wait = promisify(setTimeout);
 
 export default {

@@ -3,7 +3,7 @@ import type { Semblance } from '#structures/Semblance';
 import type { Tweet } from 'twitter.js';
 import type { TextBasedChannels } from 'discord.js';
 import { ClientEvents } from 'twitter.js';
-import config from '#config';
+import { c2sGuildId, sirhGuildId, lunchGuildId } from '#config';
 
 export default {
   name: ClientEvents.FILTERED_TWEET_CREATE,
@@ -12,13 +12,13 @@ export default {
 
 export const filteredTweetCreate = async (client: Semblance, tweet: Tweet) => {
   const c2sTwitterChannel = client.guilds.cache
-      .get(config.c2sGuildId)
+      .get(c2sGuildId)
       .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannels,
     sirhTwitterChannel = client.guilds.cache
-      .get(config.sirhGuildId)
+      .get(sirhGuildId)
       .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannels,
     computerLunchTwitterChannel = client.guilds.cache
-      .get(config.lunchGuildId)
+      .get(lunchGuildId)
       .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannels,
     tweetMessage = `Hey! **${tweet.author.username}** just posted a new Tweet!\nhttps://twitter.com/${tweet.author.name}/status/${tweet.id}`;
   c2sTwitterChannel.send(tweetMessage);

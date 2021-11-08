@@ -1,11 +1,10 @@
 import { UserData } from '#models/UserData';
-import config from '#config';
+import { c2sGuildId } from '#config';
 import { Collection } from 'discord.js';
 import { createHmac } from 'crypto';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
 import type { Message } from 'discord.js';
-const { c2sGuildId } = config;
 const cooldown: Collection<string, number> = new Collection();
 
 export default {

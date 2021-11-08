@@ -1,9 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
-import config from '#config';
+import { currentLogo } from '#config';
 import { randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
-const { currentLogo } = config;
 
 export default {
   description: 'Provides details of shorter ways to using large numbers as input.',

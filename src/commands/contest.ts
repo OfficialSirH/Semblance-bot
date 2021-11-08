@@ -1,10 +1,9 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
-import config from '#config';
+import { currentLogo, darwinium } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
 import { Semblance } from '#structures/Semblance';
-const { currentLogo, darwinium } = config;
 
 export default {
   description: 'Info on contest winners',

@@ -1,10 +1,9 @@
 import Twitter from 'twitter';
 import fetch from 'node-fetch';
-import config from '#config';
+import { c2sGuildId, lunchGuildId } from '#config';
 import type { Semblance } from '#structures/Semblance';
 import type { TextChannel } from 'discord.js';
-const { c2sGuildId, lunchGuildId } = config,
-  twClient = new Twitter(JSON.parse(process.env.twitter));
+const twClient = new Twitter(JSON.parse(process.env.twitter));
 let current_id = null;
 const screen_name = 'ComputerLunch';
 // TODO: get rid of this file after implementing twitter.js

@@ -1,5 +1,5 @@
 import { Constants } from 'discord.js';
-import config from '#config';
+import { c2sGuildId } from '#config';
 import type { Semblance } from '#structures/Semblance';
 import { checkReminders, prefix } from '#constants/index';
 import { intervalPost } from '../intervalPost.js';
@@ -15,7 +15,6 @@ export default {
 } as EventHandler<'ready'>;
 
 export const ready = async (client: Semblance) => {
-  const { c2sGuildId } = config;
   console.log(`Logged in as ${client.user.tag}!`);
 
   const totalMembers = client.guilds.cache

@@ -1,10 +1,9 @@
 import { MessageEmbed, version } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor, msToTime } from '#constants/index';
-import config from '#config';
+import { singularity, entropy, metabit, mutagen, idea } from '#config';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
-const { singularity, entropy, metabit, mutagen, idea } = config;
 
 export default {
   description: 'Get information about the epic bot, Semblance',

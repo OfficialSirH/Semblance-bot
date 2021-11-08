@@ -1,10 +1,9 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
 import { MessageEmbed } from 'discord.js';
-import config from '#config';
+import { currentLogo, nanobots } from '#config';
 
 export const build: QueriedInfoBuilder = interaction => {
-  const { currentLogo, nanobots } = config;
   const embed = new MessageEmbed()
     .setTitle('Nanobots')
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())

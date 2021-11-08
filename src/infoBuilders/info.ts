@@ -2,10 +2,9 @@ import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { msToTime, randomColor } from '#constants/index';
 import { MessageEmbed } from 'discord.js';
 import { version } from 'discord.js';
-import config from '#config';
+import { singularity, entropy, idea, metabit, mutagen } from '#config';
 
 export const build: QueriedInfoBuilder = async interaction => {
-  const { singularity, entropy, idea, metabit, mutagen } = config;
   const { client } = interaction;
   const uptime = Date.now() - client.readyTimestamp;
   const duration = msToTime(uptime);

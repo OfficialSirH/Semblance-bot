@@ -1,9 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import config from '#config';
+import { currentLogo, sharks } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-const { currentLogo, sharks } = config;
 
 export default {
   description: 'Get info on sharks.',

@@ -1,9 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import config from '#config';
+import { currentLogo } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-const { currentLogo } = config;
 
 export default {
   description: 'Provides the links to the ingame music on the Fandom wiki and on Spotify.',

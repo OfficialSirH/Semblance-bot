@@ -1,11 +1,9 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
-import config from '#config';
+import { currentLogo, darwinium } from '#config';
 import { randomColor } from '#constants/index';
 import { MessageEmbed } from 'discord.js';
 
 export const build: QueriedInfoBuilder = interaction => {
-  const { currentLogo, darwinium } = config;
-
   const embed = new MessageEmbed()
     .setTitle('Limericks Contest winners')
     .setColor(randomColor)

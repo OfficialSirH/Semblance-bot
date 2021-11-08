@@ -1,10 +1,9 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import config from '#config';
+import { currentLogo } from '#config';
 import { Information } from '#models/Information';
 import type { Command } from '#lib/interfaces/Semblance';
-const { currentLogo } = config;
 
 export default {
   description: 'Get info on the latest update of C2S.',

@@ -1,8 +1,7 @@
 ﻿import * as constants from '#constants/index';
 import type { Collection, GuildChannel, ThreadChannel, Message, TextChannel, User } from 'discord.js';
 import type { Command } from '#lib/interfaces/Semblance';
-import config from '#config';
-const { c2sGuildId, sirhGuildId } = config;
+import { c2sGuildId, sirhGuildId } from '#config';
 
 export default {
   description: 'Unlock the current channel, or all the public channels.',

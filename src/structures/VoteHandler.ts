@@ -2,7 +2,7 @@ import type { Snowflake } from 'discord-api-types';
 import type { TextChannel } from 'discord.js';
 import type { Semblance } from '#structures/Semblance';
 import { MessageEmbed, User } from 'discord.js';
-import config from '#config';
+import { sirhGuildId } from '#config';
 import { randomColor } from '#constants/index';
 
 export class VoteHandler {
@@ -16,7 +16,7 @@ export class VoteHandler {
 
   get voteChannel() {
     return this.client.guilds.cache
-      .get(config.sirhGuildId)
+      .get(sirhGuildId)
       .channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
   }
 

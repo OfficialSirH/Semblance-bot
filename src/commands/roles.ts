@@ -1,9 +1,8 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import type { Message, Snowflake } from 'discord.js';
-import config from '#config';
+import { currentLogo, c2sGuildId } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
 import { c2sRoles } from '#constants/index';
-const { currentLogo, c2sGuildId } = config;
 
 export default {
   description: 'see the list of available roles for the c2s server',

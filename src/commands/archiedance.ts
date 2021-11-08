@@ -1,8 +1,7 @@
 import type { Message } from 'discord.js';
 import { MessageEmbed } from 'discord.js';
-import config from '#config';
+import { archieDance } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-const { archieDance } = config;
 
 export default {
   description: 'View epic videos of Archie dancing.',

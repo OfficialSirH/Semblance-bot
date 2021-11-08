@@ -1,9 +1,8 @@
 import { Message, MessageEmbed } from 'discord.js';
 import { randomColor, subcategoryList } from '#constants/index';
-import config from '#config';
+import { currentLogo } from '#config';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
-const { currentLogo } = config;
 
 export default {
   description: 'List of all Cell to Singularity related commands',

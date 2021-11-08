@@ -1,8 +1,7 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { Information } from '#models/Information';
-import config from '#config';
+import { currentLogo } from '#config';
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
-const { currentLogo } = config;
 
 export default {
   buttonHandle: async (interaction, { action, id }) => {

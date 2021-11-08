@@ -1,10 +1,9 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
-import config from '#config';
+import { currentLogo, prestige, prestigeList } from '#config';
 import { prefix, randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
-import { Semblance } from '#structures/Semblance';
-const { currentLogo, prestige, prestigeList } = config;
+import type { Semblance } from '#structures/Semblance';
 
 export default {
   description: 'Get info on the Mesozoic Valley prestige.',

@@ -1,10 +1,9 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
 import { MessageEmbed } from 'discord.js';
-import config from '#config';
+import { mementoMori } from '#config';
 
 export const build: QueriedInfoBuilder = interaction => {
-  const { mementoMori } = config;
   const embed = new MessageEmbed()
     .setTitle('Memento Mori')
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())

@@ -1,8 +1,7 @@
 ﻿import * as constants from '#constants/index';
-import config from '#config';
+import { c2sGuildId, sirhGuildId } from '#config';
 import type { Collection, Message, GuildChannel, ThreadChannel, TextChannel, User } from 'discord.js';
 import type { Command } from '#lib/interfaces/Semblance';
-const { c2sGuildId, sirhGuildId } = config;
 
 export default {
   description: 'Lock the current channel, or all the public channels.',

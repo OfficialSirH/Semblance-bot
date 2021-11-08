@@ -1,9 +1,7 @@
 ﻿import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import config from '#config';
-import type { Command } from '#lib/interfaces/Semblance';
-const {
+import {
   currentLogo,
   currency,
   entropy,
@@ -16,7 +14,8 @@ const {
   stardust,
   energy,
   sentience,
-} = config;
+} from '#config';
+import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
   description: 'List all of the ingame currency.',

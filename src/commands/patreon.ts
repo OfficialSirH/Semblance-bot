@@ -1,9 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import config from '#config';
+import { patreon } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-const { patreon } = config;
 
 export default {
   description: "Provides the link to SirH's Patreon page.",

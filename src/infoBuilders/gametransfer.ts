@@ -1,10 +1,9 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor, gameTransferPages } from '#constants/index';
 import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
-import config from '#config';
+import { currentLogo } from '#config';
 
 export const build: QueriedInfoBuilder = interaction => {
-  const { currentLogo } = config;
   const embed = new MessageEmbed()
     .setTitle('Game Transfer')
     .setColor(randomColor)

@@ -1,9 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import config from '#config';
+import { currentLogo, nanobots } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-const { currentLogo, nanobots } = config;
 
 export default {
   description: 'Provides details on nanobots and whatever else about those cute critters',

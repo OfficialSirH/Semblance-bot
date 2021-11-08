@@ -1,23 +1,22 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
-import config from '#config';
+import {
+  currentLogo,
+  entropy,
+  idea,
+  metabit,
+  darwinium,
+  fossil,
+  mutagen,
+  stardust,
+  darkMatter,
+  sentience,
+  energy,
+  currency,
+} from '#config';
 import { randomColor } from '#constants/index';
 import { MessageEmbed } from 'discord.js';
 
 export const build: QueriedInfoBuilder = interaction => {
-  const {
-    currentLogo,
-    entropy,
-    idea,
-    metabit,
-    darwinium,
-    fossil,
-    mutagen,
-    stardust,
-    darkMatter,
-    sentience,
-    energy,
-    currency,
-  } = config;
   const embed = new MessageEmbed()
     .setTitle('Currency')
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())

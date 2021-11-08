@@ -1,4 +1,4 @@
-import config from '#config';
+import { communistSemblance } from '#config';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import type { Message, GuildMember } from 'discord.js';
 import { rpsGames } from '#src/applicationCommands/componentHandlers/rps';
@@ -6,7 +6,6 @@ import { randomColor } from '#constants/index';
 import { countdownGIF, randomChoice } from '#constants/commands';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
-const { communistSemblance } = config;
 
 export default {
   description: 'rock paper scissors',

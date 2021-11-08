@@ -2,10 +2,9 @@ import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { c2sRoles } from '#constants/index';
 import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
 import type { Snowflake, GuildMember } from 'discord.js';
-import config from '#config';
+import { currentLogo, c2sGuildId } from '#config';
 
 export const build: QueriedInfoBuilder = interaction => {
-  const { currentLogo, c2sGuildId } = config;
   const member = interaction.member as GuildMember;
   const embed = new MessageEmbed()
       .setTitle('C2S Roles')

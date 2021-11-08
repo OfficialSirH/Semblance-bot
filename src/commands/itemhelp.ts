@@ -1,7 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
-import config from '#config';
+import { currentLogo } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
 import { Semblance } from '#structures/Semblance';
 
@@ -14,7 +14,6 @@ export default {
 } as Command<'help'>;
 
 const run = async (client: Semblance, message: Message) => {
-  const { currentLogo } = config;
   const embed = new MessageEmbed()
     .setTitle('Item Calculator Help')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())

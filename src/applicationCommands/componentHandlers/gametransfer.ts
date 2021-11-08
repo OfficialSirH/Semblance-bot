@@ -1,8 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { gameTransferPages } from '#constants/commands';
-import config from '#config';
+import { currentLogo } from '#config';
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
-const { currentLogo } = config;
 
 export default {
   buttonHandle: async (interaction, { action }) => {

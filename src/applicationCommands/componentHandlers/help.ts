@@ -3,8 +3,7 @@ import type { Message, MessageComponentInteraction } from 'discord.js';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { prefix, randomColor, subcategoryList } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
-import config from '#config';
-const { c2sGuildId, sirhId, adityaId } = config;
+import { c2sGuildId, sirhId, adityaId } from '#config';
 
 export default {
   selectHandle: async (interaction, { id }, { client }) => {

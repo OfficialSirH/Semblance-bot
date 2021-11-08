@@ -1,10 +1,9 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
 import { MessageEmbed } from 'discord.js';
-import config from '#config';
+import { currentLogo, simStatsLocation } from '#config';
 
 export const build: QueriedInfoBuilder = () => {
-  const { currentLogo, simStatsLocation } = config;
   const embed = new MessageEmbed()
     .setTitle('Simulation Statistics')
     .setThumbnail(currentLogo.name)

@@ -2,8 +2,7 @@ import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { Message, GuildMemberRoleManager } from 'discord.js';
 import { Collection, MessageActionRow, MessageButton } from 'discord.js';
 import { c2sRoles } from '#constants/index';
-import config from '#config';
-const { c2sGuildId, currentLogo } = config;
+import { c2sGuildId, currentLogo } from '#config';
 const cooldown: Collection<string, number> = new Collection();
 
 export default {

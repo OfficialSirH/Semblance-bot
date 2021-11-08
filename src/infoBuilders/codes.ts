@@ -2,8 +2,7 @@ import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
 import { Information } from '#models/Information';
 import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
-import config from '#config';
-const { currentLogo } = config;
+import { currentLogo } from '#config';
 
 export const build: QueriedInfoBuilder = async interaction => {
   const codeHandler = await Information.findOne({ infoType: 'codes' });

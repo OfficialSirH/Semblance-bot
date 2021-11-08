@@ -1,9 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import config from '#config';
+import { currentLogo, simStatsLocation } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-const { currentLogo, simStatsLocation } = config;
 
 export default {
   description: 'guide for finding the simulation stats page in-game',

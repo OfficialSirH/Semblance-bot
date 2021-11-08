@@ -1,10 +1,9 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
-import config from '#config';
+import { currentLogo } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
 import type { Semblance } from '#structures/Semblance';
-const { currentLogo } = config;
 
 export default {
   description: 'help for metabit calculators',

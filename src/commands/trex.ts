@@ -1,8 +1,7 @@
 import { MessageEmbed } from 'discord.js';
 import { randomColor } from '#constants/index';
-import config from '#config';
+import { currentLogo, trexBadge } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-const { currentLogo, trexBadge } = config;
 
 export default {
   description: 'T-Rex info',

@@ -1,12 +1,11 @@
 import type { Semblance } from '#structures/Semblance';
 import { Constants } from 'discord.js';
 import type { Message } from 'discord.js';
-import config from '#config';
+import { sirhId, c2sGuildId, sirhGuildId, ignoredGuilds } from '#config';
 import { getPermissionLevel, parseArgs, prefix } from '#constants/index';
 import { createBoosterRewards } from '#constants/models';
 import type { EventHandler } from '#lib/interfaces/Semblance';
 const { Events } = Constants;
-const { sirhId, c2sGuildId, sirhGuildId, ignoredGuilds } = config;
 
 export default {
   name: Events.MESSAGE_CREATE,

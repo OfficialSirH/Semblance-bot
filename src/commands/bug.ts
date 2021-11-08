@@ -11,13 +11,12 @@ import {
   Snowflake,
 } from 'discord.js';
 import { Report, ReportFormat } from '#models/Report';
-import config from '#config';
+import { sirhGuildId, c2sGuildId } from '#config';
 import { getPermissionLevel, randomColor, bugChannels, prefix } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
 // TODO: replace this GOD awful report command with a report slash command instead of this
-const { sirhGuildId, c2sGuildId } = config,
-  cooldown = new Collection<Snowflake, number>();
+const cooldown = new Collection<Snowflake, number>();
 
 export default {
   description: 'Big epicc bug reporting feature exclusively for C2S server.',
