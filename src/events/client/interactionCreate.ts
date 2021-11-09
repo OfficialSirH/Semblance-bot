@@ -1,4 +1,4 @@
-import { customIdRegex, getPermissionLevel, properCustomIdRegex } from '#constants/index';
+import { customIdRegex, disableAllComponents, getPermissionLevel, properCustomIdRegex } from '#constants/index';
 import type { CustomIdData, EventHandler } from '#lib/interfaces/Semblance';
 import type { Semblance } from '#structures/Semblance';
 import type {
@@ -32,6 +32,14 @@ export const interactionCreate = async (interaction: Interaction, client: Sembla
 };
 
 async function componentInteraction(client: Semblance, interaction: MessageComponentInteraction) {
+  if ((Date.now() - interaction.createdTimestamp) / 1000 > 300) {
+    disableAllComponents(interaction);
+    return interaction.reply({
+      content: 'This component has exceeded its lifespan and has been disabled.',
+      ephemeral: true,
+    });
+  }
+
   let data: CustomIdData;
   if (interaction.customId.match(properCustomIdRegex)) data = JSON.parse(interaction.customId);
   else if (interaction.customId.match(customIdRegex)) data = eval(`(${interaction.customId})`);

@@ -4,6 +4,7 @@ import type {
   GuildMember,
   MessageActionRow,
   MessageButton,
+  MessageComponentInteraction,
   RoleResolvable,
   Snowflake,
   User,
@@ -275,6 +276,15 @@ class RandomColor {
   }
 }
 export const randomColor = RandomColor.randomColor;
+
+export const disableAllComponents = (interaction: MessageComponentInteraction) => {
+  (interaction.message.components as MessageActionRow[]).forEach(component =>
+    component.components.forEach(comp => comp.setDisabled(true)),
+  );
+  return interaction.channel.messages.edit(interaction.message.id, {
+    components: interaction.message.components as MessageActionRow[],
+  });
+};
 // Command related functions and constants
 export {
   gameTransferPages,

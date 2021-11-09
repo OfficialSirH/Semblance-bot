@@ -1,7 +1,7 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { Message, MessageComponentInteraction } from 'discord.js';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
-import { prefix, randomColor, subcategoryList } from '#constants/index';
+import { disableAllComponents, prefix, randomColor, subcategoryList } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
 import { c2sGuildId, sirhId, adityaId } from '#config';
 
@@ -9,12 +9,9 @@ export default {
   selectHandle: async (interaction, { id }, { client }) => {
     if (interaction.user.id != id) return;
     const query = interaction.values[0];
-    (interaction.message.components as MessageActionRow[]).forEach(component =>
-      component.components[0].setDisabled(true),
-    );
-    interaction.channel.messages.edit(interaction.message.id, {
-      components: interaction.message.components as MessageActionRow[],
-    });
+
+    disableAllComponents(interaction);
+
     if (!client.infoBuilders.has(query)) return interaction.reply({ content: 'Invalid query.', ephemeral: true });
     const info = await client.infoBuilders.get(query)(interaction, client);
     if (typeof info == 'string') return interaction.reply({ content: info });

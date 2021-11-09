@@ -1,5 +1,5 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
-import { MessageActionRow, MessageSelectMenu } from 'discord.js';
+import { MessageActionRow, MessageEmbed, MessageSelectMenu } from 'discord.js';
 
 export default {
   permissionRequired: 0,
@@ -25,7 +25,13 @@ export default {
         return acc;
       }, [] as MessageActionRow[]);
       return interaction.reply({
-        content: "Your query was invalid, here's a select menu listed with valid queries!",
+        embeds: [
+          new MessageEmbed()
+            .setTitle('Help')
+            .setDescription(
+              "Due to your query being wrong, here's a provided list from Semblance's help command in the dropdowns below.",
+            ),
+        ],
         components,
       });
     }
