@@ -8,11 +8,6 @@ import { sirhGuildId } from '#config';
 export default {
   permissionRequired: 0,
   run: async interaction => {
-    return interaction.reply({
-      content:
-        "This command has not been implemented yet, lots of sweat and hard work is being put into this command as it's a pain in the butt to make perfect.",
-      ephemeral: true,
-    });
     let action: string, commandFailed: boolean;
     try {
       action = interaction.options.getSubcommand(true);
