@@ -7,6 +7,8 @@ export const run: AutocompleteHandler['run'] = async (interaction, options) => {
   const queriedId = clamp(Math.floor(options.getFocused() as number), 1, reports.length);
 
   return interaction.respond(
-    reports.slice(queriedId, clamp(queriedId + 5, 1, reports.length)).map(id => ({ name: id.toString(), value: id })),
+    reports
+      .slice(queriedId - 1, clamp(queriedId + 4, 0, reports.length - 1))
+      .map(id => ({ name: id.toString(), value: id })),
   );
 };
