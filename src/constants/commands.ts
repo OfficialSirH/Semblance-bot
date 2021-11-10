@@ -104,6 +104,7 @@ export const correctReportList = async function (
 export const bugChannels = {
   queue: '798933535255298078' as Snowflake,
   approved: '798933965539901440' as Snowflake,
+  imageStorage: '794054989860700179' as Snowflake,
 };
 
 // RPS functions and constants
