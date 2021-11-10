@@ -36,13 +36,12 @@ export default {
 } as SlashCommand;
 
 async function report(interaction: CommandInteraction): Promise<void> {
-  const { getString } = interaction.options,
-    { user } = interaction;
-  const title = getString('title'),
-    result = getString('result'),
-    expected = getString('expected'),
-    os = getString('os'),
-    version = getString('version');
+  const { user } = interaction;
+  const title = interaction.options.getString('title'),
+    result = interaction.options.getString('result'),
+    expected = interaction.options.getString('expected'),
+    os = interaction.options.getString('os'),
+    version = interaction.options.getString('version');
 
   if (!title || !result || !expected || !os || !version)
     return interaction.reply({
@@ -172,11 +171,10 @@ async function attach(interaction: CommandInteraction): Promise<void> {
 }
 
 async function reproduce(interaction: CommandInteraction): Promise<void> {
-  const { getString } = interaction.options,
-    { user } = interaction;
+  const { user } = interaction;
   const bugId = interaction.options.getNumber('bugid'),
-    os = getString('os'),
-    version = getString('version');
+    os = interaction.options.getString('os'),
+    version = interaction.options.getString('version');
 
   if (!(await checkIdValidity(bugId))) return interaction.reply({ content: 'Invalid bug ID.', ephemeral: true });
 
