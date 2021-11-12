@@ -83,6 +83,9 @@ export const subcategoryList = (client: Semblance, category: string, subcategory
     .map(key => `**\`${prefix}${key}\`**`)
     .join(', ');
 export const emojis = {
+  tick: '✅',
+  cross: '❌',
+  buffer: '⏳',
   entropy: '<:entropy:742748357163745413>',
   idea: '<:idea:775808337303437353>',
   c2s: '<:CellToSing:498910740200161280>',

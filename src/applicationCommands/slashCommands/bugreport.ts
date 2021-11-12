@@ -1,9 +1,11 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
+import type { ReportFormat } from '#models/Report';
 import { Report } from '#models/Report';
 import type { CommandInteraction, TextChannel } from 'discord.js';
 import { MessageEmbed, MessageAttachment } from 'discord.js';
 import { bugChannels } from '#constants/commands';
-import { sirhGuildId } from '#config';
+import { c2sGuildId, sirhGuildId } from '#config';
+import { emojis } from '#constants/index';
 
 export default {
   permissionRequired: 0,
@@ -26,6 +28,12 @@ export default {
         return attach(interaction);
       case 'reproduce':
         return reproduce(interaction);
+      case 'list':
+        return list(interaction);
+      case 'accept':
+        return accept(interaction);
+      case 'deny':
+        return deny(interaction);
       default:
         return interaction.reply({
           content: 'You must specify a valid subcommand.',
@@ -52,9 +60,7 @@ async function report(interaction: CommandInteraction): Promise<void> {
   const reportCount = (await Report.find({})).length,
     newBugId = reportCount + 1;
 
-  const message = await (
-    interaction.guild.channels.cache.find(c => c.name == 'bug-approval-queue') as TextChannel
-  ).send({
+  const message = await (interaction.guild.channels.cache.get(bugChannels.queue) as TextChannel).send({
     embeds: [
       new MessageEmbed()
         .setAuthor(`${user.tag} (${user.id})\nBug Id: #${newBugId}`, user.displayAvatarURL({ dynamic: true }))
@@ -65,10 +71,6 @@ async function report(interaction: CommandInteraction): Promise<void> {
           { name: 'Expected Result', value: expected },
           { name: 'Operating System', value: os },
           { name: 'Game Version', value: version },
-          {
-            name: 'Can Reproduce',
-            value: 'Currently no one else has reproduced this bug.',
-          },
         ])
         .setFooter(`Bug ID: #${newBugId}`)
         .setTimestamp(Date.now()),
@@ -98,20 +100,20 @@ async function report(interaction: CommandInteraction): Promise<void> {
         )
         .setFooter('The ComputerLunch team appreciate your help with our game, Thank you.'),
     ],
+    ephemeral: true,
   });
 }
 
 async function attach(interaction: CommandInteraction): Promise<void> {
   const bugId = interaction.options.getNumber('bugid'),
-    link = interaction.options.getString('link');
+    link = interaction.options.getString('link'),
+    report = await Report.findOne({ bugId });
 
-  if (!(await checkIdValidity(bugId))) return interaction.reply({ content: 'Invalid bug ID.', ephemeral: true });
+  if (!report) return interaction.reply({ content: 'Invalid bug ID.', ephemeral: true });
 
-  const report = await Report.findOne({ bugId });
-
-  const message = await (
-    interaction.guild.channels.cache.find(c => c.id == report.channelId) as TextChannel
-  ).messages.fetch(report.messageId);
+  const message = await (interaction.guild.channels.cache.get(report.channelId) as TextChannel).messages.fetch(
+    report.messageId,
+  );
 
   // if the link is not a valid url, return a response of invalid url
   if (!link.match(/^https?:\/\/[^ "]+$/)) return interaction.reply({ content: 'Invalid link.', ephemeral: true });
@@ -171,14 +173,13 @@ async function attach(interaction: CommandInteraction): Promise<void> {
 }
 
 async function reproduce(interaction: CommandInteraction): Promise<void> {
-  const { user } = interaction;
-  const bugId = interaction.options.getNumber('bugid'),
+  const { user } = interaction,
+    bugId = interaction.options.getNumber('bugid'),
     os = interaction.options.getString('os'),
-    version = interaction.options.getString('version');
+    version = interaction.options.getString('version'),
+    report = await Report.findOne({ bugId });
 
-  if (!(await checkIdValidity(bugId))) return interaction.reply({ content: 'Invalid bug ID.', ephemeral: true });
-
-  const report = await Report.findOne({ bugId });
+  if (!report) return interaction.reply({ content: 'Invalid bug ID.', ephemeral: true });
 
   const message = await (
     interaction.guild.channels.cache.find(c => c.id == report.channelId) as TextChannel
@@ -201,6 +202,86 @@ async function reproduce(interaction: CommandInteraction): Promise<void> {
   }
 }
 
-async function checkIdValidity(id: number): Promise<boolean> {
-  return !!(await Report.findOne({ bugId: id }));
+async function list(interaction: CommandInteraction): Promise<void> {
+  const { user } = interaction;
+
+  const reports = (await Report.find({ User: user.id })).reverse().slice(0, 10);
+
+  if (reports.length == 0) return interaction.reply({ content: 'You have not reported any bugs.', ephemeral: true });
+
+  interaction.reply({
+    embeds: [
+      new MessageEmbed()
+        .setTitle('Bug Reports')
+        .setDescription(
+          reports
+            .map(
+              (r: ReportFormat) =>
+                `[${r.bugId}](https://discord.com/channels/${c2sGuildId}/${r.channelId}/${r.messageId}) - ${
+                  r.channelId == bugChannels.queue ? emojis.buffer : emojis.tick
+                }`,
+            )
+            .join('\n'),
+        ),
+    ],
+    ephemeral: true,
+  });
+}
+
+async function accept(interaction: CommandInteraction): Promise<void> {
+  const bugId = interaction.options.getNumber('bugid'),
+    report = await Report.findOne({ bugId });
+
+  if (!report) return interaction.reply({ content: 'Invalid bug ID.', ephemeral: true });
+
+  const queueChannel = interaction.guild.channels.cache.get(bugChannels.queue) as TextChannel,
+    approvedChannel = interaction.guild.channels.cache.get(bugChannels.approved) as TextChannel;
+
+  const reportMessage = await queueChannel.messages.fetch(report.messageId),
+    message = await approvedChannel.send({
+      embeds: [reportMessage.embeds[0].setColor('#17DB4A')],
+    });
+
+  await Report.findOneAndUpdate({ bugId }, { $set: { channelId: approvedChannel.id, messageId: message.id } });
+
+  return interaction.reply({
+    content: `Bug ${bugId} has been successfully approved.`,
+    embeds: [
+      new MessageEmbed().setTitle('Bug Approved').setDescription(`[${bugId}](${message.url})`).setColor('#17DB4A'),
+    ],
+    ephemeral: true,
+  });
+}
+
+async function deny(interaction: CommandInteraction): Promise<void> {
+  const bugId = interaction.options.getNumber('bugid'),
+    reason = interaction.options.getString('reason'),
+    report = await Report.findOne({ bugId });
+
+  if (!report) return interaction.reply({ content: 'Invalid bug ID.', ephemeral: true });
+
+  const queueChannel = interaction.guild.channels.cache.get(bugChannels.queue) as TextChannel,
+    reportMessage = await queueChannel.messages.fetch(report.messageId),
+    user = await interaction.guild.members.fetch(report.User);
+
+  user
+    .send({
+      content: 'Your report was denied.',
+      embeds: [reportMessage.embeds[0].setColor('#D72020').addField('Denial Message', reason)],
+    })
+    .catch(() => {
+      (interaction.guild.channels.cache.find(c => c.name == 'mod-alerts') as TextChannel).send({
+        content: `${user.user.tag}'s report was denied but couldn't receive the DM.`,
+        embeds: [reportMessage.embeds[0].setColor('#D72020').addField('Denial Message', reason)],
+      });
+    });
+
+  await Report.findOneAndDelete({ bugId });
+
+  reportMessage.delete();
+
+  return interaction.reply({
+    content: `Bug ${bugId} has been successfully denied.`,
+    ephemeral: true,
+  });
 }
