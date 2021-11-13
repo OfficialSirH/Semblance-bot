@@ -24,7 +24,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
 
   if (message.guild.id == c2sGuildId) {
     if (chName == 'booster-chat' && message.type == 'USER_PREMIUM_GUILD_SUBSCRIPTION')
-      return createBoosterRewards(message);
+      return createBoosterRewards(client, message);
 
     if (chName == 'share-your-prestige' && message.attachments.size == 0 && getPermissionLevel(message.member) == 0)
       message.delete();

@@ -5,6 +5,8 @@ import { randomColor, timeInputRegex, formattedDate, timeInputToMs } from '#cons
 import type { TimeLengths } from '#lib/interfaces/remindme';
 import type { UserReminder } from '#models/Reminder';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
+import { handleReminder } from '#src/constants/models';
+import { scheduleJob } from 'node-schedule';
 
 export default {
   permissionRequired: 0,
@@ -84,8 +86,8 @@ async function create(interaction: CommandInteraction) {
     .setFooter(`Command called by ${user.tag}`, user.displayAvatarURL());
   await interaction.reply({ embeds: [embed] });
 
-  if (currentReminderData)
-    return currentReminderData.update({
+  if (currentReminderData) {
+    currentReminderData.update({
       reminders: currentReminderData.reminders.concat([
         {
           message: reminder,
@@ -95,6 +97,10 @@ async function create(interaction: CommandInteraction) {
         },
       ]),
     });
+    return scheduleJob(new Date(currentReminderData.reminders.at(-1).time), () =>
+      handleReminder(interaction.client, currentReminderData, currentReminderData.reminders.at(-1)),
+    );
+  }
 
   const reminderHandler = new Reminder({
     userId: user.id,
@@ -108,6 +114,9 @@ async function create(interaction: CommandInteraction) {
     ],
   });
   await reminderHandler.save();
+  scheduleJob(new Date(currentReminderData.reminders.at(-1).time), () =>
+    handleReminder(interaction.client, currentReminderData, currentReminderData.reminders.at(-1)),
+  );
 }
 
 async function edit(interaction: CommandInteraction) {

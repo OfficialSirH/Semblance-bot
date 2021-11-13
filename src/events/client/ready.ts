@@ -1,10 +1,14 @@
 import { Constants } from 'discord.js';
 import { c2sGuildId } from '#config';
 import type { Semblance } from '#structures/Semblance';
-import { checkReminders, prefix } from '#constants/index';
-import { checkBoosterRewards } from '#constants/models';
+import * as schedule from 'node-schedule';
+import { prefix } from '#constants/index';
+import { handleBoosterReward, handleReminder } from '#constants/models';
 import type { EventHandler } from '#lib/interfaces/Semblance';
 import { readdir } from 'fs/promises';
+import { Reminder } from '#models/Reminder';
+import type { ReminderFormat } from '#models/Reminder';
+import { BoosterRewards } from '#models/BoosterRewards';
 const { Events } = Constants;
 
 export default {
@@ -59,16 +63,19 @@ export const ready = async (client: Semblance) => {
     ),
   );
 
-  /*
-   * Reminder check
-   */
+  /* Reminder scheduling */
+  const reminders = await Reminder.find({});
+  reminders.forEach((reminderData: ReminderFormat) => {
+    reminderData.reminders.forEach(reminder => {
+      schedule.scheduleJob(new Date(reminder.time), () => handleReminder(client, reminderData, reminder));
+    });
+  });
 
-  setInterval(() => {
-    checkReminders(client);
-  }, 60000);
-  setInterval(() => {
-    checkBoosterRewards(client);
-  }, 1000 * 60 * 60 * 12);
+  /* Booster rewards scheduling */
+  const boosterRewards = await BoosterRewards.find({});
+  boosterRewards.forEach(boosterReward => {
+    schedule.scheduleJob(new Date(boosterReward.rewardingDate), () => handleBoosterReward(client, boosterReward));
+  });
 
   await client.initializeLeaderboards();
 };

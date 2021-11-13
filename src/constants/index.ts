@@ -289,12 +289,5 @@ export const disableAllComponents = (interaction: MessageComponentInteraction) =
   });
 };
 // Command related functions and constants
-export {
-  gameTransferPages,
-  checkReminders,
-  correctReportList,
-  bugChannels,
-  serversPerPage,
-  guildBookPage,
-} from '#constants/commands';
+export { gameTransferPages, correctReportList, bugChannels, serversPerPage, guildBookPage } from '#constants/commands';
 export { bigToName, nameToScNo, checkValue } from '#constants/largeNumberConversion';
