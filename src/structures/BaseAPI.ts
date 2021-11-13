@@ -1,4 +1,5 @@
-import fetch, { Headers } from 'node-fetch';
+import { fetch } from '#lib/utils/fetch';
+import { Headers } from 'undici';
 import { ApiError } from './ApiError';
 
 interface APIOptions {
