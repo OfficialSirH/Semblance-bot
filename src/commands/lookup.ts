@@ -1,4 +1,4 @@
-﻿import fetch from 'node-fetch';
+﻿import { fetch } from 'undici';
 import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
 import * as constants from '#constants/index';
 import type { Message, MessageOptions, Snowflake, TextBasedChannels, TextChannel, User } from 'discord.js';

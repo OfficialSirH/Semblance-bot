@@ -1,5 +1,5 @@
 import Twitter from 'twitter';
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import { c2sGuildId, lunchGuildId } from '#config';
 import type { Semblance } from '#structures/Semblance';
 import type { TextChannel } from 'discord.js';

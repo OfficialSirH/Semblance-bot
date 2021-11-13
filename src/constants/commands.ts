@@ -14,7 +14,7 @@ import type { Semblance } from '#structures/Semblance';
 import { clamp } from '#lib/utils/math';
 import type { UserReminder } from '../models/Reminder';
 import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndDogAPI';
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 import type { GameFormat } from '#models/Game';
 import type { DeepLParams, DeepLResponse } from '#lib/interfaces/deepLAPI';
 import { messageLinkRegex, attachmentLinkRegex } from '#constants/index';

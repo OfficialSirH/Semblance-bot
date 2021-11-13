@@ -1,7 +1,7 @@
 import type { ContextMenuHandlerOptions } from '#lib/interfaces/Semblance';
 import { ContextMenuInteraction, Message, MessageAttachment, MessageEmbed } from 'discord.js';
 import { randomColor } from '#constants/index';
-import fetch from 'node-fetch';
+import { fetch } from 'undici';
 
 export const run = async (
   interaction: ContextMenuInteraction,
