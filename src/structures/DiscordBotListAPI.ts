@@ -1,58 +1,22 @@
-import { EventEmitter } from 'events';
 import type { BotStats } from '#lib/interfaces/discordBotList';
-import fetch, { Headers } from 'node-fetch';
-import { APIError } from '#structures/ApiError';
-import { ParsedUrlQueryInput, stringify } from 'querystring';
+import { BaseAPI } from './BaseAPI';
 
 /**
  * discordbotlist.com API Client for Posting stats or Fetching data
  * @example
- * const Discordbotlist = await import(`./structures/DiscordBotListAPI`)
+ * import { DBLApi } from '#structures/DiscordBotListAPI';
  *
- * const api = new Discordbotlist.DBLApi('Your discordbotlist.com token')
+ * const api = new DBLApi('Your discordbotlist.com token');
  */
-export class DBLApi extends EventEmitter {
-  private options: {
-    token: string;
-    [key: string]: unknown;
-  };
+export class DBLApi extends BaseAPI {
   /**
    * Create discordbotlist.com API instance
    * @param {string} token Token or options
-   * @param {object?} options API Options
    */
-  constructor(token: string, options: object | null = {}) {
-    super();
-    this.options = {
-      token: token,
-      ...options,
-    };
+  constructor(token: string) {
+    super({ token, baseUrl: 'https://discordbotlist.com/api/v1' });
   }
-  private async _request(method: string, path: string, body?: ParsedUrlQueryInput) {
-    let _a: string;
-    const headers = new Headers();
-    if (this.options.token) headers.set('Authorization', this.options.token);
-    if (method !== 'GET') headers.set('Content-Type', 'application/json');
-    let url = `https://discordbotlist.com/api/v1/${path}`;
-    if (body && method === 'GET') url += `?${stringify(body)}`;
-    const response = await fetch(url, {
-      method,
-      headers,
-      body: body && method !== 'GET' ? JSON.stringify(body) : null,
-    });
-    let responseBody: unknown;
-    if (
-      (_a = response.headers.get('Content-Type')) === null || _a === void 0 ? void 0 : _a.startsWith('application/json')
-    ) {
-      responseBody = await response.json();
-    } else {
-      responseBody = await response.text();
-    }
-    if (!response.ok) {
-      throw new APIError('discordbotlist.com', response.status, response.statusText, responseBody);
-    }
-    return responseBody;
-  }
+
   /**
    * @param {BotStats} stats bot stats
    * @param {number} stats.voice_connections number of voice connections

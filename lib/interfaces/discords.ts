@@ -1,12 +1,6 @@
 import type { Snowflake } from 'discord.js';
 import type { FastifyRequest } from 'fastify';
 
-export interface APIOptions {
-  /**
-   * discords.com Token
-   */
-  token?: string;
-}
 export interface BotInfo {
   /**
    * The timestamp of when the bot was added

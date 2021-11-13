@@ -1,59 +1,23 @@
-import { EventEmitter } from 'events';
-import type { BotInfo, UserInfo, BotVotes, UserBots, Widget, DiscordsInterfaces } from '#lib/interfaces/discords';
+import type { BotInfo, UserInfo, BotVotes, UserBots, Widget } from '#lib/interfaces/discords';
 import type { Snowflake } from 'discord.js';
-import fetch, { Headers } from 'node-fetch';
-import { APIError } from '#structures/ApiError';
-import { stringify, ParsedUrlQueryInput } from 'querystring';
+import { BaseAPI } from './BaseAPI';
 
 /**
  * discords.com API Client for Posting stats or Fetching data
  * @example
- * const Discords = await import(`./structures/DiscordsAPI`)
+ * import { DiscordsApi } from './structures/DiscordsAPI';
  *
- * const api = new Discords.BFDApi('Your discords.com token')
+ * const api = new DiscordsApi('Your discords.com token')
  */
-export class BFDApi extends EventEmitter {
-  private options: {
-    token: string;
-    [key: string]: unknown;
-  };
+export class DiscordsApi extends BaseAPI {
   /**
-   * Create botsfordiscord.com API instance
+   * Create discords.com API instance
    * @param {string} token Token or options
-   * @param {object?} options API Options
    */
-  constructor(token: string, options: object | null = {}) {
-    super();
-    this.options = {
-      token: token,
-      ...options,
-    };
+  constructor(token: string) {
+    super({ token, baseUrl: 'https://discords.com/bots/api' });
   }
-  async _request(method: string, path: string, body?: ParsedUrlQueryInput) {
-    let _a: string;
-    const headers = new Headers();
-    if (this.options.token) headers.set('Authorization', this.options.token);
-    if (method !== 'GET') headers.set('Content-Type', 'application/json');
-    let url = `https://discords.com/bots/api/${path}`;
-    if (body && method === 'GET') url += `?${stringify(body)}`;
-    const response = await fetch(url, {
-      method,
-      headers,
-      body: body && method !== 'GET' ? JSON.stringify(body) : null,
-    });
-    let responseBody: DiscordsInterfaces;
-    if (
-      (_a = response.headers.get('Content-Type')) === null || _a === void 0 ? void 0 : _a.startsWith('application/json')
-    ) {
-      responseBody = (await response.json()) as DiscordsInterfaces;
-    } else {
-      responseBody = await response.text();
-    }
-    if (!response.ok) {
-      throw new APIError('discords.com', response.status, response.statusText, responseBody);
-    }
-    return responseBody;
-  }
+
   /**
    * @param {number} serverCount Server count
    * @returns {number} Passed server count

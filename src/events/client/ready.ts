@@ -2,9 +2,8 @@ import { Constants } from 'discord.js';
 import { c2sGuildId } from '#config';
 import type { Semblance } from '#structures/Semblance';
 import { checkReminders, prefix } from '#constants/index';
-import { intervalPost } from '../intervalPost.js';
 import { checkBoosterRewards } from '#constants/models';
-import type { EventHandler } from '#lib/interfaces/Semblance.js';
+import type { EventHandler } from '#lib/interfaces/Semblance';
 import { readdir } from 'fs/promises';
 const { Events } = Constants;
 
@@ -72,5 +71,4 @@ export const ready = async (client: Semblance) => {
   }, 1000 * 60 * 60 * 12);
 
   await client.initializeLeaderboards();
-  intervalPost(client);
 };

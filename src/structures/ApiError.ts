@@ -5,7 +5,7 @@ const tips = {
 /**
  * API Error
  */
-export class APIError extends Error {
+export class ApiError extends Error {
   code: number;
   text: string;
   response?: unknown;
