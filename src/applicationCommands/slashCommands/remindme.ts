@@ -114,7 +114,7 @@ async function create(interaction: CommandInteraction) {
     ],
   });
   await reminderHandler.save();
-  scheduleJob(new Date(totalTime), () =>
+  scheduleJob(new Date(reminderHandler.reminders.at(0).time), () =>
     handleReminder(interaction.client, reminderHandler, reminderHandler.reminders.at(0)),
   );
 }
