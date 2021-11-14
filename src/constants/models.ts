@@ -151,7 +151,10 @@ export const createBoosterRewards = async (client: Semblance, message: Message) 
 
 // Reminder - handle finished reminder
 export const handleReminder = async (client: Client, reminderData: ReminderFormat, reminder: UserReminder) => {
-  (client.channels.cache.get(reminder.channelId) as TextChannel)?.send(reminder.message);
+  (client.channels.cache.get(reminder.channelId) as TextChannel)?.send({
+    content: `<@${reminderData.userId}> Reminder: ${reminder.message}`,
+    allowedMentions: { users: [reminderData.userId] },
+  });
   if (reminderData.reminders.length == 1) await Reminder.findOneAndDelete({ userId: reminderData.userId });
   else
     await Reminder.findOneAndUpdate(
