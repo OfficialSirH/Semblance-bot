@@ -3,7 +3,7 @@ import { BoosterRewards, Information } from '#models/index';
 import { Client, MessageEmbed } from 'discord.js';
 import type { TextChannel, GuildMember, Message } from 'discord.js';
 import { sirhId, adityaId, c2sGuildId, darwinium } from '#config';
-import { formattedDate } from './index.js';
+import { formattedDate } from '#constants/index';
 import type { InformationFormat } from '#models/Information';
 import type { BoosterRewardsFormat } from '#models/BoosterRewards';
 import { scheduleJob } from 'node-schedule';

@@ -1,4 +1,4 @@
-import { BaseAPI } from './BaseAPI';
+import { BaseAPI } from '#structures/BaseAPI';
 import type { BotStats } from '#lib/interfaces/discordBots';
 
 /**

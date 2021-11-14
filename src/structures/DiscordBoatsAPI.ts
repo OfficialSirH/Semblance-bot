@@ -1,4 +1,4 @@
-import { BaseAPI } from './BaseAPI';
+import { BaseAPI } from '#structures/BaseAPI';
 
 /**
  * discord.boats API Client for Posting stats or Fetching data

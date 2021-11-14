@@ -41,7 +41,7 @@ import '#models/index';
 
 // Listen to client events
 import * as fs from 'fs/promises';
-import type { EventHandler } from './lib/interfaces/Semblance';
+import type { EventHandler } from '#lib/interfaces/Semblance';
 const eventFiles = (await fs.readdir('./dist/src/events/client')).filter(file => file.endsWith('.js'));
 
 for (const file of eventFiles) {
@@ -50,7 +50,7 @@ for (const file of eventFiles) {
   else client.on(event.name, (...args) => event.exec(...args, client));
 }
 // TODO: enable twitter.js implementation to replace the shitty twitter library
-// import type { TwitterJSEventHandler } from './lib/interfaces/Semblance';
+// import type { TwitterJSEventHandler } from '#lib/interfaces/Semblance';
 // const twitterEventFiles = (await fs.readdir('./dist/src/events/twitter')).filter(file => file.endsWith('.js'));
 
 // for (const file of twitterEventFiles) {

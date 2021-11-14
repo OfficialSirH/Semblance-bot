@@ -1,11 +1,11 @@
 import type { BotInfo, UserInfo, BotVotes, UserBots, Widget } from '#lib/interfaces/discords';
 import type { Snowflake } from 'discord.js';
-import { BaseAPI } from './BaseAPI';
+import { BaseAPI } from '#structures/BaseAPI';
 
 /**
  * discords.com API Client for Posting stats or Fetching data
  * @example
- * import { DiscordsApi } from './structures/DiscordsAPI';
+ * import { DiscordsApi } from '#structures/DiscordsAPI';
  *
  * const api = new DiscordsApi('Your discords.com token')
  */

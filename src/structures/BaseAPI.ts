@@ -1,6 +1,6 @@
 import { fetch } from '#lib/utils/fetch';
 import { Headers } from 'undici';
-import { ApiError } from './ApiError';
+import { ApiError } from '#structures/ApiError';
 
 interface APIOptions {
   token: string;
