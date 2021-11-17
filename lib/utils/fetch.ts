@@ -1,13 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { fetch as undiciFetch } from 'undici';
+import type { ControlledAsyncIterable } from 'undici';
 
+// always use keep-alive
 export const fetch: typeof undiciFetch = async (url, options?) => {
-  const res = await undiciFetch(url, {
+  return undiciFetch(url, {
     keepalive: true,
     ...options,
   });
-  // eslint-disable-next-line no-empty
-  for await (const chunk of res.body) {
+};
+
+export const consumeBody = async (body: ControlledAsyncIterable): Promise<void> => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-empty
+  for await (const _chunk of body) {
   }
-  return res;
 };
