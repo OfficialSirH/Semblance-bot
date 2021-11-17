@@ -37,9 +37,15 @@ export const ready = async (client: Semblance) => {
 
   /* Slash Command setup */
   const slashCommands = await readdir('./dist/src/applicationCommands/slashCommands');
-  slashCommands.forEach(async command =>
-    client.slashCommands.set(command, (await import(`#src/applicationCommands/slashCommands/${command}`)).default),
-  );
+  slashCommands
+    .filter(f => f.endsWith('.js'))
+    .forEach(async command => {
+      const commandName = command.replace('.js', '');
+      client.slashCommands.set(
+        commandName,
+        (await import(`#src/applicationCommands/slashCommands/${commandName}`)).default,
+      );
+    });
 
   const infoBuilders = (await readdir('./dist/src/infoBuilders')).filter(f => f.endsWith('.js'));
   infoBuilders.forEach(async file =>
