@@ -1,5 +1,4 @@
 import { Constants } from 'discord.js';
-import { c2sGuildId } from '#config';
 import type { Semblance } from '#structures/Semblance';
 import * as schedule from 'node-schedule';
 import { prefix } from '#constants/index';
@@ -37,24 +36,11 @@ export const ready = async (client: Semblance) => {
   }, 3600000);
 
   /* Slash Command setup */
-  const slashCommands = await client.application.commands.fetch();
-  const guildSlashCommands = await client.guilds.cache.get(c2sGuildId).commands.fetch();
-  slashCommands
-    .filter(c => c.type == 'CHAT_INPUT')
-    .forEach(async command =>
-      client.slashCommands.set(
-        command.id,
-        (await import(`#src/applicationCommands/slashCommands/${command.name}`)).default,
-      ),
-    );
-  guildSlashCommands
-    .filter(c => c.type == 'CHAT_INPUT')
-    .forEach(async command =>
-      client.slashCommands.set(
-        command.id,
-        (await import(`#src/applicationCommands/slashCommands/${command.name}`)).default,
-      ),
-    );
+  const slashCommands = await readdir('./src/applicationCommands/slashCommands');
+  slashCommands.forEach(async command =>
+    client.slashCommands.set(command, (await import(`#src/applicationCommands/slashCommands/${command}`)).default),
+  );
+
   const infoBuilders = (await readdir('./dist/src/infoBuilders')).filter(f => f.endsWith('.js'));
   infoBuilders.forEach(async file =>
     client.infoBuilders.set(
