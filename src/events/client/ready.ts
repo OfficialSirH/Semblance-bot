@@ -36,7 +36,7 @@ export const ready = async (client: Semblance) => {
   }, 3600000);
 
   /* Slash Command setup */
-  const slashCommands = await readdir('./src/applicationCommands/slashCommands');
+  const slashCommands = await readdir('./dist/src/applicationCommands/slashCommands');
   slashCommands.forEach(async command =>
     client.slashCommands.set(command, (await import(`#src/applicationCommands/slashCommands/${command}`)).default),
   );
