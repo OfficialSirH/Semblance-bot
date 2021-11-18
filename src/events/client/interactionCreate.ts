@@ -22,8 +22,8 @@ export const interactionCreate = async (interaction: Interaction, client: Sembla
   if (interaction.isContextMenu()) return contextMenuInteraction(client, interaction);
   if (!interaction.isCommand()) return;
 
-  if (client.slashCommands.has(interaction.commandId))
-    await client.slashCommands.get(interaction.commandId).run(interaction, {
+  if (client.slashCommands.has(interaction.commandName))
+    await client.slashCommands.get(interaction.commandName).run(interaction, {
       client,
       options: interaction.options,
       permissionLevel: getPermissionLevel(interaction.member as GuildMember),
