@@ -27,11 +27,11 @@ type FinishedPath =
 export type ReadDirString = `./dist/src/${FinishedPath}`;
 
 declare module 'fs' {
-  export function readdir(path: ReadDirString): Promise<string[]>;
+  type readdir = (path: ReadDirString) => Promise<string[]>;
 }
 
 declare module 'fs/promises' {
-  export function readdir(path: ReadDirString): Promise<string[]>;
+  type readdir = (path: ReadDirString) => Promise<string[]>;
 }
 
 export interface AutocompleteHandler {
