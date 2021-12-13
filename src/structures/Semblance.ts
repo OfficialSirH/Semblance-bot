@@ -10,12 +10,14 @@ import type {
 import type { ClientOptions } from 'discord.js';
 import { Client, Collection } from 'discord.js';
 import * as fs from 'fs';
-import { GameLeaderboard, VoteLeaderboard } from '#structures/index';
-import { Game, Votes } from '#models/index';
+// import { GameLeaderboard, VoteLeaderboard } from '#structures/index';
+// import { Game, Votes } from '#models/index';
+import { PrismaClient } from '@prisma/client';
 
 export class Semblance extends Client {
-  private _gameLeaderboard: GameLeaderboard;
-  private _voteLeaderboard: VoteLeaderboard;
+  private _db: PrismaClient;
+  // private _gameLeaderboard: GameLeaderboard;
+  // private _voteLeaderboard: VoteLeaderboard;
   private _componentHandlers: Collection<string, ComponentHandler>;
   private _contextMenuHandlers: Collection<string, ContextMenuHandler>;
   private _autocompleteHandlers: Collection<string, AutocompleteHandler>;
@@ -30,6 +32,8 @@ export class Semblance extends Client {
    */
   constructor(options: ClientOptions) {
     super(options);
+
+    this._db = new PrismaClient();
 
     this._componentHandlers = new Collection();
     fs.readdir('./dist/src/applicationCommands/componentHandlers/', async (err, files) => {
@@ -82,26 +86,36 @@ export class Semblance extends Client {
         }
     });
 
-    this._gameLeaderboard = new GameLeaderboard(this);
-    this._voteLeaderboard = new VoteLeaderboard(this);
+    // this._gameLeaderboard = new GameLeaderboard(this);
+    // this._voteLeaderboard = new VoteLeaderboard(this);
+  }
+
+  public get db() {
+    return this._db;
   }
 
   public async initializeLeaderboards() {
-    const gameData = await Game.find({}),
-      voteData = await Votes.find({});
-    console.log('Fetched all game and vote data');
-    await this._gameLeaderboard.initialize(gameData);
-    await this._voteLeaderboard.initialize(voteData);
-    console.log('Initialized game and vote leaderboard');
+    const gameData = await this.db.game.findMany({});
+    const voteData = await this.db.vote.findMany({});
+    // will add more stuff here for sorting the data for the leaderboards
   }
 
-  public get gameLeaderboard() {
-    return this._gameLeaderboard;
-  }
+  // public async initializeLeaderboards() {
+  //   const gameData = await Game.find({}),
+  //     voteData = await Votes.find({});
+  //   console.log('Fetched all game and vote data');
+  //   await this._gameLeaderboard.initialize(gameData);
+  //   await this._voteLeaderboard.initialize(voteData);
+  //   console.log('Initialized game and vote leaderboard');
+  // }
 
-  public get voteLeaderboard() {
-    return this._voteLeaderboard;
-  }
+  // public get gameLeaderboard() {
+  //   return this._gameLeaderboard;
+  // }
+
+  // public get voteLeaderboard() {
+  //   return this._voteLeaderboard;
+  // }
 
   public get autocompleteHandlers() {
     return this._autocompleteHandlers;
