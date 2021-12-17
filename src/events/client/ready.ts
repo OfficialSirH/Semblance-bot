@@ -68,6 +68,4 @@ export const ready = async (client: Semblance) => {
   boosterRewards.forEach(boosterReward => {
     schedule.scheduleJob(new Date(boosterReward.rewardingDate), () => handleBoosterReward(client, boosterReward));
   });
-
-  await client.initializeLeaderboards();
 };

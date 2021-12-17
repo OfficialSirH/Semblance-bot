@@ -94,12 +94,6 @@ export class Semblance extends Client {
     return this._db;
   }
 
-  public async initializeLeaderboards() {
-    const gameData = await this.db.game.findMany({});
-    const voteData = await this.db.vote.findMany({});
-    // will add more stuff here for sorting the data for the leaderboards
-  }
-
   // public async initializeLeaderboards() {
   //   const gameData = await Game.find({}),
   //     voteData = await Votes.find({});
@@ -143,9 +137,5 @@ export class Semblance extends Client {
 
   public get aliases() {
     return this._aliases;
-  }
-
-  public get call() {
-    return this['api'];
   }
 }

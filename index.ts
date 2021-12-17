@@ -6,7 +6,7 @@ await import('#config');
 import { Semblance } from '#structures/Semblance';
 // import { Client } from 'twitter.js';
 import { Intents, LimitedCollection, Options } from 'discord.js';
-import { checkTweet, playerUpdate, userVote } from '#events/index';
+import { checkTweet } from '#events/index';
 const client = new Semblance({
   allowedMentions: { parse: [] },
   makeCache: Options.cacheWithLimits({
@@ -60,8 +60,8 @@ for (const file of eventFiles) {
 // }
 
 // Listen to model events
-playerUpdate(client);
-userVote(client);
+// playerUpdate(client);
+// userVote(client);
 
 import router from '#src/routing/routes/index';
 router(app, client);

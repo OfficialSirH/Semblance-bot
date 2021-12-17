@@ -6,9 +6,10 @@ import { filterAction, prefix, randomColor } from '#constants/index';
 import type { GameFormat } from '#models/Game';
 import type { Semblance } from '#structures/Semblance';
 import { currentPrice } from '#constants/commands';
+import { LeaderboardUtilities } from '#src/structures/LeaderboardUtilities';
 
 export default {
-  buttonHandle: async (interaction, { action, id }) => {
+  buttonHandle: async (interaction, { action, id }, { client }) => {
     const game = await Game.findOne({ player: id });
     let cost: number, components: MessageActionRow[];
     if (game) cost = await currentPrice(game);
@@ -145,7 +146,7 @@ export default {
         upgrade(interaction, components);
         break;
       case 'leaderboard':
-        leaderboard(interaction, components);
+        leaderboard(client, interaction, components);
         break;
       case 'vote':
         votes(interaction, components);
@@ -332,9 +333,13 @@ async function upgrade(interaction: MessageComponentInteraction, components: Mes
   await message.edit({ embeds: [embed], components });
 }
 
-async function leaderboard(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function leaderboard(
+  client: Semblance,
+  interaction: MessageComponentInteraction,
+  components: MessageActionRow[],
+) {
   const { user } = interaction;
-  let leaderboard = (interaction.client as Semblance).gameLeaderboard.toString();
+  let leaderboard = await LeaderboardUtilities.topTwenty(client, 'game');
   if (!leaderboard) leaderboard = 'There is currently no one who has upgraded their income.';
   const embed = new MessageEmbed()
     .setTitle("Semblance's idle-game leaderboard")
