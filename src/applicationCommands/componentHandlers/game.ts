@@ -1,16 +1,15 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { Message, MessageComponentInteraction } from 'discord.js';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
-import { Game } from '#models/Game';
+// import { Game } from '#models/Game';
 import { filterAction, prefix, randomColor } from '#constants/index';
-import type { GameFormat } from '#models/Game';
 import type { Semblance } from '#structures/Semblance';
 import { currentPrice } from '#constants/commands';
 import { LeaderboardUtilities } from '#src/structures/LeaderboardUtilities';
 
 export default {
   buttonHandle: async (interaction, { action, id }, { client }) => {
-    const game = await Game.findOne({ player: id });
+    const game = await client.db.game.findUnique({ where: { player: id } });
     let cost: number, components: MessageActionRow[];
     if (game) cost = await currentPrice(game);
 
