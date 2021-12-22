@@ -1,12 +1,12 @@
 export * from '../../../../node_modules/.prisma/client';
 
-interface LeaderboardUser {
+export interface LeaderboardUser {
   userId: Snowflake;
   level: number;
   voteCount: number;
 }
 
-interface UserReminder {
+export interface UserReminder {
   message: string;
   time: Date;
   reminderId: number;

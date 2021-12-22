@@ -7,10 +7,11 @@ import type { UserReminder } from '#models/Reminder';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
 import { handleReminder } from '#src/constants/models';
 import { scheduleJob } from 'node-schedule';
+import { Semblance } from 'structures';
 
 export default {
   permissionRequired: 0,
-  run: async interaction => {
+  run: async (interaction, { client }) => {
     let action: string, commandFailed: boolean;
     try {
       action = interaction.options.getSubcommand(true);
@@ -24,7 +25,7 @@ export default {
     if (commandFailed) return;
     switch (action) {
       case 'create':
-        return create(interaction);
+        return create(interaction, client);
       case 'edit':
         return edit(interaction);
       case 'delete':
@@ -40,7 +41,7 @@ export default {
   },
 } as SlashCommand;
 
-async function create(interaction: CommandInteraction) {
+async function create(interaction: CommandInteraction, client: Semblance) {
   const timeAmount = timeInputRegex.exec(interaction.options.getString('length')),
     reminder = interaction.options.getString('reminder'),
     user = interaction.member.user as User;
@@ -98,7 +99,7 @@ async function create(interaction: CommandInteraction) {
       ]),
     });
     return scheduleJob(new Date(currentReminderData.reminders.at(-1).time), () =>
-      handleReminder(interaction.client, currentReminderData, currentReminderData.reminders.at(-1)),
+      handleReminder(client, currentReminderData, currentReminderData.reminders.at(-1)),
     );
   }
 
@@ -115,7 +116,7 @@ async function create(interaction: CommandInteraction) {
   });
   await reminderHandler.save();
   scheduleJob(new Date(reminderHandler.reminders.at(0).time), () =>
-    handleReminder(interaction.client, reminderHandler, reminderHandler.reminders.at(0)),
+    handleReminder(client, reminderHandler, reminderHandler.reminders.at(0)),
   );
 }
 

@@ -1,13 +1,10 @@
 import type { Semblance } from '#structures/Semblance';
-import { BoosterRewards, Information } from '#models/index';
-import { Client, MessageEmbed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { TextChannel, GuildMember, Message } from 'discord.js';
 import { sirhId, adityaId, c2sGuildId, darwinium } from '#config';
 import { formattedDate } from '#constants/index';
-import type { InformationFormat } from '#models/Information';
-import type { BoosterRewardsFormat } from '#models/BoosterRewards';
 import { scheduleJob } from 'node-schedule';
-import { Reminder, ReminderFormat, UserReminder } from '#models/Reminder';
+import type { BoosterReward, Reminder, UserReminder } from '@prisma/client';
 
 // BoosterRewards - check dates for booster rewards
 // export const checkBoosterRewards = async (client: Semblance) => {
@@ -72,26 +69,28 @@ import { Reminder, ReminderFormat, UserReminder } from '#models/Reminder';
 // };
 
 //j BoosterRewards - handle finished booster rewards
-export const handleBoosterReward = async (client: Client, boosterReward: BoosterRewardsFormat) => {
+export const handleBoosterReward = async (client: Semblance, boosterReward: BoosterReward) => {
   const member: GuildMember = await client.guilds.cache
     .get(c2sGuildId)
     .members.fetch(boosterReward.userId)
     .catch(() => null);
   if (!member ?? !member.roles.cache.has(boosterRole))
-    return await BoosterRewards.findOneAndDelete({ userId: boosterReward.userId });
+    // return BoosterRewards.findOneAndDelete({ userId: boosterReward.userId });
+    return client.db.boosterReward.delete({ where: { userId: boosterReward.userId } });
 
-  const darwiniumCodes = (await Information.findOne({
-    infoType: 'boostercodes',
-  })) as InformationFormat<'boostercodes'>;
+  // const darwiniumCodes = (await Information.findOne({
+  //   infoType: 'boostercodes',
+  // })) as InformationFormat<'boostercodes'>;
+  const darwiniumCodes = await client.db.boosterCodes.findMany({});
 
-  if (darwiniumCodes.list.length == 0)
+  if (darwiniumCodes.length == 0)
     return boosterChannel(client).send({
       content: `<@${sirhId}> <@${adityaId}> No booster codes left! ${member.user.tag} needs a code`,
       allowedMentions: { users: [sirhId, adityaId] },
     });
 
-  const ogCodeLength = darwiniumCodes.list.length,
-    darwiniumCode = darwiniumCodes.list.shift();
+  const ogCodeLength = darwiniumCodes.length,
+    darwiniumCode = darwiniumCodes.shift();
 
   await member.user
     .send({
@@ -100,7 +99,7 @@ export const handleBoosterReward = async (client: Client, boosterReward: Booster
           .setTitle('Booster reward')
           .setAuthor(member.user.tag, member.user.displayAvatarURL())
           .setDescription(
-            `Thank you for boosting Cell to Singularity for 2 weeks! As a reward, here's 150 ${darwinium}!\nCode: ||${darwiniumCode}||`,
+            `Thank you for boosting Cell to Singularity for 2 weeks! As a reward, here's 150 ${darwinium}!\nCode: ||${darwiniumCode.code}||`,
           ),
       ],
     })
@@ -112,55 +111,83 @@ export const handleBoosterReward = async (client: Client, boosterReward: Booster
           '\nTip: These errors tend to happen when your DMs are closed. So keeping them open would help us out :D',
         allowedMentions: { users: [member.id] },
       });
-      darwiniumCodes.list.unshift(darwiniumCode);
+      darwiniumCodes.unshift(darwiniumCode);
     });
 
-  if (darwiniumCodes.list.length != ogCodeLength)
-    await Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } });
-  await BoosterRewards.findOneAndDelete({ userId: boosterReward.userId });
+  if (darwiniumCodes.length != ogCodeLength)
+    //   await Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } });
+    await client.db.boosterCodes.delete({
+      where: {
+        id: darwiniumCode.id,
+      },
+    });
+  // await BoosterRewards.findOneAndDelete({ userId: boosterReward.userId });
+  return client.db.boosterReward.update({
+    where: { userId: boosterReward.userId },
+    data: { rewardingDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14) },
+  });
 };
 
-export const boosterChannel = (client: Client) => client.channels.cache.get('800981350714834964') as TextChannel;
+export const boosterChannel = (client: Semblance) => client.channels.cache.get('800981350714834964') as TextChannel;
 export const boosterRole = '660930089990488099';
 
 // BoosterRewards - create automatic booster rewards for author of message
 export const createBoosterRewards = async (client: Semblance, message: Message) => {
-  const boosterReward = await BoosterRewards.findOne({
-    userId: message.author.id,
-  });
+  // const boosterReward = await BoosterRewards.findOne({
+  //   userId: message.author.id,
+  // });
+  const boosterReward = await client.db.boosterReward.findUnique({ where: { userId: message.author.id } });
   if (boosterReward) return;
-  BoosterRewards.create({
-    userId: message.author.id,
-    rewardingDate: Date.now() + 1000 * 60 * 60 * 24 * 14,
-  })
-    .then(br => {
-      message.channel.send(
-        `Thank you for boosting the server, ${
-          message.author.username
-        }! You will receive your booster reward on ${formattedDate(br.rewardingDate)}`,
-      );
-      scheduleJob(new Date(br.rewardingDate), () => handleBoosterReward(client, br));
-    })
-    .catch(() =>
-      message.channel.send({
-        content: `<@${sirhId}> the automated rewarder failed at creating the scheduled reward for ${message.author.username}`,
-        allowedMentions: { users: [sirhId] },
-      }),
-    );
+  // BoosterRewards.create({
+  //   userId: message.author.id,
+  //   rewardingDate: Date.now() + 1000 * 60 * 60 * 24 * 14,
+  // })
+  const newBoosterReward = await client.db.boosterReward.create({
+    data: {
+      userId: message.author.id,
+      rewardingDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
+    },
+  });
+
+  if (!newBoosterReward)
+    return message.channel.send({
+      content: `<@${sirhId}> the automated rewarder failed at creating the scheduled reward for ${message.author.username}`,
+      allowedMentions: { users: [sirhId] },
+    });
+
+  message.channel.send(
+    `Thank you for boosting the server, ${
+      message.author.username
+    }! You will receive your booster reward on ${formattedDate(newBoosterReward.rewardingDate.valueOf())}`,
+  );
+  scheduleJob(newBoosterReward.rewardingDate, () => handleBoosterReward(client, newBoosterReward));
+
+  // .catch(() =>
+  //   message.channel.send({
+  //     content: `<@${sirhId}> the automated rewarder failed at creating the scheduled reward for ${message.author.username}`,
+  //     allowedMentions: { users: [sirhId] },
+  //   }),
+  // );
 };
 
 // Reminder - handle finished reminder
-export const handleReminder = async (client: Client, reminderData: ReminderFormat, reminder: UserReminder) => {
+export const handleReminder = async (client: Semblance, reminderData: Reminder, reminder: UserReminder) => {
   (client.channels.cache.get(reminder.channelId) as TextChannel)?.send({
     content: `<@${reminderData.userId}> Reminder: ${reminder.message}`,
     allowedMentions: { users: [reminderData.userId] },
   });
-  if (reminderData.reminders.length == 1) await Reminder.findOneAndDelete({ userId: reminderData.userId });
-  else
-    await Reminder.findOneAndUpdate(
-      { userId: reminderData.userId },
-      { $set: { reminders: reminderData.reminders.filter(r => r.reminderId != reminder.reminderId) } },
-    );
+  if (reminderData.reminders.length == 1)
+    // return Reminder.findOneAndDelete({ userId: reminderData.userId });
+    return client.db.reminder.delete({ where: { userId: reminderData.userId } });
+
+  // return Reminder.findOneAndUpdate(
+  //   { userId: reminderData.userId },
+  //   { $set: { reminders: reminderData.reminders.filter(r => r.reminderId != reminder.reminderId) } },
+  // );
+  return client.db.reminder.update({
+    where: { userId: reminderData.userId },
+    data: { reminders: reminderData.reminders.filter(r => r.reminderId != reminder.reminderId) as object[] },
+  });
 };
 
 // // reminder functions - checkReminders
