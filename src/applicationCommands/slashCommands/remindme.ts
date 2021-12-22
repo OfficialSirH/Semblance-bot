@@ -1,9 +1,8 @@
 import { MessageEmbed } from 'discord.js';
 import type { User, CommandInteraction } from 'discord.js';
-import { Reminder } from '#models/Reminder';
 import { randomColor, timeInputRegex, formattedDate, timeInputToMs } from '#constants/index';
 import type { TimeLengths } from '#lib/interfaces/remindme';
-import type { UserReminder } from '#models/Reminder';
+import type { Reminder, UserReminder } from '@prisma/client';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
 import { handleReminder } from '#src/constants/models';
 import { scheduleJob } from 'node-schedule';
@@ -27,11 +26,11 @@ export default {
       case 'create':
         return create(interaction, client);
       case 'edit':
-        return edit(interaction);
+        return edit(interaction, client);
       case 'delete':
-        return deleteReminder(interaction);
+        return deleteReminder(interaction, client);
       case 'list':
-        return list(interaction);
+        return list(interaction, client);
       default:
         return interaction.reply({
           content: 'You must specify a valid subcommand.',
@@ -68,7 +67,7 @@ async function create(interaction: CommandInteraction, client: Semblance) {
       ephemeral: true,
     });
 
-  const currentReminderData = await Reminder.findOne({ userId: user.id });
+  const currentReminderData = await client.db.reminder.findUnique({ where: { userId: user.id } });
   if (currentReminderData?.reminders.length >= 5)
     return interaction.reply({
       content: 'You cannot have more than 5 reminders at a time',
@@ -88,41 +87,61 @@ async function create(interaction: CommandInteraction, client: Semblance) {
   await interaction.reply({ embeds: [embed] });
 
   if (currentReminderData) {
-    currentReminderData.update({
-      reminders: currentReminderData.reminders.concat([
-        {
-          message: reminder,
-          time: Date.now() + totalTime,
-          reminderId: currentReminderData.reminders.length + 1,
-          channelId: interaction.channel.id,
-        },
-      ]),
+    client.db.reminder.update({
+      where: { userId: user.id },
+      data: {
+        reminders: currentReminderData.reminders.concat([
+          {
+            message: reminder,
+            time: Date.now() + totalTime,
+            reminderId: currentReminderData.reminders.length + 1,
+            channelId: interaction.channel.id,
+          },
+        ]),
+      },
     });
-    return scheduleJob(new Date(currentReminderData.reminders.at(-1).time), () =>
-      handleReminder(client, currentReminderData, currentReminderData.reminders.at(-1)),
+    return scheduleJob(new Date((currentReminderData.reminders.at(-1) as unknown as UserReminder).time), () =>
+      handleReminder(
+        client,
+        currentReminderData as unknown as Reminder,
+        currentReminderData.reminders.at(-1) as unknown as UserReminder,
+      ),
     );
   }
 
-  const reminderHandler = new Reminder({
-    userId: user.id,
-    reminders: [
-      {
-        message: reminder,
-        time: Date.now() + totalTime,
-        reminderId: 1,
-        channelId: interaction.channel.id,
-      },
-    ],
+  // const reminderHandler = new Reminder({
+  //   userId: user.id,
+  //   reminders: [
+  //     {
+  //       message: reminder,
+  //       time: Date.now() + totalTime,
+  //       reminderId: 1,
+  //       channelId: interaction.channel.id,
+  //     },
+  //   ],
+  // });
+  // await reminderHandler.save();
+  const newReminder = await client.db.reminder.create({
+    data: {
+      userId: user.id,
+      reminders: [
+        {
+          message: reminder,
+          time: Date.now() + totalTime,
+          reminderId: 1,
+          channelId: interaction.channel.id,
+        },
+      ],
+    },
   });
-  await reminderHandler.save();
-  scheduleJob(new Date(reminderHandler.reminders.at(0).time), () =>
-    handleReminder(client, reminderHandler, reminderHandler.reminders.at(0)),
+  scheduleJob(new Date((newReminder.reminders.at(0) as unknown as UserReminder).time), () =>
+    handleReminder(client, newReminder as unknown as Reminder, newReminder.reminders.at(0) as unknown as UserReminder),
   );
 }
 
-async function edit(interaction: CommandInteraction) {
+async function edit(interaction: CommandInteraction, client: Semblance) {
   const user = interaction.member.user as User,
-    currentReminderData = await Reminder.findOne({ userId: user.id });
+    currentReminderData = (await client.db.reminder.findUnique({ where: { userId: user.id } })) as unknown as Reminder;
 
   if (!currentReminderData)
     return interaction.reply({
@@ -163,22 +182,36 @@ async function edit(interaction: CommandInteraction) {
   const updatedReminder = {} as UserReminder;
 
   updatedReminder.message = reminder ? reminder : currentReminderData.reminders[reminderId - 1].message;
-  if (length) updatedReminder.time = Date.now() + totalTime;
+  if (length) updatedReminder.time = new Date(Date.now() + totalTime);
   updatedReminder.reminderId = reminderId;
   updatedReminder.channelId = currentReminderData.reminders.find(r => r.reminderId === reminderId).channelId;
 
-  await currentReminderData.update({
-    reminders: currentReminderData.reminders.map(reminder => {
-      return reminder.reminderId == reminderId ? updatedReminder : reminder;
-    }),
+  // await currentReminderData.update({
+  //   reminders: currentReminderData.reminders.map(reminder => {
+  //     return reminder.reminderId == reminderId ? updatedReminder : reminder;
+  //   }),
+  // });
+  const updatedReminderData = await client.db.reminder.update({
+    where: { userId: user.id },
+    data: {
+      reminders: currentReminderData.reminders.map(reminder => {
+        return (reminder.reminderId == reminderId ? updatedReminder : reminder) as object;
+      }),
+    },
   });
+
+  if (!updatedReminderData)
+    return interaction.reply({
+      content: 'An error occurred while updating your reminder',
+      ephemeral: true,
+    });
 
   const embed = new MessageEmbed()
     .setTitle('Edited Reminder')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
     .setDescription(
-      `Reminder successfully edited:\n**When:** ${formattedDate(updatedReminder.time)}\n **Reminder**: ${
+      `Reminder successfully edited:\n**When:** ${formattedDate(updatedReminder.time.valueOf())}\n **Reminder**: ${
         updatedReminder.message
       }`,
     )
@@ -186,10 +219,12 @@ async function edit(interaction: CommandInteraction) {
   await interaction.reply({ embeds: [embed] });
 }
 
-async function deleteReminder(interaction: CommandInteraction) {
+async function deleteReminder(interaction: CommandInteraction, client: Semblance) {
   const user = interaction.member.user as User,
     reminderId = interaction.options.getInteger('reminderid'),
-    currentReminderData = await Reminder.findOne({ userId: user.id });
+    currentReminderData = (await client.db.reminder.findUnique({
+      where: { userId: user.id },
+    })) as unknown as Reminder;
 
   if (!currentReminderData)
     return interaction.reply({
@@ -203,15 +238,18 @@ async function deleteReminder(interaction: CommandInteraction) {
     });
 
   const deletedReminder = currentReminderData.reminders.find(reminder => reminder.reminderId == reminderId);
-  if (currentReminderData.reminders.length == 1) await currentReminderData.delete();
+  if (currentReminderData.reminders.length == 1) await client.db.reminder.delete({ where: { userId: user.id } });
   else
-    await currentReminderData.update({
-      reminders: currentReminderData.reminders
-        .filter(reminder => reminder.reminderId != reminderId)
-        .map((reminder, index) => {
-          reminder.reminderId = index + 1;
-          return reminder;
-        }),
+    await client.db.reminder.update({
+      where: { userId: user.id },
+      data: {
+        reminders: currentReminderData.reminders
+          .filter(reminder => reminder.reminderId != reminderId)
+          .map((reminder, index) => {
+            reminder.reminderId = index + 1;
+            return reminder as object;
+          }),
+      },
     });
 
   const embed = new MessageEmbed()
@@ -223,9 +261,11 @@ async function deleteReminder(interaction: CommandInteraction) {
   await interaction.reply({ embeds: [embed] });
 }
 
-async function list(interaction: CommandInteraction) {
+async function list(interaction: CommandInteraction, client: Semblance) {
   const user = interaction.member.user as User,
-    currentReminderData = await Reminder.findOne({ userId: user.id });
+    currentReminderData = (await client.db.reminder.findUnique({
+      where: { userId: user.id },
+    })) as unknown as Reminder;
 
   if (!currentReminderData)
     return interaction.reply({
@@ -241,9 +281,9 @@ async function list(interaction: CommandInteraction) {
       currentReminderData.reminders
         .map(
           reminder =>
-            `**Reminder ID:** ${reminder.reminderId}\n**When:** ${formattedDate(reminder.time)}\n**Reminder:** ${
-              reminder.message
-            }`,
+            `**Reminder ID:** ${reminder.reminderId}\n**When:** ${formattedDate(
+              reminder.time.valueOf(),
+            )}\n**Reminder:** ${reminder.message}`,
         )
         .join('\n\n'),
     )
