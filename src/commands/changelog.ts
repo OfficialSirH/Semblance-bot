@@ -1,23 +1,23 @@
 ﻿import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import { Information } from '#models/Information';
 import type { Command } from '#lib/interfaces/Semblance';
+import type { Semblance } from '#src/structures/Semblance';
 
 export default {
   description: 'Provides the latest changes to Semblance.',
   category: 'semblance',
   permissionRequired: 0,
   checkArgs: () => true,
-  run: (_client, message) => run(message),
+  run: (client, message) => run(client, message),
 } as Command<'semblance'>;
 
-const run = async (message: Message) => {
-  const changelogHandler = await Information.findOne({ infoType: 'changelog' });
+const run = async (client: Semblance, message: Message) => {
+  const changelogHandler = await client.db.information.findUnique({ where: { type: 'changelog' } });
   const embed = new MessageEmbed()
     .setTitle('Changelog')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
-    .setDescription(changelogHandler.info);
+    .setDescription(changelogHandler.value);
   message.channel.send({ embeds: [embed] });
 };

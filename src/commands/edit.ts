@@ -2,7 +2,8 @@ import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
-import { Information, InformationFormat } from '#models/Information';
+import type { Information } from '@prisma/client';
+import type { Semblance } from '#src/structures/Semblance';
 
 export default {
   description: 'Used for editing information on the beta and update commands',
@@ -12,78 +13,71 @@ export default {
   },
   permissionRequired: 7,
   checkArgs: args => args.length >= 1,
-  run: (_client, message, args) => run(message, args),
+  run: (client, message, args) => run(client, message, args),
 } as Command<'developer'>;
 
-const run = async (message: Message, args: string[]) => {
+const run = async (client: Semblance, message: Message, args: string[]) => {
   if (!args[1] || args[1].length == 0)
     return message.reply('Why are you trying to put nothing for the information? Come on!');
   const embed = new MessageEmbed()
     .setTitle(`${args[0].charAt(0).toUpperCase() + args[0].slice(1)} Info Changed!`)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor);
-  let infoHandler: InformationFormat;
+  let infoHandler: Information;
 
   switch (args[0]) {
     case 'beta':
-      infoHandler = (await Information.findOneAndUpdate(
-        { infoType: 'beta' },
-        { $set: { info: args.slice(1).join(' ') } },
-        { new: true },
-      )) as InformationFormat<'beta'>;
-      embed.setDescription(infoHandler.info);
+      infoHandler = await client.db.information.update({
+        where: { type: 'beta' },
+        data: { value: args.slice(1).join(' ') },
+      });
+      embed.setDescription(infoHandler.value);
       break;
     case 'update':
-      infoHandler = (await Information.findOneAndUpdate(
-        { infoType: 'update' },
-        { $set: { info: args.slice(1).join(' ') } },
-        { new: true },
-      )) as InformationFormat<'update'>;
-      embed.setDescription(infoHandler.info);
+      infoHandler = await client.db.information.update({
+        where: { type: 'update' },
+        data: { value: args.slice(1).join(' ') },
+      });
+      embed.setDescription(infoHandler.value);
       break;
     case 'codes':
       if (args[1] == 'expired')
-        infoHandler = (await Information.findOneAndUpdate(
-          { infoType: 'codes' },
-          { $set: { expired: args.slice(2).join(' ') } },
-          { new: true },
-        )) as InformationFormat<'codes'>;
+        infoHandler = await client.db.information.update({
+          where: { type: 'codes' },
+          data: { expired: args.slice(2).join(' ') },
+        });
       else if (args[1] == 'footer')
-        infoHandler = (await Information.findOneAndUpdate(
-          { infoType: 'codes' },
-          { $set: { footer: args.slice(2).join(' ') } },
-          { new: true },
-        )) as InformationFormat<'codes'>;
+        infoHandler = await client.db.information.update({
+          where: { type: 'codes' },
+          data: { footer: args.slice(2).join(' ') },
+        });
       else
-        infoHandler = await Information.findOneAndUpdate(
-          { infoType: 'codes' },
-          { $set: { info: args.slice(1).join(' ') } },
-          { new: true },
-        );
+        infoHandler = await client.db.information.update({
+          where: { type: 'codes' },
+          data: { value: args.slice(1).join(' ') },
+        });
       embed
-        .setDescription(infoHandler.info)
+        .setDescription(infoHandler.value)
         .addField('Expired Codes', infoHandler.expired)
         .setFooter(infoHandler.footer);
       break;
     case 'boostercodes':
       switch (args[1]) {
         case 'list':
-          return listBoosterCodes(message);
+          return listBoosterCodes(client, message);
         case 'add':
-          return addBoosterCode(message, args.slice(2));
+          return addBoosterCode(client, message, args.slice(2));
         case 'remove':
-          return removeBoosterCode(message, args.slice(2));
+          return removeBoosterCode(client, message, args.slice(2));
         default:
           return message.reply('Invalid argument for boostercodes option. Choose `list`, `add`, or `remove`.');
       }
-      break;
     case 'changelog':
-      infoHandler = await Information.findOneAndUpdate(
-        { infoType: 'changelog' },
-        { $set: { info: args.slice(1).join(' ') } },
-        { new: true },
-      );
-      embed.setDescription(infoHandler.info);
+      infoHandler = await client.db.information.update({
+        where: { type: 'changelog' },
+        data: { value: args.slice(1).join(' ') },
+      });
+      embed.setDescription(infoHandler.value);
       break;
     default:
       return message.channel.send("What are you trying to type? The options are `beta`, `update`, and 'codes'");
@@ -91,63 +85,67 @@ const run = async (message: Message, args: string[]) => {
   message.channel.send({ embeds: [embed] });
 };
 
-const listBoosterCodes = async (message: Message) => {
-  const darwiniumCodes = (await Information.findOne({
-    infoType: 'boostercodes',
-  })) as InformationFormat<'boostercodes'>;
-  const list = darwiniumCodes.list.length > 0 ? darwiniumCodes.list.join(', ') : 'None';
+const listBoosterCodes = async (client: Semblance, message: Message) => {
+  const darwiniumCodes = await client.db.boosterCodes.findMany({});
+  const list = darwiniumCodes.length > 0 ? darwiniumCodes.map(c => c.code).join(', ') : 'None';
   const embed = new MessageEmbed()
     .setTitle('Booster Codes')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
-    .setDescription(`number of codes: ${darwiniumCodes.list.length}\n\`\`\`\n${list}\`\`\``)
+    .setDescription(`number of codes: ${darwiniumCodes.length}\n\`\`\`\n${list}\`\`\``)
     .setColor(randomColor);
   message.channel.send({ embeds: [embed] });
 };
-const addBoosterCode = async (message: Message, codes: string[]) => {
+
+const addBoosterCode = async (client: Semblance, message: Message, codes: string[]) => {
   if (codes.length == 0) return message.reply('You need to give me a code to add.');
-  const darwiniumCodes = (await Information.findOne({
-    infoType: 'boostercodes',
-  })) as InformationFormat<'boostercodes'>;
-  if (codes.every(c => darwiniumCodes.list.includes(c)))
+
+  const darwiniumCodes = await client.db.boosterCodes.findMany({});
+  if (codes.every(c => darwiniumCodes.map(code => code.code).includes(c)))
     return message.reply('All of the codes you provided are already in the list.');
-  codes = codes.filter(c => !darwiniumCodes.list.includes(c));
-  darwiniumCodes.list = darwiniumCodes.list.concat(codes);
-  await Information.findOneAndUpdate(
-    { infoType: 'boostercodes' },
-    { $set: { list: darwiniumCodes.list } },
-    { new: true },
-  );
-  const list = darwiniumCodes.list.length > 0 ? darwiniumCodes.list.join(', ') : 'None';
+
+  codes = codes.filter(c => !darwiniumCodes.map(code => code.code).includes(c));
+  await client.db.boosterCodes.createMany({
+    data: codes.map(c => ({ code: c })),
+  });
+
+  const list = darwiniumCodes.map(c => c.code).concat(codes);
   const embed = new MessageEmbed()
     .setTitle('Booster Codes')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setDescription(
-      `**The provided codes were successfully added**\nnew number of codes: ${darwiniumCodes.list.length}\n\`\`\`\n${list}\`\`\``,
+      `**The provided codes were successfully added**\nnew number of codes: ${list.length}\n\`\`\`\n${list.join(
+        ', ',
+      )}\`\`\``,
     )
     .setColor(randomColor);
   message.channel.send({ embeds: [embed] });
 };
 
-const removeBoosterCode = async (message: Message, codes: string[]) => {
+const removeBoosterCode = async (client: Semblance, message: Message, codes: string[]) => {
   if (codes.length == 0) return message.reply('You need to give me a code to remove.');
-  const darwiniumCodes = (await Information.findOne({
-    infoType: 'boostercodes',
-  })) as InformationFormat<'boostercodes'>;
-  if (codes.every(c => !darwiniumCodes.list.includes(c)))
+
+  const darwiniumCodes = await client.db.boosterCodes.findMany({});
+  if (codes.every(c => !darwiniumCodes.map(code => code.code).includes(c)))
     return message.reply("All of the codes you provided aren't in the list.");
-  codes = codes.filter(c => darwiniumCodes.list.includes(c));
-  darwiniumCodes.list = darwiniumCodes.list.filter(c => !codes.includes(c));
-  await Information.findOneAndUpdate(
-    { infoType: 'boostercodes' },
-    { $set: { list: darwiniumCodes.list } },
-    { new: true },
-  );
-  const list = darwiniumCodes.list.length > 0 ? darwiniumCodes.list.join(', ') : 'None';
+
+  codes = codes.filter(c => darwiniumCodes.map(c => c.code).includes(c));
+  const filteredList = darwiniumCodes.filter(c => !codes.includes(c.code)).map(c => c.code);
+
+  await client.db.boosterCodes.deleteMany({
+    where: {
+      code: {
+        in: codes,
+      },
+    },
+  });
+
   const embed = new MessageEmbed()
     .setTitle('Booster Codes')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setDescription(
-      `**The provided codes were successfully removed**\nnew number of codes: ${darwiniumCodes.list.length}\n\`\`\`\n${list}\`\`\``,
+      `**The provided codes were successfully removed**\nnew number of codes: ${
+        filteredList.length
+      }\n\`\`\`\n${filteredList.join(', ')}\`\`\``,
     )
     .setColor(randomColor);
   message.channel.send({ embeds: [embed] });

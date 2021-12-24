@@ -6,12 +6,13 @@ import { filterAction, prefix, randomColor } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
 import { currentPrice } from '#constants/commands';
 import { LeaderboardUtilities } from '#src/structures/LeaderboardUtilities';
+import type { Game } from '@prisma/client';
 
 export default {
   buttonHandle: async (interaction, { action, id }, { client }) => {
     const game = await client.db.game.findUnique({ where: { player: id } });
     let cost: number, components: MessageActionRow[];
-    if (game) cost = await currentPrice(game);
+    if (game) cost = await currentPrice(client, game);
 
     const mainComponents = [
         new MessageActionRow().addComponents(
@@ -130,19 +131,19 @@ export default {
 
     switch (action) {
       case 'create':
-        game ? askConfirmation(interaction) : create(interaction, components);
+        game ? askConfirmation(interaction) : create(client, interaction, components);
         break;
       case 'reset':
-        create(interaction, components);
+        create(client, interaction, components);
         break;
       case 'about':
         about(interaction, components);
         break;
       case 'collect':
-        collect(interaction, components);
+        collect(client, interaction, components);
         break;
       case 'upgrade':
-        upgrade(interaction, components);
+        upgrade(client, interaction, components);
         break;
       case 'leaderboard':
         leaderboard(client, interaction, components);
@@ -151,7 +152,7 @@ export default {
         votes(interaction, components);
         break;
       case 'stats':
-        stats(interaction, components, game);
+        stats(client, interaction, components, game);
         break;
       case 'graph':
         graph(interaction, components);
@@ -196,26 +197,47 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
   });
 }
 
-async function create(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function create(client: Semblance, interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   const { user } = interaction;
   const percent = (Math.round(Math.random() * 25) + 25) / 100 + 1;
   const startingProfits = Math.random() * 0.05 + 0.05;
-  await Game.findOneAndDelete({ player: user.id });
-  const creationHandler = new Game({
-    player: user.id,
-    percentIncrease: percent,
-    idleProfit: startingProfits,
-    idleCollection: Date.now(),
+
+  // await Game.findOneAndDelete({ player: user.id });
+  // const creationHandler = new Game({
+  //   player: user.id,
+  //   percentIncrease: percent,
+  //   idleProfit: startingProfits,
+  //   idleCollection: Date.now(),
+  // });
+  // await creationHandler.save();
+  const creationHandler = await client.db.game.upsert({
+    where: {
+      player: user.id,
+    },
+    create: {
+      player: user.id,
+      percentIncrease: percent,
+      profitRate: startingProfits,
+      cost: 1,
+    },
+    update: {
+      level: 1,
+      checkedLevel: 1,
+      money: 0,
+      percentIncrease: percent,
+      profitRate: startingProfits,
+      cost: 1,
+    },
   });
-  await creationHandler.save();
+
   const embed = new MessageEmbed()
     .setTitle('Game Created')
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(
-      `Game Successfully created! Now you can start collecting Random-Bucks by typing '${prefix} game collect' and upgrade your Random-Bucks with \`${prefix} game upgrade\`\n\n` +
+      `Game Successfully created! Now you can start collecting Random-Bucks by typing '${prefix}game collect' and upgrade your Random-Bucks with \`${prefix}game upgrade\`\n\n` +
         `Price Increase: ${(creationHandler.percentIncrease - 1) * 100}%\n` +
-        `Starting Profits: ${creationHandler.idleProfit.toFixed(3)}/sec\n\n` +
+        `Starting Profits: ${creationHandler.profitRate.toFixed(3)}/sec\n\n` +
         "Reminder, don't be constantly spamming and creating a new game just cause your RNG stats aren't perfect \n",
     )
     .setFooter('Enjoy idling!');
@@ -246,21 +268,22 @@ async function about(interaction: MessageComponentInteraction, components: Messa
   await interaction.update({ embeds: [embed], components });
 }
 
-async function collect(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function collect(client: Semblance, interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   const { user } = interaction;
-  let collectionHandler = await Game.findOne({ player: user.id });
-  const currentCollection = Date.now();
-  const collected = collectionHandler.idleProfit * ((currentCollection - collectionHandler.idleCollection) / 1000);
-  collectionHandler = await Game.findOneAndUpdate(
-    { player: user.id },
-    {
-      $set: {
-        money: collectionHandler.money + collected,
-        idleCollection: currentCollection,
+  let collectionHandler = await client.db.game.findUnique({ where: { player: user.id } });
+  const collected = collectionHandler.profitRate * ((Date.now() - collectionHandler.lastCollected.valueOf()) / 1000);
+
+  collectionHandler = await client.db.game.update({
+    where: {
+      player: user.id,
+    },
+    data: {
+      money: {
+        increment: collected,
       },
     },
-    { new: true },
-  );
+  });
+
   const embed = new MessageEmbed()
     .setTitle('Balance')
     .setAuthor(user.tag, user.displayAvatarURL())
@@ -273,13 +296,13 @@ async function collect(interaction: MessageComponentInteraction, components: Mes
   await interaction.update({ embeds: [embed], components });
 }
 
-async function upgrade(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function upgrade(client: Semblance, interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   await interaction.deferUpdate();
   const { user } = interaction,
     message = interaction.message as Message;
-  let upgradeHandler = await Game.findOne({ player: user.id });
+  let upgradeHandler = await client.db.game.findUnique({ where: { player: user.id } });
   const previousLevel = upgradeHandler.level;
-  let costSubtraction = await currentPrice(upgradeHandler);
+  let costSubtraction = await currentPrice(client, upgradeHandler);
   if (upgradeHandler.money < costSubtraction)
     return message.edit({
       embeds: [
@@ -299,21 +322,24 @@ async function upgrade(interaction: MessageComponentInteraction, components: Mes
     });
 
   while (upgradeHandler.money > costSubtraction) {
-    costSubtraction = await currentPrice(upgradeHandler);
-    if (upgradeHandler.money > costSubtraction)
-      upgradeHandler = await Game.findOneAndUpdate(
-        { player: user.id },
-        {
-          $set: {
-            money: upgradeHandler.money - costSubtraction,
-            level: upgradeHandler.level + 1,
-            idleProfit: upgradeHandler.idleProfit * (Math.random() * 0.05 + 1.05),
-          },
+    costSubtraction = await currentPrice(client, upgradeHandler);
+    upgradeHandler = await client.db.game.update({
+      where: {
+        player: user.id,
+      },
+      data: {
+        money: {
+          decrement: costSubtraction,
         },
-        { new: true },
-      );
+        level: {
+          increment: 1,
+        },
+        profitRate: {
+          multiply: Math.random() * 0.05 + 1.05,
+        },
+      },
+    });
   }
-  Game.emit('playerUpdate', upgradeHandler);
 
   const embed = new MessageEmbed()
     .setTitle('Upgrade Stats')
@@ -324,7 +350,7 @@ async function upgrade(interaction: MessageComponentInteraction, components: Mes
         upgradeHandler.level
       }.\n\nYour current balance is ${upgradeHandler.money.toFixed(
         3,
-      )} Random-Bucks.\n\nYour current profit is ${upgradeHandler.idleProfit.toFixed(3)} Random-Bucks/sec.`,
+      )} Random-Bucks.\n\nYour current profit is ${upgradeHandler.profitRate.toFixed(3)} Random-Bucks/sec.`,
     )
     .setFooter(
       `Upgrades will raise your rank in the '${prefix}game leaderboard', also, '${prefix}game upgrade max' will upgrade the max amount you're able to upgrade.`,
@@ -375,7 +401,12 @@ async function votes(interaction: MessageComponentInteraction, components: Messa
   interaction.update({ embeds: [embed], components });
 }
 
-async function stats(interaction: MessageComponentInteraction, components: MessageActionRow[], game: GameFormat) {
+async function stats(
+  client: Semblance,
+  interaction: MessageComponentInteraction,
+  components: MessageActionRow[],
+  game: Game,
+) {
   const { user } = interaction;
   const embed = new MessageEmbed()
     .setTitle("Welcome back to Semblance's Idle-Game!")
@@ -388,9 +419,9 @@ async function stats(interaction: MessageComponentInteraction, components: Messa
       { name: 'Percent Increase', value: game.percentIncrease.toString() },
       {
         name: 'Next Upgrade Cost',
-        value: (await currentPrice(game)).toFixed(3).toString(),
+        value: (await currentPrice(client, game)).toFixed(3).toString(),
       },
-      { name: 'Idle Profit', value: game.idleProfit.toFixed(3).toString() },
+      { name: 'Idle Profit', value: game.profitRate.toFixed(3).toString() },
     ])
     .setFooter('Remember to vote for Semblance to gain a production boost!');
   await interaction.update({ embeds: [embed], components });

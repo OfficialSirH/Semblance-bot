@@ -1,11 +1,10 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
-import { Information } from '#models/Information';
 import { currentLogo } from '#config';
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 
 export default {
-  buttonHandle: async (interaction, { action, id }) => {
-    const codeHandler = await Information.findOne({ infoType: 'codes' }),
+  buttonHandle: async (interaction, { action, id }, { client }) => {
+    const codeHandler = await client.db.information.findUnique({ where: { type: 'codes' } }),
       embed = interaction.message.embeds[0] as MessageEmbed;
     let component: MessageActionRow;
     if (action == 'expired') {
@@ -23,7 +22,7 @@ export default {
           .setStyle('PRIMARY'),
       ]);
     } else if (action == 'valid') {
-      embed.setDescription(codeHandler.info);
+      embed.setDescription(codeHandler.value);
       component = new MessageActionRow().addComponents([
         new MessageButton()
           .setCustomId(

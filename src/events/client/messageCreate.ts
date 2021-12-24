@@ -13,7 +13,7 @@ export default {
 } as EventHandler<'messageCreate'>;
 
 export const messageCreate = async (message: Message, client: Semblance) => {
-  if (message.channel.type == 'DM') return client.emit('messageDM', message);
+  if (message.channel.type == 'DM') return void client.emit('messageDM', message);
   if (ignoredGuilds.includes(message.guild.id)) return;
   if (message.author.bot) return;
 
@@ -24,7 +24,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
 
   if (message.guild.id == c2sGuildId) {
     if (chName == 'booster-chat' && message.type == 'USER_PREMIUM_GUILD_SUBSCRIPTION')
-      return createBoosterRewards(client, message);
+      return void createBoosterRewards(client, message);
 
     if (chName == 'share-your-prestige' && message.attachments.size == 0 && getPermissionLevel(message.member) == 0)
       message.delete();
@@ -40,7 +40,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
       (msgMention == `<@${client.user.id}> ` || msgMention == `<@${client.user.id}>`) &&
       message.member.id != client.user.id
     ) {
-      return message.reply(
+      return void message.reply(
         "Heyyo, I'm Semblance! I provide as much info as I possibly can for the simulation so you'll never be clueless in your adventure! " +
           ` you can either use \`/help query: *type anything here*\` or use ${prefix} help. Have fun and stay cellular!`,
       );
@@ -59,7 +59,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
     const commandFile = commands[command];
     if (!commandFile) return;
     if (commandFile.category == 'dm') {
-      return message.reply('DM commands go in DMs(DM = Direct Message).');
+      return void message.reply('DM commands go in DMs(DM = Direct Message).');
     }
     let permissionLevel: number;
     const args = parseArgs(content);
@@ -70,9 +70,9 @@ export const messageCreate = async (message: Message, client: Semblance) => {
     }
     try {
       if (permissionLevel < commandFile.permissionRequired)
-        return message.channel.send("❌ You don't have permission to do this!");
+        return void message.channel.send("❌ You don't have permission to do this!");
       if (!commandFile.checkArgs(args, permissionLevel, content))
-        return message.channel.send(
+        return void message.channel.send(
           `❌ Invalid arguments! Usage is '${prefix}${command}${Object.keys(commandFile.usage)
             .map(a => ' ' + a)
             .join('')}', for additional help, see '${prefix}help'.`,

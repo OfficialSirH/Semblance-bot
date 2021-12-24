@@ -17,8 +17,6 @@
       "baseUrl": ".",
       "paths": {
         "*": [
-          "src/*",
-          "lib/*",
           "lib/interfaces/*"
         ],
         "#src/*": ["./src/*"],

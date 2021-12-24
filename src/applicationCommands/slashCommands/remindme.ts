@@ -6,7 +6,7 @@ import type { Reminder, UserReminder } from '@prisma/client';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
 import { handleReminder } from '#src/constants/models';
 import { scheduleJob } from 'node-schedule';
-import { Semblance } from 'structures';
+import type { Semblance } from '#structures/Semblance';
 
 export default {
   permissionRequired: 0,

@@ -9,14 +9,13 @@ import {
   TextChannel,
   User,
 } from 'discord.js';
-import { Game, Report } from '#models/index';
 import type { Semblance } from '#structures/Semblance';
 import { clamp } from '#lib/utils/math';
 import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndDogAPI';
 import { fetch } from '#lib/utils/fetch';
-import type { GameFormat } from '#models/Game';
 import type { DeepLParams, DeepLResponse } from '#lib/interfaces/deepLAPI';
 import { messageLinkRegex, attachmentLinkRegex } from '#constants/index';
+import type { Game } from '@prisma/client';
 
 // gametransfer pages
 
@@ -31,33 +30,45 @@ export const gameTransferPages = [
 // bug functions and constants - correctReportList and CHANNELS
 
 export const correctReportList = async function (
-  _client: Semblance,
+  client: Semblance,
   message: Message | PartialMessage,
   messageId: Snowflake,
 ) {
-  const deletedReport = await Report.findOneAndDelete({ messageId: messageId });
+  const deletedReport = await client.db.report.findFirst({ where: { messageId } });
   if (!deletedReport) return;
-  const reportList = await Report.find({});
-  const bugIdList = Array.from(reportList.map(r => r.bugId).filter(item => item > deletedReport.bugId));
-  bugIdList.forEach(async bugId => {
-    const report = await Report.findOneAndUpdate({ bugId: bugId }, { $set: { bugId: bugId - 1 } }, { new: true });
-    try {
-      (message.guild.channels.cache.get(report.channelId) as TextChannel).messages.fetch(report.messageId).then(msg => {
-        const author = msg.embeds[0].author;
-        msg.edit({
-          embeds: [
-            msg.embeds[0]
-              .setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nBug Id: #${bugId - 1}`, author.iconURL)
-              .setFooter(`#${bugId - 1}`),
-          ],
-        });
-      });
-    } catch (e) {
-      console.error(e);
-      throw new Error('Apparently there was an issue finding that message...');
-    }
+  const reportList = await client.db.report.findMany({});
+  // TODO: rewrite this terrible id iterating setup and instead use bulk updating and then iterate upon that.
+  const bugIdList = reportList.filter(r => r.bugId > deletedReport.bugId);
+  bugIdList.forEach(async report => {
+    const channel = message.guild.channels.cache.get(report.channelId) as TextChannel;
+    const msg = await channel.messages.fetch(report.messageId).catch(() => null);
+
+    if (!msg) return console.error("couldn't find message for report id", report.bugId);
+
+    const author = msg.embeds[0].author;
+    await msg.edit({
+      embeds: [
+        msg.embeds[0]
+          .setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nBug Id: #${report.bugId - 1}`, author.iconURL)
+          .setFooter(`#${report.bugId - 1}`),
+      ],
+    });
   });
-  console.log(`All ${bugIdList.length} reports have successfully been reorganized!`);
+
+  const updatedReports = await client.db.report.updateMany({
+    where: {
+      bugId: {
+        gt: deletedReport.bugId,
+      },
+    },
+    data: {
+      bugId: {
+        decrement: 1,
+      },
+    },
+  });
+
+  console.log(`All ${updatedReports.count} reports have successfully been reorganized!`);
 };
 
 export const bugChannels = {
@@ -168,22 +179,25 @@ export const fetchDeepL = async (query_params: DeepLParams) => {
 };
 
 // game - currentPrice
-
-export async function currentPrice(userData: GameFormat) {
+// TODO: figure some way to not need checkedLevel and have the cost automatically adjusted based on the level
+export async function currentPrice(client: Semblance, userData: Game) {
   if (userData.level == userData.checkedLevel) {
-    userData = await Game.findOneAndUpdate(
-      { player: userData.player },
-      {
-        $set: {
-          checkedLevel: userData.checkedLevel + 1,
-          cost: userData.cost + userData.baseCost * Math.pow(userData.percentIncrease, userData.level + 1),
+    userData = await client.db.game.update({
+      where: {
+        player: userData.player,
+      },
+      data: {
+        checkedLevel: {
+          increment: 1,
+        },
+        cost: {
+          increment: Math.pow(userData.percentIncrease, userData.level + 1),
         },
       },
-      { new: true },
-    );
+    });
     return userData.cost;
   }
-  return userData.cost == 0 ? userData.baseCost : userData.cost;
+  return userData.cost == 0 ? 1 : userData.cost;
 }
 
 export const messageLinkJump = async (input: string, user: User, currentGuild: Guild, client: Client) => {

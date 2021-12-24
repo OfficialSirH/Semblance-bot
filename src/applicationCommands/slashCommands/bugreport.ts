@@ -1,15 +1,14 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
-import type { ReportFormat } from '#models/Report';
-import { Report } from '#models/Report';
 import type { CommandInteraction, TextChannel } from 'discord.js';
 import { MessageEmbed, MessageAttachment } from 'discord.js';
 import { bugChannels } from '#constants/commands';
 import { c2sGuildId, sirhGuildId } from '#config';
 import { emojis } from '#constants/index';
+import type { Semblance } from '#src/structures/Semblance';
 
 export default {
   permissionRequired: 0,
-  run: async interaction => {
+  run: async (interaction, { client }) => {
     let action: string, commandFailed: boolean;
     try {
       action = interaction.options.getSubcommand(true);
@@ -23,17 +22,17 @@ export default {
     if (commandFailed) return;
     switch (action) {
       case 'report':
-        return report(interaction);
+        return report(client, interaction);
       case 'attach':
-        return attach(interaction);
+        return attach(client, interaction);
       case 'reproduce':
-        return reproduce(interaction);
+        return reproduce(client, interaction);
       case 'list':
-        return list(interaction);
+        return list(client, interaction);
       case 'accept':
-        return accept(interaction);
+        return accept(client, interaction);
       case 'deny':
-        return deny(interaction);
+        return deny(client, interaction);
       default:
         return interaction.reply({
           content: 'You must specify a valid subcommand.',
@@ -43,7 +42,7 @@ export default {
   },
 } as SlashCommand;
 
-async function report(interaction: CommandInteraction): Promise<void> {
+async function report(client: Semblance, interaction: CommandInteraction): Promise<void> {
   const { user } = interaction;
   const title = interaction.options.getString('title'),
     result = interaction.options.getString('result'),
@@ -57,7 +56,7 @@ async function report(interaction: CommandInteraction): Promise<void> {
       ephemeral: true,
     });
 
-  const reportCount = (await Report.find({})).length,
+  const reportCount = (await client.db.report.findMany({})).length,
     newBugId = reportCount + 1;
 
   const message = await (interaction.guild.channels.cache.get(bugChannels.queue) as TextChannel).send({
@@ -77,13 +76,13 @@ async function report(interaction: CommandInteraction): Promise<void> {
     ],
   });
 
-  const report = new Report({
-    User: user.id,
-    bugId: newBugId,
-    messageId: message.id,
-    channelId: message.channel.id,
+  await client.db.report.create({
+    data: {
+      userId: user.id,
+      messageId: message.id,
+      channelId: message.channel.id,
+    },
   });
-  await report.save();
 
   interaction.reply({
     embeds: [
@@ -104,10 +103,10 @@ async function report(interaction: CommandInteraction): Promise<void> {
   });
 }
 
-async function attach(interaction: CommandInteraction): Promise<void> {
+async function attach(client: Semblance, interaction: CommandInteraction): Promise<void> {
   const bugId = interaction.options.getNumber('bugid'),
     link = interaction.options.getString('link'),
-    report = await Report.findOne({ bugId });
+    report = await client.db.report.findUnique({ where: { bugId } });
 
   if (!report) return interaction.reply({ content: 'Invalid bug ID.', ephemeral: true });
 
@@ -172,12 +171,12 @@ async function attach(interaction: CommandInteraction): Promise<void> {
   message.edit({ embeds: [embed] });
 }
 
-async function reproduce(interaction: CommandInteraction): Promise<void> {
+async function reproduce(client: Semblance, interaction: CommandInteraction): Promise<void> {
   const { user } = interaction,
     bugId = interaction.options.getNumber('bugid'),
     os = interaction.options.getString('os'),
     version = interaction.options.getString('version'),
-    report = await Report.findOne({ bugId });
+    report = await client.db.report.findUnique({ where: { bugId } });
 
   if (!report) return interaction.reply({ content: 'Invalid bug ID.', ephemeral: true });
 
@@ -202,10 +201,10 @@ async function reproduce(interaction: CommandInteraction): Promise<void> {
   }
 }
 
-async function list(interaction: CommandInteraction): Promise<void> {
+async function list(client: Semblance, interaction: CommandInteraction): Promise<void> {
   const { user } = interaction;
 
-  const reports = (await Report.find({ User: user.id })).reverse().slice(0, 10);
+  const reports = (await client.db.report.findMany({ where: { userId: user.id } })).reverse().slice(0, 10);
 
   if (reports.length == 0) return interaction.reply({ content: 'You have not reported any bugs.', ephemeral: true });
 
@@ -216,7 +215,7 @@ async function list(interaction: CommandInteraction): Promise<void> {
         .setDescription(
           reports
             .map(
-              (r: ReportFormat) =>
+              r =>
                 `[${r.bugId}](https://discord.com/channels/${c2sGuildId}/${r.channelId}/${r.messageId}) - ${
                   r.channelId == bugChannels.queue ? emojis.buffer : emojis.tick
                 }`,
@@ -228,9 +227,9 @@ async function list(interaction: CommandInteraction): Promise<void> {
   });
 }
 
-async function accept(interaction: CommandInteraction): Promise<void> {
+async function accept(client: Semblance, interaction: CommandInteraction): Promise<void> {
   const bugId = interaction.options.getNumber('bugid'),
-    report = await Report.findOne({ bugId });
+    report = await client.db.report.findUnique({ where: { bugId } });
 
   if (!report) return interaction.reply({ content: 'Invalid bug ID.', ephemeral: true });
 
@@ -242,7 +241,7 @@ async function accept(interaction: CommandInteraction): Promise<void> {
       embeds: [reportMessage.embeds[0].setColor('#17DB4A')],
     });
 
-  await Report.findOneAndUpdate({ bugId }, { $set: { channelId: approvedChannel.id, messageId: message.id } });
+  await client.db.report.update({ where: { bugId }, data: { channelId: approvedChannel.id, messageId: message.id } });
 
   return interaction.reply({
     content: `Bug ${bugId} has been successfully approved.`,
@@ -253,16 +252,16 @@ async function accept(interaction: CommandInteraction): Promise<void> {
   });
 }
 
-async function deny(interaction: CommandInteraction): Promise<void> {
+async function deny(client: Semblance, interaction: CommandInteraction): Promise<void> {
   const bugId = interaction.options.getNumber('bugid'),
     reason = interaction.options.getString('reason'),
-    report = await Report.findOne({ bugId });
+    report = await client.db.report.findUnique({ where: { bugId } });
 
   if (!report) return interaction.reply({ content: 'Invalid bug ID.', ephemeral: true });
 
   const queueChannel = interaction.guild.channels.cache.get(bugChannels.queue) as TextChannel,
     reportMessage = await queueChannel.messages.fetch(report.messageId),
-    user = await interaction.guild.members.fetch(report.User);
+    user = await interaction.guild.members.fetch(report.userId);
 
   user
     .send({
@@ -276,9 +275,9 @@ async function deny(interaction: CommandInteraction): Promise<void> {
       });
     });
 
-  await Report.findOneAndDelete({ bugId });
+  await client.db.report.delete({ where: { bugId } });
 
-  reportMessage.delete();
+  await reportMessage.delete();
 
   return interaction.reply({
     content: `Bug ${bugId} has been successfully denied.`,
