@@ -127,7 +127,6 @@ export default {
     if (['about', 'collect', 'upgrade', 'leaderboard', 'vote'].includes(action)) components = endComponents;
     else if (action == 'stats') components = mainComponents;
     else components = filterAction(endComponents, action);
-    //if (action != 'collect') filterAction(components, action);
 
     switch (action) {
       case 'create':
@@ -202,14 +201,6 @@ async function create(client: Semblance, interaction: MessageComponentInteractio
   const percent = (Math.round(Math.random() * 25) + 25) / 100 + 1;
   const startingProfits = Math.random() * 0.05 + 0.05;
 
-  // await Game.findOneAndDelete({ player: user.id });
-  // const creationHandler = new Game({
-  //   player: user.id,
-  //   percentIncrease: percent,
-  //   idleProfit: startingProfits,
-  //   idleCollection: Date.now(),
-  // });
-  // await creationHandler.save();
   const creationHandler = await client.db.game.upsert({
     where: {
       player: user.id,

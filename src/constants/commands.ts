@@ -37,8 +37,8 @@ export const correctReportList = async function (
   const deletedReport = await client.db.report.findFirst({ where: { messageId } });
   if (!deletedReport) return;
   const reportList = await client.db.report.findMany({});
-  // TODO: rewrite this terrible id iterating setup and instead use bulk updating and then iterate upon that.
   const bugIdList = reportList.filter(r => r.bugId > deletedReport.bugId);
+
   bugIdList.forEach(async report => {
     const channel = message.guild.channels.cache.get(report.channelId) as TextChannel;
     const msg = await channel.messages.fetch(report.messageId).catch(() => null);
