@@ -22,13 +22,18 @@ export const interactionCreate = async (interaction: Interaction, client: Sembla
   if (interaction.isContextMenu()) return contextMenuInteraction(client, interaction);
   if (!interaction.isCommand()) return;
 
-  if (client.slashCommands.has(interaction.commandName))
-    await client.slashCommands.get(interaction.commandName).run(interaction, {
-      client,
-      options: interaction.options,
-      permissionLevel: getPermissionLevel(interaction.member as GuildMember),
-    });
-  else await interaction.reply("I can't find a command for this, something is borked.");
+  if (!client.slashCommands.has(interaction.commandName))
+    return interaction.reply("I can't find a command for this, something is borked.");
+  const cmd = client.slashCommands.get(interaction.commandName);
+
+  if (cmd.permissionRequired > getPermissionLevel(interaction.member as GuildMember))
+    return interaction.reply("You don't have permission to use this command.");
+
+  await client.slashCommands.get(interaction.commandName).run(interaction, {
+    client,
+    options: interaction.options,
+    permissionLevel: getPermissionLevel(interaction.member as GuildMember),
+  });
 };
 
 async function componentInteraction(client: Semblance, interaction: MessageComponentInteraction) {
