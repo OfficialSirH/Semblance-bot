@@ -7,7 +7,7 @@ export default {
     const playerId = options.getString('playerId', true),
       playerToken = options.getString('playerToken', true),
       { user } = interaction;
-    const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
+    const token = createHmac('sha256', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
     const dataAlreadyExists = await client.db.userData.findUnique({ where: { token } });
     if (dataAlreadyExists)
       return interaction.reply({
