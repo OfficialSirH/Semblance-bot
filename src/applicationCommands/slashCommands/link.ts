@@ -15,7 +15,7 @@ export default {
           'The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(SirH).',
         ephemeral: true,
       });
-    const updatedUser = await client.db.userData.update({ where: { discordId: user.id }, data: { token } });
+    const updatedUser = await client.db.userData.update({ where: { discord_id: user.id }, data: { token } });
     if (updatedUser) {
       console.log(`${user.tag}(${user.id}) successfully linked their C2S data.`);
       return interaction.reply({
@@ -26,7 +26,7 @@ export default {
     const newUser = await client.db.userData.create({
       data: {
         token,
-        discordId: user.id,
+        discord_id: user.id,
       },
     });
     if (newUser)

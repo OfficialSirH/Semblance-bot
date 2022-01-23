@@ -48,7 +48,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
       'The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(SirH).',
     );
 
-  const updatedUser = await client.db.userData.update({ where: { discordId: message.author.id }, data: { token } });
+  const updatedUser = await client.db.userData.update({ where: { discord_id: message.author.id }, data: { token } });
   if (updatedUser) {
     console.log(`${message.author.tag}(${message.author.id}) successfully linked their C2S data.`);
     return message.channel.send(
@@ -59,7 +59,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
   const newUser = await client.db.userData.create({
     data: {
       token,
-      discordId: message.author.id,
+      discord_id: message.author.id,
     },
   });
   if (!newUser)

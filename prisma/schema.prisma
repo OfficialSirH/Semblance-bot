@@ -54,13 +54,14 @@ model Report {
 
 model UserData {
   token String @id
-  discordId String @unique
+  discord_id String @unique
   metabits Decimal @db.Decimal(100,0) @default(0)
   dino_rank Int @default(0)
   prestige_rank Int @default(0)
   singularity_speedrun_time Float?
   all_sharks_obtained Boolean @default(false)
   all_hidden_achievements_obtained Boolean @default(false)
+  beta_tester Boolean @default(false)
   edited_timestamp DateTime @updatedAt
 }
 
