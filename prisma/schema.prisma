@@ -55,7 +55,7 @@ model Report {
 model UserData {
   token String @id
   discord_id String @unique
-  metabits Decimal @db.Decimal(100,0) @default(0)
+  metabits BigInt @db.BigInt @default(0)
   dino_rank Int @default(0)
   prestige_rank Int @default(0)
   singularity_speedrun_time Float?
