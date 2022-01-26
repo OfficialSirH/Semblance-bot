@@ -33,6 +33,13 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
       });
       embed.setDescription(infoHandler.value);
       break;
+    case 'joinbeta':
+      infoHandler = await client.db.information.update({
+        where: { type: 'joinbeta' },
+        data: { value: args.slice(1).join(' ') },
+      });
+      embed.setDescription(infoHandler.value);
+      break;
     case 'update':
       infoHandler = await client.db.information.update({
         where: { type: 'update' },
