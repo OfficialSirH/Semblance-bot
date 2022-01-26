@@ -8,19 +8,16 @@ If you choose to use my Service, then you agree to the collection and use of inf
  
 ## **Information Collection and Use**
  
-For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information, including but not limited to Discord User IDs. Users are cached for approximately 30 seconds if they use any command before being removed from cache unless the user is required for the proper functioning of certain commands. All of the User data that is collected by the bot is stored on [MongoDB](https://www.mongodb.com/), which uses AES256-CBC via OpenSSL for data encryption and AES-256 uses a symmetric key; i.e. the same key to encrypt and decrypt text. The bot is hosted on [AWS](https://aws.amazon.com).
+For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information, including but not limited to Discord User IDs. Users are cached for approximately 30 seconds if they use any command before being removed from cache unless the user is required for the proper functioning of certain commands. All of the User data that is collected by the bot is stored on [Amazon RDS](https://aws.amazon.com/rds), a secured service that provides multiple levels of security for database access. The bot is hosted on [Amazon EC2](https://aws.amazon.com/ec2).
  
 ## **Log Data**
- 
- • If you enable `jump` feature for yourself, your user Id will be stored as long as you have the feature enabled for proper functionality. 
-
- • Usage of either the `afk` or `remindme` command will have your optional input, including your user Id, be stored until the commands' criterias are met(i.e. sending a message in any server with Semblance will end the `afk` command's requirement for your user Id while the `remindme` command will be done once it reaches the specified date/time you provided it or if you decide to remove your reminders from the command). 
+ • Usage of the `remindme` command will have your optional input, including your user Id, be stored until the command's criteria is met(i.e. reaches the specified date/time you provided it or if you decide to remove your reminders from the command). 
 
  • Voting for Semblance on bot listing sites(i.e. Top.gg) and usage of Semblance’s idle-game(`game`) will keep your user Id until a TBD data reset or if requested.
 
  • The usage of the `report` command is restricted primarily to the official Cell to Singularity Discord server and stores your user Id until the said report you’ve made is deleted or denied.
 
- • Users that boost the Cell to Singularity Discord server will have their user Id stored until their boost reward is provided 2 weeks afterwards.
+ • Users that boost the Cell to Singularity Discord server will have their user Id stored until they stop boosting the Discord server to be able to provide them the booster reward every 2 weeks.
 
  • Users that use the Cell to Singularity feature, Discord Link, will have their user Id stored for functionality of providing roles based on in-game progress until they request for a removal from the Discord Link.
  
@@ -46,7 +43,7 @@ This Service may contain links to other sites. If you click on a third-party lin
  
 I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
  
-This policy is effective as of 2021-10-18
+This policy is effective as of 2022-1-26
  
 ## **Contact Us**
  
