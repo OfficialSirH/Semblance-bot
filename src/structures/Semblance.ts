@@ -12,10 +12,10 @@ import { Client, Collection } from 'discord.js';
 import * as fs from 'fs';
 // import { GameLeaderboard, VoteLeaderboard } from '#structures/index';
 // import { Game, Votes } from '#models/index';
-import { PrismaClient } from '@prisma/client';
+import prisma from '@prisma/client';
 
 export class Semblance extends Client {
-  private _db: PrismaClient;
+  private _db: prisma.PrismaClient;
   // private _gameLeaderboard: GameLeaderboard;
   // private _voteLeaderboard: VoteLeaderboard;
   private _componentHandlers: Collection<string, ComponentHandler>;
@@ -33,7 +33,7 @@ export class Semblance extends Client {
   constructor(options: ClientOptions) {
     super(options);
 
-    this._db = new PrismaClient();
+    this._db = new prisma.PrismaClient();
 
     this._componentHandlers = new Collection();
     fs.readdir('./dist/src/applicationCommands/componentHandlers/', async (err, files) => {

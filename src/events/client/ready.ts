@@ -5,7 +5,7 @@ import { prefix } from '#constants/index';
 import { handleBoosterReward, handleReminder } from '#constants/models';
 import type { EventHandler } from '#lib/interfaces/Semblance';
 import { readdir } from 'fs/promises';
-import { Reminder } from '@prisma/client';
+import type { Reminder } from '@prisma/client';
 // import { Reminder } from '#models/Reminder';
 // import type { ReminderFormat } from '#models/Reminder';
 // import { BoosterRewards } from '#models/BoosterRewards';
