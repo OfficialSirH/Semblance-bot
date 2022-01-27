@@ -4,6 +4,3 @@ export { DBotsApi } from '#structures/DiscordBotsAPI';
 export { DListApi } from '#structures/DiscordListAPI';
 export { DiscordsApi } from '#structures/DiscordsAPI';
 export { Semblance } from '#structures/Semblance';
-export { BaseLeaderboard } from '#structures/BaseLeaderboard';
-export { GameLeaderboard } from '#structures/GameLeaderboard';
-export { VoteLeaderboard } from '#structures/VoteLeaderboard';

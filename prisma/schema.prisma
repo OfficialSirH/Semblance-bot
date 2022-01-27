@@ -1,0 +1,71 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model BoosterReward {
+  userId String @id
+  rewardingDate DateTime
+}
+
+model Game {
+  player String @id
+  money Float @default(0)
+  percentIncrease Float
+  cost Float
+  level Int @default(1)
+  checkedLevel Int @default(1)
+  lastCollected DateTime @updatedAt
+  profitRate Float
+}
+
+model Information {
+  type String @id
+  value String
+  expired String?
+  footer String?
+}
+
+model BoosterCodes {
+  id Int @id @default(autoincrement())
+  code String
+}
+
+model Leaderboard {
+  type String @id
+  users Json[]
+}
+
+model Reminder {
+  userId String @id
+  reminders Json[]
+}
+
+model Report {
+  bugId Int @id @default(autoincrement())
+  userId String
+  messageId String
+  channelId String
+}
+
+model UserData {
+  token String @id
+  discord_id String @unique
+  metabits BigInt @db.BigInt @default(0)
+  dino_rank Int @default(0)
+  prestige_rank Int @default(0)
+  singularity_speedrun_time Float?
+  all_sharks_obtained Boolean @default(false)
+  all_hidden_achievements_obtained Boolean @default(false)
+  beta_tester Boolean @default(false)
+  edited_timestamp DateTime @updatedAt
+}
+
+model Vote {
+  userId String @id
+  voteCount Int @default(1)
+}

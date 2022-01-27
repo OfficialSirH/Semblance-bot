@@ -1,9 +1,9 @@
 import { MessageEmbed, Collection, Permissions, MessageActionRow, MessageButton } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import { Game } from '#models/Game';
 import type { Command } from '#lib/interfaces/Semblance';
 import { currentPrice } from '#constants/commands';
+import type { Semblance } from '#src/structures/Semblance';
 const cooldownHandler: Collection<string, number> = new Collection();
 
 export default {
@@ -14,10 +14,10 @@ export default {
   },
   permissionRequired: 0,
   checkArgs: () => true,
-  run: (_client, message) => run(message),
+  run: (client, message) => run(client, message),
 } as Command<'fun'>;
 
-const run = async (message: Message) => {
+const run = async (client: Semblance, message: Message) => {
   if (!cooldownHandler.get(message.author.id) && !message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES))
     cooldownHandler.set(message.author.id, Date.now());
   else if ((Date.now() - cooldownHandler.get(message.author.id)) / 1000 < 5) {
@@ -30,7 +30,7 @@ const run = async (message: Message) => {
     cooldownHandler.set(message.author.id, Date.now());
   }
 
-  const statsHandler = await Game.findOne({ player: message.author.id }),
+  const statsHandler = await client.db.game.findUnique({ where: { player: message.author.id } }),
     embed = new MessageEmbed();
   let cost: number;
   if (!statsHandler)
@@ -66,15 +66,15 @@ const run = async (message: Message) => {
         },
         {
           name: 'Next Upgrade Cost',
-          value: (await currentPrice(statsHandler)).toFixed(3).toString(),
+          value: (await currentPrice(client, statsHandler)).toFixed(3).toString(),
         },
         {
           name: 'Idle Profit',
-          value: statsHandler.idleProfit.toFixed(3).toString(),
+          value: statsHandler.profitRate.toFixed(3).toString(),
         },
       ])
       .setFooter('Remember to vote for Semblance to gain a production boost!'),
-      (cost = await currentPrice(statsHandler));
+      (cost = await currentPrice(client, statsHandler));
 
   const components = [
     new MessageActionRow().addComponents(

@@ -16,6 +16,9 @@
       "outDir": "dist/",
       "baseUrl": ".",
       "paths": {
+        "*": [
+          "lib/interfaces/*"
+        ],
         "#src/*": ["./src/*"],
         "#lib/*": ["./lib/*"],
         "#structures/*": ["./src/structures/*"],

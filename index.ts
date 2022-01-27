@@ -6,7 +6,7 @@ await import('#config');
 import { Semblance } from '#structures/Semblance';
 // import { Client } from 'twitter.js';
 import { Intents, LimitedCollection, Options } from 'discord.js';
-import { checkTweet, playerUpdate, userVote } from '#events/index';
+import { checkTweet } from '#events/index';
 const client = new Semblance({
   allowedMentions: { parse: [] },
   makeCache: Options.cacheWithLimits({
@@ -36,8 +36,8 @@ const client = new Semblance({
 import fastify from 'fastify';
 const app = fastify();
 // Database connection import
-import mongoose from 'mongoose';
-import '#models/index';
+// import mongoose from 'mongoose';
+// import '#models/index';
 
 // Listen to client events
 import * as fs from 'fs/promises';
@@ -60,8 +60,8 @@ for (const file of eventFiles) {
 // }
 
 // Listen to model events
-playerUpdate(client);
-userVote(client);
+// playerUpdate(client);
+// userVote(client);
 
 import router from '#src/routing/routes/index';
 router(app, client);
@@ -73,8 +73,8 @@ app.get('/', (_req, res) => {
 // Check for Tweet from ComputerLunch
 setInterval(() => checkTweet(client), 2000);
 // TODO: remove this really shitty implementation of receiving tweets
-
-await mongoose.connect(process.env.mongoDBKey);
+// TODO: get rid of mongoose implementations
+// await mongoose.connect(process.env.mongoDBKey);
 await client.login(process.env.token);
 const address = await app.listen(8079, '0.0.0.0');
 console.log('Semblance has started on: ' + address);

@@ -3,6 +3,7 @@ import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
+import { LeaderboardUtilities } from '#src/structures/LeaderboardUtilities';
 
 export default {
   description: 'Get a list of the top voters of the month.',
@@ -13,7 +14,7 @@ export default {
 } as Command<'semblance'>;
 
 const run = async (client: Semblance, message: Message) => {
-  let leaderboard = client.voteLeaderboard.toString();
+  let leaderboard = await LeaderboardUtilities.topTwenty(client, 'vote');
   if (!leaderboard) leaderboard = "No one has voted for Semblance :( (or the leaderboard just didn't update)";
   const embed = new MessageEmbed()
     .setTitle('Voting Leaderboard')

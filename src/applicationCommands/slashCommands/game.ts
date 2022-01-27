@@ -1,14 +1,13 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
 import { currentPrice } from '#constants/commands';
-import { Game } from '#models/Game';
 import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
 
 export default {
   permissionRequired: 0,
-  run: async interaction => {
+  run: async (interaction, { client }) => {
     const { user } = interaction;
-    const statsHandler = await Game.findOne({ player: user.id }),
+    const statsHandler = await client.db.game.findUnique({ where: { player: user.id } }),
       embed = new MessageEmbed();
     let cost: number;
     if (!statsHandler)
@@ -44,15 +43,15 @@ export default {
           },
           {
             name: 'Next Upgrade Cost',
-            value: (await currentPrice(statsHandler)).toFixed(3).toString(),
+            value: (await currentPrice(client, statsHandler)).toFixed(3).toString(),
           },
           {
             name: 'Idle Profit',
-            value: statsHandler.idleProfit.toFixed(3).toString(),
+            value: statsHandler.profitRate.toFixed(3).toString(),
           },
         ])
         .setFooter('Remember to vote for Semblance to gain a production boost!'),
-        (cost = await currentPrice(statsHandler));
+        (cost = await currentPrice(client, statsHandler));
 
     const components = [
       new MessageActionRow().addComponents(

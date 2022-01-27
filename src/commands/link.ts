@@ -1,4 +1,3 @@
-import { UserData } from '#models/UserData';
 import { c2sGuildId } from '#config';
 import { Collection } from 'discord.js';
 import { createHmac } from 'crypto';
@@ -43,30 +42,29 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
   if (failed) return;
   const [playerId, playerToken] = args;
   const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
-  const dataAlreadyExists = await UserData.findOne({ token });
+  const dataAlreadyExists = await client.db.userData.findUnique({ where: { token } });
   if (dataAlreadyExists)
     return message.channel.send(
       'The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(SirH).',
     );
-  const updatedUser = !!(await UserData.findOneAndUpdate(
-    { discordId: message.author.id },
-    { $set: { token, edited_timestamp: Date.now() } },
-    { new: true },
-  ));
+
+  const updatedUser = await client.db.userData.update({ where: { discord_id: message.author.id }, data: { token } });
   if (updatedUser) {
     console.log(`${message.author.tag}(${message.author.id}) successfully linked their C2S data.`);
     return message.channel.send(
       'The link was successful, now you can use the Discord button in-game to upload your progress.',
     );
   }
-  const newUser = new UserData({ token, discordId: message.author.id });
-  newUser.save(function (err) {
-    if (err)
-      return message.channel.send(
-        "An error occured, either you provided incorrect input or something randomly didn't want to work.",
-      );
-    message.channel.send(
-      'The link was successful, now you can use the Discord button in-game to upload your progress.',
-    );
+
+  const newUser = await client.db.userData.create({
+    data: {
+      token,
+      discord_id: message.author.id,
+    },
   });
+  if (!newUser)
+    return message.channel.send(
+      "An error occured, either you provided incorrect input or something randomly didn't want to work.",
+    );
+  message.channel.send('The link was successful, now you can use the Discord button in-game to upload your progress.');
 };

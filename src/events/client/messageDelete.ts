@@ -1,5 +1,4 @@
 import { bugChannels, correctReportList } from '#constants/index';
-import { Report } from '#models/Report';
 import { c2sGuildId } from '#config';
 import { promisify } from 'util';
 import type { Semblance } from '#structures/Semblance';
@@ -21,6 +20,11 @@ export const messageDelete = async (message: Message | PartialMessage, client: S
   )
     return;
   await wait(3000);
-  const report = await Report.findOne({ messageId: message.id });
+  // const report = await Report.findOne({ messageId: message.id });
+  const report = await client.db.report.findFirst({
+    where: {
+      messageId: message.id,
+    },
+  });
   if (report) correctReportList(client, message, message.id);
 };

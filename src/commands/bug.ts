@@ -10,11 +10,11 @@ import {
   GuildChannel,
   Snowflake,
 } from 'discord.js';
-import { Report, ReportFormat } from '#models/Report';
 import { sirhGuildId, c2sGuildId } from '#config';
 import { getPermissionLevel, randomColor, bugChannels, prefix } from '#constants/index';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
+import type { Report } from '@prisma/client';
 // TODO: replace this GOD awful report command with a report slash command instead of this
 const cooldown = new Collection<Snowflake, number>();
 
@@ -161,7 +161,7 @@ async function report(message: Message, content: string, client: Semblance) {
     );
   else if (!userCooldown ?? Date.now() - userCooldown > 1000 * 60 * 5) cooldown.set(message.author.id, Date.now());
 
-  const reportHandler = await Report.find({}),
+  const reportHandler = await client.db.report.findMany({}),
     totalReports = reportHandler.length;
   const currentBugId = totalReports + 1;
   const embed = new MessageEmbed()
@@ -213,13 +213,13 @@ async function report(message: Message, content: string, client: Semblance) {
   let reportURL = '';
   (message.guild!.channels.cache.get(bugChannels.queue) as TextChannel)!.send({ embeds: [embed] }).then(async msg => {
     // <-- #bug-approval-queue channel in C2S
-    const report = new Report({
-      User: message.author.id,
-      bugId: currentBugId,
-      messageId: msg.id,
-      channelId: msg.channel.id,
+    await client.db.report.create({
+      data: {
+        userId: message.author.id,
+        messageId: msg.id,
+        channelId: msg.channel.id,
+      },
     });
-    await report.save();
     reportURL = msg.url;
   });
   message.delete();
@@ -252,8 +252,9 @@ async function bug(client: Semblance, message: Message, permissionLevel: number,
       }, 5000);
       message.delete();
     });
-  report = await Report.findOne({ bugId: providedId as unknown as number });
-  if (!report && !!providedId.match(/\d{17,21}/)) report = await Report.findOne({ messageId: providedId });
+  report = await client.db.report.findUnique({ where: { bugId: Number(providedId) } });
+  if (!report && !!providedId.match(/\d{17,21}/))
+    report = await client.db.report.findFirst({ where: { messageId: providedId } });
   if (!report)
     return message.reply("The Id you specified doesn't exist.").then(msg => {
       setTimeout(() => {
@@ -285,10 +286,10 @@ async function bug(client: Semblance, message: Message, permissionLevel: number,
 async function addAttachment(
   client: Semblance,
   message: Message,
-  report: ReportFormat,
+  report: Report,
   attachment: MessageAttachment | string | null,
 ) {
-  if (getPermissionLevel(message.member as GuildMember) == 0 && report.User != message.author.id)
+  if (getPermissionLevel(message.member as GuildMember) == 0 && report.userId != message.author.id)
     return message.reply("You don't have permission to add attachments to other people's reports.");
   if (!attachment) return message.reply("You didn't send any attachment nor a link");
   else if (typeof attachment == 'string') {
@@ -337,7 +338,7 @@ async function addAttachment(
   }
 }
 
-async function deleteReproduce(message: Message, report: ReportFormat, args: string[]) {
+async function deleteReproduce(message: Message, report: Report, args: string[]) {
   (message.guild!.channels.cache.get(report.channelId) as TextChannel)!.messages
     .fetch(report.messageId, { cache: false })
     .then(msg => {
@@ -359,7 +360,7 @@ async function deleteReproduce(message: Message, report: ReportFormat, args: str
     .catch(err => console.log(err));
 }
 
-async function addReproduce(message: Message, report: ReportFormat, specifications: string[]) {
+async function addReproduce(message: Message, report: Report, specifications: string[]) {
   specifications = specifications
     .slice(2)
     .join(' ')
@@ -415,35 +416,43 @@ async function fixUpReports(
   client: Semblance,
   message: Message,
   channel: TextChannel,
-  report: ReportFormat,
+  report: Report,
   reason = 'unspecified',
   approved: boolean,
 ) {
   (message.guild.channels.cache.get(bugChannels.queue) as TextChannel).messages
     .fetch(report.messageId, { cache: false }) // <-- #bug-approval-queue channel from C2S
     .then(async msg => {
-      const user = await client.users.fetch(report.User);
+      const user = await client.users.fetch(report.userId);
       if (approved) {
         const m = await channel.send({
           embeds: [msg.embeds[0].setColor('#17DB4A').addField('Approval Message', reason)],
         });
-        await Report.findOneAndUpdate(
-          { messageId: report.messageId },
-          { $set: { messageId: m.id, channelId: m.channel.id } },
-          { new: true },
-        );
+        await client.db.report.updateMany({
+          where: {
+            messageId: report.messageId,
+          },
+          data: {
+            messageId: m.id,
+            channelId: m.channel.id,
+          },
+        });
       } else {
         await user.send({
           embeds: [msg.embeds[0].setColor('#D72020').addField('Denial Message', reason)],
         }); // <-- Denied Reports
-        await Report.findOneAndDelete({ messageId: report.messageId });
+        await client.db.report.deleteMany({
+          where: {
+            messageId: report.messageId,
+          },
+        });
       }
       msg.delete();
     })
     .catch((err: Error) => console.log(`Approval/Denial had an issue due to:\n${err}`));
 }
 
-async function attachmentFieldCorrection(client: Semblance, message: Message, report: ReportFormat, item: string) {
+async function attachmentFieldCorrection(client: Semblance, message: Message, report: Report, item: string) {
   let attachmentURL = '',
     creationFailed = false,
     attachment: object | MessageAttachment = {};

@@ -5,9 +5,10 @@ import { prefix } from '#constants/index';
 import { handleBoosterReward, handleReminder } from '#constants/models';
 import type { EventHandler } from '#lib/interfaces/Semblance';
 import { readdir } from 'fs/promises';
-import { Reminder } from '#models/Reminder';
-import type { ReminderFormat } from '#models/Reminder';
-import { BoosterRewards } from '#models/BoosterRewards';
+import { Reminder } from '@prisma/client';
+// import { Reminder } from '#models/Reminder';
+// import type { ReminderFormat } from '#models/Reminder';
+// import { BoosterRewards } from '#models/BoosterRewards';
 const { Events } = Constants;
 
 export default {
@@ -56,18 +57,16 @@ export const ready = async (client: Semblance) => {
   );
 
   /* Reminder scheduling */
-  const reminders = await Reminder.find({});
-  reminders.forEach((reminderData: ReminderFormat) => {
+  const reminders = (await client.db.reminder.findMany({})) as unknown as Reminder[];
+  reminders.forEach(reminderData => {
     reminderData.reminders.forEach(reminder => {
-      schedule.scheduleJob(new Date(reminder.time), () => handleReminder(client, reminderData, reminder));
+      schedule.scheduleJob(reminder.time, () => handleReminder(client, reminderData, reminder));
     });
   });
 
   /* Booster rewards scheduling */
-  const boosterRewards = await BoosterRewards.find({});
+  const boosterRewards = await client.db.boosterReward.findMany({});
   boosterRewards.forEach(boosterReward => {
-    schedule.scheduleJob(new Date(boosterReward.rewardingDate), () => handleBoosterReward(client, boosterReward));
+    schedule.scheduleJob(boosterReward.rewardingDate, () => handleBoosterReward(client, boosterReward));
   });
-
-  await client.initializeLeaderboards();
 };

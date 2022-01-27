@@ -1,4 +1,3 @@
-import { Votes, Game } from '#models/index';
 import type { DiscordsRequest } from '#lib/interfaces/discords';
 import type { Semblance } from '#structures/Semblance';
 import type { FastifyReply } from 'fastify';
@@ -14,35 +13,68 @@ export class Discords extends VoteHandler {
     const user = await this.client.users.fetch(vote.user, { cache: false });
 
     console.log(`${user.tag} just voted!`);
-    let playerData = await Game.findOne({ player: vote.user });
+    // let playerData = await Game.findOne({ player: vote.user });
+    const playerProfit = await this.client.db.game.findUnique({
+      select: {
+        profitRate: true,
+      },
+      where: { player: vote.user },
+    });
 
-    if (playerData)
-      playerData = await Game.findOneAndUpdate(
-        { player: vote.user },
-        {
-          $set: {
-            money: playerData.money + playerData.idleProfit * (3600 * 6),
+    const playerData = await this.client.db.game
+      .update({
+        where: {
+          player: vote.user,
+        },
+        data: {
+          money: {
+            increment: playerProfit.profitRate * 3600 * 6,
           },
         },
-        { new: true },
-      );
+      })
+      .catch(() => {
+        return;
+      });
+
+    // if (playerData)
+    //   playerData = await Game.findOneAndUpdate(
+    //     { player: vote.user },
+    //     {
+    //       $set: {
+    //         money: playerData.money + playerData.idleProfit * earningsBonus,
+    //       },
+    //     },
+    //     { new: true },
+    //   );
 
     this.sendVotedEmbed(user ?? vote.user, `Thanks for voting for Semblance on ${this.votingSite}!! :D`, {
       hasGame: !!playerData,
     });
 
-    let votingUser = await Votes.findOne({ user: user.id });
-    if (votingUser)
-      votingUser = await Votes.findOneAndUpdate(
-        { user: user.id },
-        { $set: { voteCount: votingUser.voteCount + 1 } },
-        { new: true },
-      );
-    else {
-      votingUser = new Votes({ user: user.id });
-      await votingUser.save();
-    }
-    Votes.emit('userVote', votingUser);
+    // let votingUser = await Votes.findOne({ user: user.id });
+    // if (votingUser)
+    //   votingUser = await Votes.findOneAndUpdate(
+    //     { user: user.id },
+    //     { $set: { voteCount: votingUser.voteCount + 1 } },
+    //     { new: true },
+    //   );
+    // else {
+    //   votingUser = new Votes({ user: user.id });
+    //   await votingUser.save();
+    // }
+    await this.client.db.vote.upsert({
+      where: {
+        userId: user.id,
+      },
+      create: {
+        userId: user.id,
+      },
+      update: {
+        voteCount: {
+          increment: 1,
+        },
+      },
+    });
 
     return reply.code(200).send({ success: true });
   }
