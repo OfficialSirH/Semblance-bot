@@ -21,7 +21,7 @@ const run = async (client: Semblance, message: Message) => {
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setDescription(
       'The Metabit Calculator supports Scientific Notation, which means you can type numbers like 1E25, as well as names for numbers like million all the way to vigintillion;' +
-        ` Use ${prefix} largenumbers to get more info on large numbers.`,
+        ` Use $${prefix}largenumbers to get more info on large numbers.`,
     )
     .addFields(
       {

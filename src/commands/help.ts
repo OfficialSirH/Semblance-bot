@@ -16,7 +16,7 @@ export default {
 const run = async (client: Semblance, message: Message) => {
   const c2sServerCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'c2sServer')
-    .map(key => `**${prefix} ${key}**`);
+    .map(key => `**$${prefix}${key}**`);
   const embed = new MessageEmbed()
     .setTitle('Semblance Command List')
     .setColor(randomColor)
@@ -38,7 +38,7 @@ const run = async (client: Semblance, message: Message) => {
       },
     )
     .setFooter(
-      `Stay Cellular! If you really like the work I've done to Semblance, then check out ${prefix} patreon :D`,
+      `Stay Cellular! If you really like the work I've done to Semblance, then check out $${prefix}patreon :D`,
     );
   const components = [
     new MessageActionRow().addComponents([

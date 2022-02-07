@@ -197,9 +197,41 @@ export const roles = {
   helper: Permissions.FLAGS.MANAGE_MESSAGES,
   duty: Permissions.FLAGS.MUTE_MEMBERS,
 };
+export const c2sRolesInformation = {
+  server: {
+    councilOverseer:
+      'The overseers of the Cell to Singularity server, they manage everything that goes on in the Discord community and aim to make more improvements.',
+    martianCouncil: "The moderators of the Cell to Singularity server, they're tasked for moderating the server.",
+    alumniDev: 'contributed to the development of the game or server.',
+    fanArtist: "gotten their fan art tweeted by the team's Community Manager.",
+    serverEvents: 'receive pings for events happening on the server.',
+    feliform: 'participated on the feliforms team during the Feliforms vs. Caniforms event.',
+    caniform: 'participated on the caniforms team during the Feliforms vs. Caniforms event.',
+  },
+  simulation: {
+    finderOfSemblancesSecrets: 'found all the secrets in the game.',
+    sharkCollector: 'collected all the sharks in the game.',
+    sonicSpeedsterOfSimulations: 'reached singularity withn 2 minutes.',
+    simulationSpeedster: 'reached singularity within 5 minutes.',
+    betaTester: 'is/was beta tester of a private beta.',
+  },
+  metabit: {
+    realityLegend: 'achieved 100 trillion metabits',
+    realityExpert: 'achieved 1 trillion metabits',
+    realityExplorer: 'achieved 1 billion metabits',
+  },
+  mesozoic: {
+    paleontologistLegend: 'reached prestige 10',
+    progressivePaleontologist: 'reached prestige 1',
+    paleontologist: 'reached rank 26',
+  },
+  beyond: {
+    planetaryExplorer: 'reached rank 15',
+  },
+};
 export const c2sRoles = {
   dev: '493796775132528640' as RoleResolvable,
-  realityExperts: '499316778426433538' as RoleResolvable,
+  realityExpert: '499316778426433538' as RoleResolvable,
   martianCouncil: '535129309648781332' as RoleResolvable,
   betaTester: '564870410227679254' as RoleResolvable,
   CouncilOverseer: '567039914294771742' as RoleResolvable,

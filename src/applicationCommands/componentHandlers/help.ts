@@ -88,7 +88,7 @@ async function help(interaction: MessageComponentInteraction, components: Messag
     user = interaction.user;
   const c2sServerCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'c2sServer')
-    .map(key => `**${prefix} ${key}**`);
+    .map(key => `**${prefix}${key}**`);
   components[0].components = [
     new MessageButton()
       .setCustomId(
@@ -154,9 +154,7 @@ async function help(interaction: MessageComponentInteraction, components: Messag
         ].join(' '),
       },
     )
-    .setFooter(
-      `Stay Cellular! If you really like the work I've done to Semblance, then check out ${prefix} patreon :D`,
-    );
+    .setFooter(`Stay Cellular! If you really like the work I've done to Semblance, then check out ${prefix}patreon :D`);
   await interaction.update({ embeds: [embed], components });
 }
 
@@ -164,7 +162,7 @@ async function ahelp(interaction: MessageComponentInteraction, components: Messa
   const client = interaction.client as Semblance;
   const adminCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'admin')
-    .map(key => `**${prefix} ${key}**`);
+    .map(key => `**${prefix}${key}**`);
   const embed = new MessageEmbed()
     .setColor(randomColor)
     .setTitle('**-> Admin Commands**')
@@ -226,17 +224,17 @@ async function itemhelp(interaction: MessageComponentInteraction, components: Me
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
     .setDescription(
-      `The item calculator's command is done by doing ${prefix} itemcalc <item name> <item level> <current lvl> or ${prefix} itemcalcrev <item name> <currency input> <current lvl>` +
+      `The item calculator's command is done by doing ${prefix}itemcalc <item name> <item level> <current lvl> or ${prefix}itemcalcrev <item name> <currency input> <current lvl>` +
         ", which any name that has more than one word has to include '-', for example: martian-factory.",
     )
     .addFields(
       {
         name: 'itemcalc example',
-        value: `${prefix} itemcalc dna 100 58, this example is taking "dna" to get the specific cost for dna, then "100" is used to specify what level you're trying to calculate, finally, "58" specifies the current level the item is at.`,
+        value: `${prefix}itemcalc dna 100 58, this example is taking "dna" to get the specific cost for dna, then "100" is used to specify what level you're trying to calculate, finally, "58" specifies the current level the item is at.`,
       },
       {
         name: 'itemcalcrev example',
-        value: `${prefix} itemcalcrev martian-factory 1E48 148, this example uses the martian-factory for calculating the item's specific cost, then "1E48" is fossil input for how many fossils you're "spending", finally, "148" is your current level of the item you specified.`,
+        value: `${prefix}itemcalcrev martian-factory 1E48 148, this example uses the martian-factory for calculating the item's specific cost, then "1E48" is fossil input for how many fossils you're "spending", finally, "148" is your current level of the item you specified.`,
       },
     )
     .setFooter('Item Calculator goes brrrr...');
@@ -282,7 +280,7 @@ async function metahelp(interaction: MessageComponentInteraction, components: Me
     .setAuthor(user.tag, user.displayAvatarURL())
     .setDescription(
       'The Metabit Calculator supports Scientific Notation, which means you can type numbers like 1E25, as well as names for numbers like million all the way to vigintillion;' +
-        ` Use ${prefix} largenumbers to get more info on large numbers.`,
+        ` Use ${prefix}largenumbers to get more info on large numbers.`,
     )
     .addFields(
       {
@@ -297,11 +295,11 @@ async function metahelp(interaction: MessageComponentInteraction, components: Me
       },
       {
         name: 'metacalc example',
-        value: `${prefix} metacalc 1E23 1.59E49, this example shows 1E23 entropy and 1.59E49 ideas being used for input.`,
+        value: `${prefix}metacalc 1E23 1.59E49, this example shows 1E23 entropy and 1.59E49 ideas being used for input.`,
       },
       {
         name: 'metacalcrev example',
-        value: `${prefix} metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`,
+        value: `${prefix}metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`,
       },
     )
     .setFooter('Metabit Calculator goes brrr.');
@@ -317,16 +315,16 @@ async function mischelp(
     user = interaction.user;
   const serverCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'server')
-      .map(key => `**${prefix} ${key}**`),
+      .map(key => `**${prefix}${key}**`),
     funCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'fun')
-      .map(key => `**${prefix} ${key}**`),
+      .map(key => `**${prefix}${key}**`),
     utilityCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'utility')
-      .map(key => `**${prefix} ${key}**`),
+      .map(key => `**${prefix}${key}**`),
     semblanceCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'semblance')
-      .map(key => `**${prefix} ${key}**`);
+      .map(key => `**${prefix}${key}**`);
   components[0].components = [
     new MessageButton()
       .setCustomId(
@@ -376,7 +374,7 @@ async function calchelp(interaction: MessageComponentInteraction, components: Me
     user = interaction.user,
     calculatorCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'calculator')
-      .map(key => `**${prefix} ${key}**`);
+      .map(key => `**${prefix}${key}**`);
   components[0].components = [
     new MessageButton()
       .setCustomId(

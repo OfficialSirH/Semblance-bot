@@ -2,7 +2,7 @@ import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import type { Message, Snowflake } from 'discord.js';
 import { currentLogo, c2sGuildId } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-import { c2sRoles } from '#constants/index';
+import { c2sRoles, c2sRolesInformation } from '#constants/index';
 
 export default {
   description: 'see the list of available roles for the c2s server',
@@ -19,12 +19,36 @@ const run = async (message: Message) => {
       .setThumbnail(currentLogo.name)
       .setDescription(
         [
-          '**Reality Expert**: This role is gained upon sending a screenshot of 1 trillion accumulated metabits from your ***stats page*** to <#496430259114082304>.',
-          "**Paleontologist**: This role is gained once you've unlocked and sent a screenshot of the T-rex to <#496430259114082304>.",
-          "**Beta Tester**: This role is gained when you've joined and sent proof of being part of the beta program for C2S to <#496430259114082304>.",
-          "**Server Events**: This role can be obtained by pressing the button below, which this role means you'll get pinged for events happening in the server.",
-          "**Martian Council**: This role is ***unobtainable*** as it's a moderator role so please stop asking how to get this role.",
-          '**All of the other new roles**: https://canary.discord.com/channels/488478892873744385/496430259114082304/892369818387365910',
+          [
+            '**Server Roles**\n',
+            ...Object.keys(c2sRolesInformation.server).map(
+              role => `<@${c2sRoles[role]}>: ${c2sRolesInformation.server[role]}`,
+            ),
+          ].join('\n'),
+          [
+            '**Simulation Roles**\n',
+            ...Object.keys(c2sRolesInformation.simulation).map(
+              role => `<@${c2sRoles[role]}>: ${c2sRolesInformation.simulation[role]}`,
+            ),
+          ].join('\n'),
+          [
+            '**Metabit Roles**\n',
+            ...Object.keys(c2sRolesInformation.metabit).map(
+              role => `<@${c2sRoles[role]}>: ${c2sRolesInformation.metabit[role]}`,
+            ),
+          ].join('\n'),
+          [
+            '**Mesozoic Valley Roles**\n',
+            ...Object.keys(c2sRolesInformation.mesozoic).map(
+              role => `<@${c2sRoles[role]}>: ${c2sRolesInformation.mesozoic[role]}`,
+            ),
+          ].join('\n'),
+          [
+            '**Beyond Roles**\n',
+            ...Object.keys(c2sRolesInformation.beyond).map(
+              role => `<@${c2sRoles[role]}>: ${c2sRolesInformation.beyond[role]}`,
+            ),
+          ].join('\n'),
         ].join('\n\n'),
       )
       .setFooter('*Epic* roles.'),

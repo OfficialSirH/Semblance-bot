@@ -42,7 +42,7 @@ export const messageCreate = async (message: Message, client: Semblance) => {
     ) {
       return void message.reply(
         "Heyyo, I'm Semblance! I provide as much info as I possibly can for the simulation so you'll never be clueless in your adventure! " +
-          ` you can either use \`/help query: *type anything here*\` or use ${prefix} help. Have fun and stay cellular!`,
+          ` you can either use \`/help query: *type anything here*\` or use $${prefix}help. Have fun and stay cellular!`,
       );
     }
   }
