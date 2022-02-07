@@ -1,7 +1,7 @@
 import type { TwitterJSEventHandler } from '#lib/interfaces/Semblance';
 import type { Semblance } from '#structures/Semblance';
 import type { Tweet } from 'twitter.js';
-import type { TextBasedChannels } from 'discord.js';
+import type { TextBasedChannel } from 'discord.js';
 import { ClientEvents } from 'twitter.js';
 import { c2sGuildId, sirhGuildId, lunchGuildId } from '#config';
 
@@ -13,13 +13,13 @@ export default {
 export const filteredTweetCreate = async (client: Semblance, tweet: Tweet) => {
   const c2sTwitterChannel = client.guilds.cache
       .get(c2sGuildId)
-      .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannels,
+      .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannel,
     sirhTwitterChannel = client.guilds.cache
       .get(sirhGuildId)
-      .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannels,
+      .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannel,
     computerLunchTwitterChannel = client.guilds.cache
       .get(lunchGuildId)
-      .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannels,
+      .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannel,
     tweetMessage = `Hey! **${tweet.author.username}** just posted a new Tweet!\nhttps://twitter.com/${tweet.author.name}/status/${tweet.id}`;
   c2sTwitterChannel.send(tweetMessage);
   sirhTwitterChannel.send(tweetMessage);

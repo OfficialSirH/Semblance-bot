@@ -4,14 +4,22 @@ import type { Semblance } from '#structures/Semblance';
 import { MessageEmbed, User } from 'discord.js';
 import { sirhGuildId } from '#config';
 import { randomColor } from '#constants/index';
+import type { FastifyReply } from 'fastify';
+import type { BoatsRequest } from 'discordBoats';
+import type { DBLRequest } from 'discordBotList';
+import type { DLSRequest } from 'discordListSpace';
+import type { DiscordsRequest } from 'discords';
+import type { TGGRequest } from 'topGG';
+
+type AvailableRequests = BoatsRequest | DBLRequest | DLSRequest | DiscordsRequest | TGGRequest;
 
 export class VoteHandler {
   readonly client: Semblance;
   readonly votingSite: string;
 
-  constructor(_client: Semblance, _votingSite: string) {
-    this.client = _client;
-    this.votingSite = _votingSite;
+  constructor(client: Semblance, votingSite: string) {
+    this.client = client;
+    this.votingSite = votingSite;
   }
 
   get voteChannel() {
@@ -43,5 +51,68 @@ export class VoteHandler {
     else embed.setAuthor(`<@${user}>`).setFooter(`<@${user}> has voted.`);
 
     return this.voteChannel.send({ embeds: [embed] });
+  }
+
+  public async handle(request: AvailableRequests, reply: FastifyReply): Promise<FastifyReply> {
+    const vote = request.body;
+    if ('type' in vote && vote.type === 'test') {
+      console.log('Test vote received');
+      return reply.code(200).send({
+        success: true,
+        message: 'Test vote received',
+      });
+    }
+
+    let userId: Snowflake;
+    if ('user' in vote && typeof vote.user == 'string') userId = vote.user;
+    else if ('user' in vote && typeof vote.user == 'object') userId = vote.user.id;
+    else if ('id' in vote) userId = vote.id;
+
+    const user = await this.client.users.fetch(userId, { cache: false });
+
+    console.log(`${user.tag} just voted!`);
+    const earningsBonus = 'isWeekend' in vote && vote.isWeekend ? 3600 * 12 : 3600 * 6;
+    const playerProfit = await this.client.db.game.findUnique({
+      select: {
+        profitRate: true,
+      },
+      where: { player: user.id },
+    });
+
+    const playerData = await this.client.db.game
+      .update({
+        where: {
+          player: user.id,
+        },
+        data: {
+          money: {
+            increment: playerProfit.profitRate * earningsBonus,
+          },
+        },
+      })
+      .catch(() => {
+        return;
+      });
+
+    this.sendVotedEmbed(user ?? user.id, `Thanks for voting for Semblance on ${this.votingSite}!! :D`, {
+      hasGame: !!playerData,
+      weekendBonus: 'isWeekend' in vote ? vote.isWeekend : false,
+    });
+
+    await this.client.db.vote.upsert({
+      where: {
+        userId: user.id,
+      },
+      create: {
+        userId: user.id,
+      },
+      update: {
+        voteCount: {
+          increment: 1,
+        },
+      },
+    });
+
+    return reply.code(200).send({ success: true });
   }
 }

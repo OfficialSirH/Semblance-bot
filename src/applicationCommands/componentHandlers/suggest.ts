@@ -1,5 +1,5 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
-import type { TextBasedChannels } from 'discord.js';
+import type { TextBasedChannel } from 'discord.js';
 import { MessageActionRow, MessageEmbed } from 'discord.js';
 
 export default {
@@ -22,7 +22,7 @@ export default {
           'Note: This does not mean that your suggestion is guranteed to be added in the game or implemented into the server(depending on the type of suggestion). ' +
           'It just means that your suggestion has been accepted into being shown in the suggestions channel where the team may consider your suggestion.',
       );
-      return (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannels).send({
+      return (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannel).send({
         embeds: [
           new MessageEmbed()
             .setAuthor(user.tag, user.displayAvatarURL())

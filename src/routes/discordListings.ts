@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import type { Semblance } from '#structures/Semblance';
-import { DiscordBoats, DiscordBotList, DiscordListSpace, Discords, TopGG } from '#routing/handlers/index';
+import { VoteHandler } from '#src/structures/VoteHandler';
 import type { WebhookPayload } from '@top-gg/sdk';
 import type { DiscordsVote } from '#lib/interfaces/discords';
 import type { DBLVote } from '#lib/interfaces/discordBotList';
@@ -8,11 +8,11 @@ import type { DLSVote } from '#lib/interfaces/discordListSpace';
 import type { BoatsVote } from '#lib/interfaces/discordBoats';
 
 export default function (app: FastifyInstance, client: Semblance) {
-  const discordBoats = new DiscordBoats(client);
-  const discordBotList = new DiscordBotList(client);
-  const discordListSpace = new DiscordListSpace(client);
-  const discords = new Discords(client);
-  const topGG = new TopGG(client);
+  const discordBoats = new VoteHandler(client, 'discord.boats');
+  const discordBotList = new VoteHandler(client, 'discordbotlist.com');
+  const discordListSpace = new VoteHandler(client, 'discordlist.space');
+  const discords = new VoteHandler(client, 'discords.com');
+  const topGG = new VoteHandler(client, 'top.gg');
 
   app.route<{
     Body: WebhookPayload;

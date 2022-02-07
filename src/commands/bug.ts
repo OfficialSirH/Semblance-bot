@@ -7,7 +7,6 @@ import {
   Message,
   TextChannel,
   GuildMember,
-  GuildChannel,
   Snowflake,
 } from 'discord.js';
 import { sirhGuildId, c2sGuildId } from '#config';
@@ -186,11 +185,7 @@ async function report(message: Message, content: string, client: Semblance) {
   let attachmentURL = 'none';
   if (message.attachments.size > 0) {
     const attachment = new MessageAttachment(message.attachments.map(a => a)[0].proxyURL, 'Image.png');
-    (
-      client.guilds.cache
-        .get(sirhGuildId)
-        ?.channels.cache.find((c: GuildChannel) => c.name == 'image-storage') as TextChannel
-    )
+    (client.guilds.cache.get(sirhGuildId)?.channels.cache.find(c => c.name == 'image-storage') as TextChannel)
       ?.send({ files: [attachment] })
       .then(msg => (attachmentURL = msg.attachments.map(a => a)[0].proxyURL));
     const videoType = ['.mov', '.mp4', '.mkv', '.webm'],

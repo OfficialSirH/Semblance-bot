@@ -1,5 +1,5 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
-import type { TextBasedChannels } from 'discord.js';
+import type { TextBasedChannel } from 'discord.js';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 
 export default {
@@ -45,7 +45,7 @@ export default {
           ),
       ]);
 
-    (interaction.guild.channels.cache.find(c => c.name == 'suggestion-review') as TextBasedChannels).send({
+    (interaction.guild.channels.cache.find(c => c.name == 'suggestion-review') as TextBasedChannel).send({
       embeds: [embed],
       components: [component],
     });

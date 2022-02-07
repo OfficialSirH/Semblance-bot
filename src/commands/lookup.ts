@@ -1,7 +1,7 @@
 ﻿import { fetch } from '#lib/utils/fetch';
 import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
 import * as constants from '#constants/index';
-import type { Message, MessageOptions, Snowflake, TextBasedChannels, TextChannel, User } from 'discord.js';
+import type { Message, MessageOptions, Snowflake, TextBasedChannel, TextChannel, User } from 'discord.js';
 import type { Semblance } from '#structures/Semblance';
 import type { Command } from '#lib/interfaces/Semblance';
 import type { APIInvite, ChannelType, APIUser } from 'discord-api-types';
@@ -213,7 +213,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
   );
 };
 
-const send = (channel: TextBasedChannels, options: string | MessageOptions) => channel.send(options);
+const send = (channel: TextBasedChannel, options: string | MessageOptions) => channel.send(options);
 
 interface BotBlock extends APIUser {
   owners: string[];

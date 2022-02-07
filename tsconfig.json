@@ -25,7 +25,7 @@
         "#models/*": ["./src/models/*"],
         "#events/*": ["./src/events/*"],
         "#constants/*": ["./src/constants/*"],
-        "#routing/*": ["./src/routing/*"],
+        "#routes/*": ["src/routes/*"],
         "#config": ["./config"],
         "#itemList": ["./lib/utils/itemList"]
       },
