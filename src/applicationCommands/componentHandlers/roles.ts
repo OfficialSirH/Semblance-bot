@@ -34,13 +34,13 @@ export default {
       ];
     const message = interaction.message as Message;
     if (action == 'add-events') {
-      await (member.roles as GuildMemberRoleManager).add(c2sRoles.serverEvents);
+      await (member.roles as GuildMemberRoleManager).add(c2sRoles.server.serverEvents);
       await interaction.reply({
         content: "Server Events role successfully added! Now you'll receive notifications for our server events! :D",
         ephemeral: true,
       });
     } else if (action == 'remove-events') {
-      await (member.roles as GuildMemberRoleManager).remove(c2sRoles.serverEvents);
+      await (member.roles as GuildMemberRoleManager).remove(c2sRoles.server.serverEvents);
       await interaction.reply({
         content:
           "Server Events role successfully removed. You'll stop receiveing notifications for our server events. :(",
