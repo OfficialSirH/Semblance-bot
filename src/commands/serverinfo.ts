@@ -68,6 +68,6 @@ const run = async (client: Semblance, message: Message, args: string[], { permis
       { name: 'Roles', value: roleCount.toString(), inline: true },
       { name: 'Role List', value: canRoleListWork, inline: false },
     ])
-    .setFooter(`Id: ${guild.id} | Server Created: ${serverCreated}`);
+    .setFooter({ text: `Id: ${guild.id} | Server Created: ${serverCreated}` });
   message.channel.send({ embeds: [embed] });
 };

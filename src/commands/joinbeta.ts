@@ -22,7 +22,7 @@ const run = async (client: Semblance, message: Message) => {
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
-    .setFooter(`Called by ${message.author.tag}`)
+    .setFooter({ text: `Called by ${message.author.tag}` })
     .setDescription(infoHandler.value);
   message.channel.send({ embeds: [embed], files: [currentLogo] });
 };

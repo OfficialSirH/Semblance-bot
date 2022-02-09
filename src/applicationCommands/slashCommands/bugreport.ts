@@ -71,7 +71,7 @@ async function report(client: Semblance, interaction: CommandInteraction): Promi
           { name: 'Operating System', value: os },
           { name: 'Game Version', value: version },
         ])
-        .setFooter(`Bug ID: #${newBugId}`)
+        .setFooter({ text: `Bug ID: #${newBugId}` })
         .setTimestamp(Date.now()),
     ],
   });

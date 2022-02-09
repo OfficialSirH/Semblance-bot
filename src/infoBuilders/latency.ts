@@ -17,6 +17,6 @@ export const build: QueriedInfoBuilder = interaction => {
           client.ws.ping,
         )}ms\` \n **Bot Uptime:** \`${duration}\``,
       )
-      .setFooter(`Why do this to me ${interaction.user.tag}`, userAvatar);
+      .setFooter({ text: `Why do this to me ${interaction.user.tag}`, iconURL: userAvatar });
   return { embeds: [embed] };
 };

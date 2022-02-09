@@ -74,7 +74,7 @@ export default {
         .setColor(randomColor)
         .setThumbnail(client.user.displayAvatarURL())
         .setDescription(pageDetails)
-        .setFooter(`Page ${chosenPage} out of ${numOfPages}`);
+        .setFooter({ text: `Page ${chosenPage} out of ${numOfPages}` });
     interaction.update({ embeds: [embed], components });
   },
 } as ComponentHandler;

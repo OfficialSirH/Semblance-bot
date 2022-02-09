@@ -180,7 +180,7 @@ async function report(message: Message, content: string, client: Semblance) {
         value: 'Currently no one else has reproduced this bug.',
       },
     )
-    .setFooter(`#${currentBugId}`)
+    .setFooter({ text: `#${currentBugId}` })
     .setTimestamp(Date.now());
   let attachmentURL = 'none';
   if (message.attachments.size > 0) {

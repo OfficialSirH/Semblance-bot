@@ -83,7 +83,7 @@ async function create(interaction: CommandInteraction, client: Semblance) {
         Date.now() + totalTime,
       )}\n **Reminder**: ${reminder}`,
     )
-    .setFooter(`Command called by ${user.tag}`, user.displayAvatarURL());
+    .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
   await interaction.reply({ embeds: [embed] });
 
   if (currentReminderData) {
@@ -215,7 +215,7 @@ async function edit(interaction: CommandInteraction, client: Semblance) {
         updatedReminder.message
       }`,
     )
-    .setFooter(`Command called by ${user.tag}`, user.displayAvatarURL());
+    .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
   await interaction.reply({ embeds: [embed] });
 }
 
@@ -257,7 +257,7 @@ async function deleteReminder(interaction: CommandInteraction, client: Semblance
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
     .setDescription(`Your reminder to remind you about: ${deletedReminder.message}\n has been deleted successfully`)
-    .setFooter(`Command called by ${user.tag}`, user.displayAvatarURL());
+    .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
   await interaction.reply({ embeds: [embed] });
 }
 
@@ -287,6 +287,6 @@ async function list(interaction: CommandInteraction, client: Semblance) {
         )
         .join('\n\n'),
     )
-    .setFooter(`Command called by ${user.tag}`, user.displayAvatarURL());
+    .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
   await interaction.reply({ embeds: [embed] });
 }

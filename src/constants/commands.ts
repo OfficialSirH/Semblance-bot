@@ -50,7 +50,7 @@ export const correctReportList = async function (
       embeds: [
         msg.embeds[0]
           .setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nBug Id: #${report.bugId - 1}`, author.iconURL)
-          .setFooter(`#${report.bugId - 1}`),
+          .setFooter({ text: `#${report.bugId - 1}` }),
       ],
     });
   });
@@ -224,7 +224,7 @@ export const messageLinkJump = async (input: string, user: User, currentGuild: G
     .setThumbnail(user.displayAvatarURL())
     .setDescription(msg.content)
     .addField('Jump', `[Go to message!](${msg.url})`)
-    .setFooter(`#${(msg.channel as GuildChannel).name} quoted by ${user.tag}`)
+    .setFooter({ text: `#${(msg.channel as GuildChannel).name} quoted by ${user.tag}` })
     .setTimestamp(msg.createdTimestamp);
   if (msg.embeds[0] && attachmentLink == null) {
     const title = msg.embeds[0].title ? msg.embeds[0].title : 'no title';

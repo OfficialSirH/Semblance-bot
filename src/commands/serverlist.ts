@@ -79,6 +79,6 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())
       .setDescription(pageDetails)
-      .setFooter(`Page ${chosenPage} out of ${numOfPages}`);
+      .setFooter({ text: `Page ${chosenPage} out of ${numOfPages}` });
   message.channel.send({ embeds: [embed], components });
 };

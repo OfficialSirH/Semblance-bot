@@ -154,7 +154,9 @@ async function help(interaction: MessageComponentInteraction, components: Messag
         ].join(' '),
       },
     )
-    .setFooter(`Stay Cellular! If you really like the work I've done to Semblance, then check out ${prefix}patreon :D`);
+    .setFooter({
+      text: `Stay Cellular! If you really like the work I've done to Semblance, then check out ${prefix}patreon :D`,
+    });
   await interaction.update({ embeds: [embed], components });
 }
 

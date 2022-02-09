@@ -11,7 +11,7 @@ export const build: QueriedInfoBuilder = async (interaction, client) => {
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
-    .setFooter(`Called by ${interaction.user.tag}`)
+    .setFooter({ text: `Called by ${interaction.user.tag}` })
     .setDescription(infoHandler.value);
   return { embeds: [embed], files: [currentLogo] };
 };

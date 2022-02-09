@@ -26,6 +26,6 @@ const run = async (client: Semblance, message: Message) => {
           client.ws.ping,
         )}ms\` \n **Bot Uptime:** \`${duration}\``,
       )
-      .setFooter(`Why do this to me ${message.author.tag}`, userAvatar);
+      .setFooter({ text: `Why do this to me ${message.author.tag}`, iconURL: userAvatar });
   message.channel.send({ embeds: [embed] });
 };
