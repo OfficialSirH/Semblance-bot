@@ -24,31 +24,31 @@ const run = async (client: Semblance, message: Message) => {
           [
             '**Server Roles**\n',
             ...Object.keys(c2sRolesInformation.server).map(
-              role => `${guildRoles.get(role).name}: ${c2sRolesInformation.server[role]}`,
+              role => `${guildRoles.get(c2sRoles[role]).name}: ${c2sRolesInformation.server[role]}`,
             ),
           ].join('\n'),
           [
             '**Simulation Roles**\n',
             ...Object.keys(c2sRolesInformation.simulation).map(
-              role => `${guildRoles.get(role).name}: ${c2sRolesInformation.simulation[role]}`,
+              role => `${guildRoles.get(c2sRoles[role]).name}: ${c2sRolesInformation.simulation[role]}`,
             ),
           ].join('\n'),
           [
             '**Metabit Roles**\n',
             ...Object.keys(c2sRolesInformation.metabit).map(
-              role => `${guildRoles.get(role).name}: ${c2sRolesInformation.metabit[role]}`,
+              role => `${guildRoles.get(c2sRoles[role]).name}: ${c2sRolesInformation.metabit[role]}`,
             ),
           ].join('\n'),
           [
             '**Mesozoic Valley Roles**\n',
             ...Object.keys(c2sRolesInformation.mesozoic).map(
-              role => `${guildRoles.get(role).name}: ${c2sRolesInformation.mesozoic[role]}`,
+              role => `${guildRoles.get(c2sRoles[role]).name}: ${c2sRolesInformation.mesozoic[role]}`,
             ),
           ].join('\n'),
           [
             '**Beyond Roles**\n',
             ...Object.keys(c2sRolesInformation.beyond).map(
-              role => `${guildRoles.get(role).name}: ${c2sRolesInformation.beyond[role]}`,
+              role => `${guildRoles.get(c2sRoles[role]).name}: ${c2sRolesInformation.beyond[role]}`,
             ),
           ].join('\n'),
         ].join('\n\n'),

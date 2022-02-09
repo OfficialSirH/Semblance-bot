@@ -5,7 +5,6 @@ import type {
   MessageActionRow,
   MessageButton,
   MessageComponentInteraction,
-  RoleResolvable,
   Snowflake,
   User,
 } from 'discord.js';
@@ -229,7 +228,7 @@ export const c2sRolesInformation = {
     planetaryExplorer: 'reached rank 15',
   },
 };
-export const c2sRoles: Record<string, RoleResolvable> = {
+export const c2sRoles = {
   dev: '493796775132528640',
   councilOverseer: '567039914294771742',
   martianCouncil: '535129309648781332',
