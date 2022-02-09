@@ -196,7 +196,7 @@ export const roles = {
   helper: Permissions.FLAGS.MANAGE_MESSAGES,
   duty: Permissions.FLAGS.MUTE_MEMBERS,
 };
-export const c2sRolesInformation = {
+export const c2sRolesInformation: Record<keyof typeof c2sRoles, object> = {
   server: {
     councilOverseer:
       'The overseers of the Cell to Singularity server, they manage everything that goes on in the Discord community and aim to make more improvements.',
@@ -204,59 +204,65 @@ export const c2sRolesInformation = {
     alumniDev: 'contributed to the development of the game or server.',
     fanArtist: "gotten their fan art tweeted by the team's Community Manager.",
     serverEvents: 'receive pings for events happening on the server.',
-    feliform: 'participated on the feliforms team during the Feliforms vs. Caniforms event.',
-    caniform: 'participated on the caniforms team during the Feliforms vs. Caniforms event.',
-  },
+    feliforms: 'participated on the feliforms team during the Feliforms vs. Caniforms event.',
+    caniforms: 'participated on the caniforms team during the Feliforms vs. Caniforms event.',
+  } as typeof c2sRoles.server,
   simulation: {
     finderOfSemblancesSecrets: 'found all the secrets in the game.',
     sharkCollector: 'collected all the sharks in the game.',
     sonicSpeedsterOfSimulations: 'reached singularity withn 2 minutes.',
     simulationSpeedster: 'reached singularity within 5 minutes.',
     betaTester: 'is/was beta tester of a private beta.',
-  },
+  } as typeof c2sRoles.simulation,
   metabit: {
     realityLegend: 'achieved 100 trillion metabits',
     realityExpert: 'achieved 1 trillion metabits',
     realityExplorer: 'achieved 1 billion metabits',
-  },
+  } as typeof c2sRoles.metabit,
   mesozoic: {
     paleontologistLegend: 'reached prestige 10',
     progressivePaleontologist: 'reached prestige 1',
     paleontologist: 'reached rank 26',
-  },
+  } as typeof c2sRoles.mesozoic,
   beyond: {
     planetaryExplorer: 'reached rank 15',
-  },
+  } as typeof c2sRoles.beyond,
 };
 export const c2sRoles = {
-  dev: '493796775132528640',
-  councilOverseer: '567039914294771742',
-  martianCouncil: '535129309648781332',
-  alumniDev: '739233828064722965',
-  fanArtist: '762382937668714528',
-  serverEvents: '776980182070067211',
-  feliforms: '808580140262359041',
-  caniforms: '808580036022108202',
-  eventOrganizer: '778927954763841546',
-  monthlyContestWinner: '643528653883441203',
-  serverBooster: '660930089990488099',
-  muted: '718796622867464198',
-
-  finderOfSemblancesSecrets: '892352829640032306',
-  sharkCollector: '892352933478400041',
-  sonicSpeedsterOfSimulations: '892353085425459210',
-  simulationSpeedster: '892355042865192980',
-  betaTester: '564870410227679254',
-
-  realityLegend: '892353216094814268',
-  realityExpert: '892353419409518604',
-  realityExplorer: '499316778426433538',
-
-  paleontologistLegend: '892352619526377473',
-  progressivePaleontologist: '892353322026160138',
-  paleontologist: '657305968442474502',
-
-  planetaryExplorer: '922176303153696768',
+  server: {
+    dev: '493796775132528640',
+    councilOverseer: '567039914294771742',
+    martianCouncil: '535129309648781332',
+    alumniDev: '739233828064722965',
+    fanArtist: '762382937668714528',
+    serverEvents: '776980182070067211',
+    feliforms: '808580140262359041',
+    caniforms: '808580036022108202',
+    eventOrganizer: '778927954763841546',
+    monthlyContestWinner: '643528653883441203',
+    serverBooster: '660930089990488099',
+    muted: '718796622867464198',
+  },
+  simulation: {
+    finderOfSemblancesSecrets: '892352829640032306',
+    sharkCollector: '892352933478400041',
+    sonicSpeedsterOfSimulations: '892353085425459210',
+    simulationSpeedster: '892355042865192980',
+    betaTester: '564870410227679254',
+  },
+  metabit: {
+    realityLegend: '892353216094814268',
+    realityExpert: '892353419409518604',
+    realityExplorer: '499316778426433538',
+  },
+  mesozoic: {
+    paleontologistLegend: '892352619526377473',
+    progressivePaleontologist: '892353322026160138',
+    paleontologist: '657305968442474502',
+  },
+  beyond: {
+    planetaryExplorer: '922176303153696768',
+  },
 };
 export const cellChannels = [
   '488478893586645004', // cells-chat
