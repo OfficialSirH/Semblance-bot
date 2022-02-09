@@ -26,6 +26,6 @@ export const build: QueriedInfoBuilder = interaction => {
         " In case someone uses the British format for these names, please note that these are in US format, so they aren't the exact same as yours and if you would like to know what the names are in US format" +
         ', click [here](http://www.thealmightyguru.com/Pointless/BigNumbers.html)',
     )
-    .setFooter('Large Numbers go brrrr...');
+    .setFooter({ text: 'Large Numbers go brrrr...' });
   return { embeds: [embed], files: [currentLogo] };
 };

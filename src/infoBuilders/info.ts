@@ -62,7 +62,7 @@ export const build: QueriedInfoBuilder = async interaction => {
         inline: true,
       },
     )
-    .setFooter('The all powerful Semblance has spoken!');
+    .setFooter({ text: 'The all powerful Semblance has spoken!' });
 
   if (client.shard)
     embed.addField(

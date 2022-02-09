@@ -81,6 +81,6 @@ export const build: QueriedInfoBuilder = interaction => {
         inline: true,
       },
     ])
-    .setFooter('Thanks to Jojoseis#0001 for making this guide! :D');
+    .setFooter({ text: 'Thanks to Jojoseis#0001 for making this guide! :D' });
   return { embeds: [embed], files: [currentLogo] };
 };

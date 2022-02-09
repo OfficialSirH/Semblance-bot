@@ -37,6 +37,6 @@ export const build: QueriedInfoBuilder = () => {
         ].join('\n'),
       ].join('\n\n'),
     )
-    .setFooter('Thanks to Jojoseis#0001 for making the Singularity Speedrun Guide');
+    .setFooter({ text: 'Thanks to Jojoseis#0001 for making the Singularity Speedrun Guide' });
   return { embeds: [embed], files: [currentLogo] };
 };

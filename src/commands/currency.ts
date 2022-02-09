@@ -76,6 +76,6 @@ const run = async (message: Message) => {
       },
     )
     .setImage(currency.name)
-    .setFooter('Thanks to Off Pringles#8141 for making this visual representation of currency');
+    .setFooter({ text: 'Thanks to Off Pringles#8141 for making this visual representation of currency' });
   message.channel.send({ embeds: [embed], files: [currentLogo, currency] });
 };

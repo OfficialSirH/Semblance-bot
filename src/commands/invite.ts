@@ -22,6 +22,6 @@ const run = (client: Semblance, message: Message) => {
       `Invite me to your server be clicking [here](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot+applications.commands).` +
         '\n\n[Semblance Support server](https://discord.gg/XFMaTn6taf)',
     )
-    .setFooter('Spread the word about Semblance!');
+    .setFooter({ text: 'Spread the word about Semblance!' });
   message.author.send({ embeds: [embed] }).catch(() => message.reply("I can't DM you!"));
 };

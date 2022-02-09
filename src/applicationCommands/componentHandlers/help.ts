@@ -211,7 +211,7 @@ async function c2shelp(interaction: MessageComponentInteraction, components: Mes
       { name: '\u200b', value: '\u200b' },
       { name: 'Other/Extras', value: otherCommands, inline: true },
     ])
-    .setFooter('C2S for the win!');
+    .setFooter({ text: 'C2S for the win!' });
   await interaction.update({ embeds: [embed], components });
 }
 
@@ -237,7 +237,7 @@ async function itemhelp(interaction: MessageComponentInteraction, components: Me
         value: `${prefix}itemcalcrev martian-factory 1E48 148, this example uses the martian-factory for calculating the item's specific cost, then "1E48" is fossil input for how many fossils you're "spending", finally, "148" is your current level of the item you specified.`,
       },
     )
-    .setFooter('Item Calculator goes brrrr...');
+    .setFooter({ text: 'Item Calculator goes brrrr...' });
   await interaction.update({ embeds: [embed], components });
 }
 
@@ -266,7 +266,7 @@ async function largenumbers(interaction: MessageComponentInteraction, components
         " In case someone uses the British format for these names, please note that these are in US format, so they aren't the exact same as yours and if you would like to know what the names are in US format" +
         ', click [here](http://www.thealmightyguru.com/Pointless/BigNumbers.html)',
     )
-    .setFooter('Large Numbers go brrrr...');
+    .setFooter({ text: 'Large Numbers go brrrr...' });
   await interaction.update({ embeds: [embed], components });
 }
 
@@ -302,7 +302,7 @@ async function metahelp(interaction: MessageComponentInteraction, components: Me
         value: `${prefix}metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`,
       },
     )
-    .setFooter('Metabit Calculator goes brrr.');
+    .setFooter({ text: 'Metabit Calculator goes brrr.' });
   await interaction.update({ embeds: [embed], components });
 }
 
@@ -595,6 +595,6 @@ async function mesoguide(interaction: MessageComponentInteraction, components: M
         inline: true,
       },
     ])
-    .setFooter('Thanks to Jojoseis#0001 for making this guide! :D');
+    .setFooter({ text: 'Thanks to Jojoseis#0001 for making this guide! :D' });
   await interaction.update({ embeds: [embed], components });
 }

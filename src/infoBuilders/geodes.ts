@@ -14,6 +14,6 @@ export const build: QueriedInfoBuilder = interaction => {
         "which rank 4 is shown instead of 1 because the diamond geode isn't unlocked until rank 4. " +
         "By the shown results within this image, it's highly recommended to get geodes at rank 50 for the greatest rewards for the same price as rank 4.",
     )
-    .setFooter('Diamond Geodes for da win!');
+    .setFooter({ text: 'Diamond Geodes for da win!' });
   return { embeds: [embed], files: [currentLogo, geodeImage] };
 };

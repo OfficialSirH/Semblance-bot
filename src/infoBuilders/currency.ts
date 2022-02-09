@@ -67,6 +67,6 @@ export const build: QueriedInfoBuilder = interaction => {
       },
     )
     .setImage(currency.name)
-    .setFooter('Thanks to Off Pringles#8141 for making this visual representation of currency');
+    .setFooter({ text: 'Thanks to Off Pringles#8141 for making this visual representation of currency' });
   return { embeds: [embed], files: [currentLogo, currency] };
 };

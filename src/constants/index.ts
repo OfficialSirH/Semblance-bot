@@ -229,22 +229,35 @@ export const c2sRolesInformation = {
     planetaryExplorer: 'reached rank 15',
   },
 };
-export const c2sRoles = {
-  dev: '493796775132528640' as RoleResolvable,
-  realityExpert: '499316778426433538' as RoleResolvable,
-  martianCouncil: '535129309648781332' as RoleResolvable,
-  betaTester: '564870410227679254' as RoleResolvable,
-  CouncilOverseer: '567039914294771742' as RoleResolvable,
-  monthlyContestWinner: '643528653883441203' as RoleResolvable,
-  paleontologist: '657305968442474502' as RoleResolvable,
-  serverBooster: '660930089990488099' as RoleResolvable,
-  muted: '718796622867464198' as RoleResolvable,
-  alumniDev: '739233828064722965' as RoleResolvable,
-  fanArtist: '762382937668714528' as RoleResolvable,
-  serverEvents: '776980182070067211' as RoleResolvable,
-  eventOrganizer: '778927954763841546' as RoleResolvable,
-  caniforms: '808580036022108202' as RoleResolvable,
-  feliforms: '808580140262359041' as RoleResolvable,
+export const c2sRoles: Record<string, RoleResolvable> = {
+  dev: '493796775132528640',
+  councilOverseer: '567039914294771742',
+  martianCouncil: '535129309648781332',
+  alumniDev: '739233828064722965',
+  fanArtist: '762382937668714528',
+  serverEvents: '776980182070067211',
+  feliforms: '808580140262359041',
+  caniforms: '808580036022108202',
+  eventOrganizer: '778927954763841546',
+  monthlyContestWinner: '643528653883441203',
+  serverBooster: '660930089990488099',
+  muted: '718796622867464198',
+
+  finderOfSemblancesSecrets: '892352829640032306',
+  sharkCollector: '892352933478400041',
+  sonicSpeedsterOfSimulations: '892353085425459210',
+  simulationSpeedster: '892355042865192980',
+  betaTester: '564870410227679254',
+
+  realityLegend: '892353216094814268',
+  realityExpert: '892353419409518604',
+  realityExplorer: '499316778426433538',
+
+  paleontologistLegend: '892352619526377473',
+  progressivePaleontologist: '892353322026160138',
+  paleontologist: '657305968442474502',
+
+  planetaryExplorer: '922176303153696768',
 };
 export const cellChannels = [
   '488478893586645004', // cells-chat

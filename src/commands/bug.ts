@@ -97,7 +97,7 @@ async function help(message: Message, permissionLevel: number) {
     .setColor(randomColor)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setDescription(description.join('\n'))
-    .setFooter("That's a feature, not a bug!");
+    .setFooter({ text: "That's a feature, not a bug!" });
   message.channel.send({ embeds: [embed] });
 }
 
@@ -232,7 +232,7 @@ async function report(message: Message, content: string, client: Semblance) {
             "**attach either an image or video(must be under 50 MB) with your attach command if the optional choices aren't available**",
           ].join('\n'),
         )
-        .setFooter('Thank you for your considerable help towards Cell to Singularity, we appreciate it. :)'),
+        .setFooter({ text: 'Thank you for your considerable help towards Cell to Singularity, we appreciate it. :)' }),
     ],
   });
 }

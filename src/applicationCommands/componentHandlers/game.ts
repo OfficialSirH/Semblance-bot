@@ -231,7 +231,7 @@ async function create(client: Semblance, interaction: MessageComponentInteractio
         `Starting Profits: ${creationHandler.profitRate.toFixed(3)}/sec\n\n` +
         "Reminder, don't be constantly spamming and creating a new game just cause your RNG stats aren't perfect \n",
     )
-    .setFooter('Enjoy idling!');
+    .setFooter({ text: 'Enjoy idling!' });
   components = components.map(c => {
     c.components = c.components.map((b: MessageButton) =>
       b.label == 'Collect' || b.label == 'Stats' ? b.setDisabled(false) : b,
@@ -255,7 +255,7 @@ async function about(interaction: MessageComponentInteraction, components: Messa
         'within this game is the cost multiplier per upgrade, starting profits, and the amount your profits increase.\n\n' +
         'You have to collect Random-Bucks manually every once in a while, that is how the game works.',
     )
-    .setFooter('Noice');
+    .setFooter({ text: 'Noice' });
   await interaction.update({ embeds: [embed], components });
 }
 
@@ -362,7 +362,7 @@ async function leaderboard(
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(`${leaderboard}`)
-    .setFooter('May the odds be with you.');
+    .setFooter({ text: 'May the odds be with you.' });
   await interaction.update({ embeds: [embed], components });
 }
 
@@ -414,7 +414,7 @@ async function stats(
       },
       { name: 'Idle Profit', value: game.profitRate.toFixed(3).toString() },
     ])
-    .setFooter('Remember to vote for Semblance to gain a production boost!');
+    .setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' });
   await interaction.update({ embeds: [embed], components });
 }
 

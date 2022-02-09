@@ -35,6 +35,6 @@ export const build: QueriedInfoBuilder = interaction => {
         'From cell to singularity \n' +
         'Playing our parts in the greatest show',
     )
-    .setFooter('Let the hunger gam-- I mean Limericks Contest- begin!');
+    .setFooter({ text: 'Let the hunger gam-- I mean Limericks Contest- begin!' });
   return { embeds: [embed], files: [currentLogo] };
 };

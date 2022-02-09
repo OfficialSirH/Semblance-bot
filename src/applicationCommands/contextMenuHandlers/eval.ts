@@ -25,7 +25,7 @@ export const run = async (
   const embed = new MessageEmbed()
     .setColor(randomColor)
     .addField('📥 Input', `\`\`\`js\n${content.substring(0, 1015)}\`\`\``)
-    .setFooter('Feed me code!');
+    .setFooter({ text: 'Feed me code!' });
   try {
     let evaled = eval(`(async () => { ${content} })().catch(e => { return "Error: " + e })`);
     Promise.resolve(evaled).then(async result => {

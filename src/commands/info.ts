@@ -70,7 +70,7 @@ const run = async (client: Semblance, message: Message) => {
         inline: true,
       },
     )
-    .setFooter('The all powerful Semblance has spoken!');
+    .setFooter({ text: 'The all powerful Semblance has spoken!' });
 
   if (client.shard)
     embed.addField(

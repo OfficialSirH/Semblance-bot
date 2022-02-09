@@ -50,7 +50,7 @@ export default {
             value: statsHandler.profitRate.toFixed(3).toString(),
           },
         ])
-        .setFooter('Remember to vote for Semblance to gain a production boost!'),
+        .setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' }),
         (cost = await currentPrice(client, statsHandler));
 
     const components = [

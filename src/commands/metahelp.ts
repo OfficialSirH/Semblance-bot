@@ -43,6 +43,6 @@ const run = async (client: Semblance, message: Message) => {
         value: `${prefix}metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`,
       },
     )
-    .setFooter('Metabit Calculator goes brrr.');
+    .setFooter({ text: 'Metabit Calculator goes brrr.' });
   message.channel.send({ embeds: [embed], files: [currentLogo] });
 };

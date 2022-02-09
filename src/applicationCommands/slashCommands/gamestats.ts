@@ -37,7 +37,7 @@ export default {
         { name: 'Next Upgrade Cost', value: nxtUpgrade.toString() },
         { name: 'Idle Profit', value: statsHandler.profitRate.toString() },
       ])
-      .setFooter('Remember to vote for Semblance to gain a production boost!');
+      .setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' });
     return interaction.reply({ embeds: [embed] });
   },
 } as SlashCommand;

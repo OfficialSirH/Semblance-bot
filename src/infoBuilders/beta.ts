@@ -10,6 +10,6 @@ export const build: QueriedInfoBuilder = async (_, client) => {
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setDescription(infoHandler.value)
-    .setFooter('New stuff do be epicc');
+    .setFooter({ text: 'New stuff do be epicc' });
   return { embeds: [embed], files: [currentLogo] };
 };

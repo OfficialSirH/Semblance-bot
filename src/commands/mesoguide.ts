@@ -92,6 +92,6 @@ const run = async (message: Message) => {
         inline: true,
       },
     ])
-    .setFooter('Thanks to Jojoseis#0001 for making this guide! :D');
+    .setFooter({ text: 'Thanks to Jojoseis#0001 for making this guide! :D' });
   message.channel.send({ embeds: [embed], files: [currentLogo] });
 };

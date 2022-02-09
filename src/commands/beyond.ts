@@ -51,7 +51,7 @@ async function clips(message: Message) {
         '[Clip Eleven](https://clips.twitch.tv/ConfidentTallAniseSpicyBoy-zSeEcUibWET5R4pc)',
       ].join('\n'),
     )
-    .setFooter('Patience for The Beyond is key');
+    .setFooter({ text: 'Patience for The Beyond is key' });
   message.channel.send({ embeds: [embed] });
 }
 
@@ -65,7 +65,7 @@ async function beyondCounter(message: Message) {
         1635971517445,
       )}`,
     )
-    .setFooter('Since')
+    .setFooter({ text: 'Since' })
     .setTimestamp(1611959542848);
   message.channel.send({ embeds: [embed] });
 }
@@ -76,6 +76,8 @@ function testerCredits(message: Message) {
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(earlyBeyondTesters.join('\n'))
-    .setFooter('Thank you Early Private Beta Testers for helping the ComputerLunch team with testing The Beyond! :D');
+    .setFooter({
+      text: 'Thank you Early Private Beta Testers for helping the ComputerLunch team with testing The Beyond! :D',
+    });
   message.channel.send({ embeds: [embed] });
 }

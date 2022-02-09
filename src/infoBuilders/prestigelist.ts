@@ -10,6 +10,6 @@ export const build: QueriedInfoBuilder = interaction => {
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setImage(prestigeList.name)
-    .setFooter('Thanks to Hardik for this lovely list of Prestige :D');
+    .setFooter({ text: 'Thanks to Hardik for this lovely list of Prestige :D' });
   return { embeds: [embed], files: [currentLogo, prestigeList] };
 };

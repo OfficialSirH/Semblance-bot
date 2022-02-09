@@ -21,6 +21,6 @@ const run = async (client: Semblance, message: Message) => {
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(leaderboard)
-    .setFooter('Vote for Semblance on the listed sites in the vote command');
+    .setFooter({ text: 'Vote for Semblance on the listed sites in the vote command' });
   message.channel.send({ embeds: [embed] });
 };

@@ -6,6 +6,7 @@ import { currentLogo, c2sGuildId } from '#config';
 
 export const build: QueriedInfoBuilder = interaction => {
   const member = interaction.member as GuildMember;
+  const guildRoles = interaction.client.guilds.cache.get(c2sGuildId).roles.cache;
 
   const embed = new MessageEmbed()
       .setTitle('C2S Roles')
@@ -16,36 +17,36 @@ export const build: QueriedInfoBuilder = interaction => {
           [
             '**Server Roles**\n',
             ...Object.keys(c2sRolesInformation.server).map(
-              role => `<@${c2sRoles[role]}>: ${c2sRolesInformation.server[role]}`,
+              role => `${guildRoles.get(role).name}: ${c2sRolesInformation.server[role]}`,
             ),
           ].join('\n'),
           [
             '**Simulation Roles**\n',
             ...Object.keys(c2sRolesInformation.simulation).map(
-              role => `<@${c2sRoles[role]}>: ${c2sRolesInformation.simulation[role]}`,
+              role => `${guildRoles.get(role).name}: ${c2sRolesInformation.simulation[role]}`,
             ),
           ].join('\n'),
           [
             '**Metabit Roles**\n',
             ...Object.keys(c2sRolesInformation.metabit).map(
-              role => `<@${c2sRoles[role]}>: ${c2sRolesInformation.metabit[role]}`,
+              role => `${guildRoles.get(role).name}: ${c2sRolesInformation.metabit[role]}`,
             ),
           ].join('\n'),
           [
             '**Mesozoic Valley Roles**\n',
             ...Object.keys(c2sRolesInformation.mesozoic).map(
-              role => `<@${c2sRoles[role]}>: ${c2sRolesInformation.mesozoic[role]}`,
+              role => `${guildRoles.get(role).name}: ${c2sRolesInformation.mesozoic[role]}`,
             ),
           ].join('\n'),
           [
             '**Beyond Roles**\n',
             ...Object.keys(c2sRolesInformation.beyond).map(
-              role => `<@${c2sRoles[role]}>: ${c2sRolesInformation.beyond[role]}`,
+              role => `${guildRoles.get(role).name}: ${c2sRolesInformation.beyond[role]}`,
             ),
           ].join('\n'),
         ].join('\n\n'),
       )
-      .setFooter('*Epic* roles.'),
+      .setFooter({ text: '*Epic* roles.' }),
     hasServerEvents = member.roles.cache.has(c2sRoles.serverEvents as Snowflake),
     components = [
       new MessageActionRow().addComponents([

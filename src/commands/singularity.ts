@@ -47,6 +47,6 @@ const run = async (message: Message) => {
         ].join('\n'),
       ].join('\n\n'),
     )
-    .setFooter('Thanks to Jojoseis#0001 for making the Singularity Speedrun Guide');
+    .setFooter({ text: 'Thanks to Jojoseis#0001 for making the Singularity Speedrun Guide' });
   message.channel.send({ embeds: [embed], files: [currentLogo] });
 };

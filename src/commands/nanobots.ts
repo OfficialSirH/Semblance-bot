@@ -29,6 +29,8 @@ const run = async (message: Message) => {
         "or you want to speed through the advancements you'll have to make sure your camera is covering the region or item you want upgraded.",
       ].join(' '),
     )
-    .setFooter('Thanks to SampeDrako for creating this beautifully better designed image representing nanobots!');
+    .setFooter({
+      text: 'Thanks to SampeDrako for creating this beautifully better designed image representing nanobots!',
+    });
   message.channel.send({ embeds: [embed], files: [currentLogo, nanobots] });
 };

@@ -97,7 +97,7 @@ async function report(client: Semblance, interaction: CommandInteraction): Promi
             'You can add attachments to your report with `/bugreport attach` to help the devs see what exactly needs to be looked at.',
           ].join('\n'),
         )
-        .setFooter('The ComputerLunch team appreciate your help with our game, Thank you.'),
+        .setFooter({ text: 'The ComputerLunch team appreciate your help with our game, Thank you.' }),
     ],
     ephemeral: true,
   });

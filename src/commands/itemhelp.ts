@@ -33,6 +33,6 @@ const run = async (client: Semblance, message: Message) => {
         value: `$${prefix}itemcalcrev martian-factory 1E48 148, this example uses the martian-factory for calculating the item's specific cost, then "1E48" is fossil input for how many fossils you're "spending", finally, "148" is your current level of the item you specified.`,
       },
     )
-    .setFooter('Item Calculator goes brrrr...');
+    .setFooter({ text: 'Item Calculator goes brrrr...' });
   message.channel.send({ embeds: [embed], files: [currentLogo] });
 };

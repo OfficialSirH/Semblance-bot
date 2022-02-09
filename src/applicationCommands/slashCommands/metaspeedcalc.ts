@@ -70,7 +70,9 @@ export default {
             `Production/Total Multiplier: x${bigToName(num)}`,
           ].join('\n'),
         )
-        .setFooter('P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2105%.');
+        .setFooter({
+          text: 'P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2105%.',
+        });
     return interaction.reply({ embeds: [embed] });
   },
 } as SlashCommand;

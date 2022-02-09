@@ -27,6 +27,6 @@ const run = async (client: Semblance, message: Message) => {
       { name: '\u200b', value: '\u200b' },
       { name: 'Other/Extras', value: otherCommands, inline: true },
     ])
-    .setFooter('C2S for the win!');
+    .setFooter({ text: 'C2S for the win!' });
   message.channel.send({ embeds: [embed], files: [currentLogo] });
 };

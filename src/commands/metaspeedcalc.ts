@@ -80,6 +80,8 @@ const run = async (message: Message, args: string[]) => {
         `Production/Total Multiplier: x${bigToName(num)}`,
       ].join('\n'),
     )
-    .setFooter('P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2105%.');
+    .setFooter({
+      text: 'P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2105%.',
+    });
   message.channel.send({ embeds: [embed] });
 };

@@ -13,7 +13,7 @@ export const build: QueriedInfoBuilder = interaction => {
         1635971517445,
       )}`,
     )
-    .setFooter('Since')
+    .setFooter({ text: 'Since' })
     .setTimestamp(1611959542848);
   return { embeds: [embed] };
 };

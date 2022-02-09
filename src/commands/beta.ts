@@ -21,6 +21,6 @@ const run = async (client: Semblance, message: Message) => {
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setDescription(infoHandler.value)
-    .setFooter('New stuff do be epicc');
+    .setFooter({ text: 'New stuff do be epicc' });
   message.channel.send({ embeds: [embed], files: [currentLogo] });
 };

@@ -11,6 +11,6 @@ export const build: QueriedInfoBuilder = async (_, client) => {
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
     .setDescription(leaderboard)
-    .setFooter('Vote for Semblance on the listed sites in the vote command');
+    .setFooter({ text: 'Vote for Semblance on the listed sites in the vote command' });
   return { embeds: [embed] };
 };
