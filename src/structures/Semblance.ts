@@ -10,14 +10,10 @@ import type {
 import type { ClientOptions } from 'discord.js';
 import { Client, Collection } from 'discord.js';
 import * as fs from 'fs';
-// import { GameLeaderboard, VoteLeaderboard } from '#structures/index';
-// import { Game, Votes } from '#models/index';
 import prisma from '@prisma/client';
 
 export class Semblance extends Client {
   private _db: prisma.PrismaClient;
-  // private _gameLeaderboard: GameLeaderboard;
-  // private _voteLeaderboard: VoteLeaderboard;
   private _componentHandlers: Collection<string, ComponentHandler>;
   private _contextMenuHandlers: Collection<string, ContextMenuHandler>;
   private _autocompleteHandlers: Collection<string, AutocompleteHandler>;
@@ -85,31 +81,11 @@ export class Semblance extends Client {
           if (commandFile.aliases) for (const alias of commandFile.aliases) this._aliases[alias] = fileName;
         }
     });
-
-    // this._gameLeaderboard = new GameLeaderboard(this);
-    // this._voteLeaderboard = new VoteLeaderboard(this);
   }
 
   public get db() {
     return this._db;
   }
-
-  // public async initializeLeaderboards() {
-  //   const gameData = await Game.find({}),
-  //     voteData = await Votes.find({});
-  //   console.log('Fetched all game and vote data');
-  //   await this._gameLeaderboard.initialize(gameData);
-  //   await this._voteLeaderboard.initialize(voteData);
-  //   console.log('Initialized game and vote leaderboard');
-  // }
-
-  // public get gameLeaderboard() {
-  //   return this._gameLeaderboard;
-  // }
-
-  // public get voteLeaderboard() {
-  //   return this._voteLeaderboard;
-  // }
 
   public get autocompleteHandlers() {
     return this._autocompleteHandlers;

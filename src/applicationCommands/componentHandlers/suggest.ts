@@ -19,7 +19,7 @@ export default {
     if (action == 'accept') {
       user.send(
         'Your suggestion has been accepted! ' +
-          'Note: This does not mean that your suggestion is guranteed to be added in the game or implemented into the server(depending on the type of suggestion). ' +
+          'Note: This does not mean that your suggestion is guaranteed to be added in the game or implemented into the server(depending on the type of suggestion). ' +
           'It just means that your suggestion has been accepted into being shown in the suggestions channel where the team may consider your suggestion.',
       );
       return (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannel).send({
