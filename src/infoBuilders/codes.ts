@@ -1,12 +1,12 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
-import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
+import { Embed, MessageActionRow, MessageButton } from 'discord.js';
 import { currentLogo } from '#config';
 
 export const build: QueriedInfoBuilder = async (interaction, client) => {
   // const codeHandler = await Information.findOne({ infoType: 'codes' });
   const codeHandler = await client.db.information.findUnique({ where: { type: 'codes' } });
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Darwinium Codes')
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
     .setColor(randomColor)

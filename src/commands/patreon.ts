@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { patreon } from '#config';
@@ -13,7 +13,7 @@ export default {
 } as Command<'semblance'>;
 
 const run = async (message: Message) => {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('My Patreon')
     .setURL('https://www.patreon.com/SirHDeveloper')
     .setColor(randomColor)

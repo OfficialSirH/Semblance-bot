@@ -1,5 +1,5 @@
 import { nameToScNo, bigToName, checkValue } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { User } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
@@ -33,7 +33,7 @@ export default {
     if (failed) return;
     const metabits = Math.floor(Math.pow((entropy as number) + (ideas as number), 0.3333333333333333) / 10000 - 1),
       user = interaction.member.user as User,
-      embed = new MessageEmbed()
+      embed = new Embed()
         .setTitle('Metabits Produced')
         .setColor(randomColor)
         .setAuthor(user.tag, user.displayAvatarURL())

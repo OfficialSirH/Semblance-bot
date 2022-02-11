@@ -1,5 +1,5 @@
 import type { CustomIdData, ComponentHandler } from '#lib/interfaces/Semblance';
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, Embed } from 'discord.js';
 import { guildBookPage, randomColor } from '#constants/index';
 import { serversPerPage } from '#constants/commands';
 
@@ -69,7 +69,7 @@ export default {
             ),
         ]),
       ],
-      embed = new MessageEmbed()
+      embed = new Embed()
         .setTitle(`Server List [${client.guilds.cache.size}] - Page ${chosenPage}`)
         .setColor(randomColor)
         .setThumbnail(client.user.displayAvatarURL())

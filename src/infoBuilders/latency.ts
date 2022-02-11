@@ -1,6 +1,6 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { msToTime, randomColor } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 
 export const build: QueriedInfoBuilder = interaction => {
   const { client } = interaction;
@@ -8,7 +8,7 @@ export const build: QueriedInfoBuilder = interaction => {
     duration = msToTime(uptime),
     responseTime = Date.now() - interaction.createdTimestamp,
     userAvatar = interaction.user.displayAvatarURL({ dynamic: true }),
-    embed = new MessageEmbed()
+    embed = new Embed()
       .setTitle('Latency')
       .setColor(randomColor)
       .setThumbnail(userAvatar)

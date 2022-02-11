@@ -1,5 +1,5 @@
 import { bigToName, checkValue } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { User } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
@@ -54,7 +54,7 @@ export default {
       if (!isFinite(resultingPrice)) break;
     }
     const user = interaction.member.user as User,
-      embed = new MessageEmbed()
+      embed = new Embed()
         .setTitle('Item Calculator Results')
         .setAuthor(user.tag, user.displayAvatarURL())
         .setColor(randomColor)

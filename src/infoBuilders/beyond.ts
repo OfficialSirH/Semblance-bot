@@ -1,10 +1,10 @@
 import { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 
 export const build: QueriedInfoBuilder = interaction => {
   const { user } = interaction;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Beyond Counter')
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)

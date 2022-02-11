@@ -1,10 +1,10 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
 import type { CommandInteraction, TextChannel } from 'discord.js';
-import { MessageEmbed, MessageAttachment } from 'discord.js';
+import { Embed, MessageAttachment } from 'discord.js';
 import { bugChannels } from '#constants/commands';
 import { c2sGuildId, sirhGuildId } from '#config';
 import { emojis } from '#constants/index';
-import type { Semblance } from '#src/structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   permissionRequired: 0,
@@ -42,7 +42,7 @@ export default {
   },
 } as SlashCommand;
 
-async function report(client: Semblance, interaction: CommandInteraction): Promise<void> {
+async function report(client: SapphireClient, interaction: CommandInteraction): Promise<void> {
   const { user } = interaction;
   const title = interaction.options.getString('title'),
     result = interaction.options.getString('result'),
@@ -61,7 +61,7 @@ async function report(client: Semblance, interaction: CommandInteraction): Promi
 
   const message = await (interaction.guild.channels.cache.get(bugChannels.queue) as TextChannel).send({
     embeds: [
-      new MessageEmbed()
+      new Embed()
         .setAuthor(`${user.tag} (${user.id})\nBug Id: #${newBugId}`, user.displayAvatarURL({ dynamic: true }))
         .setColor('#9512E8')
         .setTitle(title)
@@ -86,7 +86,7 @@ async function report(client: Semblance, interaction: CommandInteraction): Promi
 
   interaction.reply({
     embeds: [
-      new MessageEmbed()
+      new Embed()
         .setTitle('Report Successfully sent!')
         .setURL(message.url)
         .setAuthor(`${user.tag} (${user.id})`, user.displayAvatarURL({ dynamic: true }))
@@ -103,7 +103,7 @@ async function report(client: Semblance, interaction: CommandInteraction): Promi
   });
 }
 
-async function attach(client: Semblance, interaction: CommandInteraction): Promise<void> {
+async function attach(client: SapphireClient, interaction: CommandInteraction): Promise<void> {
   const bugId = interaction.options.getNumber('bugid'),
     link = interaction.options.getString('link'),
     report = await client.db.report.findUnique({ where: { bugId } });
@@ -171,7 +171,7 @@ async function attach(client: Semblance, interaction: CommandInteraction): Promi
   message.edit({ embeds: [embed] });
 }
 
-async function reproduce(client: Semblance, interaction: CommandInteraction): Promise<void> {
+async function reproduce(client: SapphireClient, interaction: CommandInteraction): Promise<void> {
   const { user } = interaction,
     bugId = interaction.options.getNumber('bugid'),
     os = interaction.options.getString('os'),
@@ -201,7 +201,7 @@ async function reproduce(client: Semblance, interaction: CommandInteraction): Pr
   }
 }
 
-async function list(client: Semblance, interaction: CommandInteraction): Promise<void> {
+async function list(client: SapphireClient, interaction: CommandInteraction): Promise<void> {
   const { user } = interaction;
 
   const reports = (await client.db.report.findMany({ where: { userId: user.id } })).reverse().slice(0, 10);
@@ -210,7 +210,7 @@ async function list(client: Semblance, interaction: CommandInteraction): Promise
 
   interaction.reply({
     embeds: [
-      new MessageEmbed()
+      new Embed()
         .setTitle('Bug Reports')
         .setDescription(
           reports
@@ -227,7 +227,7 @@ async function list(client: Semblance, interaction: CommandInteraction): Promise
   });
 }
 
-async function accept(client: Semblance, interaction: CommandInteraction): Promise<void> {
+async function accept(client: SapphireClient, interaction: CommandInteraction): Promise<void> {
   const bugId = interaction.options.getNumber('bugid'),
     report = await client.db.report.findUnique({ where: { bugId } });
 
@@ -245,14 +245,12 @@ async function accept(client: Semblance, interaction: CommandInteraction): Promi
 
   return interaction.reply({
     content: `Bug ${bugId} has been successfully approved.`,
-    embeds: [
-      new MessageEmbed().setTitle('Bug Approved').setDescription(`[${bugId}](${message.url})`).setColor('#17DB4A'),
-    ],
+    embeds: [new Embed().setTitle('Bug Approved').setDescription(`[${bugId}](${message.url})`).setColor('#17DB4A')],
     ephemeral: true,
   });
 }
 
-async function deny(client: Semblance, interaction: CommandInteraction): Promise<void> {
+async function deny(client: SapphireClient, interaction: CommandInteraction): Promise<void> {
   const bugId = interaction.options.getNumber('bugid'),
     reason = interaction.options.getString('reason'),
     report = await client.db.report.findUnique({ where: { bugId } });

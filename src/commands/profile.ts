@@ -1,7 +1,7 @@
 import type { Message, GuildMember, User, Snowflake } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { randomColor } from '#constants/index';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
@@ -12,7 +12,7 @@ export default {
   run: (client, message, args) => run(client, message, args),
 } as Command<'utility'>;
 
-const run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: SapphireClient, message: Message, args: string[]) => {
   if (args.length == 0) return guildProfileEmbed(message, message.member);
 
   const userRegexed = /(?<![:\d])(?<id>\d{17,19})(?!\d)/.exec(args[0]);
@@ -38,7 +38,7 @@ async function guildProfileEmbed(message: Message, member: GuildMember) {
   accountCreated = `${accountCreated.substring(0, 16)}(${daysAgo(member.user.createdAt)})`;
   let accountJoined = `${member.joinedAt}`;
   accountJoined = `${accountJoined.substring(0, 16)}(${daysAgo(member.joinedAt)})`;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Guild User Profile')
     .setDescription(`User data for ${member}:`)
     .setColor(randomColor)
@@ -61,7 +61,7 @@ async function guildProfileEmbed(message: Message, member: GuildMember) {
 
 async function userProfileEmbed(message: Message, user: User) {
   const accountCreated = `${message.author.createdAt.toString().substring(0, 16)}(${daysAgo(user.createdTimestamp)})`;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('User Profile')
     .setDescription(`User data for ${user}:`)
     .setColor(randomColor)

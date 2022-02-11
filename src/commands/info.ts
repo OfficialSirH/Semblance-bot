@@ -1,8 +1,8 @@
-import { MessageEmbed, version } from 'discord.js';
+import { Embed, version } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor, msToTime } from '#constants/index';
 import { singularity, entropy, metabit, mutagen, idea } from '#config';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
@@ -13,7 +13,7 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'semblance'>;
 
-const run = async (client: Semblance, message: Message) => {
+const run = async (client: SapphireClient, message: Message) => {
   const uptime = Date.now() - client.readyTimestamp;
   const duration = msToTime(uptime);
   const responseTime = Date.now() - message.createdTimestamp;
@@ -23,10 +23,10 @@ const run = async (client: Semblance, message: Message) => {
   let guilds: number, users: number, shardCount: number;
   if (message.client.shard) {
     guilds = await message.client.shard
-      .broadcastEval((eclient: Semblance) => eclient.guilds.cache.size)
+      .broadcastEval((eclient: SapphireClient) => eclient.guilds.cache.size)
       .then(res => res.reduce((prev, val) => prev + val, 0));
     users = await message.client.shard
-      .broadcastEval((eclient: Semblance) => eclient.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b))
+      .broadcastEval((eclient: SapphireClient) => eclient.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b))
       .then(res => res.reduce((prev, val) => prev + val, 0));
     shardCount = message.client.shard.count;
   } else {
@@ -34,7 +34,7 @@ const run = async (client: Semblance, message: Message) => {
     users = client.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b);
     shardCount = 0;
   }
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle(`Bot Information - ${client.user.tag}`)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

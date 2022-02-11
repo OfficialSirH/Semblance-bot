@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { mementoMori } from '#config';
@@ -20,7 +20,7 @@ const run = async (message: Message, args: string[], identifier: string) => {
 };
 
 async function sendIt(message: Message) {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Memento Mori')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

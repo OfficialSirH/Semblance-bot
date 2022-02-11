@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { User, CommandInteraction } from 'discord.js';
 import { randomColor, timeInputRegex, formattedDate, timeInputToMs } from '#constants/index';
 import type { TimeLengths } from '#lib/interfaces/remindme';
@@ -6,7 +6,7 @@ import type { Reminder, UserReminder } from '@prisma/client';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
 import { handleReminder } from '#src/constants/models';
 import { scheduleJob } from 'node-schedule';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   permissionRequired: 0,
@@ -40,7 +40,7 @@ export default {
   },
 } as SlashCommand;
 
-async function create(interaction: CommandInteraction, client: Semblance) {
+async function create(interaction: CommandInteraction, client: SapphireClient) {
   const timeAmount = timeInputRegex.exec(interaction.options.getString('length')),
     reminder = interaction.options.getString('reminder'),
     user = interaction.member.user as User;
@@ -74,7 +74,7 @@ async function create(interaction: CommandInteraction, client: Semblance) {
       ephemeral: true,
     });
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Reminder')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
@@ -139,7 +139,7 @@ async function create(interaction: CommandInteraction, client: Semblance) {
   );
 }
 
-async function edit(interaction: CommandInteraction, client: Semblance) {
+async function edit(interaction: CommandInteraction, client: SapphireClient) {
   const user = interaction.member.user as User,
     currentReminderData = (await client.db.reminder.findUnique({ where: { userId: user.id } })) as unknown as Reminder;
 
@@ -206,7 +206,7 @@ async function edit(interaction: CommandInteraction, client: Semblance) {
       ephemeral: true,
     });
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Edited Reminder')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
@@ -219,7 +219,7 @@ async function edit(interaction: CommandInteraction, client: Semblance) {
   await interaction.reply({ embeds: [embed] });
 }
 
-async function deleteReminder(interaction: CommandInteraction, client: Semblance) {
+async function deleteReminder(interaction: CommandInteraction, client: SapphireClient) {
   const user = interaction.member.user as User,
     reminderId = interaction.options.getInteger('reminderid'),
     currentReminderData = (await client.db.reminder.findUnique({
@@ -252,7 +252,7 @@ async function deleteReminder(interaction: CommandInteraction, client: Semblance
       },
     });
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Deleted Reminder')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
@@ -261,7 +261,7 @@ async function deleteReminder(interaction: CommandInteraction, client: Semblance
   await interaction.reply({ embeds: [embed] });
 }
 
-async function list(interaction: CommandInteraction, client: Semblance) {
+async function list(interaction: CommandInteraction, client: SapphireClient) {
   const user = interaction.member.user as User,
     currentReminderData = (await client.db.reminder.findUnique({
       where: { userId: user.id },
@@ -273,7 +273,7 @@ async function list(interaction: CommandInteraction, client: Semblance) {
       ephemeral: true,
     });
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Reminder List')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())

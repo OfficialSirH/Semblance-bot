@@ -1,9 +1,9 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { currentLogo } from '#config';
 import { randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
-import type { Semblance } from '#src/structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   description: 'Get info on the latest beta.',
@@ -14,9 +14,9 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'game'>;
 
-const run = async (client: Semblance, message: Message) => {
+const run = async (client: SapphireClient, message: Message) => {
   const infoHandler = await client.db.information.findUnique({ where: { type: 'beta' } });
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Beta')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)

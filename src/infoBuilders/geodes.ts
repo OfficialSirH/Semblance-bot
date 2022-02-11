@@ -1,9 +1,9 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { currentLogo, geodeImage } from '#config';
 
 export const build: QueriedInfoBuilder = interaction => {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Geodes Comparison')
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
     .setThumbnail(currentLogo.name)

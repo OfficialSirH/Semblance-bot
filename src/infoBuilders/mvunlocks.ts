@@ -1,10 +1,10 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { currentLogo } from '#config';
 
 export const build: QueriedInfoBuilder = interaction => {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Reptiles and Birds')
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
     .setThumbnail(currentLogo.name)

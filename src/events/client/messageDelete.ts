@@ -1,7 +1,7 @@
 import { bugChannels, correctReportList } from '#constants/index';
 import { c2sGuildId } from '#config';
 import { promisify } from 'util';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import { Constants } from 'discord.js';
 import type { Message, PartialMessage } from 'discord.js';
 import type { EventHandler } from '#lib/interfaces/Semblance';
@@ -13,7 +13,7 @@ export default {
   exec: (message, client) => messageDelete(message, client),
 } as EventHandler<'messageDelete'>;
 
-export const messageDelete = async (message: Message | PartialMessage, client: Semblance) => {
+export const messageDelete = async (message: Message | PartialMessage, client: SapphireClient) => {
   if (
     message.guild?.id != c2sGuildId ??
     (message.channel.id != bugChannels.queue && message.channel.id != bugChannels.approved)

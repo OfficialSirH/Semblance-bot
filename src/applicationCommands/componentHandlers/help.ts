@@ -1,8 +1,8 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { Message, MessageComponentInteraction } from 'discord.js';
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, Embed } from 'discord.js';
 import { disableAllComponents, prefix, randomColor, subcategoryList } from '#constants/index';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import { c2sGuildId, sirhId, adityaId } from '#config';
 
 export default {
@@ -84,7 +84,7 @@ export default {
 } as ComponentHandler;
 
 async function help(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const client = interaction.client as Semblance,
+  const client = interaction.client,
     user = interaction.user;
   const c2sServerCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'c2sServer')
@@ -134,7 +134,7 @@ async function help(interaction: MessageComponentInteraction, components: Messag
       .setStyle('PRIMARY'),
     ...components[0].components,
   ];
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Semblance Command List')
     .setColor(randomColor)
     .setAuthor(user.tag, user.displayAvatarURL())
@@ -161,11 +161,11 @@ async function help(interaction: MessageComponentInteraction, components: Messag
 }
 
 async function ahelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const client = interaction.client as Semblance;
+  const client = interaction.client;
   const adminCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'admin')
     .map(key => `**${prefix}${key}**`);
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setColor(randomColor)
     .setTitle('**-> Admin Commands**')
     .setThumbnail(client.user.displayAvatarURL())
@@ -174,7 +174,7 @@ async function ahelp(interaction: MessageComponentInteraction, components: Messa
 }
 
 async function c2shelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const client = interaction.client as Semblance,
+  const client = interaction.client,
     user = interaction.user;
   const mainCommands = subcategoryList(client, 'game', 'main');
   const mesozoicCommands = subcategoryList(client, 'game', 'mesozoic');
@@ -202,7 +202,7 @@ async function c2shelp(interaction: MessageComponentInteraction, components: Mes
       .setStyle('PRIMARY'),
     ...components[0].components,
   ];
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('**-> Cell to Singularity Commands**')
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
@@ -218,9 +218,9 @@ async function c2shelp(interaction: MessageComponentInteraction, components: Mes
 }
 
 async function itemhelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const client = interaction.client as Semblance,
+  const client = interaction.client,
     user = interaction.user;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Item Calculator Help')
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
@@ -244,9 +244,9 @@ async function itemhelp(interaction: MessageComponentInteraction, components: Me
 }
 
 async function largenumbers(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const client = interaction.client as Semblance,
+  const client = interaction.client,
     user = interaction.user;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Large Numbers')
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
@@ -273,9 +273,9 @@ async function largenumbers(interaction: MessageComponentInteraction, components
 }
 
 async function metahelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const client = interaction.client as Semblance,
+  const client = interaction.client,
     user = interaction.user;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Metabit Calculator Help')
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
@@ -313,7 +313,7 @@ async function mischelp(
   components: MessageActionRow[],
   permissionLevel: number,
 ) {
-  const client = interaction.client as Semblance,
+  const client = interaction.client,
     user = interaction.user;
   const serverCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'server')
@@ -341,7 +341,7 @@ async function mischelp(
       .setStyle('PRIMARY'),
     ...components[0].components,
   ];
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Miscellaneous Commands')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
@@ -372,7 +372,7 @@ async function mischelp(
 }
 
 async function calchelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const client = interaction.client as Semblance,
+  const client = interaction.client,
     user = interaction.user,
     calculatorCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'calculator')
@@ -410,7 +410,7 @@ async function calchelp(interaction: MessageComponentInteraction, components: Me
       .setStyle('PRIMARY'),
     ...components[0].components,
   ];
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Calculator Help')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
@@ -420,10 +420,10 @@ async function calchelp(interaction: MessageComponentInteraction, components: Me
 }
 
 async function bughelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const client = interaction.client as Semblance,
+  const client = interaction.client,
     user = interaction.user;
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Bug Reporting Help')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
@@ -474,10 +474,10 @@ async function bughelp(interaction: MessageComponentInteraction, components: Mes
 }
 
 async function metabits(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const client = interaction.client as Semblance,
+  const client = interaction.client,
     user = interaction.user;
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Metabits Guide')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
@@ -517,10 +517,10 @@ async function metabits(interaction: MessageComponentInteraction, components: Me
 }
 
 async function mesoguide(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const client = interaction.client as Semblance,
+  const client = interaction.client,
     user = interaction.user;
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Mesozoic Valley Guide')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)

@@ -1,7 +1,7 @@
 import Twitter from 'twitter';
 import { fetch } from '#lib/utils/fetch';
 import { c2sGuildId, lunchGuildId } from '#config';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { TextChannel } from 'discord.js';
 const twClient = new Twitter(JSON.parse(process.env.twitter));
 let current_id = null;
@@ -12,7 +12,7 @@ const screen_name = 'ComputerLunch';
  * @param client the main discord client
  * @returns void
  */
-export const checkTweet = (client: Semblance) =>
+export const checkTweet = (client: SapphireClient) =>
   twClient.get(
     'statuses/user_timeline',
     {

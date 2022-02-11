@@ -1,10 +1,10 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { trexBadge, currentLogo } from '#config';
 
 export const build: QueriedInfoBuilder = () => {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle(`${trexBadge}Tyrannosaurus Rex`)
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)

@@ -1,9 +1,9 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { currentLogo } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   description: 'Get info on the latest update of C2S.',
@@ -14,9 +14,9 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'game'>;
 
-const run = async (client: Semblance, message: Message) => {
+const run = async (client: SapphireClient, message: Message) => {
   const infoHandler = await client.db.information.findUnique({ where: { type: 'update ' } });
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Steam and Mobile Updates')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)

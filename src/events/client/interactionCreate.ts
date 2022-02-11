@@ -1,6 +1,6 @@
 import { customIdRegex, disableAllComponents, getPermissionLevel, properCustomIdRegex } from '#constants/index';
 import type { CustomIdData, EventHandler } from '#lib/interfaces/Semblance';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type {
   GuildMember,
   MessageComponentInteraction,
@@ -16,7 +16,7 @@ export default {
   exec: (interaction, client) => interactionCreate(interaction, client),
 } as EventHandler<'interactionCreate'>;
 
-export const interactionCreate = async (interaction: Interaction, client: Semblance) => {
+export const interactionCreate = async (interaction: Interaction, client: SapphireClient) => {
   if (interaction.isAutocomplete()) return autocompleteInteraction(client, interaction);
   if (interaction.isMessageComponent()) return componentInteraction(client, interaction);
   if (interaction.isContextMenu()) return contextMenuInteraction(client, interaction);
@@ -36,7 +36,7 @@ export const interactionCreate = async (interaction: Interaction, client: Sembla
   });
 };
 
-async function componentInteraction(client: Semblance, interaction: MessageComponentInteraction) {
+async function componentInteraction(client: SapphireClient, interaction: MessageComponentInteraction) {
   if ((Date.now() - interaction.createdTimestamp) / 1000 > 300) {
     disableAllComponents(interaction);
     return interaction.reply({
@@ -71,7 +71,7 @@ async function componentInteraction(client: Semblance, interaction: MessageCompo
     });
 }
 
-const contextMenuInteraction = async (client: Semblance, interaction: ContextMenuInteraction) => {
+const contextMenuInteraction = async (client: SapphireClient, interaction: ContextMenuInteraction) => {
   if (!client.contextMenuHandlers.has(interaction.commandName)) return;
   const contextMenuHandler = client.contextMenuHandlers.get(interaction.commandName);
   contextMenuHandler.run(interaction, {
@@ -80,7 +80,7 @@ const contextMenuInteraction = async (client: Semblance, interaction: ContextMen
   });
 };
 
-const autocompleteInteraction = async (client: Semblance, interaction: AutocompleteInteraction) => {
+const autocompleteInteraction = async (client: SapphireClient, interaction: AutocompleteInteraction) => {
   if (!client.autocompleteHandlers.has(interaction.commandName)) return;
   const autocompleteHandler = client.autocompleteHandlers.get(interaction.commandName);
   autocompleteHandler.run(interaction, interaction.options, client);

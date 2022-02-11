@@ -1,5 +1,5 @@
 import type { TwitterJSEventHandler } from '#lib/interfaces/Semblance';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Tweet } from 'twitter.js';
 import type { TextBasedChannel } from 'discord.js';
 import { ClientEvents } from 'twitter.js';
@@ -10,7 +10,7 @@ export default {
   exec: async (tweet, _matchedRules, { client }) => filteredTweetCreate(client, tweet),
 } as TwitterJSEventHandler<'filteredTweetCreate'>;
 
-export const filteredTweetCreate = async (client: Semblance, tweet: Tweet) => {
+export const filteredTweetCreate = async (client: SapphireClient, tweet: Tweet) => {
   const c2sTwitterChannel = client.guilds.cache
       .get(c2sGuildId)
       .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannel,

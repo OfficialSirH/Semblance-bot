@@ -1,8 +1,8 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { sirhId, adityaId, c2sGuildId } from '#config';
 import { prefix, randomColor } from '#constants/index';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
@@ -13,11 +13,11 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'help'>;
 
-const run = async (client: Semblance, message: Message) => {
+const run = async (client: SapphireClient, message: Message) => {
   const c2sServerCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'c2sServer')
     .map(key => `**$${prefix}${key}**`);
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Semblance Command List')
     .setColor(randomColor)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())

@@ -1,10 +1,10 @@
 import { communistSemblance } from '#config';
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, Embed } from 'discord.js';
 import type { Message, GuildMember } from 'discord.js';
 import { rpsGames } from '#src/applicationCommands/componentHandlers/rps';
 import { randomColor } from '#constants/index';
 import { countdownGIF, randomChoice } from '#constants/commands';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
@@ -19,7 +19,7 @@ export default {
   run: (client, message, args) => run(client, message, args),
 } as Command<'fun'>;
 
-const run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: SapphireClient, message: Message, args: string[]) => {
   if (args.length == 0)
     return message.reply(
       "rps stands for \"Rock, Paper, Scissors\", which you can play with me by choosing one of the **Five** (Don't forget Lizard and Spock) and I'll choose one as well and we'll see who wins, there's also secret bonuses. :D",
@@ -32,7 +32,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
     sembChoice = convertNumberToChoice(sembRandomness);
   const playerChoice = args[0].toLowerCase();
   if (playerChoice == 'senate') {
-    const embed = new MessageEmbed()
+    const embed = new Embed()
       .setDescription('I *am* the senate, which means ***WE*** win this round!')
       .setImage(communistSemblance.name);
     return message.reply({ embeds: [embed], files: [communistSemblance] });
@@ -240,7 +240,7 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
     ],
     awaitingText = `Awaiting for **${message.author.tag}** and **${opponent.user.tag}**`,
     semblanceChoice = randomChoice(),
-    embed = new MessageEmbed()
+    embed = new Embed()
       .setTitle(`${message.author.tag} has challenged ${opponent.user.tag} to Rock, Paper, Scissors, Lizard, Spock!`)
       .setThumbnail(countdownGIF)
       .setColor(randomColor)

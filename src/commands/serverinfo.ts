@@ -1,7 +1,7 @@
 import type { Guild, Message, Snowflake } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { randomColor } from '#constants/index';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
@@ -12,7 +12,7 @@ export default {
   run: (client, message, args, _identifier, { permissionLevel }) => run(client, message, args, { permissionLevel }),
 } as Command<'server'>;
 
-const run = async (client: Semblance, message: Message, args: string[], { permissionLevel }) => {
+const run = async (client: SapphireClient, message: Message, args: string[], { permissionLevel }) => {
   let guild: Guild;
   if (args[0] && permissionLevel == 7) {
     const guildId = /\d{17,20}/.exec(args[0]);
@@ -48,7 +48,7 @@ const run = async (client: Semblance, message: Message, args: string[], { permis
   const canRoleListWork = roleList.length > 1024 ? '*Too many roles*' : roleList;
   const fetchedGuild = await guild.fetch();
   const owner = await guild.members.fetch(guild.ownerId);
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setAuthor(guild.name, guild.iconURL())
     .setColor(randomColor)
     .addFields([

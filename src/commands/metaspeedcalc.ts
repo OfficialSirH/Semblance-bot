@@ -1,5 +1,5 @@
 import { bigToName, checkValue, nameToScNo, randomColor } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import type { Command } from '#lib/interfaces/Semblance';
 
@@ -68,7 +68,7 @@ const run = async (message: Message, args: string[]) => {
   const simspeed =
     Math.floor(parseInt(args[2].replace(/\D/g, ''))) > 2105 ? 2105 : Math.floor(parseInt(args[2].replace(/\D/g, '')));
   num *= simspeed / 100 + 1;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Multiplier Total')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

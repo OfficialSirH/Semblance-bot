@@ -2,7 +2,7 @@ import type { Message } from 'discord.js';
 import { GuildMember } from 'discord.js';
 import { formattedDate } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
-import type { Semblance } from '#src/structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   description: 'interact with booster rewards for users',
@@ -13,7 +13,7 @@ export default {
   run: (client, message, args) => run(client, message, args),
 } as Command<'developer'>;
 
-const run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: SapphireClient, message: Message, args: string[]) => {
   if (!args.length)
     return message.reply(
       'The following options are:\n`list`\n`add <user id or mention>` or vice versa\n`remove <user id or mention>` or vice versa',
@@ -28,7 +28,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
   if (args.includes('remove')) return removeBooster(client, message, userId);
 };
 
-const addBooster = async (client: Semblance, message: Message, user: string | GuildMember) => {
+const addBooster = async (client: SapphireClient, message: Message, user: string | GuildMember) => {
   const userId = user instanceof GuildMember ? user.id : user;
 
   let boosterRewards = await client.db.boosterReward.findUnique({ where: { userId } });
@@ -50,14 +50,14 @@ const addBooster = async (client: Semblance, message: Message, user: string | Gu
   );
 };
 
-const removeBooster = async (client: Semblance, message: Message, user: string | GuildMember) => {
+const removeBooster = async (client: SapphireClient, message: Message, user: string | GuildMember) => {
   const userId = user instanceof GuildMember ? user.id : user;
   const boosterRewards = await client.db.boosterReward.delete({ where: { userId } }).catch(() => null);
   if (!boosterRewards) return message.reply('That user is not listed to receive an automated reward');
   message.reply('That user will no longer receive an automated reward');
 };
 
-const listBoosters = async (client: Semblance, message: Message) => {
+const listBoosters = async (client: SapphireClient, message: Message) => {
   const boosterRewards = await client.db.boosterReward.findMany({});
   if (!boosterRewards.length) return message.reply('There are no booster rewards to list');
   message.channel.send(

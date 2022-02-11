@@ -1,9 +1,9 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { currentLogo } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-import type { Semblance } from '#src/structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   description: 'get all of the ingame codes',
@@ -14,9 +14,9 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'game'>;
 
-const run = async (client: Semblance, message: Message) => {
+const run = async (client: SapphireClient, message: Message) => {
   const codeHandler = await client.db.information.findUnique({ where: { type: 'codes' } });
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Darwinium Codes')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

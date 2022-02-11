@@ -1,5 +1,5 @@
 import { nameToScNo, bigToName, checkValue } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { User } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { clamp } from '#lib/utils/math';
@@ -58,7 +58,7 @@ export default {
     num *= dinoRanks == 0 ? 1 : dinoranksMulti;
     num *= simSpeed / 100 + 1;
     const user = interaction.member.user as User,
-      embed = new MessageEmbed()
+      embed = new Embed()
         .setTitle('Multiplier Total')
         .setAuthor(user.tag, user.displayAvatarURL())
         .setColor(randomColor)

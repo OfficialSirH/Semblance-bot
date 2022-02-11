@@ -1,9 +1,9 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
 import { currentLogo } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-import { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   description: 'Get help with the item calculator commands',
@@ -13,8 +13,8 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'help'>;
 
-const run = async (client: Semblance, message: Message) => {
-  const embed = new MessageEmbed()
+const run = async (client: SapphireClient, message: Message) => {
+  const embed = new Embed()
     .setTitle('Item Calculator Help')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

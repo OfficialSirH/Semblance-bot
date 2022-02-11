@@ -1,9 +1,9 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { archieDance } from '#config';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 
 export const build: QueriedInfoBuilder = interaction => {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Dancing Archie/Jotaru')
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
     .setDescription(

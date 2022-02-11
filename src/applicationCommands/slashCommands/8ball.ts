@@ -1,5 +1,5 @@
 import type { User } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
 
@@ -10,10 +10,7 @@ export default {
       return interaction.reply('Ask any question with this command and Semblance will answer.');
     const randomizedChoice = Math.ceil(Math.random() * 20),
       user = interaction.member.user as User;
-    const embed = new MessageEmbed()
-      .setTitle('8ball')
-      .setAuthor(user.tag, user.displayAvatarURL())
-      .setColor(randomColor);
+    const embed = new Embed().setTitle('8ball').setAuthor(user.tag, user.displayAvatarURL()).setColor(randomColor);
     let description = `Question: ${interaction.options.get('question').value}\nAnswer: `;
     if (randomizedChoice == 1) description += 'It is certain';
     if (randomizedChoice == 2) description += 'It is decidely so.';

@@ -1,7 +1,7 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, Embed } from 'discord.js';
 import { randomColor, subcategoryList } from '#constants/index';
 import { currentLogo } from '#config';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
@@ -12,11 +12,11 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'help'>;
 
-const run = async (client: Semblance, message: Message) => {
+const run = async (client: SapphireClient, message: Message) => {
   const mainCommands = subcategoryList(client, 'game', 'main');
   const mesozoicCommands = subcategoryList(client, 'game', 'mesozoic');
   const otherCommands = subcategoryList(client, 'game', 'other');
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('**-> Cell to Singularity Commands**')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

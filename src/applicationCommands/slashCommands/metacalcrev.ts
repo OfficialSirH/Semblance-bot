@@ -1,5 +1,5 @@
 import { nameToScNo, bigToName, checkValue } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { User } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
@@ -26,7 +26,7 @@ export default {
     if (failed) return;
     const accumulated = Math.floor(Math.pow(((metabits as number) + 1) * 10000, 1 / 0.3333333333333333)),
       user = interaction.member.user as User,
-      embed = new MessageEmbed()
+      embed = new Embed()
         .setTitle('Accumulation Requirements')
         .setColor(randomColor)
         .setAuthor(user.tag, user.displayAvatarURL())

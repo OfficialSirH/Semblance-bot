@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { User } from 'discord.js';
 import { randomColor, getAvatar } from '#constants/index';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
@@ -10,7 +10,7 @@ export default {
         ? await client.users.fetch(interaction.options.getUser('user').id)
         : (interaction.member.user as User),
       author = interaction.member.user as User,
-      embed = new MessageEmbed()
+      embed = new Embed()
         .setTitle(`${user.username}'s Avatar`)
         .setAuthor(`${author.tag}`, author.displayAvatarURL())
         .setColor(randomColor)

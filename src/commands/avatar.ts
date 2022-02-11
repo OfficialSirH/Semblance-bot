@@ -1,7 +1,7 @@
 import type { Message, Snowflake, User } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { getAvatar, randomColor } from '#constants/index';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
@@ -15,7 +15,7 @@ export default {
   run: (client, message, args) => run(client, message, args),
 } as Command<'utility'>;
 
-const run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: SapphireClient, message: Message, args: string[]) => {
   let user: User, userId: Snowflake;
   if (!args || args.length == 0) user = message.author;
   else {
@@ -27,7 +27,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
     }
     if (!user) return message.reply("I couldn't find that user");
   }
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Avatar')
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)

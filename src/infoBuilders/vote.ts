@@ -1,10 +1,10 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor, prefix } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 
 export const build: QueriedInfoBuilder = interaction => {
   const { client } = interaction;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Vote')
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())

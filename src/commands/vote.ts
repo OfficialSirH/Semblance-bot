@@ -1,6 +1,6 @@
-import { Message, MessageEmbed } from 'discord.js';
+import { Message, Embed } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
@@ -11,8 +11,8 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'semblance'>;
 
-const run = async (client: Semblance, message: Message) => {
-  const embed = new MessageEmbed()
+const run = async (client: SapphireClient, message: Message) => {
+  const embed = new Embed()
     .setTitle('Vote')
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())

@@ -1,9 +1,9 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, Embed } from 'discord.js';
 import type { Message, Snowflake } from 'discord.js';
 import { currentLogo, c2sGuildId } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
 import { c2sRoles, c2sRolesInformation } from '#constants/index';
-import type { Semblance } from '#src/structures';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   description: 'see the list of available roles for the c2s server',
@@ -13,9 +13,9 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'c2sServer'>;
 
-const run = async (client: Semblance, message: Message) => {
+const run = async (client: SapphireClient, message: Message) => {
   const guildRoles = client.guilds.cache.get(c2sGuildId).roles.cache;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
       .setTitle('C2S Roles')
       .setAuthor(message.author.tag, message.author.displayAvatarURL())
       .setThumbnail(currentLogo.name)

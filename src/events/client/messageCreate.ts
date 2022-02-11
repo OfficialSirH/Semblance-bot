@@ -1,4 +1,4 @@
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import { Constants } from 'discord.js';
 import type { Message } from 'discord.js';
 import { sirhId, c2sGuildId, sirhGuildId, ignoredGuilds } from '#config';
@@ -12,7 +12,7 @@ export default {
   exec: (message, client) => messageCreate(message, client),
 } as EventHandler<'messageCreate'>;
 
-export const messageCreate = async (message: Message, client: Semblance) => {
+export const messageCreate = async (message: Message, client: SapphireClient) => {
   if (message.channel.type == 'DM') return void client.emit('messageDM', message);
   if (ignoredGuilds.includes(message.guild.id)) return;
   if (message.author.bot) return;

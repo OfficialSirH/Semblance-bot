@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
 
@@ -8,7 +8,7 @@ export default {
   permissionRequired: 0,
   checkArgs: () => true,
   run: (_client, message) => {
-    const embed = new MessageEmbed()
+    const embed = new Embed()
       .setDescription("[Semblance's Trello board](https://trello.com/b/Zhrs5AaN/semblance-project)")
       .setColor(randomColor);
     message.channel.send({ embeds: [embed] });

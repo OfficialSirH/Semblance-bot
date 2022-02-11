@@ -1,6 +1,6 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { TextBasedChannel } from 'discord.js';
-import { MessageActionRow, MessageEmbed } from 'discord.js';
+import { MessageActionRow, Embed } from 'discord.js';
 
 export default {
   allowOthers: true,
@@ -24,7 +24,7 @@ export default {
       );
       return (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannel).send({
         embeds: [
-          new MessageEmbed()
+          new Embed()
             .setAuthor(user.tag, user.displayAvatarURL())
             .setDescription(interaction.message.embeds[0].description),
         ],

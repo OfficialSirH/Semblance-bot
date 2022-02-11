@@ -1,5 +1,5 @@
-import type { Semblance } from '#structures/Semblance';
-import { MessageEmbed } from 'discord.js';
+import type { SapphireClient } from '@sapphire/framework';
+import { Embed } from 'discord.js';
 import type { TextChannel, GuildMember, Message } from 'discord.js';
 import { sirhId, adityaId, c2sGuildId, darwinium } from '#config';
 import { formattedDate } from '#constants/index';
@@ -7,7 +7,7 @@ import { scheduleJob } from 'node-schedule';
 import type { BoosterReward, Reminder, UserReminder } from '@prisma/client';
 
 // BoosterRewards - check dates for booster rewards
-// export const checkBoosterRewards = async (client: Semblance) => {
+// export const checkBoosterRewards = async (client: SapphireClient) => {
 //   let boosterRewards = await BoosterRewards.find({});
 //   const now = Date.now();
 //   boosterRewards = boosterRewards.filter(boosterReward => boosterReward.rewardingDate < now);
@@ -41,7 +41,7 @@ import type { BoosterReward, Reminder, UserReminder } from '@prisma/client';
 //     await member.user
 //       .send({
 //         embeds: [
-//           new MessageEmbed()
+//           new Embed()
 //             .setTitle('Booster reward')
 //             .setAuthor(member.user.tag, member.user.displayAvatarURL())
 //             .setDescription(
@@ -69,7 +69,7 @@ import type { BoosterReward, Reminder, UserReminder } from '@prisma/client';
 // };
 
 //j BoosterRewards - handle finished booster rewards
-export const handleBoosterReward = async (client: Semblance, boosterReward: BoosterReward) => {
+export const handleBoosterReward = async (client: SapphireClient, boosterReward: BoosterReward) => {
   const member: GuildMember = await client.guilds.cache
     .get(c2sGuildId)
     .members.fetch(boosterReward.userId)
@@ -95,7 +95,7 @@ export const handleBoosterReward = async (client: Semblance, boosterReward: Boos
   await member.user
     .send({
       embeds: [
-        new MessageEmbed()
+        new Embed()
           .setTitle('Booster reward')
           .setAuthor(member.user.tag, member.user.displayAvatarURL())
           .setDescription(
@@ -128,11 +128,12 @@ export const handleBoosterReward = async (client: Semblance, boosterReward: Boos
   });
 };
 
-export const boosterChannel = (client: Semblance) => client.channels.cache.get('800981350714834964') as TextChannel;
+export const boosterChannel = (client: SapphireClient) =>
+  client.channels.cache.get('800981350714834964') as TextChannel;
 export const boosterRole = '660930089990488099';
 
 // BoosterRewards - create automatic booster rewards for author of message
-export const createBoosterRewards = async (client: Semblance, message: Message) => {
+export const createBoosterRewards = async (client: SapphireClient, message: Message) => {
   // const boosterReward = await BoosterRewards.findOne({
   //   userId: message.author.id,
   // });
@@ -171,7 +172,7 @@ export const createBoosterRewards = async (client: Semblance, message: Message) 
 };
 
 // Reminder - handle finished reminder
-export const handleReminder = async (client: Semblance, reminderData: Reminder, reminder: UserReminder) => {
+export const handleReminder = async (client: SapphireClient, reminderData: Reminder, reminder: UserReminder) => {
   (client.channels.cache.get(reminder.channelId) as TextChannel)?.send({
     content: `<@${reminderData.userId}> Reminder: ${reminder.message}`,
     allowedMentions: { users: [reminderData.userId] },
@@ -191,7 +192,7 @@ export const handleReminder = async (client: Semblance, reminderData: Reminder, 
 };
 
 // // reminder functions - checkReminders
-// export const checkReminders = async (client: Semblance) => {
+// export const checkReminders = async (client: SapphireClient) => {
 //   const reminderList = await Reminder.find({}),
 //     now = Date.now();
 //   if (!reminderList) return;

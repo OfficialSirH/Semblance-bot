@@ -1,5 +1,5 @@
 import { nameToScNo, bigToName, checkValue } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { User } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { clamp } from '#lib/utils/math';
@@ -36,7 +36,7 @@ export default {
     const num5 = itemCost * Math.pow(1.149999976158142, currentLevel);
     const level = Math.floor(Math.log(num3 / num5 + 1) / Math.log(1.149999976158142));
     const user = interaction.member.user as User,
-      embed = new MessageEmbed()
+      embed = new Embed()
         .setTitle('Item Calculator Results')
         .setAuthor(user.tag, user.displayAvatarURL())
         .setColor(randomColor)

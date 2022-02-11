@@ -1,7 +1,7 @@
 import type { Snowflake } from 'discord-api-types';
 import type { TextChannel } from 'discord.js';
-import type { Semblance } from '#structures/Semblance';
-import { MessageEmbed, User } from 'discord.js';
+import type { SapphireClient } from '@sapphire/framework';
+import { Embed, User } from 'discord.js';
 import { sirhGuildId } from '#config';
 import { randomColor } from '#constants/index';
 import type { FastifyReply } from 'fastify';
@@ -14,10 +14,10 @@ import type { TGGRequest } from 'topGG';
 type AvailableRequests = BoatsRequest | DBLRequest | DLSRequest | DiscordsRequest | TGGRequest;
 
 export class VoteHandler {
-  readonly client: Semblance;
+  readonly client: SapphireClient;
   readonly votingSite: string;
 
-  constructor(client: Semblance, votingSite: string) {
+  constructor(client: SapphireClient, votingSite: string) {
     this.client = client;
     this.votingSite = votingSite;
   }
@@ -42,7 +42,7 @@ export class VoteHandler {
           "\nAs a voting bonus *and* being the weekend, you have earned ***12*** hours of idle profit for Semblance's Idle Game!";
       else description += "\nAs a voting bonus, you have earned **6** hours of idle profit for Semblance's Idle Game!";
     }
-    const embed = new MessageEmbed().setColor(randomColor).setDescription(description);
+    const embed = new Embed().setColor(randomColor).setDescription(description);
     if (user instanceof User)
       embed
         .setAuthor(`${user.tag}`, user.displayAvatarURL())

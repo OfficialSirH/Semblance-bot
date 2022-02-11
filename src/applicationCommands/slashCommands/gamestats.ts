@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { User, Snowflake } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
@@ -22,7 +22,7 @@ export default {
     let player: User;
     if (interaction.user.id == playerId) player = interaction.user;
     else player = await client.users.fetch(playerId);
-    const embed = new MessageEmbed()
+    const embed = new Embed()
       .setTitle(`${player.username}'s gamestats`)
       .setAuthor(player.tag, player.displayAvatarURL())
       .setColor(randomColor)

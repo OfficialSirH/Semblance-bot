@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { gameTransferPages } from '#constants/commands';
 import { currentLogo } from '#config';
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
@@ -6,7 +6,7 @@ import type { ComponentHandler } from '#lib/interfaces/Semblance';
 export default {
   buttonHandle: async (interaction, { action }) => {
     const message = interaction.message;
-    const embed = message.embeds[0] as MessageEmbed;
+    const embed = message.embeds[0] as Embed;
     let currentPage = gameTransferPages.indexOf(embed.image.url);
 
     if (action == 'right') currentPage = currentPage == 4 ? 0 : ++currentPage;

@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
@@ -14,7 +14,7 @@ export default {
 
 const run = async (message: Message) => {
   const feedbackImage = 'https://i.imgur.com/lKQh5zW.png';
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Feedback')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

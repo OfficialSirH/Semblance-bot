@@ -1,9 +1,9 @@
-import { MessageEmbed, Collection, Permissions, MessageActionRow, MessageButton } from 'discord.js';
+import { Embed, Collection, Permissions, MessageActionRow, MessageButton } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
 import { currentPrice } from '#constants/commands';
-import type { Semblance } from '#src/structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 const cooldownHandler: Collection<string, number> = new Collection();
 
 export default {
@@ -17,7 +17,7 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'fun'>;
 
-const run = async (client: Semblance, message: Message) => {
+const run = async (client: SapphireClient, message: Message) => {
   if (!cooldownHandler.get(message.author.id) && !message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES))
     cooldownHandler.set(message.author.id, Date.now());
   else if ((Date.now() - cooldownHandler.get(message.author.id)) / 1000 < 5) {
@@ -31,7 +31,7 @@ const run = async (client: Semblance, message: Message) => {
   }
 
   const statsHandler = await client.db.game.findUnique({ where: { player: message.author.id } }),
-    embed = new MessageEmbed();
+    embed = new Embed();
   let cost: number;
   if (!statsHandler)
     embed

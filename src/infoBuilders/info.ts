@@ -1,6 +1,6 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { msToTime, randomColor } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { version } from 'discord.js';
 import { singularity, entropy, idea, metabit, mutagen } from '#config';
 
@@ -26,7 +26,7 @@ export const build: QueriedInfoBuilder = async interaction => {
     users = client.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b);
     shardCount = 0;
   }
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle(`Bot Information - ${client.user.tag}`)
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
     .setColor(randomColor)

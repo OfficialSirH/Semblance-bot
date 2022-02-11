@@ -1,14 +1,14 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
 import { currentPrice } from '#constants/commands';
-import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
+import { Embed, MessageActionRow, MessageButton } from 'discord.js';
 
 export default {
   permissionRequired: 0,
   run: async (interaction, { client }) => {
     const { user } = interaction;
     const statsHandler = await client.db.game.findUnique({ where: { player: user.id } }),
-      embed = new MessageEmbed();
+      embed = new Embed();
     let cost: number;
     if (!statsHandler)
       embed

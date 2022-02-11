@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { currentLogo } from '#config';
 import { randomColor } from '#constants/index';
@@ -13,7 +13,7 @@ export default {
 } as Command<'help'>;
 
 const run = async (message: Message) => {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Large Numbers')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)

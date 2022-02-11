@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
@@ -12,7 +12,7 @@ export default {
 } as Command<'semblance'>;
 
 const run = async (message: Message) => {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Credits')
     .setColor(randomColor)
     .addFields([

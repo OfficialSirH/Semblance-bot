@@ -14,10 +14,10 @@ import {
   currency,
 } from '#config';
 import { randomColor } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 
 export const build: QueriedInfoBuilder = interaction => {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Currency')
     .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
     .setColor(randomColor)

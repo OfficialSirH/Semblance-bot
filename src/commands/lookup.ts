@@ -2,7 +2,7 @@
 import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
 import * as constants from '#constants/index';
 import type { Message, MessageOptions, Snowflake, TextBasedChannel, TextChannel, User } from 'discord.js';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 import type { APIInvite, ChannelType, APIUser } from 'discord-api-types';
 
@@ -18,7 +18,7 @@ export default {
   run: (client, message, args) => run(client, message, args),
 } as Command<'admin'>;
 
-const run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: SapphireClient, message: Message, args: string[]) => {
   message.channel.sendTyping();
 
   const role = getRole(args[0], message.guild);

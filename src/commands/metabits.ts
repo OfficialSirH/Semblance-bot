@@ -1,4 +1,4 @@
-import { MessageEmbed, MessageAttachment } from 'discord.js';
+import { Embed, MessageAttachment } from 'discord.js';
 import type { Message } from 'discord.js';
 import type { Command } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
@@ -15,7 +15,7 @@ export default {
 
 const run = async (message: Message) => {
   const metabitAttachment = new MessageAttachment('./src/images/emojis/Metabit.png', 'attachment://Metabit.png'),
-    embed = new MessageEmbed()
+    embed = new Embed()
       .setTitle('Ways to earn Metabits faster')
       .setAuthor(message.author.tag, message.author.displayAvatarURL())
       .setColor(randomColor)

@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { geodeImage, currentLogo } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
@@ -13,7 +13,7 @@ export default {
 } as Command<'game'>;
 
 const run = async (message: Message) => {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Geodes Comparison')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setThumbnail(currentLogo.name)

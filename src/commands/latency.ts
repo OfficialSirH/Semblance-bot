@@ -1,7 +1,7 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor, msToTime } from '#constants/index';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
@@ -12,12 +12,12 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'semblance'>;
 
-const run = async (client: Semblance, message: Message) => {
+const run = async (client: SapphireClient, message: Message) => {
   const uptime = Date.now() - client.readyTimestamp,
     duration = msToTime(uptime),
     responseTime = Date.now() - message.createdTimestamp,
     userAvatar = message.author.displayAvatarURL({ dynamic: true }),
-    embed = new MessageEmbed()
+    embed = new Embed()
       .setTitle('Latency')
       .setColor(randomColor)
       .setThumbnail(userAvatar)

@@ -1,7 +1,7 @@
 import { c2sGuildId } from '#config';
 import { Collection } from 'discord.js';
 import { createHmac } from 'crypto';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 import type { Message } from 'discord.js';
 const cooldown: Collection<string, number> = new Collection();
@@ -18,7 +18,7 @@ export default {
   run: (client, message, args) => run(client, message, args),
 } as Command<'dm'>;
 
-const run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: SapphireClient, message: Message, args: string[]) => {
   if (message.channel.type != 'DM') return;
   const userCooldown = cooldown.get(message.author.id);
   if (userCooldown && userCooldown > Date.now())

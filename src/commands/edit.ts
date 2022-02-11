@@ -1,9 +1,9 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
 import type { Information } from '@prisma/client';
-import type { Semblance } from '#src/structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   description: 'Used for editing information on the beta and update commands',
@@ -16,10 +16,10 @@ export default {
   run: (client, message, args) => run(client, message, args),
 } as Command<'developer'>;
 
-const run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: SapphireClient, message: Message, args: string[]) => {
   if (!args[1] || args[1].length == 0)
     return message.reply('Why are you trying to put nothing for the information? Come on!');
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle(`${args[0].charAt(0).toUpperCase() + args[0].slice(1)} Info Changed!`)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor);
@@ -92,10 +92,10 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
   message.channel.send({ embeds: [embed] });
 };
 
-const listBoosterCodes = async (client: Semblance, message: Message) => {
+const listBoosterCodes = async (client: SapphireClient, message: Message) => {
   const darwiniumCodes = await client.db.boosterCodes.findMany({});
   const list = darwiniumCodes.length > 0 ? darwiniumCodes.map(c => c.code).join(', ') : 'None';
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Booster Codes')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setDescription(`number of codes: ${darwiniumCodes.length}\n\`\`\`\n${list}\`\`\``)
@@ -103,7 +103,7 @@ const listBoosterCodes = async (client: Semblance, message: Message) => {
   message.channel.send({ embeds: [embed] });
 };
 
-const addBoosterCode = async (client: Semblance, message: Message, codes: string[]) => {
+const addBoosterCode = async (client: SapphireClient, message: Message, codes: string[]) => {
   if (codes.length == 0) return message.reply('You need to give me a code to add.');
 
   const darwiniumCodes = await client.db.boosterCodes.findMany({});
@@ -116,7 +116,7 @@ const addBoosterCode = async (client: Semblance, message: Message, codes: string
   });
 
   const list = darwiniumCodes.map(c => c.code).concat(codes);
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Booster Codes')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setDescription(
@@ -128,7 +128,7 @@ const addBoosterCode = async (client: Semblance, message: Message, codes: string
   message.channel.send({ embeds: [embed] });
 };
 
-const removeBoosterCode = async (client: Semblance, message: Message, codes: string[]) => {
+const removeBoosterCode = async (client: SapphireClient, message: Message, codes: string[]) => {
   if (codes.length == 0) return message.reply('You need to give me a code to remove.');
 
   const darwiniumCodes = await client.db.boosterCodes.findMany({});
@@ -146,7 +146,7 @@ const removeBoosterCode = async (client: Semblance, message: Message, codes: str
     },
   });
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Booster Codes')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setDescription(

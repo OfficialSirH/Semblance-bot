@@ -1,7 +1,7 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor, guildBookPage } from '#constants/index';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 import { serversPerPage } from '#constants/commands';
 
@@ -16,7 +16,7 @@ export default {
   run: (client, message, args) => run(client, message, args),
 } as Command<'developer'>;
 
-const run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: SapphireClient, message: Message, args: string[]) => {
   const { chosenPage, pageDetails } = guildBookPage(client, args[0]),
     numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
 
@@ -74,7 +74,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
           ),
       ]),
     ],
-    embed = new MessageEmbed()
+    embed = new Embed()
       .setTitle(`Server List [${client.guilds.cache.size}] - Page ${chosenPage}`)
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())

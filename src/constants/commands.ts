@@ -1,15 +1,5 @@
-import {
-  Client,
-  Guild,
-  GuildChannel,
-  Message,
-  MessageEmbed,
-  PartialMessage,
-  Snowflake,
-  TextChannel,
-  User,
-} from 'discord.js';
-import type { Semblance } from '#structures/Semblance';
+import { Client, Guild, GuildChannel, Message, Embed, PartialMessage, Snowflake, TextChannel, User } from 'discord.js';
+import type { SapphireClient } from '@sapphire/framework';
 import { clamp } from '#lib/utils/math';
 import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndDogAPI';
 import { fetch } from '#lib/utils/fetch';
@@ -30,7 +20,7 @@ export const gameTransferPages = [
 // bug functions and constants - correctReportList and CHANNELS
 
 export const correctReportList = async function (
-  client: Semblance,
+  client: SapphireClient,
   message: Message | PartialMessage,
   messageId: Snowflake,
 ) {
@@ -180,7 +170,7 @@ export const fetchDeepL = async (query_params: DeepLParams) => {
 
 // game - currentPrice
 // TODO: figure some way to not need checkedLevel and have the cost automatically adjusted based on the level
-export async function currentPrice(client: Semblance, userData: Game) {
+export async function currentPrice(client: SapphireClient, userData: Game) {
   if (userData.level == userData.checkedLevel) {
     userData = await client.db.game.update({
       where: {
@@ -219,7 +209,7 @@ export const messageLinkJump = async (input: string, user: User, currentGuild: G
   const attachmentLink = attachmentLinkRegex.exec(msg.content);
   if (attachmentLink != null) msg.content = msg.content.replace(attachmentLink[0], '');
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setAuthor(msg.author.username, msg.author.displayAvatarURL())
     .setThumbnail(user.displayAvatarURL())
     .setDescription(msg.content)

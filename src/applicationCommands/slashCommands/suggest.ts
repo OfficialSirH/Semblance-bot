@@ -1,12 +1,12 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
 import type { TextBasedChannel } from 'discord.js';
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, Embed } from 'discord.js';
 
 export default {
   permissionRequired: 0,
   run: async (interaction, { options }) => {
     const suggestion = options.getString('suggestion', true),
-      embed = new MessageEmbed()
+      embed = new Embed()
         .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
         .setDescription(suggestion),
       component = new MessageActionRow().addComponents([

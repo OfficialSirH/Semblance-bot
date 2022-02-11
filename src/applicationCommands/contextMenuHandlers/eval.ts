@@ -1,5 +1,5 @@
 import type { ContextMenuHandlerOptions } from '#lib/interfaces/Semblance';
-import { ContextMenuInteraction, Message, MessageAttachment, MessageEmbed } from 'discord.js';
+import { ContextMenuInteraction, Message, MessageAttachment, Embed } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { fetch } from '#lib/utils/fetch';
 
@@ -22,7 +22,7 @@ export const run = async (
         ? message.content.substring(5, message.content.length - 3)
         : message.content;
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setColor(randomColor)
     .addField('📥 Input', `\`\`\`js\n${content.substring(0, 1015)}\`\`\``)
     .setFooter({ text: 'Feed me code!' });

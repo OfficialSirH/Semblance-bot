@@ -1,9 +1,9 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
 import { currentLogo } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   description: 'help for metabit calculators',
@@ -13,8 +13,8 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'help'>;
 
-const run = async (client: Semblance, message: Message) => {
-  const embed = new MessageEmbed()
+const run = async (client: SapphireClient, message: Message) => {
+  const embed = new Embed()
     .setTitle('Metabit Calculator Help')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)

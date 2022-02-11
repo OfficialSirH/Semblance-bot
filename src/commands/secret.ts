@@ -1,8 +1,8 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
-import { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   description: 'Secret',
@@ -14,10 +14,10 @@ export default {
   run: (client, message, args) => run(client, message, args),
 } as Command<'game'>;
 
-const run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: SapphireClient, message: Message, args: string[]) => {
   message.delete();
   if (args[0] == 'fun') return fun(message);
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Secret Achievements')
     .setColor(randomColor)
     .setDescription(
@@ -47,6 +47,6 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
 };
 
 async function fun(message: Message) {
-  const embed = new MessageEmbed().setTitle('Secret').setURL('https://rb.gy/enaq3a');
+  const embed = new Embed().setTitle('Secret').setURL('https://rb.gy/enaq3a');
   message.author.send({ embeds: [embed] });
 }

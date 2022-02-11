@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { currentLogo } from '#config';
@@ -15,7 +15,7 @@ export default {
 } as Command<'game'>;
 
 const run = async (message: Message) => {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Reptiles and Birds')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setThumbnail(currentLogo.name)

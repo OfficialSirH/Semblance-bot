@@ -1,5 +1,5 @@
 import { nameToScNo, bigToName, checkValue, randomColor } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import type { Command } from '#lib/interfaces/Semblance';
 import { itemList } from '#itemList';
@@ -31,7 +31,7 @@ const run = async (message: Message, args: string[]) => {
   const num5 = itemCost * Math.pow(1.149999976158142, currentLevel as number);
   const level = Math.floor(Math.log(num3 / num5 + 1) / Math.log(1.149999976158142));
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Item Calculator Results')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

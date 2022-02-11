@@ -1,9 +1,9 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
 import { roadMap, currentLogo, earlyBeyondTesters } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   description: 'Provides info on The Beyond.',
@@ -15,11 +15,11 @@ export default {
   run: (client, message, args) => run(client, message, args),
 } as Command<'game'>;
 
-const run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: SapphireClient, message: Message, args: string[]) => {
   if (args[0] == 'clips' || args.join(' ') == 'sneak peeks' || args[0] == 'sneakpeeks') return clips(message);
   if (args[0] == 'count' || args[0] == 'counter') return beyondCounter(message);
   if (args[0] == 'testers') return testerCredits(message);
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Beyond/Road Map')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
@@ -32,7 +32,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
 };
 
 async function clips(message: Message) {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Beyond Clips')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
@@ -56,7 +56,7 @@ async function clips(message: Message) {
 }
 
 async function beyondCounter(message: Message) {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Beyond Counter')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
@@ -71,7 +71,7 @@ async function beyondCounter(message: Message) {
 }
 
 function testerCredits(message: Message) {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Credits to our Early Private Beta Testers!')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

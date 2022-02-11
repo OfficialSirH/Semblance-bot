@@ -1,9 +1,9 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, Embed } from 'discord.js';
 
 export default {
   buttonHandle: async (interaction, { action, id }) => {
-    const embed = new MessageEmbed();
+    const embed = new Embed();
     const creditComponents = [
       new MessageButton()
         .setCustomId(

@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { User } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
@@ -7,7 +7,7 @@ export default {
   permissionRequired: 0,
   run: async interaction => {
     const user = interaction.member.user as User,
-      embed = new MessageEmbed()
+      embed = new Embed()
         .setTitle('Credits')
         .setColor(randomColor)
         .setAuthor(user.tag, user.displayAvatarURL())

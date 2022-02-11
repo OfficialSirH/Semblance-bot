@@ -1,9 +1,9 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { Message, MessageComponentInteraction } from 'discord.js';
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, Embed } from 'discord.js';
 // import { Game } from '#models/Game';
 import { filterAction, prefix, randomColor } from '#constants/index';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import { currentPrice } from '#constants/commands';
 import { LeaderboardUtilities } from '#src/structures/LeaderboardUtilities';
 import type { Game } from '@prisma/client';
@@ -196,7 +196,11 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
   });
 }
 
-async function create(client: Semblance, interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function create(
+  client: SapphireClient,
+  interaction: MessageComponentInteraction,
+  components: MessageActionRow[],
+) {
   const { user } = interaction;
   const percent = (Math.round(Math.random() * 25) + 25) / 100 + 1;
   const startingProfits = Math.random() * 0.05 + 0.05;
@@ -221,7 +225,7 @@ async function create(client: Semblance, interaction: MessageComponentInteractio
     },
   });
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Game Created')
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
@@ -243,7 +247,7 @@ async function create(client: Semblance, interaction: MessageComponentInteractio
 
 async function about(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   const { user } = interaction;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle("What's Semblance's Idle-Game about?")
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
@@ -259,7 +263,11 @@ async function about(interaction: MessageComponentInteraction, components: Messa
   await interaction.update({ embeds: [embed], components });
 }
 
-async function collect(client: Semblance, interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function collect(
+  client: SapphireClient,
+  interaction: MessageComponentInteraction,
+  components: MessageActionRow[],
+) {
   const { user } = interaction;
   let collectionHandler = await client.db.game.findUnique({ where: { player: user.id } });
   const collected = collectionHandler.profitRate * ((Date.now() - collectionHandler.lastCollected.valueOf()) / 1000);
@@ -275,7 +283,7 @@ async function collect(client: Semblance, interaction: MessageComponentInteracti
     },
   });
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Balance')
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
@@ -287,7 +295,11 @@ async function collect(client: Semblance, interaction: MessageComponentInteracti
   await interaction.update({ embeds: [embed], components });
 }
 
-async function upgrade(client: Semblance, interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function upgrade(
+  client: SapphireClient,
+  interaction: MessageComponentInteraction,
+  components: MessageActionRow[],
+) {
   await interaction.deferUpdate();
   const { user } = interaction,
     message = interaction.message as Message;
@@ -297,7 +309,7 @@ async function upgrade(client: Semblance, interaction: MessageComponentInteracti
   if (upgradeHandler.money < costSubtraction)
     return message.edit({
       embeds: [
-        new MessageEmbed()
+        new Embed()
           .setTitle('Not Enough Random-Bucks')
           .setAuthor(user.tag, user.displayAvatarURL())
           .setColor(randomColor)
@@ -332,7 +344,7 @@ async function upgrade(client: Semblance, interaction: MessageComponentInteracti
     });
   }
 
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Upgrade Stats')
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
@@ -350,14 +362,14 @@ async function upgrade(client: Semblance, interaction: MessageComponentInteracti
 }
 
 async function leaderboard(
-  client: Semblance,
+  client: SapphireClient,
   interaction: MessageComponentInteraction,
   components: MessageActionRow[],
 ) {
   const { user } = interaction;
   let leaderboard = await LeaderboardUtilities.topTwenty(client, 'game');
   if (!leaderboard) leaderboard = 'There is currently no one who has upgraded their income.';
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle("Semblance's idle-game leaderboard")
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
@@ -368,7 +380,7 @@ async function leaderboard(
 
 async function votes(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   const { user, client } = interaction,
-    embed = new MessageEmbed()
+    embed = new Embed()
       .setTitle('Vote')
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())
@@ -393,13 +405,13 @@ async function votes(interaction: MessageComponentInteraction, components: Messa
 }
 
 async function stats(
-  client: Semblance,
+  client: SapphireClient,
   interaction: MessageComponentInteraction,
   components: MessageActionRow[],
   game: Game,
 ) {
   const { user } = interaction;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle("Welcome back to Semblance's Idle-Game!")
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)
@@ -420,7 +432,7 @@ async function stats(
 
 async function graph(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
   const { user } = interaction;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle("Graphed Data of Semblance's Idle Game")
     .setAuthor(user.tag, user.displayAvatarURL())
     .setColor(randomColor)

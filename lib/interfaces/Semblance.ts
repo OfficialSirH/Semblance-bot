@@ -1,4 +1,4 @@
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type {
   CommandInteraction,
   Message,
@@ -38,7 +38,7 @@ export interface AutocompleteHandler {
   run: (
     interaction: AutocompleteInteraction,
     options: AutocompleteInteraction['options'],
-    client: Semblance,
+    client: SapphireClient,
   ) => Promise<void>;
 }
 
@@ -56,12 +56,12 @@ export interface ComponentHandler {
   buttonHandle?: (
     interaction: ButtonInteraction,
     data: CustomIdData,
-    { client, permissionLevel }: { client: Semblance; permissionLevel: number },
+    { client, permissionLevel }: { client: SapphireClient; permissionLevel: number },
   ) => Promise<void>;
   selectHandle?: (
     interaction: SelectMenuInteraction,
     data: CustomIdData,
-    { client, permissionLevel }: { client: Semblance; permissionLevel: number },
+    { client, permissionLevel }: { client: SapphireClient; permissionLevel: number },
   ) => Promise<void>;
 }
 
@@ -77,14 +77,14 @@ export interface SlashCommand {
 }
 
 export interface SlashOptions {
-  client: Semblance;
+  client: SapphireClient;
   permissionLevel: number;
   options: CommandInteraction['options'];
 }
 
 export type QueriedInfoBuilder = (
   interaction: CommandInteraction | ButtonInteraction | SelectMenuInteraction,
-  client: Semblance,
+  client: SapphireClient,
 ) => Promise<string | MessageOptions | InteractionReplyOptions> | string | MessageOptions | InteractionReplyOptions;
 
 export interface Command<T extends Category> {
@@ -104,7 +104,13 @@ export interface Command<T extends Category> {
   aliases?: string[];
   permissionRequired: number;
   checkArgs: (args: string[], permissionLevel?: number, content?: string) => T extends NoArgCategory ? true : boolean;
-  run: (client: Semblance, message: Message, args: string[], identifier?: string, options?: CommandOptions) => unknown;
+  run: (
+    client: SapphireClient,
+    message: Message,
+    args: string[],
+    identifier?: string,
+    options?: CommandOptions,
+  ) => unknown;
 }
 
 export interface CommandOptions {
@@ -127,15 +133,8 @@ export type Category =
   | NoArgCategory;
 export type Subcategory = 'main' | 'mesozoic' | 'other';
 
-// the generics - <T extends keyof ClientEvents = keyof ClientEvents>
-export interface EventHandler<T extends keyof ClientEvents = keyof ClientEvents> {
-  name: T;
-  once?: boolean;
-  exec: (...args: [...ClientEvents[T], Semblance]) => Promise<void>;
-}
-
 export interface TwitterJSEventHandler<T extends keyof ClientEventsMapping = keyof ClientEventsMapping> {
   name: T;
   once?: boolean;
-  exec: (...args: [...ClientEventsMapping[T], { client: Semblance; twClient: Client }]) => Promise<void>;
+  exec: (...args: [...ClientEventsMapping[T], { client: SapphireClient; twClient: Client }]) => Promise<void>;
 }

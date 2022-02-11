@@ -1,10 +1,10 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
-import { MessageAttachment, MessageEmbed } from 'discord.js';
+import { MessageAttachment, Embed } from 'discord.js';
 
 export const build: QueriedInfoBuilder = interaction => {
   const metabitAttachment = new MessageAttachment('./src/images/emojis/Metabit.png', 'attachment://Metabit.png'),
-    embed = new MessageEmbed()
+    embed = new Embed()
       .setTitle('Ways to earn Metabits faster')
       .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
       .setColor(randomColor)

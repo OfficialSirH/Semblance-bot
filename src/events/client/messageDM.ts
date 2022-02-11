@@ -1,6 +1,6 @@
 import { parseArgs, prefix } from '#constants/index';
 import { EventHandler } from '#lib/interfaces/Semblance';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Message } from 'discord.js';
 
 export default {
@@ -8,7 +8,7 @@ export default {
   exec: (message, client) => messageDM(message, client),
 } as { name: 'messageDM'; exec: EventHandler<'messageCreate'>['exec'] };
 
-export const messageDM = (message: Message, client: Semblance) => {
+export const messageDM = (message: Message, client: SapphireClient) => {
   const { commands, aliases } = client;
   // s! is deprecated and should be removed in the future
   if (message.content.startsWith('s!') || message.content.match(`^<@!?${client.user.id}> `)) {

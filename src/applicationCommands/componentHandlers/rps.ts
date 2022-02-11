@@ -1,7 +1,7 @@
 import type { RPSGame } from '#lib/interfaces/rps';
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { Message, Snowflake } from 'discord.js';
-import { Collection, MessageEmbed } from 'discord.js';
+import { Collection, Embed } from 'discord.js';
 import { choiceToOutcome, countdownGIF } from '#constants/commands';
 
 export const rpsGames: Collection<Snowflake, RPSGame> = new Collection();
@@ -31,7 +31,7 @@ export default {
 
     if (!!player.choice && !!opponent.choice) {
       const playerVictory = choiceToOutcome(player.choice, opponent.choice),
-        embed = new MessageEmbed().setThumbnail(countdownGIF),
+        embed = new Embed().setThumbnail(countdownGIF),
         description = `${player.tag} chose ${player.choice} and ${opponent.tag} chose ${opponent.choice}`;
 
       if (playerVictory == 'tie')

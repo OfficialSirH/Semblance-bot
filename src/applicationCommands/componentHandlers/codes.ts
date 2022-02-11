@@ -1,11 +1,11 @@
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { MessageActionRow, MessageButton, Embed } from 'discord.js';
 import { currentLogo } from '#config';
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 
 export default {
   buttonHandle: async (interaction, { action, id }, { client }) => {
     const codeHandler = await client.db.information.findUnique({ where: { type: 'codes' } }),
-      embed = interaction.message.embeds[0] as MessageEmbed;
+      embed = interaction.message.embeds[0] as Embed;
     let component: MessageActionRow;
     if (action == 'expired') {
       embed.setDescription(codeHandler.expired);

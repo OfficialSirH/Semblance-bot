@@ -1,7 +1,7 @@
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export class LeaderboardUtilities {
-  public static async topTwenty(client: Semblance, type: 'game' | 'vote'): Promise<string> {
+  public static async topTwenty(client: SapphireClient, type: 'game' | 'vote'): Promise<string> {
     if (type === 'game')
       return (
         await client.db.game.findMany({

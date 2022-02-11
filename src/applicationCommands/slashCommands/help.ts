@@ -1,5 +1,5 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
-import { MessageActionRow, MessageEmbed, MessageSelectMenu } from 'discord.js';
+import { MessageActionRow, Embed, MessageSelectMenu } from 'discord.js';
 
 export default {
   permissionRequired: 0,
@@ -26,7 +26,7 @@ export default {
       }, [] as MessageActionRow[]);
       return interaction.reply({
         embeds: [
-          new MessageEmbed()
+          new Embed()
             .setTitle('Help')
             .setDescription(
               "Due to your query being wrong, here's a provided list from Semblance's help command in the dropdowns below.",

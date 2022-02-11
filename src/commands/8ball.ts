@@ -1,35 +1,61 @@
-import type { Command } from '#lib/interfaces/Semblance';
-import type { Message } from 'discord.js';
+import { randomColor } from '#src/constants';
+import { ApplicationCommandRegistry, Args, Command } from '@sapphire/framework';
+import { ChatInputCommandInteraction, Message, Embed } from 'discord.js';
 
-export default {
-  description: 'See magical stuff',
-  category: 'fun',
-  permissionRequired: 0,
-  checkArgs: () => true,
-  run: (_client, message, args) => run(message, args),
-} as Command<'fun'>;
-
-const run = async (message: Message, args: string[]) => {
-  if (args.length == 0) return message.reply('Ask any question and Semblance will answer.');
+function createAnswer(question: string) {
   const randomizedChoice = Math.ceil(Math.random() * 20);
-  if (randomizedChoice == 1) return message.reply('It is certain');
-  if (randomizedChoice == 2) return message.reply('It is decidely so.');
-  if (randomizedChoice == 3) return message.reply('Without a doubt');
-  if (randomizedChoice == 4) return message.reply('Yes - definitely.');
-  if (randomizedChoice == 5) return message.reply('You may rely on it.');
-  if (randomizedChoice == 6) return message.reply('As I see it, yes.');
-  if (randomizedChoice == 7) return message.reply('Most likely.');
-  if (randomizedChoice == 8) return message.reply('Outlook good.');
-  if (randomizedChoice == 9) return message.reply('Yes.');
-  if (randomizedChoice == 10) return message.reply('Signs point to yes.');
-  if (randomizedChoice == 11) return message.reply('Reply hazy, try again.');
-  if (randomizedChoice == 12) return message.reply('Ask again later.');
-  if (randomizedChoice == 13) return message.reply('Better not tell you now.');
-  if (randomizedChoice == 14) return message.reply('Cannot predict now.');
-  if (randomizedChoice == 15) return message.reply('Concentrate and ask again.');
-  if (randomizedChoice == 16) return message.reply("Don't count on it.");
-  if (randomizedChoice == 17) return message.reply('My reply is no.');
-  if (randomizedChoice == 18) return message.reply('My sources say no.');
-  if (randomizedChoice == 19) return message.reply('Outlook not so good.');
-  if (randomizedChoice == 20) return message.reply('Very doubtful.');
-};
+  let description = `Question: ${question}\nAnswer: `;
+  if (randomizedChoice == 1) description += 'It is certain';
+  if (randomizedChoice == 2) description += 'It is decidely so.';
+  if (randomizedChoice == 3) description += 'Without a doubt';
+  if (randomizedChoice == 4) description += 'Yes - definitely.';
+  if (randomizedChoice == 5) description += 'You may rely on it.';
+  if (randomizedChoice == 6) description += 'As I see it, yes.';
+  if (randomizedChoice == 7) description += 'Most likely.';
+  if (randomizedChoice == 8) description += 'Outlook good.';
+  if (randomizedChoice == 9) description += 'Yes.';
+  if (randomizedChoice == 10) description += 'Signs point to yes.';
+  if (randomizedChoice == 11) description += 'Reply hazy, try again.';
+  if (randomizedChoice == 12) description += 'Ask again later.';
+  if (randomizedChoice == 13) description += 'Better not tell you now.';
+  if (randomizedChoice == 14) description += 'Cannot predict now.';
+  if (randomizedChoice == 15) description += 'Concentrate and ask again.';
+  if (randomizedChoice == 16) description += "Don't count on it.";
+  if (randomizedChoice == 17) description += 'My reply is no.';
+  if (randomizedChoice == 18) description += 'My sources say no.';
+  if (randomizedChoice == 19) description += 'Outlook not so good.';
+  if (randomizedChoice == 20) description += 'Very doubtful.';
+  return description;
+}
+
+export default class EightBall extends Command {
+  public override async messageRun(message: Message, args: Args) {
+    const choice = await args.pickResult('string');
+
+    if (!choice.success) return message.channel.send('You need to provide a question for the 8ball to answer.');
+
+    const embed = new Embed()
+      .setTitle('8ball')
+      .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
+      .setColor(randomColor)
+      .setDescription(createAnswer(choice.value));
+
+    await message.reply({ embeds: [embed] });
+  }
+
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+    const question = interaction.options.getString('question', true);
+
+    const user = interaction.member.user;
+    const embed = new Embed()
+      .setTitle('8ball')
+      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setColor(randomColor);
+    embed.setDescription(createAnswer(question));
+    return interaction.reply({ embeds: [embed] });
+  }
+  // TODO: setup 8ball command here later
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand({});
+  }
+}

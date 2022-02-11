@@ -1,5 +1,5 @@
 import type { Message } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { archieDance } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
 
@@ -15,7 +15,7 @@ export default {
 } as Command<'fun'>;
 
 const run = async (message: Message) => {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Dancing Archie/Jotaru')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setDescription(

@@ -3,52 +3,47 @@ import { install as sourceMapInstall } from 'source-map-support';
 sourceMapInstall();
 await import('#config');
 
-import { Semblance } from '#structures/Semblance';
-// import { Client } from 'twitter.js';
-import { Intents, LimitedCollection, Options } from 'discord.js';
-import { checkTweet } from '#events/index';
-const client = new Semblance({
+import prisma from '@prisma/client';
+import type { QueriedInfoBuilder } from 'Semblance';
+declare module 'discord.js' {
+  interface Client {
+    db: prisma.PrismaClient;
+    infoBuilders: Collection<string, QueriedInfoBuilder>;
+  }
+}
+
+import { SapphireClient } from '@sapphire/framework';
+import { type Collection, GatewayIntentBits, Options, Partials } from 'discord.js';
+const client = new SapphireClient({
   allowedMentions: { parse: [] },
+  defaultPrefix: prefix,
+  caseInsensitiveCommands: true,
+  caseInsensitivePrefixes: true,
+  defaultCooldown: {
+    delay: 2_000,
+  },
   makeCache: Options.cacheWithLimits({
-    ThreadManager: {
-      sweepInterval: 3600,
-      sweepFilter: LimitedCollection.filterByLifetime({
-        getComparisonTimestamp: e => e.archiveTimestamp,
-        excludeFromSweep: e => !e.archived,
-      }),
-    },
-    MessageManager: {
-      sweepInterval: 60,
-      sweepFilter: LimitedCollection.filterByLifetime({
-        lifetime: 30,
-        getComparisonTimestamp: m => m.editedTimestamp ?? m.createdTimestamp,
-      }),
-    },
+    ThreadManager: 10,
+    MessageManager: 5,
     GuildMemberManager: 1,
     UserManager: 1,
   }),
-  partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE'],
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
+  partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message],
+  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages],
 });
+client.db = new prisma.PrismaClient();
+
+// import { Client } from 'twitter.js';
 // TODO: enable twitter.js implementation to replace the shitty twitter library
 // const twClient = new Client({ events: ['FILTERED_TWEET_CREATE'] });
-// fastify routing
-import fastify from 'fastify';
-const app = fastify();
 
-// Listen to client events
-import * as fs from 'fs/promises';
-import type { EventHandler } from '#lib/interfaces/Semblance';
-const eventFiles = (await fs.readdir('./dist/src/events/client')).filter(file => file.endsWith('.js'));
-
-for (const file of eventFiles) {
-  const event = (await import(`./src/events/client/${file}`)).default as EventHandler;
-  if (event.once) client.once(event.name, (...args) => event.exec(...args, client));
-  else client.on(event.name, (...args) => event.exec(...args, client));
-}
 // TODO: enable twitter.js implementation to replace the shitty twitter library
 // import type { TwitterJSEventHandler } from '#lib/interfaces/Semblance';
 // const twitterEventFiles = (await fs.readdir('./dist/src/events/twitter')).filter(file => file.endsWith('.js'));
+
+// fastify routing
+import fastify from 'fastify';
+const app = fastify();
 
 // for (const file of twitterEventFiles) {
 // 	const event = (await import(`./src/events/twitter/${file}`)).default as TwitterJSEventHandler;
@@ -63,6 +58,8 @@ app.get('/', (_req, res) => {
   res.redirect('https://officialsirh.github.io/');
 });
 
+import { checkTweet } from '#events/index';
+import { prefix } from '#src/constants';
 // Check for Tweet from ComputerLunch
 setInterval(() => checkTweet(client), 2000);
 // TODO: remove this really shitty implementation of receiving tweets

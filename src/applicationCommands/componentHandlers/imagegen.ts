@@ -1,6 +1,6 @@
 import type { sizeType } from '#lib/interfaces/catAndDogAPI';
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { fetchCatOrDog } from '#constants/commands';
 
 export default {
@@ -22,7 +22,7 @@ export default {
       image_url = image.url,
       breed = image.breeds[0];
 
-    const embed = new MessageEmbed()
+    const embed = new Embed()
       .setTitle(`Here's a ${breed.name}!`)
       .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
       .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)

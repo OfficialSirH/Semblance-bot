@@ -1,7 +1,7 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 import { LeaderboardUtilities } from '#src/structures/LeaderboardUtilities';
 
@@ -13,10 +13,10 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'semblance'>;
 
-const run = async (client: Semblance, message: Message) => {
+const run = async (client: SapphireClient, message: Message) => {
   let leaderboard = await LeaderboardUtilities.topTwenty(client, 'vote');
   if (!leaderboard) leaderboard = "No one has voted for Semblance :( (or the leaderboard just didn't update)";
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Voting Leaderboard')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)

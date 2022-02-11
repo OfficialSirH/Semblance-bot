@@ -1,9 +1,9 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
 import { currentLogo, darwinium } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
-import { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   description: 'Info on contest winners',
@@ -15,12 +15,12 @@ export default {
   run: (client, message, args) => run(client, message, args),
 } as Command<'game'>;
 
-const run = async (client: Semblance, message: Message, args: string[]) => {
+const run = async (client: SapphireClient, message: Message, args: string[]) => {
   const contests = ['limericks'];
   if (args[0] == 'limericks') return limericks(message);
   message.channel.send({
     embeds: [
-      new MessageEmbed()
+      new Embed()
         .setTitle('Contests')
         .setColor(randomColor)
         .setDescription(
@@ -33,7 +33,7 @@ const run = async (client: Semblance, message: Message, args: string[]) => {
 };
 
 function limericks(message: Message) {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Limericks Contest winners')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)

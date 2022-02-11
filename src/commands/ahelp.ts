@@ -1,6 +1,6 @@
 import type { Message } from 'discord.js';
-import type { Semblance } from '#structures/Semblance';
-import { MessageEmbed } from 'discord.js';
+import type { SapphireClient } from '@sapphire/framework';
+import { Embed } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
 
@@ -12,11 +12,11 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'help'>;
 
-const run = async (client: Semblance, message: Message) => {
+const run = async (client: SapphireClient, message: Message) => {
   const adminCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'admin')
     .map(key => `**\`${prefix}${key}\`**`);
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setColor(randomColor)
     .setTitle('**-> Admin Commands**')
     .setThumbnail(client.user.displayAvatarURL())

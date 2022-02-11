@@ -1,5 +1,5 @@
 import { bigToName, checkValue, nameToScNo, randomColor } from '#constants/index';
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import type { Command } from '#lib/interfaces/Semblance';
 
@@ -23,7 +23,7 @@ const run = async (message: Message, args: string[]) => {
   // metabits + 1 = Math.floor(Math.pow(entropy+ideas, 0.3333333333333333) / 10000);
   // (metabits + 1) * 10000 = Math.floor(Math.pow(entropy+ideas, 0.3333333333333333));
   // Math.floor(Math.pow((metabits+1) * 10000), 1/0.3333333333333333) = entropy+ideas;
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Metabits Produced')
     .setColor(randomColor)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())

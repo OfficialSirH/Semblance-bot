@@ -1,18 +1,9 @@
 ﻿import type { Subcategory } from '#lib/interfaces/Semblance';
-import type {
-  ColorResolvable,
-  GuildMember,
-  MessageActionRow,
-  MessageButton,
-  MessageComponentInteraction,
-  Snowflake,
-  User,
-} from 'discord.js';
+import type { GuildMember, ActionRow, ButtonComponent, MessageComponentInteraction, Snowflake, User } from 'discord.js';
 import { Permissions } from 'discord.js';
-import type { Semblance } from '../structures';
+import type { SapphireClient } from '@sapphire/framework';
 
 export const prefix = 's!';
-//export const prefix = '@Semblance ';
 
 export const getAvatar = (user: User) => {
   const avatarType = user.avatar.startsWith('a_') ? `${user.avatar}.gif` : `${user.avatar}.png`;
@@ -71,12 +62,12 @@ const partition = (list: [Snowflake, number][], left: number, right: number) => 
   }
   return i;
 };
-export const filterAction = (components: MessageActionRow[], action: string) =>
+export const filterAction = (components: ActionRow[], action: string) =>
   components.map(c => {
-    c.components = (c.components as MessageButton[]).filter(b => eval(`(${b.customId})`).action != action);
+    c.components = (c.components as ButtonComponent[]).filter(b => eval(`(${b.customId})`).action != action);
     return c;
   });
-export const subcategoryList = (client: Semblance, category: string, subcategory: Subcategory) =>
+export const subcategoryList = (client: SapphireClient, category: string, subcategory: Subcategory) =>
   Object.keys(client.commands)
     .filter(key => client.commands[key].category == category && client.commands[key].subcategory == subcategory)
     .map(key => `**\`${prefix}${key}\`**`)
@@ -325,17 +316,17 @@ class RandomColor {
     const redString = red.toString(16),
       greenString = green.toString(16),
       blueString = blue.toString(16);
-    return ('#' + redString + greenString + blueString) as ColorResolvable;
+    return parseInt(redString + greenString + blueString, 16);
   }
 }
 export const randomColor = RandomColor.randomColor;
 
 export const disableAllComponents = (interaction: MessageComponentInteraction) => {
-  (interaction.message.components as MessageActionRow[]).forEach(component =>
+  (interaction.message.components as ActionRow[]).forEach(component =>
     component.components.forEach(comp => comp.setDisabled(true)),
   );
   return interaction.channel.messages.edit(interaction.message.id, {
-    components: interaction.message.components as MessageActionRow[],
+    components: interaction.message.components as ActionRow[],
   });
 };
 // Command related functions and constants

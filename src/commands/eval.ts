@@ -1,6 +1,6 @@
-import { MessageEmbed, MessageAttachment } from 'discord.js';
+import { Embed, MessageAttachment } from 'discord.js';
 import { randomColor } from '#constants/index';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Message } from 'discord.js';
 import type { Command } from '#lib/interfaces/Semblance';
 
@@ -16,8 +16,8 @@ export default {
   run: (client, message, args, _identifier, { content }) => run(client, message, args, { content }),
 } as Command<'developer'>;
 
-const run = async (client: Semblance, message: Message, args: string[], { content }) => {
-  const embed = new MessageEmbed()
+const run = async (client: SapphireClient, message: Message, args: string[], { content }) => {
+  const embed = new Embed()
     .setColor(randomColor)
     .addField('📥 Input', `\`\`\`js\n${content.substring(0, 1015)}\`\`\``)
     .setFooter({ text: 'Feed me code!' });

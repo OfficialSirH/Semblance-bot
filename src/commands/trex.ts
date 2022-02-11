@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { currentLogo, trexBadge } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
@@ -10,7 +10,7 @@ export default {
   permissionRequired: 0,
   checkArgs: () => true,
   run: (_client, message) => {
-    const embed = new MessageEmbed()
+    const embed = new Embed()
       .setTitle(`${trexBadge}Tyrannosaurus Rex`)
       .setColor(randomColor)
       .setThumbnail(currentLogo.name)

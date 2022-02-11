@@ -1,6 +1,6 @@
 ﻿import { gameTransferPages, randomColor } from '#constants/index';
 import { currentLogo } from '#config';
-import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
+import { Embed, MessageActionRow, MessageButton } from 'discord.js';
 import type { Message } from 'discord.js';
 import type { Command } from '#lib/interfaces/Semblance';
 
@@ -14,7 +14,7 @@ export default {
 } as Command<'game'>;
 
 const run = async (message: Message) => {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Game Transfer')
     .setColor(randomColor)
     .setAuthor(message.author.tag, message.author.displayAvatarURL())

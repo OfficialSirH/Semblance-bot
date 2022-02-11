@@ -1,9 +1,9 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { currentLogo, prestige, prestigeList } from '#config';
 import { prefix, randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 
 export default {
   description: 'Get info on the Mesozoic Valley prestige.',
@@ -15,9 +15,9 @@ export default {
   run: (client, message, args, identifier) => run(client, message, args, identifier),
 } as Command<'game'>;
 
-const run = async (client: Semblance, message: Message, args: string[], identifier: string) => {
+const run = async (client: SapphireClient, message: Message, args: string[], identifier: string) => {
   if ((args[0] && args[0].toLowerCase() == 'list') || identifier == 'prestigelist') return sendPrestigeList(message);
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Mesozoic Valley Prestige')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)
@@ -32,7 +32,7 @@ const run = async (client: Semblance, message: Message, args: string[], identifi
 };
 
 function sendPrestigeList(message: Message) {
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Mesozoic Valley Prestige List')
     .setAuthor(message.author.tag, message.author.displayAvatarURL())
     .setColor(randomColor)

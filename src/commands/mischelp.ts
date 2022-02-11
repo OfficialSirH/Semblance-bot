@@ -1,7 +1,7 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
@@ -12,7 +12,7 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'help'>;
 
-const run = async (client: Semblance, message: Message) => {
+const run = async (client: SapphireClient, message: Message) => {
   const serverCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'server')
       .map(key => `**$${prefix}${key}**`),
@@ -25,7 +25,7 @@ const run = async (client: Semblance, message: Message) => {
     semblanceCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'semblance')
       .map(key => `**$${prefix}${key}**`);
-  const embed = new MessageEmbed()
+  const embed = new Embed()
     .setTitle('Miscellaneous Commands')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)

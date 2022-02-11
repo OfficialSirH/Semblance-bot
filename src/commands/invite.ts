@@ -1,7 +1,7 @@
-import { MessageEmbed } from 'discord.js';
+import { Embed } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { Message } from 'discord.js';
-import type { Semblance } from '#structures/Semblance';
+import type { SapphireClient } from '@sapphire/framework';
 import type { Command } from '#lib/interfaces/Semblance';
 
 export default {
@@ -12,8 +12,8 @@ export default {
   run: (client, message) => run(client, message),
 } as Command<'semblance'>;
 
-const run = (client: Semblance, message: Message) => {
-  const embed = new MessageEmbed()
+const run = (client: SapphireClient, message: Message) => {
+  const embed = new Embed()
     .setTitle('Bot Invite')
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())

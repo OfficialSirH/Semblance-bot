@@ -1,4 +1,4 @@
-import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
+import { Embed, MessageActionRow, MessageButton } from 'discord.js';
 import type { User, Message, GuildMember } from 'discord.js';
 import { choiceToOutcome, countdownGIF, randomChoice } from '#constants/commands';
 import { rpsGames } from '../componentHandlers/rps.js';
@@ -100,7 +100,7 @@ export default {
             .setStyle('SECONDARY'),
         ]),
       ],
-      embed = new MessageEmbed()
+      embed = new Embed()
         .setTitle(
           `${user.tag} has challenged ${(opponent as GuildMember).user.tag} to Rock, Paper, Scissors, Lizard, Spock!`,
         )
