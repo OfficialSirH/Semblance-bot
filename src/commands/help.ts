@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, Embed, ButtonStyle } from 'discord.js';
 import type { Message } from 'discord.js';
 import { sirhId, adityaId, c2sGuildId } from '#config';
 import { prefix, randomColor } from '#constants/index';
@@ -20,7 +20,7 @@ const run = async (client: SapphireClient, message: Message) => {
   const embed = new Embed()
     .setTitle('Semblance Command List')
     .setColor(randomColor)
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setThumbnail(client.user.displayAvatarURL())
     .addFields(
       {
@@ -37,12 +37,12 @@ const run = async (client: SapphireClient, message: Message) => {
         ].join(' '),
       },
     )
-    .setFooter(
-      `Stay Cellular! If you really like the work I've done to Semblance, then check out $${prefix}patreon :D`,
-    );
+    .setFooter({
+      text: `Stay Cellular! If you really like the work I've done to Semblance, then check out $${prefix}patreon :D`,
+    });
   const components = [
-    new MessageActionRow().addComponents([
-      new MessageButton()
+    new ActionRow().addComponents(
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'help',
@@ -51,8 +51,8 @@ const run = async (client: SapphireClient, message: Message) => {
           }),
         )
         .setLabel('Cell to Singularity Help')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'help',
@@ -61,8 +61,8 @@ const run = async (client: SapphireClient, message: Message) => {
           }),
         )
         .setLabel('Calculator Help')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'help',
@@ -71,8 +71,8 @@ const run = async (client: SapphireClient, message: Message) => {
           }),
         )
         .setLabel('Miscellaneous Help')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'help',
@@ -82,9 +82,9 @@ const run = async (client: SapphireClient, message: Message) => {
         )
         .setDisabled(Boolean(message.guild.id != c2sGuildId && ![sirhId, adityaId].includes(message.author.id)))
         .setLabel('Bug Reporting Help')
-        .setEmoji('🐛')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setEmoji({ name: '🐛' })
+        .setStyle(ButtonStyle.Primary),
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'help',
@@ -93,9 +93,9 @@ const run = async (client: SapphireClient, message: Message) => {
           }),
         )
         .setLabel('Close')
-        .setEmoji('🚫')
-        .setStyle('SECONDARY'),
-    ]),
+        .setEmoji({ name: '🚫' })
+        .setStyle(ButtonStyle.Secondary),
+    ),
   ];
   message.reply({
     content: 'side note: if your Discord client supports it, you can use: `/help query: INPUT_HERE` instead.',

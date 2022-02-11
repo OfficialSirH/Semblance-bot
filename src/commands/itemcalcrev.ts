@@ -33,7 +33,7 @@ const run = async (message: Message, args: string[]) => {
 
   const embed = new Embed()
     .setTitle('Item Calculator Results')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
       [

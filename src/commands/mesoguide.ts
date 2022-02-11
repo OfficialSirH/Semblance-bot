@@ -17,7 +17,7 @@ export default {
 const run = async (message: Message) => {
   const embed = new Embed()
     .setTitle('**Mesozoic Valley Guide**')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setDescription(
@@ -27,7 +27,7 @@ const run = async (message: Message) => {
         'Getting up to 5 million mutagen by Prestige 10 Rank 50 should be no problem. With this you can then buy and upgrade the traits for the gigantosaurus to very high levels. ' +
         'I recommend getting about 10 diamond geodes over all to get your rare and epic cards to a nice level. ',
     )
-    .addFields([
+    .addFields(
       {
         name: '**Starting a new stage**',
         value: [
@@ -91,7 +91,7 @@ const run = async (message: Message) => {
         ].join('\n\n'),
         inline: true,
       },
-    ])
+    )
     .setFooter({ text: 'Thanks to Jojoseis#0001 for making this guide! :D' });
   message.channel.send({ embeds: [embed], files: [currentLogo] });
 };

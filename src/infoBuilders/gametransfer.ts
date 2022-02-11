@@ -1,6 +1,6 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor, gameTransferPages } from '#constants/index';
-import { Embed, MessageActionRow, MessageButton } from 'discord.js';
+import { Embed, ActionRow, ButtonComponent } from 'discord.js';
 import { currentLogo } from '#config';
 
 export const build: QueriedInfoBuilder = interaction => {
@@ -11,8 +11,8 @@ export const build: QueriedInfoBuilder = interaction => {
     .setThumbnail(currentLogo.name)
     .setImage(gameTransferPages[0])
     .setDescription('Step 1:');
-  const component = new MessageActionRow().addComponents([
-    new MessageButton()
+  const component = new ActionRow().addComponents([
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'gametransfer',
@@ -21,8 +21,8 @@ export const build: QueriedInfoBuilder = interaction => {
         }),
       )
       .setEmoji('⬅️')
-      .setStyle('PRIMARY'),
-    new MessageButton()
+      .setStyle(ButtonStyle.Primary),
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'gametransfer',
@@ -31,7 +31,7 @@ export const build: QueriedInfoBuilder = interaction => {
         }),
       )
       .setEmoji('➡️')
-      .setStyle('PRIMARY'),
+      .setStyle(ButtonStyle.Primary),
   ]);
   return {
     embeds: [embed],

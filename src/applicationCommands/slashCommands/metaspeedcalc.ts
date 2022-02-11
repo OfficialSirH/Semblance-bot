@@ -60,7 +60,7 @@ export default {
     const user = interaction.member.user as User,
       embed = new Embed()
         .setTitle('Multiplier Total')
-        .setAuthor(user.tag, user.displayAvatarURL())
+        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
         .setColor(randomColor)
         .setDescription(
           [

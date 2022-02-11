@@ -21,7 +21,7 @@ const run = async (client: SapphireClient, message: Message) => {
     .setTitle('Steps to join beta')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setFooter({ text: `Called by ${message.author.tag}` })
     .setDescription(infoHandler.value);
   message.channel.send({ embeds: [embed], files: [currentLogo] });

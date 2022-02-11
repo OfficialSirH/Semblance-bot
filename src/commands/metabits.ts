@@ -17,7 +17,7 @@ const run = async (message: Message) => {
   const metabitAttachment = new MessageAttachment('./src/images/emojis/Metabit.png', 'attachment://Metabit.png'),
     embed = new Embed()
       .setTitle('Ways to earn Metabits faster')
-      .setAuthor(message.author.tag, message.author.displayAvatarURL())
+      .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
       .setColor(randomColor)
       .setThumbnail(metabitAttachment.name)
       .setDescription(

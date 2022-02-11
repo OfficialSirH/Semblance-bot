@@ -24,10 +24,10 @@ export default {
     else player = await client.users.fetch(playerId);
     const embed = new Embed()
       .setTitle(`${player.username}'s gamestats`)
-      .setAuthor(player.tag, player.displayAvatarURL())
+      .setAuthor({ name: player.tag, iconURL: player.displayAvatarURL() })
       .setColor(randomColor)
       .setThumbnail(player.displayAvatarURL())
-      .addFields([
+      .addFields(
         { name: 'Level', value: statsHandler.level.toString() },
         { name: 'Random-Bucks', value: statsHandler.money.toString() },
         {
@@ -36,7 +36,7 @@ export default {
         },
         { name: 'Next Upgrade Cost', value: nxtUpgrade.toString() },
         { name: 'Idle Profit', value: statsHandler.profitRate.toString() },
-      ])
+      )
       .setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' });
     return interaction.reply({ embeds: [embed] });
   },

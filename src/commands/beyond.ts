@@ -34,7 +34,7 @@ const run = async (client: SapphireClient, message: Message, args: string[]) => 
 async function clips(message: Message) {
   const embed = new Embed()
     .setTitle('Beyond Clips')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
       [
@@ -58,7 +58,7 @@ async function clips(message: Message) {
 async function beyondCounter(message: Message) {
   const embed = new Embed()
     .setTitle('Beyond Counter')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
       `The Beyond has been mentioned 5203 time(s) since ${new Date(1611959542848)} all the way till ${new Date(
@@ -73,7 +73,7 @@ async function beyondCounter(message: Message) {
 function testerCredits(message: Message) {
   const embed = new Embed()
     .setTitle('Credits to our Early Private Beta Testers!')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(earlyBeyondTesters.join('\n'))
     .setFooter({

@@ -1,6 +1,6 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { Message, MessageComponentInteraction } from 'discord.js';
-import { MessageActionRow, MessageButton, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 import { disableAllComponents, prefix, randomColor, subcategoryList } from '#constants/index';
 import type { SapphireClient } from '@sapphire/framework';
 import { c2sGuildId, sirhId, adityaId } from '#config';
@@ -18,10 +18,10 @@ export default {
     interaction.reply(info);
   },
   buttonHandle: async (interaction, { action, id }, { permissionLevel }) => {
-    const components = [new MessageActionRow()];
+    const components = [new ActionRow()];
     if (action != 'help')
       components[0].components = [
-        new MessageButton()
+        new ButtonComponent()
           .setCustomId(
             JSON.stringify({
               command: 'help',
@@ -31,8 +31,8 @@ export default {
           )
           .setLabel('Back')
           .setEmoji('⬅️')
-          .setStyle('SECONDARY'),
-        new MessageButton()
+          .setStyle(ButtonStyle.Secondary),
+        new ButtonComponent()
           .setCustomId(
             JSON.stringify({
               command: 'help',
@@ -42,11 +42,11 @@ export default {
           )
           .setLabel('Close')
           .setEmoji('🚫')
-          .setStyle('SECONDARY'),
+          .setStyle(ButtonStyle.Secondary),
       ];
     else
       components[0].components.push(
-        new MessageButton()
+        new ButtonComponent()
           .setCustomId(
             JSON.stringify({
               command: 'help',
@@ -56,7 +56,7 @@ export default {
           )
           .setLabel('Close')
           .setEmoji('🚫')
-          .setStyle('SECONDARY'),
+          .setStyle(ButtonStyle.Secondary),
       );
 
     // Main Help Page
@@ -83,14 +83,14 @@ export default {
   },
 } as ComponentHandler;
 
-async function help(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function help(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const client = interaction.client,
     user = interaction.user;
   const c2sServerCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'c2sServer')
     .map(key => `**${prefix}${key}**`);
   components[0].components = [
-    new MessageButton()
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'help',
@@ -99,8 +99,8 @@ async function help(interaction: MessageComponentInteraction, components: Messag
         }),
       )
       .setLabel('Cell to Singularity Help')
-      .setStyle('PRIMARY'),
-    new MessageButton()
+      .setStyle(ButtonStyle.Primary),
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'help',
@@ -109,8 +109,8 @@ async function help(interaction: MessageComponentInteraction, components: Messag
         }),
       )
       .setLabel('Calculator Help')
-      .setStyle('PRIMARY'),
-    new MessageButton()
+      .setStyle(ButtonStyle.Primary),
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'help',
@@ -119,8 +119,8 @@ async function help(interaction: MessageComponentInteraction, components: Messag
         }),
       )
       .setLabel('Miscellaneous Help')
-      .setStyle('PRIMARY'),
-    new MessageButton()
+      .setStyle(ButtonStyle.Primary),
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'help',
@@ -131,13 +131,13 @@ async function help(interaction: MessageComponentInteraction, components: Messag
       .setDisabled(Boolean(interaction.guild.id != c2sGuildId && ![sirhId, adityaId].includes(user.id)))
       .setEmoji('🐛')
       .setLabel('Bug Reporting Help')
-      .setStyle('PRIMARY'),
+      .setStyle(ButtonStyle.Primary),
     ...components[0].components,
   ];
   const embed = new Embed()
     .setTitle('Semblance Command List')
     .setColor(randomColor)
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setThumbnail(client.user.displayAvatarURL())
     .addFields(
       {
@@ -160,7 +160,7 @@ async function help(interaction: MessageComponentInteraction, components: Messag
   await interaction.update({ embeds: [embed], components });
 }
 
-async function ahelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function ahelp(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const client = interaction.client;
   const adminCommands = Object.keys(client.commands)
     .filter(key => client.commands[key].category == 'admin')
@@ -173,14 +173,14 @@ async function ahelp(interaction: MessageComponentInteraction, components: Messa
   await interaction.update({ embeds: [embed], components });
 }
 
-async function c2shelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function c2shelp(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const client = interaction.client,
     user = interaction.user;
   const mainCommands = subcategoryList(client, 'game', 'main');
   const mesozoicCommands = subcategoryList(client, 'game', 'mesozoic');
   const otherCommands = subcategoryList(client, 'game', 'other');
   components[0].components = [
-    new MessageButton()
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'help',
@@ -189,8 +189,8 @@ async function c2shelp(interaction: MessageComponentInteraction, components: Mes
         }),
       )
       .setLabel('Metabits Guide')
-      .setStyle('PRIMARY'),
-    new MessageButton()
+      .setStyle(ButtonStyle.Primary),
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'help',
@@ -199,30 +199,30 @@ async function c2shelp(interaction: MessageComponentInteraction, components: Mes
         }),
       )
       .setLabel('Mesozoic Valley Guide')
-      .setStyle('PRIMARY'),
+      .setStyle(ButtonStyle.Primary),
     ...components[0].components,
   ];
   const embed = new Embed()
     .setTitle('**-> Cell to Singularity Commands**')
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
-    .addFields([
+    .addFields(
       { name: 'Main Simulation', value: mainCommands, inline: true },
       { name: 'Mesozoic Valley', value: mesozoicCommands, inline: true },
       { name: '\u200b', value: '\u200b' },
       { name: 'Other/Extras', value: otherCommands, inline: true },
-    ])
+    )
     .setFooter({ text: 'C2S for the win!' });
   await interaction.update({ embeds: [embed], components });
 }
 
-async function itemhelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function itemhelp(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const client = interaction.client,
     user = interaction.user;
   const embed = new Embed()
     .setTitle('Item Calculator Help')
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
     .setDescription(
@@ -243,14 +243,14 @@ async function itemhelp(interaction: MessageComponentInteraction, components: Me
   await interaction.update({ embeds: [embed], components });
 }
 
-async function largenumbers(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function largenumbers(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const client = interaction.client,
     user = interaction.user;
   const embed = new Embed()
     .setTitle('Large Numbers')
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setDescription(
       [
         'the way to use all of the names when using the calculator commands are:\n' + 'M(Million), B(Billion)',
@@ -272,14 +272,14 @@ async function largenumbers(interaction: MessageComponentInteraction, components
   await interaction.update({ embeds: [embed], components });
 }
 
-async function metahelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function metahelp(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const client = interaction.client,
     user = interaction.user;
   const embed = new Embed()
     .setTitle('Metabit Calculator Help')
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setDescription(
       'The Metabit Calculator supports Scientific Notation, which means you can type numbers like 1E25, as well as names for numbers like million all the way to vigintillion;' +
         ` Use ${prefix}largenumbers to get more info on large numbers.`,
@@ -308,11 +308,7 @@ async function metahelp(interaction: MessageComponentInteraction, components: Me
   await interaction.update({ embeds: [embed], components });
 }
 
-async function mischelp(
-  interaction: MessageComponentInteraction,
-  components: MessageActionRow[],
-  permissionLevel: number,
-) {
+async function mischelp(interaction: MessageComponentInteraction, components: ActionRow[], permissionLevel: number) {
   const client = interaction.client,
     user = interaction.user;
   const serverCommands = Object.keys(client.commands)
@@ -328,7 +324,7 @@ async function mischelp(
       .filter(key => client.commands[key].category == 'semblance')
       .map(key => `**${prefix}${key}**`);
   components[0].components = [
-    new MessageButton()
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'help',
@@ -338,14 +334,14 @@ async function mischelp(
       )
       .setDisabled(permissionLevel == 0)
       .setLabel('Admin Help')
-      .setStyle('PRIMARY'),
+      .setStyle(ButtonStyle.Primary),
     ...components[0].components,
   ];
   const embed = new Embed()
     .setTitle('Miscellaneous Commands')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .addFields(
       {
         name: '**-> Server Commands**',
@@ -371,14 +367,14 @@ async function mischelp(
   await interaction.update({ embeds: [embed], components });
 }
 
-async function calchelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function calchelp(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const client = interaction.client,
     user = interaction.user,
     calculatorCommands = Object.keys(client.commands)
       .filter(key => client.commands[key].category == 'calculator')
       .map(key => `**${prefix}${key}**`);
   components[0].components = [
-    new MessageButton()
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'help',
@@ -387,8 +383,8 @@ async function calchelp(interaction: MessageComponentInteraction, components: Me
         }),
       )
       .setLabel('Large Numbers')
-      .setStyle('PRIMARY'),
-    new MessageButton()
+      .setStyle(ButtonStyle.Primary),
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'help',
@@ -397,8 +393,8 @@ async function calchelp(interaction: MessageComponentInteraction, components: Me
         }),
       )
       .setLabel('Metabit Calculator')
-      .setStyle('PRIMARY'),
-    new MessageButton()
+      .setStyle(ButtonStyle.Primary),
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'help',
@@ -407,19 +403,19 @@ async function calchelp(interaction: MessageComponentInteraction, components: Me
         }),
       )
       .setLabel('Item Calculator')
-      .setStyle('PRIMARY'),
+      .setStyle(ButtonStyle.Primary),
     ...components[0].components,
   ];
   const embed = new Embed()
     .setTitle('Calculator Help')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setDescription(calculatorCommands.join(', '));
   await interaction.update({ embeds: [embed], components });
 }
 
-async function bughelp(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function bughelp(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const client = interaction.client,
     user = interaction.user;
 
@@ -427,7 +423,7 @@ async function bughelp(interaction: MessageComponentInteraction, components: Mes
     .setTitle('Bug Reporting Help')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setDescription(
       [
         '```diff',
@@ -473,7 +469,7 @@ async function bughelp(interaction: MessageComponentInteraction, components: Mes
   await interaction.update({ embeds: [embed], components });
 }
 
-async function metabits(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function metabits(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const client = interaction.client,
     user = interaction.user;
 
@@ -481,7 +477,7 @@ async function metabits(interaction: MessageComponentInteraction, components: Me
     .setTitle('Metabits Guide')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setDescription(
       [
         [
@@ -516,7 +512,7 @@ async function metabits(interaction: MessageComponentInteraction, components: Me
   await interaction.update({ embeds: [embed], components });
 }
 
-async function mesoguide(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function mesoguide(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const client = interaction.client,
     user = interaction.user;
 
@@ -524,7 +520,7 @@ async function mesoguide(interaction: MessageComponentInteraction, components: M
     .setTitle('Mesozoic Valley Guide')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setDescription(
       'This guide is mainly aimed at helping people with their first run through the Mesozoic Valley.\n' +
         'For later runs, up to prestige 10 you should start saving up lots of mutagen to make getting the last achievements much easier. ' +
@@ -532,7 +528,7 @@ async function mesoguide(interaction: MessageComponentInteraction, components: M
         'Getting up to 5 million mutagen by Prestige 10 Rank 50 should be no problem. With this you can then buy and upgrade the traits for the gigantosaurus to very high levels. ' +
         'I recommend getting about 10 diamond geodes over all to get your rare and epic cards to a nice level. ',
     )
-    .addFields([
+    .addFields(
       {
         name: '**Starting a new stage**',
         value: [
@@ -596,7 +592,7 @@ async function mesoguide(interaction: MessageComponentInteraction, components: M
         ].join('\n\n'),
         inline: true,
       },
-    ])
+    )
     .setFooter({ text: 'Thanks to Jojoseis#0001 for making this guide! :D' });
   await interaction.update({ embeds: [embed], components });
 }

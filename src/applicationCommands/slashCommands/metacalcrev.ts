@@ -29,7 +29,7 @@ export default {
       embed = new Embed()
         .setTitle('Accumulation Requirements')
         .setColor(randomColor)
-        .setAuthor(user.tag, user.displayAvatarURL())
+        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
         .setDescription(`Metabit Input: ${metabits}\n\nEntropy/Idea Accumulation Required: ${bigToName(accumulated)}`);
     return interaction.reply({ embeds: [embed] });
   },

@@ -17,7 +17,7 @@ const run = async (message: Message) => {
     .setTitle('Large Numbers')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setDescription(
       [
         'the way to use all of the names when using the calculator commands are:\n' + 'M(Million), B(Billion)',

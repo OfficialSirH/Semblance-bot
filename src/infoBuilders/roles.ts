@@ -1,6 +1,6 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { c2sRoles, c2sRolesInformation } from '#constants/index';
-import { Embed, MessageActionRow, MessageButton } from 'discord.js';
+import { Embed, ActionRow, ButtonComponent } from 'discord.js';
 import type { Snowflake, GuildMember } from 'discord.js';
 import { currentLogo, c2sGuildId } from '#config';
 
@@ -49,8 +49,8 @@ export const build: QueriedInfoBuilder = interaction => {
       .setFooter({ text: '*Epic* roles.' }),
     hasServerEvents = member.roles.cache.has(c2sRoles.server.serverEvents as Snowflake),
     components = [
-      new MessageActionRow().addComponents([
-        new MessageButton()
+      new ActionRow().addComponents([
+        new ButtonComponent()
           .setDisabled(interaction.guild.id != c2sGuildId)
           .setCustomId(
             JSON.stringify({

@@ -1,18 +1,18 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { TextBasedChannel } from 'discord.js';
-import { MessageActionRow, Embed } from 'discord.js';
+import { ActionRow, Embed } from 'discord.js';
 
 export default {
   allowOthers: true,
   buttonHandle: async (interaction, { action, id }, { permissionLevel, client }) => {
     if (permissionLevel == 0) return interaction.reply("You don't have permission to use this button!");
     if (!['accept', 'deny', 'silent-deny'].includes(action)) return interaction.reply("Something ain't working right");
-    (interaction.message.components as MessageActionRow[]).forEach(component =>
+    (interaction.message.components as ActionRow[]).forEach(component =>
       component.components.forEach(c => c.setDisabled(true)),
     );
     interaction.update({
       content: `${action != 'accept' ? 'denied' : 'accepted'} by ${interaction.user}`,
-      components: interaction.message.components as MessageActionRow[],
+      components: interaction.message.components as ActionRow[],
     });
     if (action == 'silent-deny') return;
     const user = await client.users.fetch(id);
@@ -25,7 +25,7 @@ export default {
       return (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannel).send({
         embeds: [
           new Embed()
-            .setAuthor(user.tag, user.displayAvatarURL())
+            .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
             .setDescription(interaction.message.embeds[0].description),
         ],
       });

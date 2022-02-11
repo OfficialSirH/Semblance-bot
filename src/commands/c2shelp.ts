@@ -18,15 +18,15 @@ const run = async (client: SapphireClient, message: Message) => {
   const otherCommands = subcategoryList(client, 'game', 'other');
   const embed = new Embed()
     .setTitle('**-> Cell to Singularity Commands**')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
-    .addFields([
+    .addFields(
       { name: 'Main Simulation', value: mainCommands, inline: true },
       { name: 'Mesozoic Valley', value: mesozoicCommands, inline: true },
       { name: '\u200b', value: '\u200b' },
       { name: 'Other/Extras', value: otherCommands, inline: true },
-    ])
+    )
     .setFooter({ text: 'C2S for the win!' });
   message.channel.send({ embeds: [embed], files: [currentLogo] });
 };

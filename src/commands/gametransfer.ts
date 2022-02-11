@@ -1,6 +1,6 @@
 ﻿import { gameTransferPages, randomColor } from '#constants/index';
 import { currentLogo } from '#config';
-import { Embed, MessageActionRow, MessageButton } from 'discord.js';
+import { Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 import type { Message } from 'discord.js';
 import type { Command } from '#lib/interfaces/Semblance';
 
@@ -17,12 +17,12 @@ const run = async (message: Message) => {
   const embed = new Embed()
     .setTitle('Game Transfer')
     .setColor(randomColor)
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setThumbnail(currentLogo.name)
     .setImage(gameTransferPages[0])
     .setDescription('Step 1:');
-  const component = new MessageActionRow().addComponents([
-    new MessageButton()
+  const component = new ActionRow().addComponents(
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'gametransfer',
@@ -30,9 +30,9 @@ const run = async (message: Message) => {
           id: message.author.id,
         }),
       )
-      .setEmoji('⬅️')
-      .setStyle('PRIMARY'),
-    new MessageButton()
+      .setEmoji({ name: '⬅️' })
+      .setStyle(ButtonStyle.Primary),
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'gametransfer',
@@ -40,9 +40,9 @@ const run = async (message: Message) => {
           id: message.author.id,
         }),
       )
-      .setEmoji('➡️')
-      .setStyle('PRIMARY'),
-  ]);
+      .setEmoji({ name: '➡️' })
+      .setStyle(ButtonStyle.Primary),
+  );
   message.channel.send({
     embeds: [embed],
     files: [currentLogo],

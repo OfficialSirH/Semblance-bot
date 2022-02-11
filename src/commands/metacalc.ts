@@ -26,7 +26,7 @@ const run = async (message: Message, args: string[]) => {
   const embed = new Embed()
     .setTitle('Metabits Produced')
     .setColor(randomColor)
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setDescription(
       `Entropy Input: ${entropy}\nIdea Input: ${ideas}\n\nMetabits Produced: ${metabits < 1 ? 0 : bigToName(metabits)}`,
     );

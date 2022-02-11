@@ -17,7 +17,7 @@ export default {
 const run = async (message: Message) => {
   const embed = new Embed()
     .setTitle('Dancing Archie/Jotaru')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setDescription(
       'Click the link above for the epic 3 minute video with Archie and Jotaru dancing, which I made as suggested by McScrungledorf#6020. ' +
         "Also, above is a short video of Archie's dance animation from the game :P",

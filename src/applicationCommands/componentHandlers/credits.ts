@@ -1,11 +1,11 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
-import { MessageActionRow, MessageButton, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 
 export default {
   buttonHandle: async (interaction, { action, id }) => {
     const embed = new Embed();
     const creditComponents = [
-      new MessageButton()
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'credits',
@@ -14,8 +14,8 @@ export default {
           }),
         )
         .setLabel('Credits')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'credits',
@@ -24,8 +24,8 @@ export default {
           }),
         )
         .setLabel('Special Thanks')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'credits',
@@ -34,8 +34,8 @@ export default {
           }),
         )
         .setLabel('Preview Semblance Art')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'credits',
@@ -44,8 +44,8 @@ export default {
           }),
         )
         .setLabel('Preview Semblance Beta Art')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'credits',
@@ -54,7 +54,7 @@ export default {
           }),
         )
         .setLabel('Preview Semblance Revisioned Art')
-        .setStyle('PRIMARY'),
+        .setStyle(ButtonStyle.Primary),
     ];
     //return console.log(interaction.message.components);
 
@@ -102,7 +102,7 @@ export default {
         );
     else if (action == 'semblancerevisioned')
       embed.setTitle('Semblance Revisioned - by StarLuckArt(WIP/Not previewable yet)');
-    const component = new MessageActionRow().addComponents(
+    const component = new ActionRow().addComponents(
       creditComponents.filter(c => eval(`(${c.customId})`).action != action),
     );
     interaction.update({ embeds: [embed], components: [component] });

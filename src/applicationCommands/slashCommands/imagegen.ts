@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, ButtonStyle, Embed } from 'discord.js';
 import type { sizeType } from '#lib/interfaces/catAndDogAPI';
 import { fetchCatOrDog } from '#constants/commands';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
@@ -39,16 +39,16 @@ export default {
 
     const embed = new Embed()
       .setTitle(`Here's a ${breed.name}!`)
-      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)
       .setImage(image_url);
 
     const components = [
-      new MessageActionRow().addComponents([
-        new MessageButton()
+      new ActionRow().addComponents(
+        new ButtonComponent()
           .setLabel('Refresh')
-          .setEmoji('🔄')
-          .setStyle('SECONDARY')
+          .setEmoji({ name: '🔄' })
+          .setStyle(ButtonStyle.Secondary)
           .setCustomId(
             JSON.stringify({
               command: 'imagegen',
@@ -56,7 +56,7 @@ export default {
               id: interaction.user.id,
             }),
           ),
-      ]),
+      ),
     ];
 
     return interaction.reply({

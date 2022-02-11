@@ -16,7 +16,7 @@ const run = async (client: SapphireClient, message: Message) => {
   const uptime = Date.now() - client.readyTimestamp,
     duration = msToTime(uptime),
     responseTime = Date.now() - message.createdTimestamp,
-    userAvatar = message.author.displayAvatarURL({ dynamic: true }),
+    userAvatar = message.author.displayAvatarURL(),
     embed = new Embed()
       .setTitle('Latency')
       .setColor(randomColor)

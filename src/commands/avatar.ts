@@ -29,7 +29,7 @@ const run = async (client: SapphireClient, message: Message, args: string[]) => 
   }
   const embed = new Embed()
     .setTitle('Avatar')
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
     .setImage(getAvatar(user));
   message.channel.send({ embeds: [embed] });

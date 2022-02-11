@@ -49,9 +49,9 @@ const run = async (client: SapphireClient, message: Message, args: string[], { p
   const fetchedGuild = await guild.fetch();
   const owner = await guild.members.fetch(guild.ownerId);
   const embed = new Embed()
-    .setAuthor(guild.name, guild.iconURL())
+    .setAuthor({ name: guild.name, iconURL: guild.iconURL() })
     .setColor(randomColor)
-    .addFields([
+    .addFields(
       { name: 'Owner', value: owner.toString(), inline: true },
       {
         name: 'Channel Categories',
@@ -67,7 +67,7 @@ const run = async (client: SapphireClient, message: Message, args: string[], { p
       },
       { name: 'Roles', value: roleCount.toString(), inline: true },
       { name: 'Role List', value: canRoleListWork, inline: false },
-    ])
+    )
     .setFooter({ text: `Id: ${guild.id} | Server Created: ${serverCreated}` });
   message.channel.send({ embeds: [embed] });
 };

@@ -38,7 +38,7 @@ const run = async (message: Message, args: string[]) => {
   // (Math.floor(Math.log(resultingPrice) / itemCost) / Math.log(1.15)) = level;
   const embed = new Embed()
     .setTitle('Item Calculator Results')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
       [

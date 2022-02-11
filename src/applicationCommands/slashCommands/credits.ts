@@ -10,7 +10,7 @@ export default {
       embed = new Embed()
         .setTitle('Credits')
         .setColor(randomColor)
-        .setAuthor(user.tag, user.displayAvatarURL())
+        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
         .setDescription(
           'Special Thanks to Aditya for motivating me from the very beginning to work on this bot. ' +
             "If it weren't for him, my bot wouldn't even be at this point right now; running on an actual server, " +
@@ -18,7 +18,7 @@ export default {
             "to add my bot to Cell to Singularity, which I can't thank him enough for, cause I was too shy to ask Hype. " +
             "Thanks again, Aditya, you've helped me a lot. :D",
         )
-        .addFields([
+        .addFields(
           { name: 'Developer', value: 'SirH' },
           { name: 'Special Thanks and Organizer', value: 'Aditya' },
           {
@@ -46,7 +46,7 @@ export default {
               '**Image for Currency:** Off Pringles',
             ].toString(),
           },
-        ]);
+        );
     return interaction.reply({ embeds: [embed] });
   },
 } as SlashCommand;

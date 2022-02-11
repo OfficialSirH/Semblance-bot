@@ -19,7 +19,7 @@ const run = async (client: SapphireClient, message: Message, args: string[], ide
   if ((args[0] && args[0].toLowerCase() == 'list') || identifier == 'prestigelist') return sendPrestigeList(message);
   const embed = new Embed()
     .setTitle('Mesozoic Valley Prestige')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setImage(prestige.name)
     .setThumbnail(currentLogo.name)
@@ -34,7 +34,7 @@ const run = async (client: SapphireClient, message: Message, args: string[], ide
 function sendPrestigeList(message: Message) {
   const embed = new Embed()
     .setTitle('Mesozoic Valley Prestige List')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setImage(prestigeList.name)

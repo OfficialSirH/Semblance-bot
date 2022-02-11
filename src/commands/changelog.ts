@@ -16,7 +16,7 @@ const run = async (client: SapphireClient, message: Message) => {
   const changelogHandler = await client.db.information.findUnique({ where: { type: 'changelog' } });
   const embed = new Embed()
     .setTitle('Changelog')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(changelogHandler.value);
   message.channel.send({ embeds: [embed] });

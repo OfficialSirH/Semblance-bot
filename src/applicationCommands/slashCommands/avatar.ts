@@ -12,7 +12,7 @@ export default {
       author = interaction.member.user as User,
       embed = new Embed()
         .setTitle(`${user.username}'s Avatar`)
-        .setAuthor(`${author.tag}`, author.displayAvatarURL())
+        .setAuthor({ name: `${author.tag}`, iconURL: author.displayAvatarURL() })
         .setColor(randomColor)
         .setImage(getAvatar(user));
     return interaction.reply({ embeds: [embed] });

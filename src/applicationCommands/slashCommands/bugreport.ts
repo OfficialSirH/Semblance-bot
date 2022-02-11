@@ -62,15 +62,18 @@ async function report(client: SapphireClient, interaction: CommandInteraction): 
   const message = await (interaction.guild.channels.cache.get(bugChannels.queue) as TextChannel).send({
     embeds: [
       new Embed()
-        .setAuthor(`${user.tag} (${user.id})\nBug Id: #${newBugId}`, user.displayAvatarURL({ dynamic: true }))
-        .setColor('#9512E8')
+        .setAuthor({
+          name: `${user.tag} (${user.id})\nBug Id: #${newBugId}`,
+          iconURL: user.displayAvatarURL(),
+        })
+        .setColor(0x9769704)
         .setTitle(title)
-        .addFields([
+        .addFields(
           { name: 'Result', value: result },
           { name: 'Expected Result', value: expected },
           { name: 'Operating System', value: os },
           { name: 'Game Version', value: version },
-        ])
+        )
         .setFooter({ text: `Bug ID: #${newBugId}` })
         .setTimestamp(Date.now()),
     ],
@@ -89,7 +92,7 @@ async function report(client: SapphireClient, interaction: CommandInteraction): 
       new Embed()
         .setTitle('Report Successfully sent!')
         .setURL(message.url)
-        .setAuthor(`${user.tag} (${user.id})`, user.displayAvatarURL({ dynamic: true }))
+        .setAuthor({ name: `${user.tag} (${user.id})`, iconURL: user.displayAvatarURL() })
         .setDescription(
           [
             'Your bug report has been sent to the bug approval queue.',

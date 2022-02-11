@@ -36,7 +36,7 @@ const run = async (client: SapphireClient, message: Message) => {
   }
   const embed = new Embed()
     .setTitle(`Bot Information - ${client.user.tag}`)
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
     .addFields(
@@ -73,19 +73,19 @@ const run = async (client: SapphireClient, message: Message) => {
     .setFooter({ text: 'The all powerful Semblance has spoken!' });
 
   if (client.shard)
-    embed.addField(
-      `${metabit} This Shard (${message.guild.shardId})`,
-      `**Guilds:** ${guilds}\n` + `**Users:** ${users}`,
-    );
+    embed.addField({
+      name: `${metabit} This Shard (${message.guild.shardId})`,
+      value: `**Guilds:** ${guilds}\n` + `**Users:** ${users}`,
+    });
 
-  embed.addField(
-    `${mutagen} Links`,
-    [
+  embed.addField({
+    name: `${mutagen} Links`,
+    value: [
       `- [Semblance Invite](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot+applications.commands)`,
       '- [Semblance Support/Main](https://discord.gg/XFMaTn6taf)',
       '- [Cell to Singularity](https://discord.gg/celltosingularity)',
     ].join('\n'),
-    true,
-  );
+    inline: true,
+  });
   message.channel.send({ embeds: [embed] });
 };

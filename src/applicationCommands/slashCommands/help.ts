@@ -1,5 +1,5 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
-import { MessageActionRow, Embed, MessageSelectMenu } from 'discord.js';
+import { ActionRow, Embed, MessageSelectMenu } from 'discord.js';
 
 export default {
   permissionRequired: 0,
@@ -10,7 +10,7 @@ export default {
       const components = allQueries.reduce((acc, cur, i) => {
         const index = Math.floor(i / 25);
         if (!acc[index])
-          acc[index] = new MessageActionRow().addComponents(
+          acc[index] = new ActionRow().addComponents(
             new MessageSelectMenu()
               .setCustomId(
                 JSON.stringify({
@@ -23,7 +23,7 @@ export default {
           );
         (acc[index].components[0] as MessageSelectMenu).addOptions({ label: cur, value: cur });
         return acc;
-      }, [] as MessageActionRow[]);
+      }, [] as ActionRow[]);
       return interaction.reply({
         embeds: [
           new Embed()

@@ -17,7 +17,7 @@ const run = (client: SapphireClient, message: Message) => {
     .setTitle('Bot Invite')
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setDescription(
       `Invite me to your server be clicking [here](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot+applications.commands).` +
         '\n\n[Semblance Support server](https://discord.gg/XFMaTn6taf)',

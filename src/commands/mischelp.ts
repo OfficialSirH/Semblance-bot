@@ -29,7 +29,7 @@ const run = async (client: SapphireClient, message: Message) => {
     .setTitle('Miscellaneous Commands')
     .setThumbnail(client.user.displayAvatarURL())
     .setColor(randomColor)
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .addFields(
       {
         name: '**-> Server Commands**',

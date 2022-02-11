@@ -1,19 +1,19 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
-import type { TextBasedChannel } from 'discord.js';
-import { MessageActionRow, MessageButton, Embed } from 'discord.js';
+import { ButtonStyle, TextBasedChannel } from 'discord.js';
+import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 
 export default {
   permissionRequired: 0,
   run: async (interaction, { options }) => {
     const suggestion = options.getString('suggestion', true),
       embed = new Embed()
-        .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+        .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
         .setDescription(suggestion),
-      component = new MessageActionRow().addComponents([
-        new MessageButton()
+      component = new ActionRow().addComponents(
+        new ButtonComponent()
           .setLabel('Accept')
-          .setStyle('SUCCESS')
-          .setEmoji('✅')
+          .setStyle(ButtonStyle.Success)
+          .setEmoji({ name: '✅' })
           .setCustomId(
             JSON.stringify({
               command: 'suggest',
@@ -21,10 +21,10 @@ export default {
               id: interaction.user.id,
             }),
           ),
-        new MessageButton()
+        new ButtonComponent()
           .setLabel('Deny')
-          .setStyle('DANGER')
-          .setEmoji('❌')
+          .setStyle(ButtonStyle.Danger)
+          .setEmoji({ name: '❌' })
           .setCustomId(
             JSON.stringify({
               command: 'suggest',
@@ -32,10 +32,10 @@ export default {
               id: interaction.user.id,
             }),
           ),
-        new MessageButton()
+        new ButtonComponent()
           .setLabel('Silent Deny')
-          .setStyle('DANGER')
-          .setEmoji('❌')
+          .setStyle(ButtonStyle.Danger)
+          .setEmoji({ name: '❌' })
           .setCustomId(
             JSON.stringify({
               command: 'suggest',
@@ -43,7 +43,7 @@ export default {
               id: interaction.user.id,
             }),
           ),
-      ]);
+      );
 
     (interaction.guild.channels.cache.find(c => c.name == 'suggestion-review') as TextBasedChannel).send({
       embeds: [embed],

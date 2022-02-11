@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, ButtonStyle, Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { currentLogo } from '#config';
@@ -18,13 +18,13 @@ const run = async (client: SapphireClient, message: Message) => {
   const codeHandler = await client.db.information.findUnique({ where: { type: 'codes' } });
   const embed = new Embed()
     .setTitle('Darwinium Codes')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setDescription(codeHandler.value)
-    .setFooter(codeHandler.footer);
-  const component = new MessageActionRow().addComponents([
-    new MessageButton()
+    .setFooter({ text: codeHandler.footer });
+  const component = new ActionRow().addComponents(
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'codes',
@@ -33,8 +33,8 @@ const run = async (client: SapphireClient, message: Message) => {
         }),
       )
       .setLabel('View Expired Codes')
-      .setStyle('PRIMARY'),
-  ]);
+      .setStyle(ButtonStyle.Primary),
+  );
   message.channel.send({
     embeds: [embed],
     files: [currentLogo],

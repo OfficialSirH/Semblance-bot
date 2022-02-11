@@ -36,7 +36,7 @@ export default {
       embed = new Embed()
         .setTitle('Metabits Produced')
         .setColor(randomColor)
-        .setAuthor(user.tag, user.displayAvatarURL())
+        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
         .setDescription(
           `Entropy Input: ${entropy}\nIdea Input: ${ideas}\n\nMetabits Produced: ${
             metabits < 1 ? 0 : bigToName(metabits)

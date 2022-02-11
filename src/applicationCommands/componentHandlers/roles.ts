@@ -1,6 +1,6 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { Message, GuildMemberRoleManager } from 'discord.js';
-import { Collection, MessageActionRow, MessageButton } from 'discord.js';
+import { Collection, ActionRow, ButtonComponent } from 'discord.js';
 import { c2sRoles } from '#constants/index';
 import { c2sGuildId, currentLogo } from '#config';
 const cooldown: Collection<string, number> = new Collection();
@@ -17,8 +17,8 @@ export default {
       });
     const isAddingRole = action == 'add-events',
       components = [
-        new MessageActionRow().addComponents([
-          new MessageButton()
+        new ActionRow().addComponents([
+          new ButtonComponent()
             .setDisabled(guild.id != c2sGuildId)
             .setCustomId(
               JSON.stringify({

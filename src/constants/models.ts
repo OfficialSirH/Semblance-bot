@@ -6,68 +6,6 @@ import { formattedDate } from '#constants/index';
 import { scheduleJob } from 'node-schedule';
 import type { BoosterReward, Reminder, UserReminder } from '@prisma/client';
 
-// BoosterRewards - check dates for booster rewards
-// export const checkBoosterRewards = async (client: SapphireClient) => {
-//   let boosterRewards = await BoosterRewards.find({});
-//   const now = Date.now();
-//   boosterRewards = boosterRewards.filter(boosterReward => boosterReward.rewardingDate < now);
-//   if (boosterRewards.length == 0) return;
-//   const darwiniumCodes = (await Information.findOne({
-//     infoType: 'boostercodes',
-//   })) as InformationFormat<'boostercodes'>;
-//   if (darwiniumCodes.list.length == 0) {
-//     if (darwiniumCodes.updated) {
-//       boosterChannel(client).send({
-//         content:
-//           `<@${sirhId}> <@${adityaId}> No booster codes left!` +
-//           ` The following users need codes: ${boosterRewards.map(c => c.userId).join(', ')}`,
-//         allowedMentions: { users: [sirhId, adityaId] },
-//       });
-//       return Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { updated: false } });
-//     }
-//     return;
-//   }
-//   const promises = [];
-//   boosterRewards.forEach(async boosterReward => {
-//     const ogCodeLength = darwiniumCodes.list.length,
-//       darwiniumCode = darwiniumCodes.list.shift();
-//     darwiniumCodes.list = darwiniumCodes.list.filter(c => c != darwiniumCode);
-//     const member = await client.guilds.cache
-//       .get(c2sGuildId)
-//       .members.fetch(boosterReward.userId)
-//       .catch(() => 'failed' as const);
-//     if (member == 'failed') return promises.push(boosterReward.remove());
-//     if (!member.roles.cache.has(boosterRole)) return promises.push(boosterReward.remove());
-//     await member.user
-//       .send({
-//         embeds: [
-//           new Embed()
-//             .setTitle('Booster reward')
-//             .setAuthor(member.user.tag, member.user.displayAvatarURL())
-//             .setDescription(
-//               `Thank you for boosting Cell to Singularity for 2 weeks! As a reward, here's 150 ${darwinium}!\nCode: ||${darwiniumCode}||`,
-//             ),
-//         ],
-//       })
-//       .catch(async err => {
-//         console.log(`There was an issue with sending the code to ${member.user.tag}: ${err}`);
-//         await boosterChannel(client).send({
-//           content:
-//             `${member} I had trouble DMing you so instead Aditya or SirH will manually provide you a code. :)` +
-//             '\nTip: These errors tend to happen when your DMs are closed. So keeping them open would help us out :D',
-//           allowedMentions: { users: [member.id] },
-//         });
-//         darwiniumCodes.list.unshift(darwiniumCode);
-//       });
-//     if (darwiniumCodes.list.length != ogCodeLength)
-//       promises.push(
-//         Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } }),
-//       );
-//     promises.push(boosterReward.delete());
-//   });
-//   return Promise.all(promises);
-// };
-
 //j BoosterRewards - handle finished booster rewards
 export const handleBoosterReward = async (client: SapphireClient, boosterReward: BoosterReward) => {
   const member: GuildMember = await client.guilds.cache
@@ -97,7 +35,7 @@ export const handleBoosterReward = async (client: SapphireClient, boosterReward:
       embeds: [
         new Embed()
           .setTitle('Booster reward')
-          .setAuthor(member.user.tag, member.user.displayAvatarURL())
+          .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
           .setDescription(
             `Thank you for boosting Cell to Singularity for 2 weeks! As a reward, here's 150 ${darwinium}!\nCode: ||${darwiniumCode.code}||`,
           ),

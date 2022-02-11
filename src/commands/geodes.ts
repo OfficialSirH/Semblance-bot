@@ -15,7 +15,7 @@ export default {
 const run = async (message: Message) => {
   const embed = new Embed()
     .setTitle('Geodes Comparison')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setThumbnail(currentLogo.name)
     .setImage(geodeImage.name)
     .setDescription(

@@ -17,7 +17,7 @@ export default {
 const run = async (message: Message) => {
   const embed = new Embed()
     .setTitle('Terminus Chamber')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setImage(terminusChamber.name)

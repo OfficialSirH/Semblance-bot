@@ -24,7 +24,7 @@ export default {
 
     const embed = new Embed()
       .setTitle(`Here's a ${breed.name}!`)
-      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)
       .setImage(image_url);
 

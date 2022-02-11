@@ -1,6 +1,6 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
-import { Embed, MessageActionRow, MessageButton } from 'discord.js';
+import { Embed, ActionRow, ButtonComponent } from 'discord.js';
 import { currentLogo } from '#config';
 
 export const build: QueriedInfoBuilder = async (interaction, client) => {
@@ -13,8 +13,8 @@ export const build: QueriedInfoBuilder = async (interaction, client) => {
     .setThumbnail(currentLogo.name)
     .setDescription(codeHandler.value)
     .setFooter(codeHandler.footer);
-  const component = new MessageActionRow().addComponents([
-    new MessageButton()
+  const component = new ActionRow().addComponents([
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'codes',
@@ -23,7 +23,7 @@ export const build: QueriedInfoBuilder = async (interaction, client) => {
         }),
       )
       .setLabel('View Expired Codes')
-      .setStyle('PRIMARY'),
+      .setStyle(ButtonStyle.Primary),
   ]);
   return {
     embeds: [embed],

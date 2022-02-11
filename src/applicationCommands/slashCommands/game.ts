@@ -1,7 +1,7 @@
 import type { SlashCommand } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
 import { currentPrice } from '#constants/commands';
-import { Embed, MessageActionRow, MessageButton } from 'discord.js';
+import { Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 
 export default {
   permissionRequired: 0,
@@ -13,7 +13,7 @@ export default {
     if (!statsHandler)
       embed
         .setTitle("Semblance's Idle-Game")
-        .setAuthor(user.tag, user.displayAvatarURL())
+        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
         .setDescription(
           [
             'Use the buttons below to play the game. :D',
@@ -28,10 +28,10 @@ export default {
     else
       embed
         .setTitle("Welcome back to Semblance's Idle-Game!")
-        .setAuthor(user.tag, user.displayAvatarURL())
+        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
         .setColor(randomColor)
         .setThumbnail(user.displayAvatarURL())
-        .addFields([
+        .addFields(
           { name: 'Level', value: statsHandler.level.toString() },
           {
             name: 'Random-Bucks',
@@ -49,13 +49,13 @@ export default {
             name: 'Idle Profit',
             value: statsHandler.profitRate.toFixed(3).toString(),
           },
-        ])
+        )
         .setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' }),
         (cost = await currentPrice(client, statsHandler));
 
     const components = [
-      new MessageActionRow().addComponents(
-        new MessageButton()
+      new ActionRow().addComponents(
+        new ButtonComponent()
           .setCustomId(
             JSON.stringify({
               command: 'game',
@@ -63,10 +63,10 @@ export default {
               id: user.id,
             }),
           )
-          .setStyle('PRIMARY')
-          .setEmoji('❔')
+          .setStyle(ButtonStyle.Primary)
+          .setEmoji({ name: '❔' })
           .setLabel('About'),
-        new MessageButton()
+        new ButtonComponent()
           .setCustomId(
             JSON.stringify({
               command: 'game',
@@ -75,10 +75,10 @@ export default {
             }),
           )
           .setDisabled(!statsHandler)
-          .setStyle('PRIMARY')
-          .setEmoji('💵')
+          .setStyle(ButtonStyle.Primary)
+          .setEmoji({ name: '💵' })
           .setLabel('Collect'),
-        new MessageButton()
+        new ButtonComponent()
           .setCustomId(
             JSON.stringify({
               command: 'game',
@@ -87,10 +87,10 @@ export default {
             }),
           )
           .setDisabled(!statsHandler || statsHandler.money < cost)
-          .setStyle('PRIMARY')
-          .setEmoji('⬆')
+          .setStyle(ButtonStyle.Primary)
+          .setEmoji({ name: '⬆' })
           .setLabel('Upgrade'),
-        new MessageButton()
+        new ButtonComponent()
           .setCustomId(
             JSON.stringify({
               command: 'game',
@@ -98,10 +98,10 @@ export default {
               id: user.id,
             }),
           )
-          .setStyle('PRIMARY')
-          .setEmoji('🏅')
+          .setStyle(ButtonStyle.Primary)
+          .setEmoji({ name: '🏅' })
           .setLabel('Leaderboard'),
-        new MessageButton()
+        new ButtonComponent()
           .setCustomId(
             JSON.stringify({
               command: 'game',
@@ -109,8 +109,8 @@ export default {
               id: user.id,
             }),
           )
-          .setStyle('PRIMARY')
-          .setEmoji('💰')
+          .setStyle(ButtonStyle.Primary)
+          .setEmoji({ name: '💰' })
           .setLabel('Voting Sites'),
       ),
     ];

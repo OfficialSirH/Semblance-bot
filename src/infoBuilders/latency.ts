@@ -7,7 +7,7 @@ export const build: QueriedInfoBuilder = interaction => {
   const uptime = Date.now() - client.readyTimestamp,
     duration = msToTime(uptime),
     responseTime = Date.now() - interaction.createdTimestamp,
-    userAvatar = interaction.user.displayAvatarURL({ dynamic: true }),
+    userAvatar = interaction.user.displayAvatarURL(),
     embed = new Embed()
       .setTitle('Latency')
       .setColor(randomColor)

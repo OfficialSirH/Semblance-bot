@@ -16,7 +16,7 @@ const run = async (message: Message) => {
   const feedbackImage = 'https://i.imgur.com/lKQh5zW.png';
   const embed = new Embed()
     .setTitle('Feedback')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription("Give feedback for ComputerLunch's game, C2S.")
     .setImage(feedbackImage);

@@ -24,7 +24,7 @@ const run = async (client: SapphireClient, message: Message, args: string[]) => 
     embed = new Embed()
       .setTitle('Accumulation Requirements')
       .setColor(randomColor)
-      .setAuthor(message.author.tag, message.author.displayAvatarURL())
+      .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
       .setDescription(`Metabit Input: ${metabits}\n\nEntropy/Idea Accumulation Required: ${bigToName(accumulated)}`);
   message.reply({ embeds: [embed] });
 };

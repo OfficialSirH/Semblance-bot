@@ -70,7 +70,7 @@ const run = async (message: Message, args: string[]) => {
   num *= simspeed / 100 + 1;
   const embed = new Embed()
     .setTitle('Multiplier Total')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
       [

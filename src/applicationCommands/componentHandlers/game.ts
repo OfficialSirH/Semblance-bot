@@ -1,6 +1,6 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { Message, MessageComponentInteraction } from 'discord.js';
-import { MessageActionRow, MessageButton, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 // import { Game } from '#models/Game';
 import { filterAction, prefix, randomColor } from '#constants/index';
 import type { SapphireClient } from '@sapphire/framework';
@@ -11,12 +11,12 @@ import type { Game } from '@prisma/client';
 export default {
   buttonHandle: async (interaction, { action, id }, { client }) => {
     const game = await client.db.game.findUnique({ where: { player: id } });
-    let cost: number, components: MessageActionRow[];
+    let cost: number, components: ActionRow[];
     if (game) cost = await currentPrice(client, game);
 
     const mainComponents = [
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRow().addComponents(
+          new ButtonComponent()
             .setCustomId(
               JSON.stringify({
                 command: 'game',
@@ -24,10 +24,10 @@ export default {
                 id,
               }),
             )
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('❔')
             .setLabel('About'),
-          new MessageButton()
+          new ButtonComponent()
             .setCustomId(
               JSON.stringify({
                 command: 'game',
@@ -36,10 +36,10 @@ export default {
               }),
             )
             .setDisabled(!game)
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('💵')
             .setLabel('Collect'),
-          new MessageButton()
+          new ButtonComponent()
             .setCustomId(
               JSON.stringify({
                 command: 'game',
@@ -48,10 +48,10 @@ export default {
               }),
             )
             .setDisabled(!game || game.money < cost)
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('⬆')
             .setLabel('Upgrade'),
-          new MessageButton()
+          new ButtonComponent()
             .setCustomId(
               JSON.stringify({
                 command: 'game',
@@ -59,10 +59,10 @@ export default {
                 id,
               }),
             )
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('🏅')
             .setLabel('Leaderboard'),
-          new MessageButton()
+          new ButtonComponent()
             .setCustomId(
               JSON.stringify({
                 command: 'game',
@@ -70,14 +70,14 @@ export default {
                 id,
               }),
             )
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('💰')
             .setLabel('Voting Sites'),
         ),
       ],
       endComponents = [
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRow().addComponents(
+          new ButtonComponent()
             .setCustomId(
               JSON.stringify({
                 command: 'game',
@@ -86,10 +86,10 @@ export default {
               }),
             )
             .setDisabled(!game)
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('🔢')
             .setLabel('Stats'),
-          new MessageButton()
+          new ButtonComponent()
             .setCustomId(
               JSON.stringify({
                 command: 'game',
@@ -97,10 +97,10 @@ export default {
                 id,
               }),
             )
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('📈')
             .setLabel('Graph'),
-          new MessageButton()
+          new ButtonComponent()
             .setCustomId(
               JSON.stringify({
                 command: 'game',
@@ -111,7 +111,7 @@ export default {
             .setEmoji(game ? '⛔' : '🌎')
             .setLabel(game ? 'Reset Progress' : 'Create new game')
             .setStyle(game ? 'DANGER' : 'SUCCESS'),
-          new MessageButton()
+          new ButtonComponent()
             .setCustomId(
               JSON.stringify({
                 command: 'game',
@@ -121,7 +121,7 @@ export default {
             )
             .setEmoji('🚫')
             .setLabel('Close')
-            .setStyle('SECONDARY'),
+            .setStyle(ButtonStyle.Secondary),
         ),
       ];
     if (['about', 'collect', 'upgrade', 'leaderboard', 'vote'].includes(action)) components = endComponents;
@@ -165,8 +165,8 @@ export default {
 async function askConfirmation(interaction: MessageComponentInteraction) {
   const { user } = interaction;
   const components = [
-    new MessageActionRow().addComponents(
-      new MessageButton()
+    new ActionRow().addComponents(
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'game',
@@ -177,7 +177,7 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
         .setEmoji('🚫')
         .setLabel('Yes')
         .setStyle('DANGER'),
-      new MessageButton()
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'game',
@@ -186,7 +186,7 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
           }),
         )
         .setLabel('No')
-        .setStyle('SECONDARY'),
+        .setStyle(ButtonStyle.Secondary),
     ),
   ];
   await interaction.update({
@@ -196,11 +196,7 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
   });
 }
 
-async function create(
-  client: SapphireClient,
-  interaction: MessageComponentInteraction,
-  components: MessageActionRow[],
-) {
+async function create(client: SapphireClient, interaction: MessageComponentInteraction, components: ActionRow[]) {
   const { user } = interaction;
   const percent = (Math.round(Math.random() * 25) + 25) / 100 + 1;
   const startingProfits = Math.random() * 0.05 + 0.05;
@@ -227,7 +223,7 @@ async function create(
 
   const embed = new Embed()
     .setTitle('Game Created')
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
       `Game Successfully created! Now you can start collecting Random-Bucks by typing '${prefix}game collect' and upgrade your Random-Bucks with \`${prefix}game upgrade\`\n\n` +
@@ -237,7 +233,7 @@ async function create(
     )
     .setFooter({ text: 'Enjoy idling!' });
   components = components.map(c => {
-    c.components = c.components.map((b: MessageButton) =>
+    c.components = c.components.map((b: ButtonComponent) =>
       b.label == 'Collect' || b.label == 'Stats' ? b.setDisabled(false) : b,
     );
     return c;
@@ -245,11 +241,11 @@ async function create(
   await interaction.update({ embeds: [embed], components });
 }
 
-async function about(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function about(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const { user } = interaction;
   const embed = new Embed()
     .setTitle("What's Semblance's Idle-Game about?")
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
       "SIG, AKA Semblance's Idle-Game, is an RNG idle-game that uses a currency called Random-Bucks \n" +
@@ -263,11 +259,7 @@ async function about(interaction: MessageComponentInteraction, components: Messa
   await interaction.update({ embeds: [embed], components });
 }
 
-async function collect(
-  client: SapphireClient,
-  interaction: MessageComponentInteraction,
-  components: MessageActionRow[],
-) {
+async function collect(client: SapphireClient, interaction: MessageComponentInteraction, components: ActionRow[]) {
   const { user } = interaction;
   let collectionHandler = await client.db.game.findUnique({ where: { player: user.id } });
   const collected = collectionHandler.profitRate * ((Date.now() - collectionHandler.lastCollected.valueOf()) / 1000);
@@ -285,7 +277,7 @@ async function collect(
 
   const embed = new Embed()
     .setTitle('Balance')
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
       `You've collected ${collected.toFixed(
@@ -295,11 +287,7 @@ async function collect(
   await interaction.update({ embeds: [embed], components });
 }
 
-async function upgrade(
-  client: SapphireClient,
-  interaction: MessageComponentInteraction,
-  components: MessageActionRow[],
-) {
+async function upgrade(client: SapphireClient, interaction: MessageComponentInteraction, components: ActionRow[]) {
   await interaction.deferUpdate();
   const { user } = interaction,
     message = interaction.message as Message;
@@ -311,7 +299,7 @@ async function upgrade(
       embeds: [
         new Embed()
           .setTitle('Not Enough Random-Bucks')
-          .setAuthor(user.tag, user.displayAvatarURL())
+          .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
           .setColor(randomColor)
           .setDescription(
             [
@@ -346,7 +334,7 @@ async function upgrade(
 
   const embed = new Embed()
     .setTitle('Upgrade Stats')
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
       `You have successfully upgrade from level ${previousLevel} => ${
@@ -355,30 +343,26 @@ async function upgrade(
         3,
       )} Random-Bucks.\n\nYour current profit is ${upgradeHandler.profitRate.toFixed(3)} Random-Bucks/sec.`,
     )
-    .setFooter(
-      `Upgrades will raise your rank in the '${prefix}game leaderboard', also, '${prefix}game upgrade max' will upgrade the max amount you're able to upgrade.`,
-    );
+    .setFooter({
+      text: `Upgrades will raise your rank in the '${prefix}game leaderboard', also, '${prefix}game upgrade max' will upgrade the max amount you're able to upgrade.`,
+    });
   await message.edit({ embeds: [embed], components });
 }
 
-async function leaderboard(
-  client: SapphireClient,
-  interaction: MessageComponentInteraction,
-  components: MessageActionRow[],
-) {
+async function leaderboard(client: SapphireClient, interaction: MessageComponentInteraction, components: ActionRow[]) {
   const { user } = interaction;
   let leaderboard = await LeaderboardUtilities.topTwenty(client, 'game');
   if (!leaderboard) leaderboard = 'There is currently no one who has upgraded their income.';
   const embed = new Embed()
     .setTitle("Semblance's idle-game leaderboard")
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(`${leaderboard}`)
     .setFooter({ text: 'May the odds be with you.' });
   await interaction.update({ embeds: [embed], components });
 }
 
-async function votes(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function votes(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const { user, client } = interaction,
     embed = new Embed()
       .setTitle('Vote')
@@ -407,16 +391,16 @@ async function votes(interaction: MessageComponentInteraction, components: Messa
 async function stats(
   client: SapphireClient,
   interaction: MessageComponentInteraction,
-  components: MessageActionRow[],
+  components: ActionRow[],
   game: Game,
 ) {
   const { user } = interaction;
   const embed = new Embed()
     .setTitle("Welcome back to Semblance's Idle-Game!")
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
-    .addFields([
+    .addFields(
       { name: 'Level', value: game.level.toString() },
       { name: 'Random-Bucks', value: game.money.toFixed(3).toString() },
       { name: 'Percent Increase', value: game.percentIncrease.toString() },
@@ -425,16 +409,16 @@ async function stats(
         value: (await currentPrice(client, game)).toFixed(3).toString(),
       },
       { name: 'Idle Profit', value: game.profitRate.toFixed(3).toString() },
-    ])
+    )
     .setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' });
   await interaction.update({ embeds: [embed], components });
 }
 
-async function graph(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function graph(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const { user } = interaction;
   const embed = new Embed()
     .setTitle("Graphed Data of Semblance's Idle Game")
-    .setAuthor(user.tag, user.displayAvatarURL())
+    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
       '[Click Here for Game Data Graphs](https://charts.mongodb.com/charts-semblance-xnkqg/public/dashboards/5f9e8f7f-59c6-4a87-8563-0d68faed8515)',

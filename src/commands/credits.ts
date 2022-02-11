@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
@@ -38,8 +38,8 @@ const run = async (message: Message) => {
         ].join('\n'),
       },
     ]);
-  const component = new MessageActionRow().addComponents([
-    new MessageButton()
+  const component = new ActionRow().addComponents([
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'credits',
@@ -48,8 +48,8 @@ const run = async (message: Message) => {
         }),
       )
       .setLabel('Special Thanks')
-      .setStyle('PRIMARY'),
-    new MessageButton()
+      .setStyle(ButtonStyle.Primary),
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'credits',
@@ -58,8 +58,8 @@ const run = async (message: Message) => {
         }),
       )
       .setLabel('Preview Semblance Art')
-      .setStyle('PRIMARY'),
-    new MessageButton()
+      .setStyle(ButtonStyle.Primary),
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'credits',
@@ -68,8 +68,8 @@ const run = async (message: Message) => {
         }),
       )
       .setLabel('Preview Semblance Beta Art')
-      .setStyle('PRIMARY'),
-    new MessageButton()
+      .setStyle(ButtonStyle.Primary),
+    new ButtonComponent()
       .setCustomId(
         JSON.stringify({
           command: 'credits',
@@ -78,7 +78,7 @@ const run = async (message: Message) => {
         }),
       )
       .setLabel('Preview Semblance Revisioned Art')
-      .setStyle('PRIMARY'),
+      .setStyle(ButtonStyle.Primary),
   ]);
   message.channel.send({ embeds: [embed], components: [component] });
 };

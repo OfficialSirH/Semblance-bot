@@ -10,7 +10,10 @@ export default {
       return interaction.reply('Ask any question with this command and Semblance will answer.');
     const randomizedChoice = Math.ceil(Math.random() * 20),
       user = interaction.member.user as User;
-    const embed = new Embed().setTitle('8ball').setAuthor(user.tag, user.displayAvatarURL()).setColor(randomColor);
+    const embed = new Embed()
+      .setTitle('8ball')
+      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setColor(randomColor);
     let description = `Question: ${interaction.options.get('question').value}\nAnswer: `;
     if (randomizedChoice == 1) description += 'It is certain';
     if (randomizedChoice == 2) description += 'It is decidely so.';

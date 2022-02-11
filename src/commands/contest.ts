@@ -37,7 +37,7 @@ function limericks(message: Message) {
     .setTitle('Limericks Contest winners')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setDescription(
       `**1st Place(2000 ${darwinium}):** Jean_Xontric - \n` +
         'Before the dinosaur ran out of luck,\n' +

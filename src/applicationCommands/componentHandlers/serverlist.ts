@@ -1,5 +1,5 @@
 import type { CustomIdData, ComponentHandler } from '#lib/interfaces/Semblance';
-import { MessageActionRow, MessageButton, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 import { guildBookPage, randomColor } from '#constants/index';
 import { serversPerPage } from '#constants/commands';
 
@@ -16,10 +16,10 @@ export default {
     const { chosenPage, pageDetails } = guildBookPage(client, page);
 
     const components = [
-        new MessageActionRow().addComponents([
-          new MessageButton()
+        new ActionRow().addComponents([
+          new ButtonComponent()
             .setLabel('First Page')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setDisabled(chosenPage === 1)
             .setCustomId(
               JSON.stringify({
@@ -29,9 +29,9 @@ export default {
                 page,
               }),
             ),
-          new MessageButton()
+          new ButtonComponent()
             .setLabel('Left')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setEmoji('⬅')
             .setDisabled(chosenPage === 1)
             .setCustomId(
@@ -42,9 +42,9 @@ export default {
                 page,
               }),
             ),
-          new MessageButton()
+          new ButtonComponent()
             .setLabel('Right')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setEmoji('➡')
             .setDisabled(chosenPage === numOfPages)
             .setCustomId(
@@ -55,9 +55,9 @@ export default {
                 page,
               }),
             ),
-          new MessageButton()
+          new ButtonComponent()
             .setLabel('Last Page')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setDisabled(chosenPage === numOfPages)
             .setCustomId(
               JSON.stringify({

@@ -1,4 +1,4 @@
-import { Embed, MessageActionRow, MessageButton } from 'discord.js';
+import { Embed, ActionRow, ButtonComponent } from 'discord.js';
 import type { User, Message, GuildMember } from 'discord.js';
 import { choiceToOutcome, countdownGIF, randomChoice } from '#constants/commands';
 import { rpsGames } from '../componentHandlers/rps.js';
@@ -42,8 +42,8 @@ export default {
         }?`,
       );
     const components = [
-        new MessageActionRow().addComponents([
-          new MessageButton()
+        new ActionRow().addComponents([
+          new ButtonComponent()
             .setLabel('Rock')
             .setCustomId(
               JSON.stringify({
@@ -53,8 +53,8 @@ export default {
               }),
             )
             .setEmoji('🪨')
-            .setStyle('SECONDARY'),
-          new MessageButton()
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonComponent()
             .setLabel('Paper')
             .setCustomId(
               JSON.stringify({
@@ -64,8 +64,8 @@ export default {
               }),
             )
             .setEmoji('📄')
-            .setStyle('SECONDARY'),
-          new MessageButton()
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonComponent()
             .setLabel('Scissors')
             .setCustomId(
               JSON.stringify({
@@ -75,8 +75,8 @@ export default {
               }),
             )
             .setEmoji('✂')
-            .setStyle('SECONDARY'),
-          new MessageButton()
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonComponent()
             .setLabel('Lizard')
             .setCustomId(
               JSON.stringify({
@@ -86,8 +86,8 @@ export default {
               }),
             )
             .setEmoji('🦎')
-            .setStyle('SECONDARY'),
-          new MessageButton()
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonComponent()
             .setLabel('Spock')
             .setCustomId(
               JSON.stringify({
@@ -97,7 +97,7 @@ export default {
               }),
             )
             .setEmoji('👽')
-            .setStyle('SECONDARY'),
+            .setStyle(ButtonStyle.Secondary),
         ]),
       ],
       embed = new Embed()

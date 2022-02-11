@@ -42,7 +42,7 @@ async function guildProfileEmbed(message: Message, member: GuildMember) {
     .setTitle('Guild User Profile')
     .setDescription(`User data for ${member}:`)
     .setColor(randomColor)
-    .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+    .setThumbnail(member.user.displayAvatarURL())
     .addFields([
       { name: 'Username', value: member.user.tag, inline: true },
       { name: 'Discriminator', value: member.user.discriminator, inline: true },
@@ -65,7 +65,7 @@ async function userProfileEmbed(message: Message, user: User) {
     .setTitle('User Profile')
     .setDescription(`User data for ${user}:`)
     .setColor(randomColor)
-    .setThumbnail(user.displayAvatarURL({ dynamic: true }))
+    .setThumbnail(user.displayAvatarURL())
     .addFields([
       { name: 'Username', value: user.tag, inline: true },
       { name: 'Discriminator', value: user.discriminator, inline: true },

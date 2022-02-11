@@ -16,7 +16,7 @@ export default {
 const run = async (client: SapphireClient, message: Message) => {
   const embed = new Embed()
     .setTitle('Item Calculator Help')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setDescription(

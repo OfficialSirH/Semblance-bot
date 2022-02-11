@@ -11,7 +11,7 @@ export default {
   run: (_client, message) => {
     const embed = new Embed()
       .setTitle('Privacy Policy')
-      .setAuthor(message.author.tag, message.author.displayAvatarURL())
+      .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
       .setColor(randomColor)
       .setURL('https://github.com/OfficialSirH/Semblance-bot/blob/master/Privacy%20Policy.md');
     message.channel.send({ embeds: [embed] });

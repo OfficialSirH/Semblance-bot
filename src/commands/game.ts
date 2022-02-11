@@ -1,4 +1,4 @@
-import { Embed, Collection, Permissions, MessageActionRow, MessageButton } from 'discord.js';
+import { Embed, Collection, PermissionFlagsBits, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { Command } from '#lib/interfaces/Semblance';
@@ -18,7 +18,7 @@ export default {
 } as Command<'fun'>;
 
 const run = async (client: SapphireClient, message: Message) => {
-  if (!cooldownHandler.get(message.author.id) && !message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES))
+  if (!cooldownHandler.get(message.author.id) && !message.member.permissions.has(PermissionFlagsBits.ManageMessages))
     cooldownHandler.set(message.author.id, Date.now());
   else if ((Date.now() - cooldownHandler.get(message.author.id)) / 1000 < 5) {
     return message.reply(
@@ -26,7 +26,7 @@ const run = async (client: SapphireClient, message: Message) => {
         (Date.now() - cooldownHandler.get(message.author.id)) / 1000
       } seconds.`,
     );
-  } else if (!message.member.permissions.has(Permissions.FLAGS.MANAGE_MESSAGES)) {
+  } else if (!message.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
     cooldownHandler.set(message.author.id, Date.now());
   }
 
@@ -36,7 +36,7 @@ const run = async (client: SapphireClient, message: Message) => {
   if (!statsHandler)
     embed
       .setTitle("Semblance's Idle-Game")
-      .setAuthor(message.author.tag, message.author.displayAvatarURL())
+      .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
       .setDescription(
         [
           'Use the buttons below to play the game. :D',
@@ -51,10 +51,10 @@ const run = async (client: SapphireClient, message: Message) => {
   else
     embed
       .setTitle("Welcome back to Semblance's Idle-Game!")
-      .setAuthor(message.author.tag, message.author.displayAvatarURL())
+      .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
       .setColor(randomColor)
       .setThumbnail(message.author.displayAvatarURL())
-      .addFields([
+      .addFields(
         { name: 'Level', value: statsHandler.level.toString() },
         {
           name: 'Random-Bucks',
@@ -72,13 +72,13 @@ const run = async (client: SapphireClient, message: Message) => {
           name: 'Idle Profit',
           value: statsHandler.profitRate.toFixed(3).toString(),
         },
-      ])
+      )
       .setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' }),
       (cost = await currentPrice(client, statsHandler));
 
   const components = [
-    new MessageActionRow().addComponents(
-      new MessageButton()
+    new ActionRow().addComponents(
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'game',
@@ -86,10 +86,10 @@ const run = async (client: SapphireClient, message: Message) => {
             id: message.author.id,
           }),
         )
-        .setStyle('PRIMARY')
-        .setEmoji('❔')
+        .setStyle(ButtonStyle.Primary)
+        .setEmoji({ name: '❔' })
         .setLabel('About'),
-      new MessageButton()
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'game',
@@ -98,10 +98,10 @@ const run = async (client: SapphireClient, message: Message) => {
           }),
         )
         .setDisabled(!statsHandler)
-        .setStyle('PRIMARY')
-        .setEmoji('💵')
+        .setStyle(ButtonStyle.Primary)
+        .setEmoji({ name: '💵' })
         .setLabel('Collect'),
-      new MessageButton()
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'game',
@@ -110,10 +110,10 @@ const run = async (client: SapphireClient, message: Message) => {
           }),
         )
         .setDisabled(!statsHandler || statsHandler.money < cost)
-        .setStyle('PRIMARY')
-        .setEmoji('⬆')
+        .setStyle(ButtonStyle.Primary)
+        .setEmoji({ name: '⬆' })
         .setLabel('Upgrade'),
-      new MessageButton()
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'game',
@@ -121,10 +121,10 @@ const run = async (client: SapphireClient, message: Message) => {
             id: message.author.id,
           }),
         )
-        .setStyle('PRIMARY')
-        .setEmoji('🏅')
+        .setStyle(ButtonStyle.Primary)
+        .setEmoji({ name: '🏅' })
         .setLabel('Leaderboard'),
-      new MessageButton()
+      new ButtonComponent()
         .setCustomId(
           JSON.stringify({
             command: 'game',
@@ -132,8 +132,8 @@ const run = async (client: SapphireClient, message: Message) => {
             id: message.author.id,
           }),
         )
-        .setStyle('PRIMARY')
-        .setEmoji('💰')
+        .setStyle(ButtonStyle.Primary)
+        .setEmoji({ name: '💰' })
         .setLabel('Voting Sites'),
     ),
   ];

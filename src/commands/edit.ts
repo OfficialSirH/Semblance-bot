@@ -21,7 +21,7 @@ const run = async (client: SapphireClient, message: Message, args: string[]) => 
     return message.reply('Why are you trying to put nothing for the information? Come on!');
   const embed = new Embed()
     .setTitle(`${args[0].charAt(0).toUpperCase() + args[0].slice(1)} Info Changed!`)
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor);
   let infoHandler: Information;
 
@@ -97,7 +97,7 @@ const listBoosterCodes = async (client: SapphireClient, message: Message) => {
   const list = darwiniumCodes.length > 0 ? darwiniumCodes.map(c => c.code).join(', ') : 'None';
   const embed = new Embed()
     .setTitle('Booster Codes')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setDescription(`number of codes: ${darwiniumCodes.length}\n\`\`\`\n${list}\`\`\``)
     .setColor(randomColor);
   message.channel.send({ embeds: [embed] });
@@ -118,7 +118,7 @@ const addBoosterCode = async (client: SapphireClient, message: Message, codes: s
   const list = darwiniumCodes.map(c => c.code).concat(codes);
   const embed = new Embed()
     .setTitle('Booster Codes')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setDescription(
       `**The provided codes were successfully added**\nnew number of codes: ${list.length}\n\`\`\`\n${list.join(
         ', ',
@@ -148,7 +148,7 @@ const removeBoosterCode = async (client: SapphireClient, message: Message, codes
 
   const embed = new Embed()
     .setTitle('Booster Codes')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setDescription(
       `**The provided codes were successfully removed**\nnew number of codes: ${
         filteredList.length

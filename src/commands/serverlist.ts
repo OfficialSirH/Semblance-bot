@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor, guildBookPage } from '#constants/index';
 import type { SapphireClient } from '@sapphire/framework';
@@ -21,10 +21,10 @@ const run = async (client: SapphireClient, message: Message, args: string[]) => 
     numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
 
   const components = [
-      new MessageActionRow().addComponents([
-        new MessageButton()
+      new ActionRow().addComponents([
+        new ButtonComponent()
           .setLabel('First Page')
-          .setStyle('SECONDARY')
+          .setStyle(ButtonStyle.Secondary)
           .setDisabled(chosenPage === 1)
           .setCustomId(
             JSON.stringify({
@@ -34,9 +34,9 @@ const run = async (client: SapphireClient, message: Message, args: string[]) => 
               page: chosenPage,
             }),
           ),
-        new MessageButton()
+        new ButtonComponent()
           .setLabel('Left')
-          .setStyle('SECONDARY')
+          .setStyle(ButtonStyle.Secondary)
           .setEmoji('⬅')
           .setDisabled(chosenPage === 1)
           .setCustomId(
@@ -47,9 +47,9 @@ const run = async (client: SapphireClient, message: Message, args: string[]) => 
               page: chosenPage,
             }),
           ),
-        new MessageButton()
+        new ButtonComponent()
           .setLabel('Right')
-          .setStyle('SECONDARY')
+          .setStyle(ButtonStyle.Secondary)
           .setEmoji('➡')
           .setDisabled(chosenPage === numOfPages)
           .setCustomId(
@@ -60,9 +60,9 @@ const run = async (client: SapphireClient, message: Message, args: string[]) => 
               page: chosenPage,
             }),
           ),
-        new MessageButton()
+        new ButtonComponent()
           .setLabel('Last Page')
-          .setStyle('SECONDARY')
+          .setStyle(ButtonStyle.Secondary)
           .setDisabled(chosenPage === numOfPages)
           .setCustomId(
             JSON.stringify({

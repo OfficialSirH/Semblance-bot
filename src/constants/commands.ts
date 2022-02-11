@@ -39,7 +39,10 @@ export const correctReportList = async function (
     await msg.edit({
       embeds: [
         msg.embeds[0]
-          .setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nBug Id: #${report.bugId - 1}`, author.iconURL)
+          .setAuthor({
+            name: `${author.name.slice(0, author.name.indexOf('\n'))}\nBug Id: #${report.bugId - 1}`,
+            iconURL: author.iconURL,
+          })
           .setFooter({ text: `#${report.bugId - 1}` }),
       ],
     });
@@ -210,15 +213,15 @@ export const messageLinkJump = async (input: string, user: User, currentGuild: G
   if (attachmentLink != null) msg.content = msg.content.replace(attachmentLink[0], '');
 
   const embed = new Embed()
-    .setAuthor(msg.author.username, msg.author.displayAvatarURL())
+    .setAuthor({ name: msg.author.username, iconURL: msg.author.displayAvatarURL() })
     .setThumbnail(user.displayAvatarURL())
     .setDescription(msg.content)
-    .addField('Jump', `[Go to message!](${msg.url})`)
+    .addField({ name: 'Jump', value: `[Go to message!](${msg.url})` })
     .setFooter({ text: `#${(msg.channel as GuildChannel).name} quoted by ${user.tag}` })
     .setTimestamp(msg.createdTimestamp);
   if (msg.embeds[0] && attachmentLink == null) {
     const title = msg.embeds[0].title ? msg.embeds[0].title : 'no title';
-    embed.addField(`*Contains embed titled: ${title}*`, '\u200b');
+    embed.addField({ name: `*Contains embed titled: ${title}*`, value: '\u200b' });
     if (msg.embeds[0].image) embed.setImage(msg.embeds[0].image.url);
   }
 

@@ -1,4 +1,4 @@
-import { MessageActionRow, MessageButton, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 import type { Message, Snowflake } from 'discord.js';
 import { currentLogo, c2sGuildId } from '#config';
 import type { Command } from '#lib/interfaces/Semblance';
@@ -17,7 +17,7 @@ const run = async (client: SapphireClient, message: Message) => {
   const guildRoles = client.guilds.cache.get(c2sGuildId).roles.cache;
   const embed = new Embed()
       .setTitle('C2S Roles')
-      .setAuthor(message.author.tag, message.author.displayAvatarURL())
+      .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
       .setThumbnail(currentLogo.name)
       .setDescription(
         [
@@ -56,8 +56,8 @@ const run = async (client: SapphireClient, message: Message) => {
       .setFooter({ text: '*Epic* roles.' }),
     hasServerEvents = message.member.roles.cache.has(c2sRoles.server.serverEvents as Snowflake),
     components = [
-      new MessageActionRow().addComponents([
-        new MessageButton()
+      new ActionRow().addComponents([
+        new ButtonComponent()
           .setDisabled(message.guild.id != c2sGuildId)
           .setCustomId(
             JSON.stringify({

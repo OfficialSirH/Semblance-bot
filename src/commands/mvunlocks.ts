@@ -17,7 +17,7 @@ export default {
 const run = async (message: Message) => {
   const embed = new Embed()
     .setTitle('Reptiles and Birds')
-    .setAuthor(message.author.tag, message.author.displayAvatarURL())
+    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setThumbnail(currentLogo.name)
     .setColor(randomColor)
     .setDescription(

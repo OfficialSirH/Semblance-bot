@@ -1,11 +1,11 @@
-import { MessageActionRow, MessageButton } from 'discord.js';
+import { ActionRow, ButtonComponent } from 'discord.js';
 import type { SlashCommand } from '#lib/interfaces/Semblance';
 
 export default {
   permissionRequired: 0,
   run: interaction => {
-    const component = new MessageActionRow().addComponents(
-      new MessageButton()
+    const component = new ActionRow().addComponents(
+      new ButtonComponent()
         .setStyle('LINK')
         .setLabel('CLICK ME!')
         .setEmoji('<:SirUwU:797148051000000512>')

@@ -1,5 +1,5 @@
 import { communistSemblance } from '#config';
-import { MessageActionRow, MessageButton, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 import type { Message, GuildMember } from 'discord.js';
 import { rpsGames } from '#src/applicationCommands/componentHandlers/rps';
 import { randomColor } from '#constants/index';
@@ -180,8 +180,8 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
       `You can't face a bot (except for me) so what are you doing trying to fight, ${opponent.user.tag}?`,
     );
   const components = [
-      new MessageActionRow().addComponents([
-        new MessageButton()
+      new ActionRow().addComponents([
+        new ButtonComponent()
           .setLabel('Rock')
           .setCustomId(
             JSON.stringify({
@@ -191,8 +191,8 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
             }),
           )
           .setEmoji('🪨')
-          .setStyle('SECONDARY'),
-        new MessageButton()
+          .setStyle(ButtonStyle.Secondary),
+        new ButtonComponent()
           .setLabel('Paper')
           .setCustomId(
             JSON.stringify({
@@ -202,8 +202,8 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
             }),
           )
           .setEmoji('📄')
-          .setStyle('SECONDARY'),
-        new MessageButton()
+          .setStyle(ButtonStyle.Secondary),
+        new ButtonComponent()
           .setLabel('Scissors')
           .setCustomId(
             JSON.stringify({
@@ -213,8 +213,8 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
             }),
           )
           .setEmoji('✂')
-          .setStyle('SECONDARY'),
-        new MessageButton()
+          .setStyle(ButtonStyle.Secondary),
+        new ButtonComponent()
           .setLabel('Lizard')
           .setCustomId(
             JSON.stringify({
@@ -224,8 +224,8 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
             }),
           )
           .setEmoji('🦎')
-          .setStyle('SECONDARY'),
-        new MessageButton()
+          .setStyle(ButtonStyle.Secondary),
+        new ButtonComponent()
           .setLabel('Spock')
           .setCustomId(
             JSON.stringify({
@@ -235,7 +235,7 @@ async function rpsMultiplayer(message: Message, chosenOpponent: string) {
             }),
           )
           .setEmoji('👽')
-          .setStyle('SECONDARY'),
+          .setStyle(ButtonStyle.Secondary),
       ]),
     ],
     awaitingText = `Awaiting for **${message.author.tag}** and **${opponent.user.tag}**`,
