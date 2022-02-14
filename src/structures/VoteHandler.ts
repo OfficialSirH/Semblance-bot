@@ -45,7 +45,7 @@ export class VoteHandler {
     const embed = new Embed().setColor(randomColor).setDescription(description);
     if (user instanceof User)
       embed
-        .setAuthor(`${user.tag}`, user.displayAvatarURL())
+        .setAuthor({ name: `${user.tag}`, iconURL: user.displayAvatarURL() })
         .setThumbnail(user.displayAvatarURL())
         .setFooter({ text: `${user.tag} has voted.` });
     else embed.setAuthor({ name: `<@${user}>` }).setFooter({ text: `<@${user}> has voted.` });

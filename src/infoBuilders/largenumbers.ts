@@ -8,7 +8,7 @@ export const build: QueriedInfoBuilder = interaction => {
     .setTitle('Large Numbers')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setDescription(
       [
         'the way to use all of the names when using the calculator commands are:\n' + 'M(Million), B(Billion)',

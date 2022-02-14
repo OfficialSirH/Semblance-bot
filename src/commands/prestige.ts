@@ -2,7 +2,7 @@ import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { currentLogo, prestige, prestigeList } from '#config';
 import { prefix, randomColor } from '#constants/index';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 import type { SapphireClient } from '@sapphire/framework';
 
 export default {

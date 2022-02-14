@@ -1,6 +1,6 @@
 import { Embed, MessageAttachment } from 'discord.js';
 import type { Message } from 'discord.js';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 import { randomColor } from '#constants/index';
 
 export default {

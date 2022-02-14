@@ -2,7 +2,7 @@ import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { currentLogo, terminusChamber } from '#config';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'Details on how to obtain each node within the Terminus Chamber',

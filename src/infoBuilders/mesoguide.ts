@@ -6,7 +6,7 @@ import { currentLogo } from '#config';
 export const build: QueriedInfoBuilder = interaction => {
   const embed = new Embed()
     .setTitle('**Mesozoic Valley Guide**')
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setDescription(
@@ -16,7 +16,7 @@ export const build: QueriedInfoBuilder = interaction => {
         'Getting up to 5 million mutagen by Prestige 10 Rank 50 should be no problem. With this you can then buy and upgrade the traits for the gigantosaurus to very high levels. ' +
         'I recommend getting about 10 diamond geodes over all to get your rare and epic cards to a nice level. ',
     )
-    .addFields([
+    .addFields(
       {
         name: '**Starting a new stage**',
         value: [
@@ -80,7 +80,7 @@ export const build: QueriedInfoBuilder = interaction => {
         ].join('\n\n'),
         inline: true,
       },
-    ])
+    )
     .setFooter({ text: 'Thanks to Jojoseis#0001 for making this guide! :D' });
   return { embeds: [embed], files: [currentLogo] };
 };

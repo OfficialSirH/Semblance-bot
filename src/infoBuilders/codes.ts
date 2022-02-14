@@ -1,6 +1,6 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { randomColor } from '#constants/index';
-import { Embed, ActionRow, ButtonComponent } from 'discord.js';
+import { Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 import { currentLogo } from '#config';
 
 export const build: QueriedInfoBuilder = async (interaction, client) => {
@@ -8,12 +8,12 @@ export const build: QueriedInfoBuilder = async (interaction, client) => {
   const codeHandler = await client.db.information.findUnique({ where: { type: 'codes' } });
   const embed = new Embed()
     .setTitle('Darwinium Codes')
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setDescription(codeHandler.value)
-    .setFooter(codeHandler.footer);
-  const component = new ActionRow().addComponents([
+    .setFooter({ text: codeHandler.footer });
+  const component = new ActionRow().addComponents(
     new ButtonComponent()
       .setCustomId(
         JSON.stringify({
@@ -24,7 +24,7 @@ export const build: QueriedInfoBuilder = async (interaction, client) => {
       )
       .setLabel('View Expired Codes')
       .setStyle(ButtonStyle.Primary),
-  ]);
+  );
   return {
     embeds: [embed],
     files: [currentLogo],

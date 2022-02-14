@@ -1,7 +1,7 @@
 import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 import type { Message, Snowflake } from 'discord.js';
 import { currentLogo, c2sGuildId } from '#config';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 import { c2sRoles, c2sRolesInformation } from '#constants/index';
 import type { SapphireClient } from '@sapphire/framework';
 
@@ -68,7 +68,7 @@ const run = async (client: SapphireClient, message: Message) => {
           )
           .setEmoji(hasServerEvents ? '❌' : '✅')
           .setLabel(hasServerEvents ? 'Remove Server Events Role' : 'Add Server Events Role')
-          .setStyle(hasServerEvents ? 'DANGER' : 'SUCCESS'),
+          .setStyle(hasServerEvents ? ButtonStyle.Danger : ButtonStyle.Success),
       ]),
     ];
   message.channel.send({ embeds: [embed], files: [currentLogo], components });

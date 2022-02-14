@@ -1,8 +1,7 @@
-import type { EventHandler } from '#lib/interfaces/Semblance';
 import type { SapphireClient } from '@sapphire/framework';
 import { Api as TopggApi } from '@top-gg/sdk';
 import { DBLApi, DBoatsApi, DBotsApi, DListApi, DiscordsApi } from '#structures/index';
-import { Constants } from 'discord.js';
+import { ActivityType, Constants } from 'discord.js';
 import { prefix } from '#src/constants';
 const { Events } = Constants;
 
@@ -19,7 +18,8 @@ export const guildCreate = (client: SapphireClient) => {
     .filter(g => g)
     .reduce((total, cur) => (total += cur), 0);
   const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
-  if (client.user.presence.activities[0]?.name !== activity) client.user.setActivity(activity, { type: 'WATCHING' });
+  if (client.user.presence.activities[0]?.name !== activity)
+    client.user.setActivity(activity, { type: ActivityType.Watching });
 
   const topggApi = new TopggApi(process.env.topGGAuth),
     dblApi = new DBLApi(process.env.discordBotListAuth),

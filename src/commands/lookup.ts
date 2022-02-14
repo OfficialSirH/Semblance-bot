@@ -3,9 +3,10 @@ import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
 import * as constants from '#constants/index';
 import type { Message, MessageOptions, Snowflake, TextBasedChannel, TextChannel, User } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
-import type { Command } from '#lib/interfaces/Semblance';
-import type { APIInvite, ChannelType, APIUser } from 'discord-api-types';
+import { Command } from '@sapphire/framework';
+import { APIInvite, ChannelType, APIUser } from 'discord-api-types';
 
+// make this command only be usable by Aditya and I
 export default {
   description: 'Lookup something unknown, like an Id or an invite, and hopefully get the meaning behind it!',
   category: 'admin',
@@ -195,7 +196,7 @@ const run = async (client: SapphireClient, message: Message, args: string[]) => 
 
   // message lookup
   const channels = message.guild.channels.cache
-    .filter(ch => ['GUILD_TEXT', 'GUILD_NEWS'].includes(ch.type))
+    .filter(ch => [ChannelType.GuildNews, ChannelType.GuildText].includes(ch.type))
     .map(c => c) as TextChannel[];
   for (const ch of channels)
     try {

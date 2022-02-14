@@ -2,7 +2,7 @@ import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { patreon } from '#config';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: "Provides the link to SirH's Patreon page.",

@@ -1,6 +1,6 @@
 import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
 import { c2sRoles, c2sRolesInformation } from '#constants/index';
-import { Embed, ActionRow, ButtonComponent } from 'discord.js';
+import { Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 import type { Snowflake, GuildMember } from 'discord.js';
 import { currentLogo, c2sGuildId } from '#config';
 
@@ -10,7 +10,7 @@ export const build: QueriedInfoBuilder = interaction => {
 
   const embed = new Embed()
       .setTitle('C2S Roles')
-      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setThumbnail(currentLogo.name)
       .setDescription(
         [
@@ -49,7 +49,7 @@ export const build: QueriedInfoBuilder = interaction => {
       .setFooter({ text: '*Epic* roles.' }),
     hasServerEvents = member.roles.cache.has(c2sRoles.server.serverEvents as Snowflake),
     components = [
-      new ActionRow().addComponents([
+      new ActionRow().addComponents(
         new ButtonComponent()
           .setDisabled(interaction.guild.id != c2sGuildId)
           .setCustomId(
@@ -59,10 +59,10 @@ export const build: QueriedInfoBuilder = interaction => {
               id: interaction.user.id,
             }),
           )
-          .setEmoji(hasServerEvents ? '❌' : '✅')
+          .setEmoji({ name: hasServerEvents ? '❌' : '✅' })
           .setLabel(hasServerEvents ? 'Remove Server Events Role' : 'Add Server Events Role')
-          .setStyle(hasServerEvents ? 'DANGER' : 'SUCCESS'),
-      ]),
+          .setStyle(hasServerEvents ? ButtonStyle.Danger : ButtonStyle.Success),
+      ),
     ];
   return { embeds: [embed], files: [currentLogo], components };
 };

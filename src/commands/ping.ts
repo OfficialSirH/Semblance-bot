@@ -1,4 +1,4 @@
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'Pings a user',

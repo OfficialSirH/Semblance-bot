@@ -3,7 +3,7 @@ import type { Message } from 'discord.js';
 import { sirhId, adityaId, c2sGuildId } from '#config';
 import { prefix, randomColor } from '#constants/index';
 import type { SapphireClient } from '@sapphire/framework';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'Lists *all* available commands.',

@@ -15,7 +15,7 @@ import {
   energy,
   sentience,
 } from '#config';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'List all of the ingame currency.',

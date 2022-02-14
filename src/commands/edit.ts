@@ -1,7 +1,7 @@
 import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 import type { Information } from '@prisma/client';
 import type { SapphireClient } from '@sapphire/framework';
 

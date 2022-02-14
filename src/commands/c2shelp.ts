@@ -2,7 +2,7 @@ import { Message, Embed } from 'discord.js';
 import { randomColor, subcategoryList } from '#constants/index';
 import { currentLogo } from '#config';
 import type { SapphireClient } from '@sapphire/framework';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'List of all Cell to Singularity related commands',

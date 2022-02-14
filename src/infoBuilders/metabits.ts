@@ -6,7 +6,7 @@ export const build: QueriedInfoBuilder = interaction => {
   const metabitAttachment = new MessageAttachment('./src/images/emojis/Metabit.png', 'attachment://Metabit.png'),
     embed = new Embed()
       .setTitle('Ways to earn Metabits faster')
-      .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setColor(randomColor)
       .setThumbnail(metabitAttachment.name)
       .setDescription(

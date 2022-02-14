@@ -10,7 +10,7 @@ export const build: QueriedInfoBuilder = async (interaction, client) => {
     .setTitle('Steps to join beta')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setFooter({ text: `Called by ${interaction.user.tag}` })
     .setDescription(infoHandler.value);
   return { embeds: [embed], files: [currentLogo] };

@@ -7,7 +7,7 @@ export const build: QueriedInfoBuilder = async (interaction, client) => {
   const changelogHandler = await client.db.information.findUnique({ where: { type: 'changelog' } });
   const embed = new Embed()
     .setTitle('Changelog')
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(changelogHandler.value);
   return { embeds: [embed] };

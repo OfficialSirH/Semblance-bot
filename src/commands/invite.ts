@@ -2,7 +2,7 @@ import { Embed } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { Message } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'get invite for bot, SirH server, or C2S server',

@@ -1,6 +1,6 @@
-import { randomColor } from '#src/constants';
-import { ApplicationCommandRegistry, Args, Command } from '@sapphire/framework';
-import { ChatInputCommandInteraction, Message, Embed, ApplicationCommandOptionType } from 'discord.js';
+import { Categories, randomColor } from '#src/constants';
+import { type ApplicationCommandRegistry, type Args, Command } from '@sapphire/framework';
+import { type ChatInputCommandInteraction, type Message, Embed, ApplicationCommandOptionType } from 'discord.js';
 
 function createAnswer(question: string) {
   const randomizedChoice = Math.ceil(Math.random() * 20);
@@ -30,6 +30,8 @@ function createAnswer(question: string) {
 
 export default class EightBall extends Command {
   public override name = '8ball';
+  public override description = 'Ask the 8ball a question.';
+  public override fullCategory = [Categories.fun];
 
   public override async messageRun(message: Message, args: Args) {
     const choice = await args.pickResult('string');
@@ -60,7 +62,7 @@ export default class EightBall extends Command {
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
     registry.registerChatInputCommand({
       name: this.name,
-      description: 'Ask the 8ball a question.',
+      description: this.description,
       options: [
         {
           name: 'question',

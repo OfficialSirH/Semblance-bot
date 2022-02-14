@@ -1,10 +1,20 @@
 import { c2sGuildId } from '#config';
-import { Collection } from 'discord.js';
+import { ChannelType, Collection } from 'discord.js';
 import { createHmac } from 'crypto';
 import type { SapphireClient } from '@sapphire/framework';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 import type { Message } from 'discord.js';
 const cooldown: Collection<string, number> = new Collection();
+
+export default class Link extends Command {
+  constructor(context: Command.Context, options: Command.Options) {
+    super(context, {
+      ...options,
+      name: 'link',
+      description: 'link your C2S game progress with your Discord account.',
+    });
+  }
+}
 
 export default {
   description: "used for linking the C2S player's game with their Discord account.",
@@ -19,7 +29,7 @@ export default {
 } as Command<'dm'>;
 
 const run = async (client: SapphireClient, message: Message, args: string[]) => {
-  if (message.channel.type != 'DM') return;
+  if (message.channel.type != ChannelType.DM) message.delete();
   const userCooldown = cooldown.get(message.author.id);
   if (userCooldown && userCooldown > Date.now())
     return message.channel.send(

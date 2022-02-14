@@ -35,8 +35,8 @@
     "#models/*": [
       "./dist/src/models/*.js"
     ],
-    "#events/*": [
-      "./dist/src/events/*.js"
+    "#listeners/*": [
+      "./dist/src/listeners/*.js"
     ],
     "#constants/*": [
       "./dist/src/constants/*.js"

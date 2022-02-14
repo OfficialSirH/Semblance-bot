@@ -21,9 +21,9 @@ export const build: QueriedInfoBuilder = interaction => {
         `[Discord.bots.gg](https://discord.bots.gg/bots/${client.user.id})`,
       ].join('\n'),
     ) // Old Semblance Id: 668688939888148480
-    .setFooter(
-      `Thanks, ${interaction.user.tag}, for considering to support my bot through voting, you may also support me with ${prefix}patreon :D`,
-      interaction.user.displayAvatarURL(),
-    );
+    .setFooter({
+      text: `Thanks, ${interaction.user.tag}, for considering to support my bot through voting, you may also support me with ${prefix}patreon :D`,
+      iconURL: interaction.user.displayAvatarURL(),
+    });
   return { embeds: [embed] };
 };

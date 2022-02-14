@@ -28,7 +28,7 @@ export const build: QueriedInfoBuilder = async interaction => {
   }
   const embed = new Embed()
     .setTitle(`Bot Information - ${client.user.tag}`)
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(client.user.displayAvatarURL())
     .addFields(
@@ -65,19 +65,19 @@ export const build: QueriedInfoBuilder = async interaction => {
     .setFooter({ text: 'The all powerful Semblance has spoken!' });
 
   if (client.shard)
-    embed.addField(
-      `${metabit} This Shard (${interaction.guild.shardId})`,
-      `**Guilds:** ${guilds}\n` + `**Users:** ${users}`,
-    );
+    embed.addField({
+      name: `${metabit} This Shard (${interaction.guild.shardId})`,
+      value: `**Guilds:** ${guilds}\n` + `**Users:** ${users}`,
+    });
 
-  embed.addField(
-    `${mutagen} Links`,
-    [
+  embed.addField({
+    name: `${mutagen} Links`,
+    value: [
       `- [Semblance Invite](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=8&scope=bot+applications.commands)`,
       '- [Semblance Support/Main](https://discord.gg/XFMaTn6taf)',
       '- [Cell to Singularity](https://discord.gg/celltosingularity)',
     ].join('\n'),
-    true,
-  );
+    inline: true,
+  });
   return { embeds: [embed] };
 };

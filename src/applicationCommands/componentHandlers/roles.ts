@@ -29,7 +29,7 @@ export default {
             )
             .setEmoji(isAddingRole ? '❌' : '✅')
             .setLabel(isAddingRole ? 'Remove Server Events Role' : 'Add Server Events Role')
-            .setStyle(isAddingRole ? 'DANGER' : 'SUCCESS'),
+            .setStyle(isAddingRole ? ButtonStyle.Danger : ButtonStyle.Success),
         ]),
       ];
     const message = interaction.message as Message;

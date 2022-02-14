@@ -3,7 +3,7 @@ import type { Message } from 'discord.js';
 import { randomColor, msToTime } from '#constants/index';
 import { singularity, entropy, metabit, mutagen, idea } from '#config';
 import type { SapphireClient } from '@sapphire/framework';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'Get information about the epic bot, Semblance',

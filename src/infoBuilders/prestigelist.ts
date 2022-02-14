@@ -6,7 +6,7 @@ import { currentLogo, prestigeList } from '#config';
 export const build: QueriedInfoBuilder = interaction => {
   const embed = new Embed()
     .setTitle('Mesozoic Valley Prestige List')
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setImage(prestigeList.name)

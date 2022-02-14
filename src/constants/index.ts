@@ -1,6 +1,6 @@
-﻿import type { Subcategory } from '#lib/interfaces/Semblance';
-import type { GuildMember, ActionRow, ButtonComponent, MessageComponentInteraction, Snowflake, User } from 'discord.js';
-import { Permissions } from 'discord.js';
+﻿import type { Category, Subcategory } from '#lib/interfaces/Semblance';
+import type { GuildMember, ActionRow, MessageComponentInteraction, Snowflake, User } from 'discord.js';
+import { PermissionFlagsBits } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 
 export const prefix = 's!';
@@ -63,14 +63,12 @@ const partition = (list: [Snowflake, number][], left: number, right: number) => 
   return i;
 };
 export const filterAction = (components: ActionRow[], action: string) =>
-  components.map(c => {
-    c.components = (c.components as ButtonComponent[]).filter(b => eval(`(${b.customId})`).action != action);
-    return c;
-  });
+  components.map(c => c.components.filter(c => eval(`(${c.custom_id})`).action != action));
 export const subcategoryList = (client: SapphireClient, category: string, subcategory: Subcategory) =>
-  Object.keys(client.commands)
-    .filter(key => client.commands[key].category == category && client.commands[key].subcategory == subcategory)
-    .map(key => `**\`${prefix}${key}\`**`)
+  client.stores
+    .get('commands')
+    .filter(c => c.category == category && c.subCategory == subcategory)
+    .map(c => `**\`${prefix}${c.name}\`**`)
     .join(', ');
 export const emojis = {
   tick: '✅',
@@ -178,14 +176,33 @@ export const msToTime = (ms: number) => {
 
   return str;
 };
+export const Categories: Record<Category, Category> = {
+  fun: 'fun',
+  game: 'game',
+  utility: 'utility',
+  calculator: 'calculator',
+  c2sServer: 'c2sServer',
+  server: 'server',
+  developer: 'developer',
+  dm: 'dm',
+  secret: 'secret',
+  help: 'help',
+  semblance: 'semblance',
+};
+export const Subcategories: Record<Subcategory, Subcategory> = {
+  main: 'main',
+  mesozoic: 'mesozoic',
+  beyond: 'beyond',
+  other: 'other',
+};
 export const roles = {
-  admin: Permissions.FLAGS.ADMINISTRATOR,
-  exec: Permissions.FLAGS.MANAGE_GUILD,
-  srmod: Permissions.FLAGS.MENTION_EVERYONE,
-  mod: Permissions.FLAGS.MANAGE_CHANNELS,
-  jrmod: Permissions.FLAGS.MANAGE_ROLES,
-  helper: Permissions.FLAGS.MANAGE_MESSAGES,
-  duty: Permissions.FLAGS.MUTE_MEMBERS,
+  admin: PermissionFlagsBits.Administrator,
+  exec: PermissionFlagsBits.ManageGuild,
+  srmod: PermissionFlagsBits.MentionEveryone,
+  mod: PermissionFlagsBits.ManageChannels,
+  jrmod: PermissionFlagsBits.ManageRoles,
+  helper: PermissionFlagsBits.ManageMessages,
+  duty: PermissionFlagsBits.MuteMembers,
 };
 export const c2sRolesInformation: Record<keyof typeof c2sRoles, object> = {
   server: {

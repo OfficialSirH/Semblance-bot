@@ -4,7 +4,7 @@ import type {
   Message,
   Snowflake,
   ClientEvents,
-  ContextMenuInteraction,
+  ContextMenuCommandInteraction,
   AutocompleteInteraction,
   MessageOptions,
   InteractionReplyOptions,
@@ -43,11 +43,14 @@ export interface AutocompleteHandler {
 }
 
 export interface ContextMenuHandler {
-  run: (interaction: ContextMenuInteraction, { options, permissionLevel }: ContextMenuHandlerOptions) => Promise<void>;
+  run: (
+    interaction: ContextMenuCommandInteraction,
+    { options, permissionLevel }: ContextMenuHandlerOptions,
+  ) => Promise<void>;
 }
 
 export interface ContextMenuHandlerOptions {
-  options: ContextMenuInteraction['options'];
+  options: ContextMenuCommandInteraction['options'];
   permissionLevel: number;
 }
 
@@ -118,20 +121,25 @@ export interface CommandOptions {
   content?: string;
 }
 
-export type NoArgCategory = 'help' | 'semblance' | 'auto';
+export type NoArgCategory = 'help' | 'semblance';
 export type Category =
   | 'fun'
   | 'game'
   | 'dm'
   | 'utility'
-  | 'admin'
   | 'calculator'
   | 'c2sServer'
   | 'server'
   | 'developer'
   | 'secret'
   | NoArgCategory;
-export type Subcategory = 'main' | 'mesozoic' | 'other';
+export type Subcategory = 'main' | 'mesozoic' | 'beyond' | 'other';
+
+export interface EventHandler<T extends keyof ClientEvents = keyof ClientEvents> {
+  name: T;
+  once?: boolean;
+  exec: (...args: [...ClientEvents[T], SapphireClient]) => Promise<void>;
+}
 
 export interface TwitterJSEventHandler<T extends keyof ClientEventsMapping = keyof ClientEventsMapping> {
   name: T;

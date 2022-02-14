@@ -1,7 +1,7 @@
 import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { geodeImage, currentLogo } from '#config';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'Get geode comparisons to show the best value.',

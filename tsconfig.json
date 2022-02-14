@@ -23,7 +23,7 @@
         "#lib/*": ["./lib/*"],
         "#structures/*": ["./src/structures/*"],
         "#models/*": ["./src/models/*"],
-        "#events/*": ["./src/events/*"],
+        "#listeners/*": ["src/listeners/*"],
         "#constants/*": ["./src/constants/*"],
         "#routes/*": ["src/routes/*"],
         "#config": ["./config"],

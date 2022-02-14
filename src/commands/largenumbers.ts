@@ -2,7 +2,7 @@ import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { currentLogo } from '#config';
 import { randomColor } from '#constants/index';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'Provides details of shorter ways to using large numbers as input.',

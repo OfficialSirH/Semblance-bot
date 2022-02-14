@@ -1,6 +1,6 @@
 import { Embed } from 'discord.js';
 import { randomColor } from '#constants/index';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: "Provides link to Semblance's Privacy Policy",

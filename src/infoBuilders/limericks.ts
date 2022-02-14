@@ -8,7 +8,7 @@ export const build: QueriedInfoBuilder = interaction => {
     .setTitle('Limericks Contest winners')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setDescription(
       `**1st Place(2000 ${darwinium}):** Jean_Xontric - \n` +
         'Before the dinosaur ran out of luck,\n' +

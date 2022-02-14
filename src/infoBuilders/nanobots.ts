@@ -6,7 +6,7 @@ import { currentLogo, nanobots } from '#config';
 export const build: QueriedInfoBuilder = interaction => {
   const embed = new Embed()
     .setTitle('Nanobots')
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setImage(nanobots.name)

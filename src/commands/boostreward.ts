@@ -1,7 +1,7 @@
 import type { Message } from 'discord.js';
 import { GuildMember } from 'discord.js';
 import { formattedDate } from '#constants/index';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 import type { SapphireClient } from '@sapphire/framework';
 
 export default {

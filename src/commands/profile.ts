@@ -2,7 +2,7 @@ import type { Message, GuildMember, User, Snowflake } from 'discord.js';
 import { Embed } from 'discord.js';
 import { randomColor } from '#constants/index';
 import type { SapphireClient } from '@sapphire/framework';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'Get info on a specified user or yourself by default.',

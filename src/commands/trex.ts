@@ -1,7 +1,7 @@
 import { Embed } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { currentLogo, trexBadge } from '#config';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'T-Rex info',

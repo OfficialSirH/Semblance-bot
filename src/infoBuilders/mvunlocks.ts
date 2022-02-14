@@ -6,7 +6,7 @@ import { currentLogo } from '#config';
 export const build: QueriedInfoBuilder = interaction => {
   const embed = new Embed()
     .setTitle('Reptiles and Birds')
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setThumbnail(currentLogo.name)
     .setColor(randomColor)
     .setDescription(

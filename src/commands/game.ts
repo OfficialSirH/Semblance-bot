@@ -1,7 +1,7 @@
 import { Embed, Collection, PermissionFlagsBits, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor } from '#constants/index';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 import { currentPrice } from '#constants/commands';
 import type { SapphireClient } from '@sapphire/framework';
 const cooldownHandler: Collection<string, number> = new Collection();

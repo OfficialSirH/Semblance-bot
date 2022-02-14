@@ -1,7 +1,7 @@
 import { bigToName, checkValue, nameToScNo, randomColor } from '#constants/index';
 import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'Provides the production multiplier when given metabit input.',

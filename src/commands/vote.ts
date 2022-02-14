@@ -1,7 +1,7 @@
 import { Message, Embed } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
 import type { SapphireClient } from '@sapphire/framework';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'Lists websites where you can vote for Semblance.',

@@ -5,7 +5,7 @@ import { rpsGames } from '#src/applicationCommands/componentHandlers/rps';
 import { randomColor } from '#constants/index';
 import { countdownGIF, randomChoice } from '#constants/commands';
 import type { SapphireClient } from '@sapphire/framework';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'rock paper scissors',

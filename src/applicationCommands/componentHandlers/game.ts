@@ -1,5 +1,5 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
-import type { Message, MessageComponentInteraction } from 'discord.js';
+import { ButtonStyle, Message, MessageComponentInteraction } from 'discord.js';
 import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 // import { Game } from '#models/Game';
 import { filterAction, prefix, randomColor } from '#constants/index';
@@ -110,7 +110,7 @@ export default {
             )
             .setEmoji(game ? '⛔' : '🌎')
             .setLabel(game ? 'Reset Progress' : 'Create new game')
-            .setStyle(game ? 'DANGER' : 'SUCCESS'),
+            .setStyle(game ? ButtonStyle.Danger : ButtonStyle.Success),
           new ButtonComponent()
             .setCustomId(
               JSON.stringify({
@@ -176,7 +176,7 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
         )
         .setEmoji('🚫')
         .setLabel('Yes')
-        .setStyle('DANGER'),
+        .setStyle(ButtonStyle.Danger),
       new ButtonComponent()
         .setCustomId(
           JSON.stringify({

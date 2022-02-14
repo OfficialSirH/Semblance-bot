@@ -2,7 +2,7 @@
 import { currentLogo } from '#config';
 import { Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 import type { Message } from 'discord.js';
-import type { Command } from '#lib/interfaces/Semblance';
+import { Command } from '@sapphire/framework';
 
 export default {
   description: 'See a step-by-step guide to transfering your game progress into the cloud and onto another device.',

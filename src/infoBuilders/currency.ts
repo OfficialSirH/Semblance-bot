@@ -19,7 +19,7 @@ import { Embed } from 'discord.js';
 export const build: QueriedInfoBuilder = interaction => {
   const embed = new Embed()
     .setTitle('Currency')
-    .setAuthor(interaction.user.tag, interaction.user.displayAvatarURL())
+    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .addFields(
