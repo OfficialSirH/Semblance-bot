@@ -1,40 +1,43 @@
 import { customIdRegex, disableAllComponents, getPermissionLevel, properCustomIdRegex } from '#constants/index';
-import type { CustomIdData, EventHandler } from '#lib/interfaces/Semblance';
-import type { SapphireClient } from '@sapphire/framework';
+import type { CustomIdData } from '#lib/interfaces/Semblance';
+import { Listener, SapphireClient } from '@sapphire/framework';
 import type {
   GuildMember,
   MessageComponentInteraction,
   Interaction,
-  ContextMenuInteraction,
+  ContextMenuCommandInteraction,
   AutocompleteInteraction,
 } from 'discord.js';
-import { Constants } from 'discord.js';
-const { Events } = Constants;
+import { Events } from 'discord.js';
 
-export default {
-  name: Events.INTERACTION_CREATE,
-  exec: (interaction, client) => interactionCreate(interaction, client),
-} as EventHandler<'interactionCreate'>;
+export default class InteractionCreate extends Listener {
+  public constructor(context: Listener.Context, options: Listener.Options) {
+    super(context, {
+      ...options,
+      name: Events.InteractionCreate,
+    });
+  }
 
-export const interactionCreate = async (interaction: Interaction, client: SapphireClient) => {
-  if (interaction.isAutocomplete()) return autocompleteInteraction(client, interaction);
-  if (interaction.isMessageComponent()) return componentInteraction(client, interaction);
-  if (interaction.isContextMenu()) return contextMenuInteraction(client, interaction);
-  if (!interaction.isCommand()) return;
+  public override async run(interaction: Interaction) {
+    if (interaction.isAutocomplete()) return autocompleteInteraction(client, interaction);
+    if (interaction.isMessageComponent()) return componentInteraction(client, interaction);
+    if (interaction.isContextMenuCommand()) return contextMenuInteraction(client, interaction);
+    if (!interaction.isCommand()) return;
 
-  if (!client.slashCommands.has(interaction.commandName))
-    return interaction.reply("I can't find a command for this, something is borked.");
-  const cmd = client.slashCommands.get(interaction.commandName);
+    if (!client.slashCommands.has(interaction.commandName))
+      return interaction.reply("I can't find a command for this, something is borked.");
+    const cmd = client.slashCommands.get(interaction.commandName);
 
-  if (cmd.permissionRequired > getPermissionLevel(interaction.member as GuildMember))
-    return interaction.reply("You don't have permission to use this command.");
+    if (cmd.permissionRequired > getPermissionLevel(interaction.member as GuildMember))
+      return interaction.reply("You don't have permission to use this command.");
 
-  await client.slashCommands.get(interaction.commandName).run(interaction, {
-    client,
-    options: interaction.options,
-    permissionLevel: getPermissionLevel(interaction.member as GuildMember),
-  });
-};
+    await client.slashCommands.get(interaction.commandName).run(interaction, {
+      client,
+      options: interaction.options,
+      permissionLevel: getPermissionLevel(interaction.member as GuildMember),
+    });
+  }
+}
 
 async function componentInteraction(client: SapphireClient, interaction: MessageComponentInteraction) {
   if ((Date.now() - interaction.createdTimestamp) / 1000 > 300) {
@@ -71,7 +74,7 @@ async function componentInteraction(client: SapphireClient, interaction: Message
     });
 }
 
-const contextMenuInteraction = async (client: SapphireClient, interaction: ContextMenuInteraction) => {
+const contextMenuInteraction = async (client: SapphireClient, interaction: ContextMenuCommandInteraction) => {
   if (!client.contextMenuHandlers.has(interaction.commandName)) return;
   const contextMenuHandler = client.contextMenuHandlers.get(interaction.commandName);
   contextMenuHandler.run(interaction, {

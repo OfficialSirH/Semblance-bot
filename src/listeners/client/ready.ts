@@ -1,4 +1,4 @@
-import { ActivityType } from 'discord.js';
+import { ActivityType, Events } from 'discord.js';
 import { Listener, type SapphireClient } from '@sapphire/framework';
 import * as schedule from 'node-schedule';
 import { prefix } from '#constants/index';
@@ -10,7 +10,7 @@ export default class Ready extends Listener {
   public constructor(context: Listener.Context, options: Listener.Options) {
     super(context, {
       ...options,
-      name: 'ready',
+      name: Events.ClientReady,
       once: true,
     });
   }

@@ -33,6 +33,10 @@ const client = new SapphireClient({
 });
 client.db = new prisma.PrismaClient();
 
+// register stores
+import { InfoBuilderStore } from '#structures/storeRegistries/InfoBuilderStore';
+client.stores.register(new InfoBuilderStore());
+
 // import { Client } from 'twitter.js';
 // TODO: enable twitter.js implementation to replace the shitty twitter library
 // const twClient = new Client({ events: ['FILTERED_TWEET_CREATE'] });

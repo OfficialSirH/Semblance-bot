@@ -45,11 +45,7 @@ const run = async (client: SapphireClient, message: Message, args: string[]) => 
     .setTitle('Beyond/Road Map')
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
-    .setImage(roadMap.name)
-    .setDescription(
-      'Summer 2021. Anyone who wants to give any complaints about the length of the release date can email their complaint to ImAWhinyKaren@gmail.com' +
-        `\n\n\`$${prefix}beyond sneak peeks\` for sneak peeks\n\n\`$${prefix}beyond count\` to see the amount of times that The Beyond has been mentioned by the community of C2S.`,
-    );
+    .setImage(roadMap.name);
   message.channel.send({ embeds: [embed], files: [currentLogo, roadMap] });
 };
 
@@ -83,7 +79,7 @@ async function beyondCounter(message: Message) {
     .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
-      `The Beyond has been mentioned 5203 time(s) since ${new Date(1611959542848)} all the way till ${new Date(
+      `The Beyond has been mentioned 5203 times since ${new Date(1611959542848)} all the way till ${new Date(
         1635971517445,
       )}`,
     )
