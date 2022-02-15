@@ -10,6 +10,7 @@ import type {
   InteractionReplyOptions,
   ButtonInteraction,
   SelectMenuInteraction,
+  Interaction,
 } from 'discord.js';
 import type { Client, ClientEventsMapping } from 'twitter.js';
 
@@ -86,7 +87,7 @@ export interface SlashOptions {
 }
 
 export type QueriedInfoBuilder = (
-  interaction: CommandInteraction | ButtonInteraction | SelectMenuInteraction,
+  interaction: Interaction,
   client: SapphireClient,
 ) => Promise<string | MessageOptions | InteractionReplyOptions> | string | MessageOptions | InteractionReplyOptions;
 

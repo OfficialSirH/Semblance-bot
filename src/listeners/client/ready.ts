@@ -3,7 +3,6 @@ import { Listener, type SapphireClient } from '@sapphire/framework';
 import * as schedule from 'node-schedule';
 import { prefix } from '#constants/index';
 import { handleBoosterReward, handleReminder } from '#constants/models';
-import { readdir } from 'fs/promises';
 import type { Reminder } from '@prisma/client';
 
 export default class Ready extends Listener {
@@ -24,14 +23,6 @@ export default class Ready extends Listener {
       .reduce((total, cur) => (total += cur), 0);
     const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
     client.user.setActivity(activity, { type: ActivityType.Watching });
-
-    const infoBuilders = (await readdir('./dist/src/infoBuilders')).filter(f => f.endsWith('.js'));
-    infoBuilders.forEach(async file =>
-      client.infoBuilders.set(
-        file.replace('.js', ''),
-        (await import(`#src/infoBuilders/${file.replace('.js', '')}`)).build,
-      ),
-    );
 
     /* Reminder scheduling */
     const reminders = (await client.db.reminder.findMany({})) as unknown as Reminder[];

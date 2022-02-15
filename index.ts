@@ -4,16 +4,14 @@ sourceMapInstall();
 await import('#config');
 
 import prisma from '@prisma/client';
-import type { QueriedInfoBuilder } from 'Semblance';
 declare module 'discord.js' {
   interface Client {
     db: prisma.PrismaClient;
-    infoBuilders: Collection<string, QueriedInfoBuilder>;
   }
 }
 
 import { SapphireClient } from '@sapphire/framework';
-import { type Collection, GatewayIntentBits, Options, Partials } from 'discord.js';
+import { GatewayIntentBits, Options, Partials } from 'discord.js';
 const client = new SapphireClient({
   allowedMentions: { parse: [] },
   defaultPrefix: prefix,
@@ -34,8 +32,9 @@ const client = new SapphireClient({
 client.db = new prisma.PrismaClient();
 
 // register stores
+import path from 'node:path';
 import { InfoBuilderStore } from '#structures/storeRegistries/InfoBuilderStore';
-client.stores.register(new InfoBuilderStore());
+client.stores.register(new InfoBuilderStore().registerPath(path.join(__dirname, '..', 'infoBuilders')));
 
 // import { Client } from 'twitter.js';
 // TODO: enable twitter.js implementation to replace the shitty twitter library
