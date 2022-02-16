@@ -1,15 +1,24 @@
 import { currentLogo } from '#config';
-import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
+import { InfoBuilder } from '#src/structures/pieces/InfoBuilder';
 import { randomColor } from '#constants/index';
 import { Embed } from 'discord.js';
+import type { Piece } from '@sapphire/framework';
 
-export const build: QueriedInfoBuilder = async (_, client) => {
-  const infoHandler = await client.db.information.findUnique({ where: { type: 'beta' } });
-  const embed = new Embed()
-    .setTitle('Beta')
-    .setColor(randomColor)
-    .setThumbnail(currentLogo.name)
-    .setDescription(infoHandler.value)
-    .setFooter({ text: 'New stuff do be epicc' });
-  return { embeds: [embed], files: [currentLogo] };
-};
+export default class Beta extends InfoBuilder {
+  public override name = 'beta';
+
+  public constructor(context: Piece.Context) {
+    super(context);
+  }
+
+  public override async build() {
+    const infoHandler = await this.container.client.db.information.findUnique({ where: { type: 'beta' } });
+    const embed = new Embed()
+      .setTitle('Beta')
+      .setColor(randomColor)
+      .setThumbnail(currentLogo.name)
+      .setDescription(infoHandler.value)
+      .setFooter({ text: 'New stuff do be epicc' });
+    return { embeds: [embed], files: [currentLogo] };
+  }
+}

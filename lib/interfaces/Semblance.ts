@@ -6,8 +6,6 @@ import type {
   ClientEvents,
   ContextMenuCommandInteraction,
   AutocompleteInteraction,
-  MessageOptions,
-  InteractionReplyOptions,
   ButtonInteraction,
   SelectMenuInteraction,
   Interaction,
@@ -86,10 +84,7 @@ export interface SlashOptions {
   options: CommandInteraction['options'];
 }
 
-export type QueriedInfoBuilder = (
-  interaction: Interaction,
-  client: SapphireClient,
-) => Promise<string | MessageOptions | InteractionReplyOptions> | string | MessageOptions | InteractionReplyOptions;
+export type InfoBuilderOption = Interaction | Message;
 
 export interface Command<T extends Category> {
   description: string;

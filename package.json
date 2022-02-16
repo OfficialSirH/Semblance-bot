@@ -54,7 +54,7 @@
   "scripts": {
     "start": "npm run build && pm2 start --name \"Semblance\" dist/ecosystem.config.cjs",
     "reload": "npm run build && pm2 reload dist/ecosystem.config.cjs",
-    "build": "npm i && tsc",
+    "build": "npm i && tsc --project tsconfig.json",
     "cleanup": "rm -rf dist",
     "setup": "npm run lint:fix && npm run prettier",
     "prettier": "prettier --write index.ts config.ts src/**/*.ts lib/**/*.ts",

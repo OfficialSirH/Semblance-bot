@@ -1,4 +1,4 @@
-import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
+import { InfoBuilder } from '#src/structures/pieces/InfoBuilder';
 import { randomColor, prefix } from '#constants/index';
 import { Embed } from 'discord.js';
 

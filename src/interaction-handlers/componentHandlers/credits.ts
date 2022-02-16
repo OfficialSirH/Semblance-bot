@@ -1,5 +1,5 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
-import { filterAction } from '#src/constants';
+import { filterAction } from '#src/constants/components';
 import { ActionRow, ButtonComponent, ButtonStyle, Embed } from 'discord.js';
 
 export default {

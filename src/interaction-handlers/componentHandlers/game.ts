@@ -2,11 +2,12 @@ import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import { ButtonStyle, Message, MessageComponentInteraction } from 'discord.js';
 import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 // import { Game } from '#models/Game';
-import { filterAction, prefix, randomColor } from '#constants/index';
+import { prefix, randomColor } from '#constants/index';
 import type { SapphireClient } from '@sapphire/framework';
 import { currentPrice } from '#constants/commands';
 import { LeaderboardUtilities } from '#src/structures/LeaderboardUtilities';
 import type { Game } from '@prisma/client';
+import { defaultEmojiToUsableEmoji, disableComponentsByLabel, filterAction } from '#src/constants/components';
 
 export default {
   buttonHandle: async (interaction, { action, id }, { client }) => {
@@ -25,7 +26,7 @@ export default {
               }),
             )
             .setStyle(ButtonStyle.Primary)
-            .setEmoji('❔')
+            .setEmoji(defaultEmojiToUsableEmoji('❔'))
             .setLabel('About'),
           new ButtonComponent()
             .setCustomId(
@@ -37,7 +38,7 @@ export default {
             )
             .setDisabled(!game)
             .setStyle(ButtonStyle.Primary)
-            .setEmoji('💵')
+            .setEmoji(defaultEmojiToUsableEmoji('💵'))
             .setLabel('Collect'),
           new ButtonComponent()
             .setCustomId(
@@ -49,7 +50,7 @@ export default {
             )
             .setDisabled(!game || game.money < cost)
             .setStyle(ButtonStyle.Primary)
-            .setEmoji('⬆')
+            .setEmoji(defaultEmojiToUsableEmoji('⬆'))
             .setLabel('Upgrade'),
           new ButtonComponent()
             .setCustomId(
@@ -60,7 +61,7 @@ export default {
               }),
             )
             .setStyle(ButtonStyle.Primary)
-            .setEmoji('🏅')
+            .setEmoji(defaultEmojiToUsableEmoji('🏅'))
             .setLabel('Leaderboard'),
           new ButtonComponent()
             .setCustomId(
@@ -71,7 +72,7 @@ export default {
               }),
             )
             .setStyle(ButtonStyle.Primary)
-            .setEmoji('💰')
+            .setEmoji(defaultEmojiToUsableEmoji('💰'))
             .setLabel('Voting Sites'),
         ),
       ],
@@ -87,7 +88,7 @@ export default {
             )
             .setDisabled(!game)
             .setStyle(ButtonStyle.Primary)
-            .setEmoji('🔢')
+            .setEmoji(defaultEmojiToUsableEmoji('🔢'))
             .setLabel('Stats'),
           new ButtonComponent()
             .setCustomId(
@@ -98,7 +99,7 @@ export default {
               }),
             )
             .setStyle(ButtonStyle.Primary)
-            .setEmoji('📈')
+            .setEmoji(defaultEmojiToUsableEmoji('📈'))
             .setLabel('Graph'),
           new ButtonComponent()
             .setCustomId(
@@ -108,7 +109,7 @@ export default {
                 id,
               }),
             )
-            .setEmoji(game ? '⛔' : '🌎')
+            .setEmoji(defaultEmojiToUsableEmoji(game ? '⛔' : '🌎'))
             .setLabel(game ? 'Reset Progress' : 'Create new game')
             .setStyle(game ? ButtonStyle.Danger : ButtonStyle.Success),
           new ButtonComponent()
@@ -119,7 +120,7 @@ export default {
                 id,
               }),
             )
-            .setEmoji('🚫')
+            .setEmoji(defaultEmojiToUsableEmoji('🚫'))
             .setLabel('Close')
             .setStyle(ButtonStyle.Secondary),
         ),
@@ -174,7 +175,7 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
             id: user.id,
           }),
         )
-        .setEmoji('🚫')
+        .setEmoji(defaultEmojiToUsableEmoji('🚫'))
         .setLabel('Yes')
         .setStyle(ButtonStyle.Danger),
       new ButtonComponent()
@@ -232,12 +233,7 @@ async function create(client: SapphireClient, interaction: MessageComponentInter
         "Reminder, don't be constantly spamming and creating a new game just cause your RNG stats aren't perfect \n",
     )
     .setFooter({ text: 'Enjoy idling!' });
-  components = components.map(c => {
-    c.components = c.components.map((b: ButtonComponent) =>
-      b.label == 'Collect' || b.label == 'Stats' ? b.setDisabled(false) : b,
-    );
-    return c;
-  });
+  components = disableComponentsByLabel(components, ['Collect', 'Stats'], { enableInstead: true });
   await interaction.update({ embeds: [embed], components });
 }
 
@@ -381,10 +377,10 @@ async function votes(interaction: MessageComponentInteraction, components: Actio
           `[Discord.bots.gg](https://discord.bots.gg/bots/${client.user.id})`,
         ].join('\n'),
       )
-      .setFooter(
-        `Thanks, ${user.tag}, for considering to support my bot through voting, you may also support me with ${prefix}patreon :D`,
-        user.displayAvatarURL(),
-      );
+      .setFooter({
+        text: `Thanks, ${user.tag}, for considering to support my bot through voting, you may also support me with ${prefix}patreon :D`,
+        iconURL: user.displayAvatarURL(),
+      });
   interaction.update({ embeds: [embed], components });
 }
 

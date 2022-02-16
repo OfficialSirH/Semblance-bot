@@ -1,4 +1,4 @@
-import { ActionRow, ButtonComponent, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, ButtonStyle, Embed } from 'discord.js';
 import { currentLogo } from '#config';
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
 
@@ -9,7 +9,7 @@ export default {
     let component: ActionRow;
     if (action == 'expired') {
       embed.setDescription(codeHandler.expired);
-      component = new ActionRow().addComponents([
+      component = new ActionRow().addComponents(
         new ButtonComponent()
           .setCustomId(
             JSON.stringify({
@@ -20,10 +20,10 @@ export default {
           )
           .setLabel('View Valid Codes')
           .setStyle(ButtonStyle.Primary),
-      ]);
+      );
     } else if (action == 'valid') {
       embed.setDescription(codeHandler.value);
-      component = new ActionRow().addComponents([
+      component = new ActionRow().addComponents(
         new ButtonComponent()
           .setCustomId(
             JSON.stringify({
@@ -34,7 +34,7 @@ export default {
           )
           .setLabel('View Expired Codes')
           .setStyle(ButtonStyle.Primary),
-      ]);
+      );
     }
     embed.setThumbnail(currentLogo.name);
     await interaction.update({ embeds: [embed], components: [component] });

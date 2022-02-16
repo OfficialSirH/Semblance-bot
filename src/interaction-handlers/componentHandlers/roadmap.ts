@@ -1,5 +1,6 @@
 import { currentLogo, earlyBeyondTesters, roadMap } from '#config';
-import { backButton, componentInteractionSimpleParser, randomColor } from '#src/constants';
+import { randomColor } from '#src/constants';
+import { backButton, componentInteractionSimpleParser } from '#src/constants/components';
 import { ActionRow, ButtonComponent, time, TimestampStyles } from '@discordjs/builders';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { type ButtonInteraction, Embed, ButtonStyle } from 'discord.js';

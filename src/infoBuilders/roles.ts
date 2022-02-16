@@ -1,4 +1,4 @@
-import type { QueriedInfoBuilder } from '#lib/interfaces/Semblance';
+import { InfoBuilder } from '#src/structures/pieces/InfoBuilder';
 import { c2sRoles, c2sRolesInformation } from '#constants/index';
 import { Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 import type { Snowflake, GuildMember } from 'discord.js';

@@ -1,10 +1,12 @@
 import { type Awaitable, Piece } from '@sapphire/framework';
-import type { MessageOptions, InteractionReplyOptions, Interaction } from 'discord.js';
+import type { MessageOptions, InteractionReplyOptions, Interaction, Message } from 'discord.js';
 
 export class InfoBuilder extends Piece {
   public constructor(context: Piece.Context) {
     super(context);
   }
 
-  build?(interaction: Interaction): Awaitable<string | MessageOptions | InteractionReplyOptions>;
+  build?<T extends Interaction | Message>(
+    builder: T,
+  ): Awaitable<string | (T extends Message ? MessageOptions : InteractionReplyOptions)>;
 }
