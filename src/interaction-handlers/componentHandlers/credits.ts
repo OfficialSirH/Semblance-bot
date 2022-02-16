@@ -1,5 +1,6 @@
 import type { ComponentHandler } from '#lib/interfaces/Semblance';
-import { ActionRow, ButtonComponent, Embed } from 'discord.js';
+import { filterAction } from '#src/constants';
+import { ActionRow, ButtonComponent, ButtonStyle, Embed } from 'discord.js';
 
 export default {
   buttonHandle: async (interaction, { action, id }) => {
@@ -59,7 +60,7 @@ export default {
     //return console.log(interaction.message.components);
 
     if (action == 'credits') {
-      embed.setTitle('Credits').addFields([
+      embed.setTitle('Credits').addFields(
         { name: 'Developer', value: 'SirH' },
         { name: 'Special Thanks and Organizer', value: 'Aditya' },
         {
@@ -81,7 +82,7 @@ export default {
             '**Image for Currency:** Off Pringles',
           ].join('\n'),
         },
-      ]);
+      );
     } else if (action == 'thanks')
       embed
         .setTitle('Special Thanks')
@@ -102,9 +103,7 @@ export default {
         );
     else if (action == 'semblancerevisioned')
       embed.setTitle('Semblance Revisioned - by StarLuckArt(WIP/Not previewable yet)');
-    const component = new ActionRow().addComponents(
-      creditComponents.filter(c => eval(`(${c.customId})`).action != action),
-    );
-    interaction.update({ embeds: [embed], components: [component] });
+    const component = filterAction([new ActionRow().addComponents(...creditComponents)], action);
+    interaction.update({ embeds: [embed], components: component });
   },
 } as ComponentHandler;

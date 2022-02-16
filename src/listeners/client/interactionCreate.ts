@@ -50,7 +50,7 @@ async function componentInteraction(client: SapphireClient, interaction: Message
 
   let data: CustomIdData;
   if (interaction.customId.match(properCustomIdRegex)) data = JSON.parse(interaction.customId);
-  else if (interaction.customId.match(customIdRegex)) data = eval(`(${interaction.customId})`);
+  else if (interaction.customId.match(customIdRegex)) data = JSON.parse(interaction.customId);
   else
     return console.log(
       `Detected oddly received custom Id from a button:\nCustom Id: \n${interaction.customId}\nuser Id: ${interaction.user.id}`,

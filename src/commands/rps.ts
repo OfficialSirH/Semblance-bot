@@ -1,7 +1,7 @@
 import { communistSemblance } from '#config';
 import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 import type { Message, GuildMember } from 'discord.js';
-import { rpsGames } from '#src/applicationCommands/componentHandlers/rps';
+import { rpsGames } from '#src/interaction-handlers/componentHandlers/rps';
 import { randomColor } from '#constants/index';
 import { countdownGIF, randomChoice } from '#constants/commands';
 import type { SapphireClient } from '@sapphire/framework';
