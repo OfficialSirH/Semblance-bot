@@ -180,7 +180,6 @@ export const Categories: Record<Category, Category> = {
   utility: 'utility',
   calculator: 'calculator',
   c2sServer: 'c2sServer',
-  server: 'server',
   developer: 'developer',
   dm: 'dm',
   secret: 'secret',

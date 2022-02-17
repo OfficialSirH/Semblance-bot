@@ -6,6 +6,8 @@ import { Command } from '@sapphire/framework';
 import type { Message } from 'discord.js';
 const cooldown: Collection<string, number> = new Collection();
 
+// TODO: make this no longer require the need for stupid DMs
+
 export default class Link extends Command {
   constructor(context: Command.Context, options: Command.Options) {
     super(context, {

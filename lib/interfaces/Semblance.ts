@@ -122,7 +122,6 @@ export type Category =
   | 'utility'
   | 'calculator'
   | 'c2sServer'
-  | 'server'
   | 'developer'
   | 'secret'
   | NoArgCategory;
