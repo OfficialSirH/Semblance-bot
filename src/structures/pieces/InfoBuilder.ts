@@ -13,5 +13,6 @@ export class InfoBuilder extends Piece {
 
 export interface InfoBuilder {
   BuildOption: Interaction | Message;
+  BuildResult: string | MessageOptions | InteractionReplyOptions;
   Context: Piece.Context;
 }
