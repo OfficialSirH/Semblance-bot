@@ -1,17 +1,15 @@
 import { InfoBuilder } from '#src/structures/pieces/InfoBuilder';
 import { randomColor } from '#constants/index';
 import { Embed } from 'discord.js';
-import type { InfoBuilderOption } from 'Semblance';
-import type { Piece } from '@sapphire/framework';
 
 export default class Feedback extends InfoBuilder {
   public override name = 'feedback';
 
-  public constructor(context: Piece.Context) {
+  public constructor(context: InfoBuilder['Context']) {
     super(context);
   }
 
-  public override async build(builder: InfoBuilderOption) {
+  public override async build(builder: InfoBuilder['BuildOption']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const feedbackImage = 'https://i.imgur.com/lKQh5zW.png';
     const embed = new Embed()

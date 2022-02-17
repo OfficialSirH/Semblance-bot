@@ -10,3 +10,8 @@ export class InfoBuilder extends Piece {
     builder: T,
   ): Awaitable<string | (T extends Message ? MessageOptions : InteractionReplyOptions)>;
 }
+
+export interface InfoBuilder {
+  BuildOption: Interaction | Message;
+  Context: Piece.Context;
+}

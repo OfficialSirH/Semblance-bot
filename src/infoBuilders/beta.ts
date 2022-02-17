@@ -2,12 +2,11 @@ import { currentLogo } from '#config';
 import { InfoBuilder } from '#src/structures/pieces/InfoBuilder';
 import { randomColor } from '#constants/index';
 import { Embed } from 'discord.js';
-import type { Piece } from '@sapphire/framework';
 
 export default class Beta extends InfoBuilder {
   public override name = 'beta';
 
-  public constructor(context: Piece.Context) {
+  public constructor(context: InfoBuilder['Context']) {
     super(context);
   }
 

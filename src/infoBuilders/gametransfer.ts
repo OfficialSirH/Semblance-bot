@@ -2,18 +2,16 @@ import { InfoBuilder } from '#src/structures/pieces/InfoBuilder';
 import { randomColor, gameTransferPages } from '#constants/index';
 import { Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 import { currentLogo } from '#config';
-import type { Piece } from '@sapphire/framework';
-import type { InfoBuilderOption } from 'Semblance';
 import { buildCustomId } from '#src/constants/components';
 
 export default class Gametransfer extends InfoBuilder {
   public override name = 'gametransfer';
 
-  public constructor(context: Piece.Context) {
+  public constructor(context: InfoBuilder['Context']) {
     super(context);
   }
 
-  public override async build(builder: InfoBuilderOption) {
+  public override async build(builder: InfoBuilder['BuildOption']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const embed = new Embed()
       .setTitle('Game Transfer')

@@ -15,17 +15,15 @@ import {
 } from '#config';
 import { randomColor } from '#constants/index';
 import { Embed } from 'discord.js';
-import type { InfoBuilderOption } from 'Semblance';
-import type { Piece } from '@sapphire/framework';
 
 export default class Currency extends InfoBuilder {
   public override name = 'currency';
 
-  public constructor(context: Piece.Context) {
+  public constructor(context: InfoBuilder['Context']) {
     super(context);
   }
 
-  public override async build(builder: InfoBuilderOption) {
+  public override async build(builder: InfoBuilder['BuildOption']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const embed = new Embed()
       .setTitle('Currency')

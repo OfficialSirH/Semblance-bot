@@ -8,7 +8,6 @@ import type {
   AutocompleteInteraction,
   ButtonInteraction,
   SelectMenuInteraction,
-  Interaction,
 } from 'discord.js';
 import type { Client, ClientEventsMapping } from 'twitter.js';
 
@@ -83,8 +82,6 @@ export interface SlashOptions {
   permissionLevel: number;
   options: CommandInteraction['options'];
 }
-
-export type InfoBuilderOption = Interaction | Message;
 
 export interface Command<T extends Category> {
   description: string;

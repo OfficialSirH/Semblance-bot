@@ -2,17 +2,15 @@ import { InfoBuilder } from '#src/structures/pieces/InfoBuilder';
 import { randomColor } from '#constants/index';
 import { Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 import { currentLogo } from '#config';
-import type { Piece } from '@sapphire/framework';
-import type { InfoBuilderOption } from 'Semblance';
 
 export default class Codes extends InfoBuilder {
   public override name = 'codes';
 
-  public constructor(context: Piece.Context) {
+  public constructor(context: InfoBuilder['Context']) {
     super(context);
   }
 
-  public override async build(builder: InfoBuilderOption) {
+  public override async build(builder: InfoBuilder['BuildOption']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const codeHandler = await this.container.client.db.information.findUnique({ where: { type: 'codes' } });
     const embed = new Embed()

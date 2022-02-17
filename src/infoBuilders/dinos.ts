@@ -2,12 +2,11 @@ import { InfoBuilder } from '#src/structures/pieces/InfoBuilder';
 import { trexSkull, currentLogo } from '#config';
 import { randomColor } from '#constants/index';
 import { Embed } from 'discord.js';
-import type { Piece } from '@sapphire/framework';
 
 export default class Dinos extends InfoBuilder {
   public override name = 'dinos';
 
-  public constructor(context: Piece.Context) {
+  public constructor(context: InfoBuilder['Context']) {
     super(context);
   }
 
