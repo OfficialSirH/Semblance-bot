@@ -95,13 +95,13 @@ export default {
         );
     else if (action == 'semblance')
       embed.setTitle('Semblance - by cabiie').setImage(interaction.client.user.displayAvatarURL() + '?size=2048');
-    else if (action == 'semblancebeta')
+    else if (action == 'semblance-beta')
       embed
         .setTitle('Semblance Beta - by Lemon')
         .setImage(
           'https://cdn.discordapp.com/avatars/794049840651960350/b101b9f78fb44d2c0b0c40e53b17e677.png?size=2048',
         );
-    else if (action == 'semblancerevisioned')
+    else if (action == 'semblance-revisioned')
       embed.setTitle('Semblance Revisioned - by StarLuckArt(WIP/Not previewable yet)');
     const component = filterAction([new ActionRow().addComponents(...creditComponents)], action);
     interaction.update({ embeds: [embed], components: component });

@@ -1,21 +1,38 @@
-import { ActionRow, ButtonComponent, Embed } from 'discord.js';
+import { ActionRow, ButtonComponent, ButtonStyle, type ChatInputCommandInteraction, Embed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { randomColor } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Categories, randomColor } from '#constants/index';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { buildCustomId } from '#src/constants/components';
+import type { InfoBuilder } from '#src/structures/pieces/InfoBuilder';
 
-export default {
-  description: 'Lists everyone that has helped with the project of Semblance, including myself(SirH).',
-  category: 'semblance',
-  permissionRequired: 0,
-  checkArgs: () => true,
-  run: (_client, message) => run(message),
-} as Command<'semblance'>;
+export default class Credits extends Command {
+  public override name = 'credits';
+  public override description = 'Lists everyone that has helped with the project of Semblance, including myself(SirH).';
+  public override fullCategory = [Categories.semblance];
 
-const run = async (message: Message) => {
+  public override async messageRun(message: Message) {
+    await message.reply(createCredits(message));
+  }
+
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+    await interaction.reply(createCredits(interaction));
+  }
+
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+    });
+  }
+}
+
+// TODO: move this to the infoBuilders folder and make it a class
+const createCredits = (builder: InfoBuilder['BuildOption']) => {
+  const user = 'user' in builder ? builder.user : builder.author;
   const embed = new Embed()
     .setTitle('Credits')
     .setColor(randomColor)
-    .addFields([
+    .addFields(
       { name: 'Developer', value: 'SirH' },
       { name: 'Special Thanks and Organizer', value: 'Aditya' },
       {
@@ -37,48 +54,25 @@ const run = async (message: Message) => {
           '**Image for Currency:** Off Pringles',
         ].join('\n'),
       },
-    ]);
-  const component = new ActionRow().addComponents([
+    );
+  const component = new ActionRow().addComponents(
     new ButtonComponent()
-      .setCustomId(
-        JSON.stringify({
-          command: 'credits',
-          action: 'thanks',
-          id: message.author.id,
-        }),
-      )
+      .setCustomId(buildCustomId({ command: 'credits', action: 'thanks', id: user.id }))
       .setLabel('Special Thanks')
       .setStyle(ButtonStyle.Primary),
     new ButtonComponent()
-      .setCustomId(
-        JSON.stringify({
-          command: 'credits',
-          action: 'semblance',
-          id: message.author.id,
-        }),
-      )
+      .setCustomId(buildCustomId({ command: 'credits', action: 'semblance', id: user.id }))
       .setLabel('Preview Semblance Art')
       .setStyle(ButtonStyle.Primary),
     new ButtonComponent()
-      .setCustomId(
-        JSON.stringify({
-          command: 'credits',
-          action: 'semblancebeta',
-          id: message.author.id,
-        }),
-      )
+      .setCustomId(buildCustomId({ command: 'credits', action: 'semblance-beta', id: user.id }))
       .setLabel('Preview Semblance Beta Art')
       .setStyle(ButtonStyle.Primary),
     new ButtonComponent()
-      .setCustomId(
-        JSON.stringify({
-          command: 'credits',
-          action: 'semblancerevisioned',
-          id: message.author.id,
-        }),
-      )
+      .setCustomId(buildCustomId({ command: 'credits', action: 'semblance-revisioned', id: user.id }))
       .setLabel('Preview Semblance Revisioned Art')
       .setStyle(ButtonStyle.Primary),
-  ]);
-  message.channel.send({ embeds: [embed], components: [component] });
+  );
+
+  return { embeds: [embed], components: [component] };
 };
