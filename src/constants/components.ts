@@ -53,7 +53,14 @@ export const backButton = (command: string, userId: string, whereToGo: string) =
   new ButtonComponent()
     .setCustomId(buildCustomId({ command, id: userId, action: whereToGo }))
     .setLabel('Back')
-    .setEmoji({ name: '⬅️' })
+    .setEmoji(defaultEmojiToUsableEmoji('⬅️'))
+    .setStyle(ButtonStyle.Secondary);
+
+export const closeButton = (command: string, userId: string) =>
+  new ButtonComponent()
+    .setCustomId(buildCustomId({ command, id: userId, action: 'close' }))
+    .setLabel('Close')
+    .setEmoji(defaultEmojiToUsableEmoji('🚫'))
     .setStyle(ButtonStyle.Secondary);
 
 export const defaultEmojiToUsableEmoji = (emoji: string) => ({ name: emoji });

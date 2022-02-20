@@ -62,7 +62,7 @@ const partition = (list: [Snowflake, number][], left: number, right: number) => 
   }
   return i;
 };
-export const subcategoryList = (client: SapphireClient, category: string, subcategory: Subcategory) =>
+export const subcategoryList = (client: SapphireClient, category: Category, subcategory: Subcategory) =>
   client.stores
     .get('commands')
     .filter(c => c.category == category && c.subCategory == subcategory)
