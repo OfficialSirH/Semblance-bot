@@ -15,7 +15,7 @@ export default {
 const run = async (client: SapphireClient, message: Message, args: string[]) => {
   if (args.length == 0)
     return message.reply(
-      `an example of $${prefix}metacalcrev is $${prefix}metacalcrev 500M, which means an input of 500 million metabits which will output the amount of entropy and ideas you'd need an accumulation of.`,
+      `an example of ${prefix}metacalcrev is ${prefix}metacalcrev 500M, which means an input of 500 million metabits which will output the amount of entropy and ideas you'd need an accumulation of.`,
     );
   let metabits: string | number = args[0];
   if (!checkValue(metabits as string)) return message.reply('Your input for metabits was invalid');
