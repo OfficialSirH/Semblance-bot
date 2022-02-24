@@ -105,7 +105,7 @@ export default class Help extends Command {
       ),
     ];
     message.reply({
-      content: 'side note: if your Discord client supports it, you can use: `/help query: INPUT_HERE` instead.',
+      content: `**Warning:** the prefix \`s!\` will be getting replaced with Semblance's mention (<@${message.client.user.id}>) on April 1st.`,
       embeds: [embed],
       components,
     });
@@ -113,6 +113,9 @@ export default class Help extends Command {
 
   public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const query = interaction.options.getString('query');
+    if (!query)
+      return interaction.reply(await interaction.client.stores.get('infoBuilders').get('help').build(interaction));
+
     if (!interaction.client.stores.get('infoBuilders').has(query)) {
       const possibleQueries = interaction.client.stores.get('infoBuilders').map(i => i.name);
       const components = possibleQueries.reduce((acc, cur, i) => {

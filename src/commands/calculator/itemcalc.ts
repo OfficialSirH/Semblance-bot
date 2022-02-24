@@ -3,6 +3,8 @@ import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Command } from '@sapphire/framework';
 import { itemList } from '#itemList';
+// TODO: (reminder, this is the most recent command from the slash commands folder that was converted to a sapphire command)
+// TODO: also, this command should be merged with itemcalcrev, make the rev (reverse) command as a subcommand for itemcalc
 
 export default {
   description: 'calculate prices for items in-game',

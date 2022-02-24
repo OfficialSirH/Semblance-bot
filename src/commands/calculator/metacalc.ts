@@ -2,6 +2,7 @@ import { bigToName, checkValue, nameToScNo, randomColor } from '#constants/index
 import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Command } from '@sapphire/framework';
+// TODO: also, this command should be merged with metacalcrev, make the rev (reverse) command as a subcommand for metacalc
 
 export default {
   description: 'calculate the amount of metabits produced by entropy and ideas',
