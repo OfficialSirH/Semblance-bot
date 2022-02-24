@@ -10,6 +10,14 @@ export class InfoBuilder extends Piece {
     this.fullCategory = options.fullCategory ?? (this.location.directories as [Category, Subcategory]);
   }
 
+  public get category() {
+    return this.fullCategory[0];
+  }
+
+  public get subcategory() {
+    return this.fullCategory[1];
+  }
+
   build?<T extends Interaction | Message>(
     builder: T,
   ): Awaitable<string | (T extends Message ? MessageOptions : InteractionReplyOptions)>;
