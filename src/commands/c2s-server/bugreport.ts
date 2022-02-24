@@ -43,6 +43,7 @@ export default class Bugreport extends Command {
       {
         name: this.name,
         description: this.description,
+        // TODO: implement the options for the bugreport command
         options: [{}, {}, {}, {}, {}, {}],
       },
       {
