@@ -19,6 +19,6 @@ export class LeaderboardUtilities {
           voteCount: 'desc',
         },
       })
-    ).reduce((acc, cur, index) => `${acc}\n${index + 1}. <@${cur.userId}> - level ${cur.voteCount}`, '');
+    ).reduce((acc, cur, index) => `${acc}\n${index + 1}. <@${cur.userId}> - ${cur.voteCount} votes`, '');
   }
 }
