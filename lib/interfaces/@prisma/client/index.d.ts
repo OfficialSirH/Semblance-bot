@@ -23,21 +23,3 @@ export interface Reminder {
   userId: Snowflake;
   reminders: UserReminder[];
 }
-
-// type ReminderFindManyArgs = Prisma.ReminderFindManyArgs;
-// type ReminderFindUniqueArgs = Prisma.ReminderFindUniqueArgs;
-
-// export class PrismaClient {
-//   boosterReward: Prisma.BoosterRewardDelegate;
-//   game: Prisma.GameDelegate;
-//   information: Prisma.InformationDelegate;
-//   boosterCodes: Prisma.BoosterCodesDelegate;
-//   leaderboard: Prisma.LeaderboardDelegate;
-//   reminder: {
-//     // find<T extends ReminderFindUniqueArgs>(args)
-//     findMany<T extends ReminderFindManyArgs>(args?: Prisma.SelectSubset<T, ReminderFindManyArgs>): Promise<Reminder[]>;
-//   };
-//   report: Prisma.ReportDelegate;
-//   userData: Prisma.UserDataDelegate;
-//   vote: Prisma.VoteDelegate;
-// }

@@ -10,8 +10,33 @@ declare module 'discord.js' {
   }
 }
 
+declare module '@sapphire/framework' {
+  class Command {
+    /**
+     * allows for building output for both messages and chat input interactions
+     * @param builder The message that triggered the command.
+     */
+    sharedRun?<T extends Command['SharedBuilder']>(
+      builder: T,
+    ): Awaitable<string | (T extends Message ? MessageOptions : InteractionReplyOptions)>;
+  }
+
+  interface Command {
+    SharedBuilder: ChatInputCommandInteraction<'cached'> | Message;
+  }
+}
+
 import { SapphireClient } from '@sapphire/framework';
-import { GatewayIntentBits, Options, Partials } from 'discord.js';
+import {
+  type Awaitable,
+  GatewayIntentBits,
+  type Message,
+  Options,
+  Partials,
+  type ChatInputCommandInteraction,
+  InteractionReplyOptions,
+  MessageOptions,
+} from 'discord.js';
 const client = new SapphireClient({
   allowedMentions: { parse: [] },
   defaultPrefix: prefix,
@@ -30,11 +55,6 @@ const client = new SapphireClient({
   intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages],
 });
 client.db = new prisma.PrismaClient();
-
-// register stores
-import path from 'node:path';
-import { InfoBuilderStore } from '#structures/storeRegistries/InfoBuilderStore';
-client.stores.register(new InfoBuilderStore().registerPath(path.join(__dirname, '..', 'infoBuilders')));
 
 // import { Client } from 'twitter.js';
 // TODO: enable twitter.js implementation to replace the shitty twitter library

@@ -1,40 +1,41 @@
 import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { randomColor } from '#constants/index';
+import { Categories, randomColor, Subcategories } from '#constants/index';
 import { currentLogo, terminusChamber } from '#config';
 import { Command } from '@sapphire/framework';
 
-export default {
-  description: 'Details on how to obtain each node within the Terminus Chamber',
-  category: 'game',
-  subcategory: 'main',
-  permissionRequired: 0,
-  aliases: ['terminus', 'chamber'],
-  checkArgs: () => true,
-  run: (_client, message) => run(message),
-} as Command<'game'>;
+export default class TerminusChamber extends Command {
+  public override name = 'terminuschamber';
+  public override description = 'Details on how to obtain each node within the Terminus Chamber';
+  public override fullCategory = [Categories.game, Subcategories.main];
 
-const run = async (message: Message) => {
-  const embed = new Embed()
-    .setTitle('Terminus Chamber')
-    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-    .setColor(randomColor)
-    .setThumbnail(currentLogo.name)
-    .setImage(terminusChamber.name)
-    .setDescription(
-      [
-        '**Yellow Cube** - ||Explore the Mesozoic Valley||',
-        '**Purple Cube** - ||Unlock Singularity for the first time||',
-        '**Light Pink Cube** - ||Unlock the human brain||',
-        '**Light Blue Cube** - ||Obtain/Evolve Neoaves||',
-        '**Blue Cube** - ||Unlock Cetaceans||',
-        '**Lime Green Cube** - ||Unlock Crocodilians||',
-        '**Orange Cube** - ||Unlock Feliforms||',
-        '**Red Cube** - ||Terraform Mars||',
-      ].join('\n'),
-    );
-  message.channel.send({
-    embeds: [embed],
-    files: [currentLogo, terminusChamber],
-  });
-};
+  public override sharedRun(builder: Command['SharedBuilder']) {
+    const user = 'user' in builder ? builder.user : builder.author;
+    const embed = new Embed()
+      .setTitle('Terminus Chamber')
+      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setColor(randomColor)
+      .setThumbnail(currentLogo.name)
+      .setImage(terminusChamber.name)
+      .setDescription(
+        [
+          '**Yellow Cube** - ||Explore the Mesozoic Valley||',
+          '**Purple Cube** - ||Unlock Singularity for the first time||',
+          '**Light Pink Cube** - ||Unlock the human brain||',
+          '**Light Blue Cube** - ||Obtain/Evolve Neoaves||',
+          '**Blue Cube** - ||Unlock Cetaceans||',
+          '**Lime Green Cube** - ||Unlock Crocodilians||',
+          '**Orange Cube** - ||Unlock Feliforms||',
+          '**Red Cube** - ||Terraform Mars||',
+        ].join('\n'),
+      );
+    return {
+      embeds: [embed],
+      files: [currentLogo, terminusChamber],
+    };
+  }
+
+  public override async messageRun(message: Message) {
+    await message.reply(this.sharedRun(message));
+  }
+}
