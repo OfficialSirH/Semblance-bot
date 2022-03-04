@@ -9,7 +9,7 @@ export default class Beta extends Command {
   public override description = 'Get info on the latest beta.';
   public override fullCategory = [Categories.game, Subcategories.other];
 
-  public async messageRun(message: Message) {
+  public override async sharedRun() {
     const infoHandler = await this.container.client.db.information.findUnique({ where: { type: 'beta' } });
     const embed = new Embed()
       .setTitle('Beta')
@@ -17,6 +17,10 @@ export default class Beta extends Command {
       .setThumbnail(currentLogo.name)
       .setDescription(infoHandler.value)
       .setFooter({ text: 'New stuff do be epicc' });
-    message.channel.send({ embeds: [embed], files: [currentLogo] });
+    return { embeds: [embed], files: [currentLogo] };
+  }
+
+  public async messageRun(message: Message) {
+    await message.reply(await this.sharedRun());
   }
 }

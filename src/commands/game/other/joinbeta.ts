@@ -1,28 +1,28 @@
 import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { randomColor } from '#constants/index';
+import { Categories, randomColor, Subcategories } from '#constants/index';
 import { currentLogo } from '#config';
 import { Command } from '@sapphire/framework';
-import type { SapphireClient } from '@sapphire/framework';
 
-export default {
-  description: 'Info on how to become a beta tester',
-  category: 'game',
-  subcategory: 'other',
-  aliases: ['betajoin', 'betaform'],
-  permissionRequired: 0,
-  checkArgs: () => true,
-  run: (client, message) => run(client, message),
-} as Command<'game'>;
+export default class JoinBeta extends Command {
+  public override name = 'joinbeta';
+  public override description = 'Info on how to become a beta tester';
+  public override fullCategory = [Categories.game, Subcategories.other];
 
-const run = async (client: SapphireClient, message: Message) => {
-  const infoHandler = await client.db.information.findUnique({ where: { type: 'joinbeta' } });
-  const embed = new Embed()
-    .setTitle('Steps to join beta')
-    .setColor(randomColor)
-    .setThumbnail(currentLogo.name)
-    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-    .setFooter({ text: `Called by ${message.author.tag}` })
-    .setDescription(infoHandler.value);
-  message.channel.send({ embeds: [embed], files: [currentLogo] });
-};
+  public override async sharedRun(builder: Command['SharedBuilder']) {
+    const user = 'user' in builder ? builder.user : builder.author;
+    const infoHandler = await builder.client.db.information.findUnique({ where: { type: 'joinbeta' } });
+    const embed = new Embed()
+      .setTitle('Steps to join beta')
+      .setColor(randomColor)
+      .setThumbnail(currentLogo.name)
+      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setFooter({ text: `Called by ${user.tag}` })
+      .setDescription(infoHandler.value);
+    return { embeds: [embed], files: [currentLogo] };
+  }
+
+  public override async messageRun(message: Message) {
+    await message.reply(await this.sharedRun(message));
+  }
+}
