@@ -1,56 +1,56 @@
 import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { prefix, randomColor } from '#constants/index';
-import type { SapphireClient } from '@sapphire/framework';
+import { Categories, prefix, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
-export default {
-  description: 'List all miscelaneous commands',
-  category: 'help',
-  permissionRequired: 0,
-  checkArgs: () => true,
-  run: (client, message) => run(client, message),
-} as Command<'help'>;
+export default class MiscHelp extends Command {
+  public override name = 'mischelp';
+  public override description = 'List all miscelaneous commands';
+  public override fullCategory = [Categories.help];
 
-const run = async (client: SapphireClient, message: Message) => {
-  const serverCommands = Object.keys(client.commands)
-      .filter(key => client.commands[key].category == 'server')
-      .map(key => `**${prefix}${key}**`),
-    funCommands = Object.keys(client.commands)
-      .filter(key => client.commands[key].category == 'fun')
-      .map(key => `**${prefix}${key}**`),
-    utilityCommands = Object.keys(client.commands)
-      .filter(key => client.commands[key].category == 'utility')
-      .map(key => `**${prefix}${key}**`),
-    semblanceCommands = Object.keys(client.commands)
-      .filter(key => client.commands[key].category == 'semblance')
-      .map(key => `**${prefix}${key}**`);
-  const embed = new Embed()
-    .setTitle('Miscellaneous Commands')
-    .setThumbnail(client.user.displayAvatarURL())
-    .setColor(randomColor)
-    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-    .addFields(
-      {
-        name: '**-> Server Commands**',
-        value: serverCommands.join(', '),
-        inline: true,
-      },
-      {
-        name: '**-> Fun Commands**',
-        value: funCommands.join(', '),
-        inline: true,
-      },
-      {
-        name: '**-> Utility Commands**',
-        value: utilityCommands.join(', '),
-        inline: true,
-      },
-      {
-        name: '**=> Semblance-related Commands**',
-        value: semblanceCommands.join(', '),
-        inline: true,
-      },
-    );
-  message.channel.send({ embeds: [embed] });
-};
+  public override sharedRun(builder: Command['SharedBuilder']) {
+    const client = builder.client;
+    const user = 'user' in builder ? builder.user : builder.author;
+
+    const funCommands = client.stores
+      .get('commands')
+      .filter(c => c.category === Categories.fun)
+      .map(c => `**${prefix}${c.name}**`);
+    const utilityCommands = client.stores
+      .get('commands')
+      .filter(c => c.category === Categories.utility)
+      .map(c => `**${prefix}${c.name}**`);
+    const semblanceCommands = client.stores
+      .get('commands')
+      .filter(c => c.category === Categories.semblance)
+      .map(c => `**${prefix}${c.name}**`);
+
+    const embed = new Embed()
+      .setTitle('Miscellaneous Commands')
+      .setThumbnail(client.user.displayAvatarURL())
+      .setColor(randomColor)
+      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .addFields(
+        {
+          name: '**-> Fun Commands**',
+          value: funCommands.join(', '),
+          inline: true,
+        },
+        {
+          name: '**-> Utility Commands**',
+          value: utilityCommands.join(', '),
+          inline: true,
+        },
+        {
+          name: '**=> Semblance-related Commands**',
+          value: semblanceCommands.join(', '),
+          inline: true,
+        },
+      );
+    return { embeds: [embed] };
+  }
+
+  public async messageRun(message: Message) {
+    await message.reply(this.sharedRun(message));
+  }
+}

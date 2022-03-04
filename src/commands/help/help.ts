@@ -6,11 +6,10 @@ import {
   type ChatInputCommandInteraction,
   SelectMenuComponent,
   ApplicationCommandOptionType,
-  AutocompleteInteraction,
+  type AutocompleteInteraction,
   SelectMenuOption,
 } from 'discord.js';
 import type { Message } from 'discord.js';
-import { sirhId, adityaId, c2sGuildId } from '#config';
 import { Categories, prefix, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
@@ -19,16 +18,17 @@ export default class Help extends Command {
   public override description = 'Lists all available commands.';
   public override fullCategory = [Categories.help];
 
-  public override async messageRun(message: Message) {
-    const c2sServerCommands = message.client.stores
+  public override sharedRun(builder: Command['SharedBuilder']) {
+    const user = 'user' in builder ? builder.user : builder.author;
+    const c2sServerCommands = builder.client.stores
       .get('commands')
       .filter(c => c.category === Categories.c2sServer)
       .map(c => `**${prefix}${c.name}**`);
     const embed = new Embed()
       .setTitle('Semblance Command List')
       .setColor(randomColor)
-      .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-      .setThumbnail(message.client.user.displayAvatarURL())
+      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setThumbnail(builder.client.user.displayAvatarURL())
       .addFields(
         {
           name: '**-> Cell to Singularity Server Commands**',
@@ -40,7 +40,7 @@ export default class Help extends Command {
           value: [
             "Semblance's Slash Commands can be listed by typing `/`, which if none are visible,",
             "that's likely due to Semblance not being authorized on the server and a admin will need to click",
-            `[here](https://discord.com/oauth2/authorize?client_id=${message.client.user.id}&permissions=8&scope=bot+applications.commands) to authorize Semblance.`,
+            `[here](https://discord.com/oauth2/authorize?client_id=${builder.client.user.id}&permissions=8&scope=bot+applications.commands) to authorize Semblance.`,
           ].join(' '),
         },
       )
@@ -54,7 +54,7 @@ export default class Help extends Command {
             JSON.stringify({
               command: 'help',
               action: 'c2shelp',
-              id: message.author.id,
+              id: user.id,
             }),
           )
           .setLabel('Cell to Singularity Help')
@@ -63,8 +63,8 @@ export default class Help extends Command {
           .setCustomId(
             JSON.stringify({
               command: 'help',
-              action: 'calculator',
-              id: message.author.id,
+              action: 'calchelp',
+              id: user.id,
             }),
           )
           .setLabel('Calculator Help')
@@ -74,7 +74,7 @@ export default class Help extends Command {
             JSON.stringify({
               command: 'help',
               action: 'mischelp',
-              id: message.author.id,
+              id: user.id,
             }),
           )
           .setLabel('Miscellaneous Help')
@@ -83,20 +83,8 @@ export default class Help extends Command {
           .setCustomId(
             JSON.stringify({
               command: 'help',
-              action: 'bug',
-              id: message.author.id,
-            }),
-          )
-          .setDisabled(message.guild.id != c2sGuildId && ![sirhId, adityaId].includes(message.author.id))
-          .setLabel('Bug Reporting Help')
-          .setEmoji({ name: '🐛' })
-          .setStyle(ButtonStyle.Primary),
-        new ButtonComponent()
-          .setCustomId(
-            JSON.stringify({
-              command: 'help',
               action: 'close',
-              id: message.author.id,
+              id: user.id,
             }),
           )
           .setLabel('Close')
@@ -104,20 +92,25 @@ export default class Help extends Command {
           .setStyle(ButtonStyle.Secondary),
       ),
     ];
-    message.reply({
-      content: `**Warning:** the prefix \`s!\` will be getting replaced with Semblance's mention (<@${message.client.user.id}>) on April 1st.`,
+    return {
+      content: 'side note: if your Discord client supports it, you can use: `/help` instead.',
       embeds: [embed],
       components,
-    });
+    };
+  }
+
+  public override async messageRun(message: Message) {
+    await message.reply(this.sharedRun(message));
   }
 
   public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const query = interaction.options.getString('query');
-    if (!query)
-      return interaction.reply(await interaction.client.stores.get('infoBuilders').get('help').build(interaction));
+    if (!query) return interaction.reply(this.sharedRun(interaction));
 
-    if (!interaction.client.stores.get('infoBuilders').has(query)) {
-      const possibleQueries = interaction.client.stores.get('infoBuilders').map(i => i.name);
+    const commands = interaction.client.stores.get('commands').filter(c => 'sharedRun' in c);
+
+    if (!commands.has(query)) {
+      const possibleQueries = commands.map(i => i.name);
       const components = possibleQueries.reduce((acc, cur, i) => {
         const index = Math.floor(i / 25);
         if (!acc[index])
@@ -148,7 +141,7 @@ export default class Help extends Command {
         components,
       });
     }
-    const info = await interaction.client.stores.get('infoBuilders').get(query).build(interaction);
+    const info = await commands.get(query).sharedRun(interaction);
     await interaction.reply(info);
   }
 
@@ -156,13 +149,13 @@ export default class Help extends Command {
     const query = interaction.options.getFocused() as string;
 
     const queriedInfoStartsWith = interaction.client.stores
-      .get('infoBuilders')
-      .filter(i => i.name.startsWith(query))
+      .get('commands')
+      .filter(i => 'sharedRun' in i && i.name.startsWith(query))
       .map(i => ({ name: i.name, value: i.name }))
       .slice(0, 25);
     const queriedInfoContains = interaction.client.stores
-      .get('infoBuilders')
-      .filter(i => !i.name.startsWith(query) && i.name.includes(query))
+      .get('commands')
+      .filter(i => 'sharedRun' in i && !i.name.startsWith(query) && i.name.includes(query))
       .map(i => ({ name: i.name, value: i.name }))
       .slice(0, 25 - queriedInfoStartsWith.length);
 
