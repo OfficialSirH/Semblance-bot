@@ -1,31 +1,34 @@
 import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { randomColor, msToTime } from '#constants/index';
-import type { SapphireClient } from '@sapphire/framework';
+import { randomColor, msToTime, Categories } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
-export default {
-  description: "Check the bot's latency.",
-  category: 'semblance',
-  permissionRequired: 0,
-  checkArgs: () => true,
-  run: (client, message) => run(client, message),
-} as Command<'semblance'>;
+export default class Latency extends Command {
+  public override name = 'latency';
+  public override description = 'Gets the latency of the bot.';
+  public override fullCategory = [Categories.semblance];
 
-const run = async (client: SapphireClient, message: Message) => {
-  const uptime = Date.now() - client.readyTimestamp,
-    duration = msToTime(uptime),
-    responseTime = Date.now() - message.createdTimestamp,
-    userAvatar = message.author.displayAvatarURL(),
-    embed = new Embed()
-      .setTitle('Latency')
-      .setColor(randomColor)
-      .setThumbnail(userAvatar)
-      .setDescription(
-        `**Bot Response Time:** \`${responseTime}ms\`\n **API**: \`${Math.round(
-          client.ws.ping,
-        )}ms\` \n **Bot Uptime:** \`${duration}\``,
-      )
-      .setFooter({ text: `Why do this to me ${message.author.tag}`, iconURL: userAvatar });
-  message.channel.send({ embeds: [embed] });
-};
+  public override sharedRun(builder: Command['SharedBuilder']) {
+    const user = 'user' in builder ? builder.user : builder.author;
+    const { client } = builder;
+    const uptime = Date.now() - client.readyTimestamp,
+      duration = msToTime(uptime),
+      responseTime = Date.now() - builder.createdTimestamp,
+      userAvatar = user.displayAvatarURL(),
+      embed = new Embed()
+        .setTitle('Latency')
+        .setColor(randomColor)
+        .setThumbnail(userAvatar)
+        .setDescription(
+          `**Bot Response Time:** \`${responseTime}ms\`\n **API**: \`${Math.round(
+            client.ws.ping,
+          )}ms\` \n **Bot Uptime:** \`${duration}\``,
+        )
+        .setFooter({ text: `Why do this to me ${user.tag}`, iconURL: userAvatar });
+    return { embeds: [embed] };
+  }
+
+  public async messageRun(message: Message) {
+    await message.reply(this.sharedRun(message));
+  }
+}

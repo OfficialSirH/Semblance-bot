@@ -40,7 +40,7 @@ export default class Help extends Command {
           value: [
             "Semblance's Slash Commands can be listed by typing `/`, which if none are visible,",
             "that's likely due to Semblance not being authorized on the server and a admin will need to click",
-            `[here](https://discord.com/oauth2/authorize?client_id=${builder.client.user.id}&permissions=8&scope=bot+applications.commands) to authorize Semblance.`,
+            `[here](https://discord.com/oauth2/authorize?client_id=${builder.client.user.id}&permissions=274878295040&scope=bot+applications.commands) to authorize Semblance.`,
           ].join(' '),
         },
       )
