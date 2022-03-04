@@ -1,6 +1,6 @@
 import { Embed } from 'discord.js';
 import type { Message, ChatInputCommandInteraction } from 'discord.js';
-import { Command } from '@sapphire/framework';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { Categories, randomColor } from '#src/constants';
 
 export default class Invite extends Command {
@@ -23,11 +23,18 @@ export default class Invite extends Command {
     return { embeds: [embed] };
   }
 
-  public async messageRun(message: Message) {
+  public override async messageRun(message: Message) {
     await message.reply(this.sharedRun(message));
   }
 
-  public async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     await interaction.reply(this.sharedRun(interaction));
+  }
+
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+    });
   }
 }

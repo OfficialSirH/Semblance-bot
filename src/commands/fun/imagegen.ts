@@ -14,7 +14,7 @@ export default class Imagegen extends Command {
   public override name = 'imagegen';
   public override description = 'Generates a random image of either a cat or dog.';
 
-  public async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const wantsCat = interaction.options.getSubcommand() === 'cat';
 
     await interaction.reply({
@@ -70,7 +70,7 @@ export default class Imagegen extends Command {
     });
   }
 
-  public registerApplicationCommands(registry: ApplicationCommandRegistry) {
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
     registry.registerChatInputCommand({
       name: this.name,
       description: this.description,

@@ -1,287 +1,225 @@
-import { communistSemblance } from '#config';
-import { ActionRow, ButtonComponent, Embed } from 'discord.js';
+import {
+  ActionRow,
+  ApplicationCommandOptionType,
+  ButtonComponent,
+  ButtonStyle,
+  type ChatInputCommandInteraction,
+  Embed,
+  type InteractionReplyOptions,
+  type ReplyMessageOptions,
+} from 'discord.js';
 import type { Message, GuildMember } from 'discord.js';
 import { rpsGames } from '#src/interaction-handlers/componentHandlers/rps';
-import { randomColor } from '#constants/index';
-import { countdownGIF, randomChoice } from '#constants/commands';
-import type { SapphireClient } from '@sapphire/framework';
+import { Categories, randomColor } from '#constants/index';
+import { choiceToOutcome, countdownGIF, randomChoice } from '#constants/commands';
 import { Command } from '@sapphire/framework';
+import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
+import type { RPSCommandArgs } from 'rps';
+import { defaultEmojiToUsableEmoji } from '#src/constants/components';
+import type { MessageOptions } from 'child_process';
 
-export default {
-  description: 'rock paper scissors',
-  category: 'fun',
-  aliases: ['rpsls'],
-  usage: {
-    'rock/paper/scissors': '',
-  },
-  permissionRequired: 0,
-  checkArgs: () => true,
-  run: (client, message, args) => run(client, message, args),
-} as Command<'fun'>;
+export default class Rps extends Command {
+  public override name = 'rps';
+  public override description = 'Play rock paper scissors';
+  public override fullCategory = [Categories.fun];
 
-const run = async (client: SapphireClient, message: Message, args: string[]) => {
-  if (args.length == 0)
-    return message.reply(
-      "rps stands for \"Rock, Paper, Scissors\", which you can play with me by choosing one of the **Five** (Don't forget Lizard and Spock) and I'll choose one as well and we'll see who wins, there's also secret bonuses. :D",
-    );
-  if (args[0] == 'multiplayer') return await rpsMultiplayer(message, args.slice(1, args.length).join(' '));
+  public async rpsSharedRun<T extends Command['SharedBuilder']>(
+    builder: T,
+    args: RPSCommandArgs,
+  ): Promise<string | (T extends Message ? MessageOptions | ReplyMessageOptions : InteractionReplyOptions)> {
+    const user = 'user' in builder ? builder.user : builder.author;
 
-  const randomFailure = Math.ceil(Math.random() * 100);
-  if (randomFailure == 100) return message.reply('***Error Ocurred... rebooting, try again in a moment.***');
-  const sembRandomness = Math.ceil(Math.random() * 5),
-    sembChoice = convertNumberToChoice(sembRandomness);
-  const playerChoice = args[0].toLowerCase();
-  if (playerChoice == 'senate') {
-    const embed = new Embed()
-      .setDescription('I *am* the senate, which means ***WE*** win this round!')
-      .setImage(communistSemblance.name);
-    return message.reply({ embeds: [embed], files: [communistSemblance] });
-  }
-  if (playerChoice == 'everything')
-    return message.reply(
-      `What the heck dude?! You don't need to use ***everything*** against ${sembChoice}!! You destroyed it after the *first* thing you threw at it, which was a nuclear bomb!!!`,
-    );
-  if (playerChoice == 'logic')
-    return message.reply(
-      `With the power of ***logic***, you ask ${sembChoice} how much wood could a woodchuck chuck wood if a woodchuck could chuck wood, which then the ${sembChoice} vanishes from thinking too hard, ${message.author.username} wins!`,
-    );
-  if (playerChoice == 'thanos')
-    return message.reply(
-      `Thanos wipes out half of ${sembChoice}, now the ${sembChoice} avengers will get revenge on Thanos in End Game.`,
-    );
-  if (playerChoice == 'rps')
-    return message.reply(
-      `With the power of ***rock, paper, and scissors*** you **obliterate** ${sembChoice}, ${message.author.username} wins!`,
-    );
-  if (playerChoice == 'sirh') return message.reply(`SirH deletes ${sembChoice}, ${message.author.username} wins!`);
-  if (playerChoice == 'hype')
-    return message.reply(`${sembChoice} gets disintegrated by the sight of Hype, ${message.author.username} wins!`);
-  if (
-    playerChoice == 'semblance' ||
-    playerChoice == 'nuke' ||
-    playerChoice == 'lunch' ||
-    playerChoice == 'computerlunch' ||
-    playerChoice == 'aditya' ||
-    playerChoice == 'tacocubes' ||
-    playerChoice == 'beyond' ||
-    playerChoice == 'trex' ||
-    playerChoice == 'devs' ||
-    playerChoice == 'singularity' ||
-    playerChoice == '0nrd' ||
-    playerChoice == '0nrd0r4' ||
-    playerChoice == 'Magneto'
-  )
-    return message.reply(`'${playerChoice}' beats ${sembChoice}, ${message.author.username} wins!`);
-  if (playerChoice == 'c2s' || playerChoice == 'celltosingularity')
-    return message.reply(
-      `The almight idle-game, Cell to Singularity, defeats ${sembChoice}. ${message.author.username} wins!`,
-    );
-  if (playerChoice == 'dyno' || playerChoice == 'mee6')
-    return message.reply(
-      `'${playerChoice}' instantly loses against ${sembChoice}, ${message.author.username} didn't stand a chance with their choice.`,
-    );
-  if (playerChoice == 'karen')
-    return message.reply(
-      `The ${playerChoice} loses against ${sembChoice} cause entitlement gets you no where in life.`,
-    );
-  if (playerChoice == 'ban')
-    return message.reply(
-      `Ban wipes your existance, ${sembChoice} is now deleted and ${message.author.username} automatically loses 🔨!`,
-    );
-  if (choiceToOutcome(playerChoice, sembChoice) === true) {
-    return message.reply(`${playerChoice} beats ${sembChoice}, ${message.author.username} wins!`);
-  } else if (choiceToOutcome(playerChoice, sembChoice) === false) {
-    return message.reply(`${sembChoice} beats ${playerChoice}, ${client.user.username} wins!`);
-  } else if (choiceToOutcome(playerChoice, sembChoice) == 'tie') {
-    return message.reply(`We've both chosen ${playerChoice}, so it's a tie!`);
-  }
-  message.reply(
-    `Due to your choice being invalid, I'mma just say that my choice, ${sembChoice}, beats whatever the heck ${playerChoice} is.`,
-  );
-};
+    if (rpsGames.has(user.id))
+      return {
+        content: 'You have an RPS game still running, please finish your previous game first',
+        ephemeral: true,
+      };
 
-function convertNumberToChoice(number: number) {
-  switch (number) {
-    case 1:
-      return 'rock';
-      break;
-    case 2:
-      return 'paper';
-      break;
-    case 3:
-      return 'scissors';
-      break;
-    case 4:
-      return 'lizard';
-      break;
-    default:
-      return 'spock';
-  }
-}
+    if (args.opponent?.guild?.id != builder.guild.id)
+      return {
+        content: "The opponent you choose isn't a part of this guild (or the command just wanted to have an issue).",
+        ephemeral: true,
+      };
 
-function choiceToOutcome(choice: string, sembChoice: string) {
-  if (choice == 'rock') {
-    if (sembChoice == 'paper') return false;
-    if (sembChoice == 'scissors') return true;
-    if (sembChoice == 'lizard') return true;
-    if (sembChoice == 'spock') return false;
-    if (sembChoice == 'rock') return 'tie';
-  }
-  if (choice == 'paper') {
-    if (sembChoice == 'paper') return 'tie';
-    if (sembChoice == 'scissors') return false;
-    if (sembChoice == 'rock') return true;
-    if (sembChoice == 'lizard') return false;
-    if (sembChoice == 'spock') return true;
-  }
-  if (choice == 'scissors') {
-    if (sembChoice == 'paper') return true;
-    if (sembChoice == 'scissors') return 'tie';
-    if (sembChoice == 'rock') return false;
-    if (sembChoice == 'lizard') return true;
-    if (sembChoice == 'spock') return false;
-  }
-  if (choice == 'lizard') {
-    if (sembChoice == 'paper') return true;
-    if (sembChoice == 'scissors') return false;
-    if (sembChoice == 'rock') return false;
-    if (sembChoice == 'lizard') return 'tie';
-    if (sembChoice == 'spock') return true;
-  }
-  if (choice == 'spock') {
-    if (sembChoice == 'paper') return false;
-    if (sembChoice == 'scissors') return true;
-    if (sembChoice == 'rock') return true;
-    if (sembChoice == 'lizard') return false;
-    if (sembChoice == 'spock') return 'tie';
-  }
-  return null;
-}
+    if (args.opponent?.id == user.id)
+      return {
+        content: "Are you this lonely that you chose to face yourself? I'm sorry, but that's not how this game works.",
+        ephemeral: true,
+      };
+    if (user.bot && user.id != builder.client.user.id)
+      return `You can't face a bot (except for me) so what are you doing trying to fight ${args.opponent?.user?.tag}?`;
 
-async function rpsMultiplayer(message: Message, chosenOpponent: string) {
-  const { client } = message;
-  if (rpsGames.has(message.author.id))
-    return message.reply('You have an RPS game still running, please finish your previous game first');
-  let opponent: GuildMember,
-    failed = false;
-  try {
-    if (chosenOpponent.length == 0) opponent = await message.guild.members.fetch(client.user.id);
-    else opponent = (await message.guild.members.fetch({ query: chosenOpponent })).first();
-  } catch (err) {
-    failed = true;
-  }
-  if (failed) return message.reply('The chosen user does not exist.');
-  if (opponent.id == message.author.id)
-    return message.reply(
-      "Are you this lonely that you chose to face yourself? I'm sorry, but that's not how this game works.",
-    );
-  if (opponent.user.bot && opponent.user.id != client.user.id)
-    return message.reply(
-      `You can't face a bot (except for me) so what are you doing trying to fight, ${opponent.user.tag}?`,
-    );
-  const components = [
-      new ActionRow().addComponents([
-        new ButtonComponent()
-          .setLabel('Rock')
-          .setCustomId(
-            JSON.stringify({
-              command: 'rps',
-              action: 'rock',
-              id: message.author.id,
-            }),
-          )
-          .setEmoji('🪨')
-          .setStyle(ButtonStyle.Secondary),
-        new ButtonComponent()
-          .setLabel('Paper')
-          .setCustomId(
-            JSON.stringify({
-              command: 'rps',
-              action: 'paper',
-              id: message.author.id,
-            }),
-          )
-          .setEmoji('📄')
-          .setStyle(ButtonStyle.Secondary),
-        new ButtonComponent()
-          .setLabel('Scissors')
-          .setCustomId(
-            JSON.stringify({
-              command: 'rps',
-              action: 'scissors',
-              id: message.author.id,
-            }),
-          )
-          .setEmoji('✂')
-          .setStyle(ButtonStyle.Secondary),
-        new ButtonComponent()
-          .setLabel('Lizard')
-          .setCustomId(
-            JSON.stringify({
-              command: 'rps',
-              action: 'lizard',
-              id: message.author.id,
-            }),
-          )
-          .setEmoji('🦎')
-          .setStyle(ButtonStyle.Secondary),
-        new ButtonComponent()
-          .setLabel('Spock')
-          .setCustomId(
-            JSON.stringify({
-              command: 'rps',
-              action: 'spock',
-              id: message.author.id,
-            }),
-          )
-          .setEmoji('👽')
-          .setStyle(ButtonStyle.Secondary),
-      ]),
-    ],
-    awaitingText = `Awaiting for **${message.author.tag}** and **${opponent.user.tag}**`,
-    semblanceChoice = randomChoice(),
-    embed = new Embed()
-      .setTitle(`${message.author.tag} has challenged ${opponent.user.tag} to Rock, Paper, Scissors, Lizard, Spock!`)
-      .setThumbnail(countdownGIF)
-      .setColor(randomColor)
-      .setDescription('Make your choice with one of the buttons below.');
+    const components = [
+        new ActionRow().addComponents(
+          new ButtonComponent()
+            .setLabel('Rock')
+            .setCustomId(
+              JSON.stringify({
+                command: 'rps',
+                action: 'rock',
+                id: user.id,
+              }),
+            )
+            .setEmoji(defaultEmojiToUsableEmoji('🪨'))
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonComponent()
+            .setLabel('Paper')
+            .setCustomId(
+              JSON.stringify({
+                command: 'rps',
+                action: 'paper',
+                id: user.id,
+              }),
+            )
+            .setEmoji(defaultEmojiToUsableEmoji('📄'))
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonComponent()
+            .setLabel('Scissors')
+            .setCustomId(
+              JSON.stringify({
+                command: 'rps',
+                action: 'scissors',
+                id: user.id,
+              }),
+            )
+            .setEmoji(defaultEmojiToUsableEmoji('✂'))
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonComponent()
+            .setLabel('Lizard')
+            .setCustomId(
+              JSON.stringify({
+                command: 'rps',
+                action: 'lizard',
+                id: user.id,
+              }),
+            )
+            .setEmoji(defaultEmojiToUsableEmoji('🦎'))
+            .setStyle(ButtonStyle.Secondary),
+          new ButtonComponent()
+            .setLabel('Spock')
+            .setCustomId(
+              JSON.stringify({
+                command: 'rps',
+                action: 'spock',
+                id: user.id,
+              }),
+            )
+            .setEmoji(defaultEmojiToUsableEmoji('👽'))
+            .setStyle(ButtonStyle.Secondary),
+        ),
+      ],
+      embed = new Embed()
+        .setTitle(`${user.tag} has challenged ${args.opponent?.user?.tag} to Rock, Paper, Scissors, Lizard, Spock!`)
+        .setThumbnail(countdownGIF)
+        .setColor(randomColor)
+        .setDescription('Make your choice with one of the buttons below.');
+    const awaitingText = args.choice
+        ? `Awaiting for **${args.opponent?.user?.tag}**`
+        : `Awaiting for **${user.tag}** and **${args.opponent?.user?.tag}**`,
+      semblanceChoice = randomChoice();
 
-  let rpsMessage: Message;
-  if (opponent.id == client.user.id)
-    rpsMessage = await message.reply({
-      content: `Awaiting for **${message.author.tag}**`,
-      embeds: [embed],
-      components,
+    let rpsMessage: Message;
+    const isInteractionRps = 'fetchReply' in builder;
+
+    if (args.opponent.id == builder.client.user.id) {
+      if (args.choice) {
+        let endTemplate = `${user.tag} chose ${args.choice} and ${builder.client.user.tag} chose ${semblanceChoice}, leading to `;
+        const playerVictory = choiceToOutcome(args.choice, semblanceChoice);
+
+        if (playerVictory == 'tie')
+          endTemplate = `${user.tag} and ${builder.client.user.tag} both chose ${args.choice} so it's a tie!`;
+        else if (playerVictory) endTemplate += `${user.tag}'s victory!`;
+        else endTemplate += `${builder.client.user.tag}'s victory!`;
+
+        return endTemplate;
+      } else
+        await builder
+          .reply({
+            content: `Awaiting for **${user.tag}**`,
+            embeds: [embed],
+            components,
+          })
+          .then(() => (!isInteractionRps ? (rpsMessage = builder) : null));
+    } else
+      await builder
+        .reply({
+          content: awaitingText,
+          embeds: [embed],
+          components,
+        })
+        .then(() => (!isInteractionRps ? (rpsMessage = builder) : null));
+
+    rpsMessage = isInteractionRps ? await builder.fetchReply() : rpsMessage;
+
+    rpsGames.set(user.id, {
+      player: {
+        id: user.id,
+        tag: user.tag,
+        choice: args.choice || '',
+      },
+      opponent: {
+        id: args.opponent?.id,
+        tag: args.opponent?.user?.tag,
+        choice: args.opponent.id == builder.client.user.id ? semblanceChoice : '',
+      },
+      timeout: setTimeout(async () => {
+        if (rpsGames.has(user.id))
+          await rpsMessage.edit({
+            content: null,
+            embeds: [
+              rpsMessage.embeds[0]
+                .setTitle('RPS game has timed out')
+                .setDescription('Someone took too long to make a choice. :('),
+            ],
+            components: [],
+          });
+        rpsGames.delete(user.id);
+      }, 60000).unref(),
     });
-  else
-    rpsMessage = await message.reply({
-      content: awaitingText,
-      embeds: [embed],
-      components,
-    });
+  }
 
-  rpsGames.set(message.author.id, {
-    player: {
-      id: message.author.id,
-      tag: message.author.tag,
-    },
-    opponent: {
-      id: opponent.id,
-      tag: opponent.user.tag,
-      choice: opponent.id == client.user.id ? semblanceChoice : '',
-    },
-    timeout: setTimeout(async () => {
-      if (rpsGames.has(message.author.id))
-        await rpsMessage.edit({
-          content: null,
-          embeds: [
-            rpsMessage.embeds[0]
-              .setTitle('RPS game has timed out')
-              .setDescription('Someone took too long to make a choice. :('),
-          ],
-          components: [],
-        });
-      rpsGames.delete(message.author.id);
-    }, 60000),
-  });
+  public override async messageRun(message: Message, args: Args) {
+    const choice = await args.pickResult('string');
+    const opponent = await args.pickResult('member');
+    const mappedArgs: RPSCommandArgs = {};
+
+    if (choice.success) mappedArgs['choice'] = choice.value;
+    if (opponent.success) mappedArgs['opponent'] = opponent.value;
+
+    await message.reply((await this.rpsSharedRun(message, mappedArgs)) as ReplyMessageOptions);
+  }
+
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+    const choice = interaction.options.getString('choice');
+    const opponent: GuildMember = await interaction.guild.members
+      .fetch(interaction.options.getUser('opponent').id)
+      .catch(() => null);
+    const mappedArgs: RPSCommandArgs = {};
+
+    if (choice) mappedArgs['choice'] = choice;
+    if (opponent) mappedArgs['opponent'] = opponent;
+
+    await interaction.reply(await this.rpsSharedRun(interaction, mappedArgs));
+  }
+
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+      options: [
+        {
+          name: 'choice',
+          description: 'The choice you want to use against your opponent',
+          type: ApplicationCommandOptionType.String,
+          required: false,
+        },
+        {
+          name: 'opponent',
+          description: 'Who you want to go against',
+          type: ApplicationCommandOptionType.User,
+          required: false,
+        },
+      ],
+    });
+  }
 }

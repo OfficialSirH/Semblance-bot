@@ -18,7 +18,7 @@ declare module '@sapphire/framework' {
      */
     sharedRun?<T extends Command['SharedBuilder']>(
       builder: T,
-    ): Awaitable<string | (T extends Message ? MessageOptions : InteractionReplyOptions)>;
+    ): Awaitable<string | (T extends Message ? MessageOptions | ReplyMessageOptions : InteractionReplyOptions)>;
   }
 
   interface Command {
@@ -36,6 +36,7 @@ import {
   type ChatInputCommandInteraction,
   InteractionReplyOptions,
   MessageOptions,
+  ReplyMessageOptions,
 } from 'discord.js';
 const client = new SapphireClient({
   allowedMentions: { parse: [] },
