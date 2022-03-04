@@ -13,12 +13,8 @@ export const handleBoosterReward = async (client: SapphireClient, boosterReward:
     .members.fetch(boosterReward.userId)
     .catch(() => null);
   if (!member ?? !member.roles.cache.has(boosterRole))
-    // return BoosterRewards.findOneAndDelete({ userId: boosterReward.userId });
     return client.db.boosterReward.delete({ where: { userId: boosterReward.userId } });
 
-  // const darwiniumCodes = (await Information.findOne({
-  //   infoType: 'boostercodes',
-  // })) as InformationFormat<'boostercodes'>;
   const darwiniumCodes = await client.db.boosterCodes.findMany({});
 
   if (darwiniumCodes.length == 0)
@@ -53,16 +49,15 @@ export const handleBoosterReward = async (client: SapphireClient, boosterReward:
     });
 
   if (darwiniumCodes.length != ogCodeLength)
-    //   await Information.findOneAndUpdate({ infoType: 'boostercodes' }, { $set: { list: darwiniumCodes.list } });
     await client.db.boosterCodes.delete({
       where: {
         id: darwiniumCode.id,
       },
     });
-  // await BoosterRewards.findOneAndDelete({ userId: boosterReward.userId });
+
   return client.db.boosterReward.update({
     where: { userId: boosterReward.userId },
-    data: { rewardingDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14) },
+    data: { rewardingDate: new Date(Date.now() + 1000 * 3600 * 24 * 28) },
   });
 };
 
@@ -72,19 +67,13 @@ export const boosterRole = '660930089990488099';
 
 // BoosterRewards - create automatic booster rewards for author of message
 export const createBoosterRewards = async (client: SapphireClient, message: Message) => {
-  // const boosterReward = await BoosterRewards.findOne({
-  //   userId: message.author.id,
-  // });
   const boosterReward = await client.db.boosterReward.findUnique({ where: { userId: message.author.id } });
   if (boosterReward) return;
-  // BoosterRewards.create({
-  //   userId: message.author.id,
-  //   rewardingDate: Date.now() + 1000 * 60 * 60 * 24 * 14,
-  // })
+
   const newBoosterReward = await client.db.boosterReward.create({
     data: {
       userId: message.author.id,
-      rewardingDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
+      rewardingDate: new Date(Date.now() + 1000 * 3600 * 24 * 28),
     },
   });
 
@@ -100,13 +89,6 @@ export const createBoosterRewards = async (client: SapphireClient, message: Mess
     }! You will receive your booster reward on ${formattedDate(newBoosterReward.rewardingDate.valueOf())}`,
   );
   scheduleJob(newBoosterReward.rewardingDate, () => handleBoosterReward(client, newBoosterReward));
-
-  // .catch(() =>
-  //   message.channel.send({
-  //     content: `<@${sirhId}> the automated rewarder failed at creating the scheduled reward for ${message.author.username}`,
-  //     allowedMentions: { users: [sirhId] },
-  //   }),
-  // );
 };
 
 // Reminder - handle finished reminder
@@ -115,56 +97,10 @@ export const handleReminder = async (client: SapphireClient, reminderData: Remin
     content: `<@${reminderData.userId}> Reminder: ${reminder.message}`,
     allowedMentions: { users: [reminderData.userId] },
   });
-  if (reminderData.reminders.length == 1)
-    // return Reminder.findOneAndDelete({ userId: reminderData.userId });
-    return client.db.reminder.delete({ where: { userId: reminderData.userId } });
+  if (reminderData.reminders.length == 1) return client.db.reminder.delete({ where: { userId: reminderData.userId } });
 
-  // return Reminder.findOneAndUpdate(
-  //   { userId: reminderData.userId },
-  //   { $set: { reminders: reminderData.reminders.filter(r => r.reminderId != reminder.reminderId) } },
-  // );
   return client.db.reminder.update({
     where: { userId: reminderData.userId },
     data: { reminders: reminderData.reminders.filter(r => r.reminderId != reminder.reminderId) as object[] },
   });
 };
-
-// // reminder functions - checkReminders
-// export const checkReminders = async (client: SapphireClient) => {
-//   const reminderList = await Reminder.find({}),
-//     now = Date.now();
-//   if (!reminderList) return;
-//   const userReminders = {} as Record<Snowflake, UserReminder[]>;
-
-//   reminderList
-//     .filter(user => user.reminders.some(reminder => now > reminder.time))
-//     .forEach(user => {
-//       userReminders[user.userId] = user.reminders.filter(reminder => now > reminder.time);
-//     });
-
-//   for (const [key, value] of Object.entries(userReminders) as [Snowflake, UserReminder[]][]) {
-//     (value as UserReminder[]).forEach(reminder => {
-//       (client.channels.cache.get(reminder.channelId) as TextChannel).send({
-//         content: `<@${key}> Reminder: ${reminder.message}`,
-//         allowedMentions: { users: [key] },
-//       });
-//     });
-//     if (reminderList.find(user => user.userId == key).reminders.length == (value as UserReminder[]).length)
-//       await Reminder.findOneAndDelete({ userId: key as Snowflake });
-//     else
-//       await Reminder.findOneAndUpdate(
-//         { userId: key as Snowflake },
-//         {
-//           $set: {
-//             reminders: reminderList
-//               .find(user => user.userId == key)
-//               .reminders.filter(reminder => now < reminder.time)
-//               .map((reminder, index) => {
-//                 reminder.reminderId = index + 1;
-//                 return reminder;
-//               }),
-//           },
-//         },
-//       );
-//   }
-// };
