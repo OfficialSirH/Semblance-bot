@@ -5,10 +5,8 @@ import type { WebhookPayload } from '@top-gg/sdk';
 import type { DiscordsVote } from '#lib/interfaces/discords';
 import type { DBLVote } from '#lib/interfaces/discordBotList';
 import type { DLSVote } from '#lib/interfaces/discordListSpace';
-import type { BoatsVote } from '#lib/interfaces/discordBoats';
 
 export default function (app: FastifyInstance, client: SapphireClient) {
-  const discordBoats = new VoteHandler(client, 'discord.boats');
   const discordBotList = new VoteHandler(client, 'discordbotlist.com');
   const discordListSpace = new VoteHandler(client, 'discordlist.space');
   const discords = new VoteHandler(client, 'discords.com');
@@ -60,18 +58,6 @@ export default function (app: FastifyInstance, client: SapphireClient) {
       done();
     },
     handler: async (request, reply) => discordListSpace.handle(request, reply),
-  });
-
-  app.route<{
-    Body: BoatsVote;
-  }>({
-    method: 'POST',
-    url: '/dboatswebhook',
-    preHandler: (request, reply, done) => {
-      middleware(request, reply);
-      done();
-    },
-    handler: async (request, reply) => discordBoats.handle(request, reply),
   });
 }
 
