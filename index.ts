@@ -69,17 +69,6 @@ client.db = new prisma.PrismaClient();
 import fastify from 'fastify';
 const app = fastify();
 
-// Listen to client events
-import * as fs from 'fs/promises';
-import type { EventHandler } from '#lib/interfaces/Semblance';
-const eventFiles = (await fs.readdir('./dist/src/events/client')).filter(file => file.endsWith('.js'));
-
-for (const file of eventFiles) {
-  const event = (await import(`./src/events/client/${file}`)).default as EventHandler;
-  if (event.once) client.once(event.name, (...args) => event.exec(...args, client));
-  else client.on(event.name, (...args) => event.exec(...args, client));
-}
-
 // for (const file of twitterEventFiles) {
 // 	const event = (await import(`./src/events/twitter/${file}`)).default as TwitterJSEventHandler;
 // 	if (event.once) twClient.once(event.name, (...args) => event.exec(...args, { client, twClient }));

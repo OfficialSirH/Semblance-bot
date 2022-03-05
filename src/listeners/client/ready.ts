@@ -5,11 +5,11 @@ import { prefix } from '#constants/index';
 import { handleBoosterReward, handleReminder } from '#constants/models';
 import type { Reminder } from '@prisma/client';
 
-export default class Ready extends Listener {
+export default class Ready extends Listener<typeof Events.ClientReady> {
   public constructor(context: Listener.Context, options: Listener.Options) {
     super(context, {
       ...options,
-      name: Events.ClientReady,
+      event: Events.ClientReady,
       once: true,
     });
   }
