@@ -136,11 +136,6 @@ export const customIdRegex =
   /(?<!.){command:'[a-z]{3,20}',action:'([a-z]|\d){1,20}(-([a-z]|\d){1,20})?',id:'\d{17,20}'(,page:\d{1,3})?}(?!.)/;
 export const properCustomIdRegex =
   /(?<!.){"command":"[a-z]{3,20}","action":"([a-z]|\d){1,20}(-([a-z]|\d){1,20})?","id":"\d{17,20}"(,"page":\d{1,3})?}(?!.)/;
-export const timeInputRegex =
-  /(?:(?<months>\d{1,2})mo )?(?:(?<weeks>\d{1,2})w )?(?:(?<days>\d{1,2})d )?(?:(?<hours>\d{1,2})h )?(?:(?<minutes>\d{1,2})m)?/;
-export const timeInputAutocompleteAssistantRegex =
-  /(?:\d{1,2}(?<previousInputType>mo|w|d|h|m) )?(?<numInput>\d{1,2})(?![\s\S])/;
-export const trelloLinkRegex = /https:\/\/trello\.com\/c\/([0-9]|[A-Z]){8}/i;
 export const onlyUnique = (value: unknown, index: number, self: unknown[]) => self.indexOf(value) == index;
 export const parseArgs = (_arguments: string) =>
   (_arguments.match(/"[^"]+"|[^ ]+/g) ?? []).map(argument =>
@@ -148,15 +143,6 @@ export const parseArgs = (_arguments: string) =>
   );
 export const lockMessage = (user: User) => `👮 👮 ***CHANNEL IS LOCKED BY ${user}*** 👮 👮`;
 export const formattedDate = (ms: number) => `<t:${Math.floor(ms / 1000)}:F>`;
-export const timeInputToMs = (months: number, weeks: number, days: number, hours: number, minutes: number) => {
-  let ms = 0;
-  ms += months * 30 * 24 * 60 * 60 * 1000;
-  ms += weeks * 7 * 24 * 60 * 60 * 1000;
-  ms += days * 24 * 60 * 60 * 1000;
-  ms += hours * 60 * 60 * 1000;
-  ms += minutes * 60 * 1000;
-  return ms;
-};
 export const msToTime = (ms: number) => {
   const days = Math.floor(ms / 86400000); // 24*60*60*1000
   const daysms = ms % 86400000; // 24*60*60*1000
@@ -345,4 +331,4 @@ export const disableAllComponents = (interaction: MessageComponentInteraction) =
 };
 // Command related functions and constants
 export { gameTransferPages, correctReportList, bugChannels, serversPerPage, guildBookPage } from '#constants/commands';
-export { bigToName, nameToScNo, checkValue } from '#constants/largeNumberConversion';
+export { bigToName } from '#constants/largeNumberConversion';
