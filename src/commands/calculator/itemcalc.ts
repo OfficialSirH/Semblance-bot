@@ -1,54 +1,204 @@
-import { bigToName, checkValue, randomColor } from '#constants/index';
-import { Embed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Command } from '@sapphire/framework';
+import { bigToName, Categories, randomColor } from '#constants/index';
+import {
+  ApplicationCommandOptionType,
+  type AutocompleteInteraction,
+  type ChatInputCommandInteraction,
+  Embed,
+} from 'discord.js';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { itemList } from '#itemList';
-// TODO: (reminder, this is the most recent command from the slash commands folder that was converted to a sapphire command)
-// TODO: also, this command should be merged with itemcalcrev, make the rev (reverse) command as a subcommand for itemcalc
 
-export default {
-  description: 'calculate prices for items in-game',
-  category: 'calculator',
-  permissionRequired: 0,
-  checkArgs: args => args.length >= 2,
-  run: (_client, message, args) => run(message, args),
-} as Command<'calculator'>;
+export default class ItemCalc extends Command {
+  public override name = 'itemcalc';
+  public override description = 'calculate prices for items in-game';
+  public override fullCategory = [Categories.calculator];
 
-const run = async (message: Message, args: string[]) => {
-  let itemInput: string, level: number | string, currentLevel: number | string;
-  [itemInput, level, currentLevel] = args;
-  if (!currentLevel || parseInt(currentLevel) < 0) currentLevel = 0;
-  itemInput = itemInput.toLowerCase();
-  if (!checkValue(level as string)) return message.reply('Your input for level is invalid');
-  if (!checkValue(currentLevel as string)) return message.reply('Your input for current level is invalid');
-  level = Number.parseInt(level as string);
-  currentLevel = Number.parseInt(currentLevel as string);
-  let itemCost: number, itemCostType: string;
-  for (const key of Object.keys(itemList))
-    if (itemList[key][itemInput]) {
-      itemCost = itemList[key][itemInput].price;
-      itemCostType = key;
+  public async itemCalc(
+    interaction: ChatInputCommandInteraction<'cached'>,
+    options: {
+      item: string;
+      levelGains: number;
+      currentLevel: number;
+    },
+  ): Promise<void> {
+    if (!options.currentLevel) options.currentLevel = 0;
+
+    if (!options.item)
+      return interaction.reply({
+        content: "You forgot input for 'item'.",
+        ephemeral: true,
+      });
+
+    if (!options.levelGains)
+      return interaction.reply({
+        content: "You forgot input for 'level'.",
+        ephemeral: true,
+      });
+
+    let itemCost: number, itemCostType: string;
+    for (const key of Object.keys(itemList))
+      if (itemList[key][options.item]) {
+        itemCost = itemList[key][options.item].price;
+        itemCostType = key;
+      }
+
+    if (!itemCost)
+      return interaction.reply({
+        content: "Your input for 'item' was invalid.",
+        ephemeral: true,
+      });
+    let resultingPrice = 0;
+
+    for (let i = options.currentLevel; i < options.levelGains + options.currentLevel; i++) {
+      resultingPrice += itemCost * Math.pow(1.149999976158142, i);
+      if (!isFinite(resultingPrice)) break;
     }
-  if (!itemCost) return message.reply("Your input for 'item' was invalid.");
-  let resultingPrice = 0;
-  for (let i = currentLevel as number; i < (level as number) + (currentLevel as number); i++) {
-    resultingPrice += itemCost * Math.pow(1.149999976158142, i);
-    if (!isFinite(resultingPrice)) break;
+    const user = interaction.member.user,
+      embed = new Embed()
+        .setTitle('Item Calculator Results')
+        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+        .setColor(randomColor)
+        .setDescription(
+          [
+            `Chosen item: ${options.item}`,
+            `Current item level: ${options.currentLevel}`,
+            `Item level goal: ${options.levelGains + options.currentLevel}`,
+            `Resulting Price: ${bigToName(resultingPrice)} ${itemCostType}`,
+          ].join('\n'),
+        );
+    return interaction.reply({ embeds: [embed] });
   }
-  // Math.floor(Math.log(resultingPrice)) =  itemCost * (level*Math.log(1.15));
-  // (Math.floor(Math.log(resultingPrice) / itemCost)) = level*Math.log(1.15);
-  // (Math.floor(Math.log(resultingPrice) / itemCost) / Math.log(1.15)) = level;
-  const embed = new Embed()
-    .setTitle('Item Calculator Results')
-    .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
-    .setColor(randomColor)
-    .setDescription(
-      [
-        `Chosen item: ${itemInput}`,
-        `Current item level: ${currentLevel}`,
-        `Item level goal: ${(level as number) + (currentLevel as number)}`,
-        `Resulting Price: ${bigToName(resultingPrice)} ${itemCostType}`,
-      ].join('\n'),
+
+  public async itemCalcRev(
+    interaction: ChatInputCommandInteraction<'cached'>,
+    options: {
+      item: string;
+      currentAmount: string;
+      currentLevel: number;
+    },
+  ): Promise<void> {
+    if (!options.currentLevel) options.currentLevel = 0;
+
+    const currentAmount = parseFloat(options.currentAmount);
+
+    let itemCost: number, itemCostType: string;
+    for (const key of Object.keys(itemList))
+      if (itemList[key][options.item]) {
+        itemCost = itemList[key][options.item].price;
+        itemCostType = key;
+      }
+
+    if (!itemCost)
+      return interaction.reply({
+        content: "Your input for 'item' was invalid.",
+        ephemeral: true,
+      });
+    const num3 = currentAmount * 0.1499999761581421;
+    const num5 = itemCost * Math.pow(1.149999976158142, options.currentLevel);
+    const level = Math.floor(Math.log(num3 / num5 + 1) / Math.log(1.149999976158142));
+    const user = interaction.member.user,
+      embed = new Embed()
+        .setTitle('Item Calculator Results')
+        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+        .setColor(randomColor)
+        .setDescription(
+          [
+            `Chosen item: ${options.item}`,
+            `Current item level: ${options.currentLevel}`,
+            `currency input: ${bigToName(currentAmount)} ${itemCostType}`,
+            `Resulting level: ${level}`,
+          ].join('\n'),
+        );
+    return interaction.reply({ embeds: [embed] });
+  }
+
+  public override chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+    const chosenCalculator = interaction.options.getSubcommand();
+    if (chosenCalculator === 'required_resources') {
+      const item = interaction.options.getString('item');
+      const levelGains = interaction.options.getNumber('level_gains');
+      const currentLevel = interaction.options.getNumber('current_level');
+      return this.itemCalc(interaction, { item, levelGains, currentLevel });
+    }
+    if (chosenCalculator === 'obtainable_levels') {
+      const item = interaction.options.getString('item');
+      const currentAmount = interaction.options.getString('current_amount');
+      const currentLevel = interaction.options.getNumber('current_level');
+      return this.itemCalcRev(interaction, { item, currentAmount, currentLevel });
+    }
+  }
+
+  public override async autocompleteRun(interaction: AutocompleteInteraction<'cached'>) {
+    const inputtedItem = interaction.options.getFocused() as string;
+
+    const fullList = Object.keys(itemList).reduce<Array<string>>(
+      (acc, currency) => acc.concat(Object.keys(itemList[currency])),
+      [],
     );
-  message.reply({ embeds: [embed] });
-};
+
+    const filteredList = fullList
+      .filter(item => item.startsWith(inputtedItem))
+      .slice(0, 25)
+      .map(item => ({ name: item, value: item }));
+
+    if (filteredList.length === 0) return;
+    await interaction.respond(filteredList);
+  }
+
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+      options: [
+        {
+          name: 'required_resources',
+          description: 'Calculate the required resources to level up an item a specified amount',
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: 'item',
+              description: 'The item to calculate the required resources for',
+              type: ApplicationCommandOptionType.String,
+              autocomplete: true,
+            },
+            {
+              name: 'level_gains',
+              description: 'The amount of levels you wish to gain',
+              type: ApplicationCommandOptionType.Number,
+            },
+            {
+              name: 'current_level',
+              description: 'The current level of the item',
+              type: ApplicationCommandOptionType.Number,
+              required: false,
+            },
+          ],
+        },
+        {
+          name: 'obtainable_levels',
+          description: 'Calculate the number of levels an item can obtain with specified resources',
+          type: ApplicationCommandOptionType.Subcommand,
+          options: [
+            {
+              name: 'item',
+              description: 'The item to calculate the required resources for',
+              type: ApplicationCommandOptionType.String,
+              autocomplete: true,
+            },
+            {
+              name: 'current_amount',
+              description: "The amount of currency you've got available for the item",
+              type: ApplicationCommandOptionType.String,
+            },
+            {
+              name: 'current_level',
+              description: 'The current level of the item',
+              type: ApplicationCommandOptionType.Number,
+              required: false,
+            },
+          ],
+        },
+      ],
+    });
+  }
+}
