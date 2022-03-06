@@ -32,21 +32,26 @@ export const disableComponentsByLabel = (
   );
 
 /**
- *  The most commonly used parser for the interaction handler. A parser that only allows the command caller to interact with its components.
+ *  The most commonly used parser for the interaction handler. A parser that can be set to only allow the command caller to interact with its components.
  * @param {InteractionHandler} handler The interaction handler that the custom_id is being parsed for.
  * @param {MessageComponentInteraction} interaction The interaction that is being parsed.
+ * @param allowOthers Whether or not the interaction handler should allow other users to interact with its components.
  */
-export const componentInteractionSimpleParser = async (
+export const componentInteractionDefaultParser = async (
   handler: InteractionHandler,
   interaction: MessageComponentInteraction,
+  allowOthers = false,
 ) => {
   const data: CustomIdData = JSON.parse(interaction.customId);
+  if (typeof data.action != 'string' || typeof data.command == 'string' || typeof data.id != 'string')
+    return handler.none();
+
   if (data.command != handler.name) return handler.none();
-  if (data.id != interaction.user.id) {
+  if (!allowOthers && data.id != interaction.user.id) {
     await interaction.reply({ content: 'You did not call this command', ephemeral: true });
     return handler.none();
   }
-  return handler.some(data.action);
+  return handler.some({ action: data.action, id: data.id });
 };
 
 export const backButton = (command: string, userId: string, whereToGo: string) =>
