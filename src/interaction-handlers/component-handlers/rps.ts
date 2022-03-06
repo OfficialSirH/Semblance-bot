@@ -1,8 +1,25 @@
 import type { RPSGame } from '#lib/interfaces/rps';
-import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { Message, Snowflake } from 'discord.js';
 import { Collection, Embed } from 'discord.js';
 import { choiceToOutcome, countdownGIF } from '#constants/commands';
+
+export default class HANDLER_NAME extends InteractionHandler {
+  public constructor(context: PieceContext, options: InteractionHandler.Options) {
+    super(context, {
+      ...options,
+      name: 'HANDLER_NAME',
+      interactionHandlerType: InteractionHandlerTypes.Button,
+    });
+  }
+
+  public override parse(interaction: ButtonInteraction) {
+    return componentInteractionDefaultParser(this, interaction);
+  }
+
+  // public override async run(interaction: ButtonInteraction, data: Omit<CustomIdData, 'command'>) {
+
+  // }
+}
 
 export const rpsGames: Collection<Snowflake, RPSGame> = new Collection();
 export default {

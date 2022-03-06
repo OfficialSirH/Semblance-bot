@@ -1,6 +1,26 @@
-import type { ComponentHandler } from '#lib/interfaces/Semblance';
-import { filterAction } from '#src/constants/components';
+import { componentInteractionDefaultParser, filterAction } from '#src/constants/components';
+import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { ActionRow, ButtonComponent, ButtonStyle, Embed } from 'discord.js';
+import type { ButtonInteraction } from 'discord.js';
+import type { CustomIdData } from 'Semblance';
+
+export default class HANDLER_NAME extends InteractionHandler {
+  public constructor(context: PieceContext, options: InteractionHandler.Options) {
+    super(context, {
+      ...options,
+      name: 'HANDLER_NAME',
+      interactionHandlerType: InteractionHandlerTypes.Button,
+    });
+  }
+
+  public override parse(interaction: ButtonInteraction) {
+    return componentInteractionDefaultParser(this, interaction);
+  }
+
+  // public override async run(interaction: ButtonInteraction, data: Omit<CustomIdData, 'command'>) {
+
+  // }
+}
 
 export default {
   buttonHandle: async (interaction, { action, id }) => {

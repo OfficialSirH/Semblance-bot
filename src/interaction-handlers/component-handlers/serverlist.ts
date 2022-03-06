@@ -1,7 +1,25 @@
-import type { CustomIdData, ComponentHandler } from '#lib/interfaces/Semblance';
+import type { CustomIdData } from '#lib/interfaces/Semblance';
 import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 import { guildBookPage, randomColor } from '#constants/index';
 import { serversPerPage } from '#constants/commands';
+
+export default class HANDLER_NAME extends InteractionHandler {
+  public constructor(context: PieceContext, options: InteractionHandler.Options) {
+    super(context, {
+      ...options,
+      name: 'HANDLER_NAME',
+      interactionHandlerType: InteractionHandlerTypes.Button,
+    });
+  }
+
+  public override parse(interaction: ButtonInteraction) {
+    return componentInteractionDefaultParser(this, interaction);
+  }
+
+  // public override async run(interaction: ButtonInteraction, data: Omit<CustomIdData, 'command'>) {
+
+  // }
+}
 
 export default {
   buttonHandle: async (interaction, { action, page }: ServerlistButtonData) => {

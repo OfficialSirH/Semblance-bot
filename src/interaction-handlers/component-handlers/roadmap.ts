@@ -1,9 +1,36 @@
 import { currentLogo, earlyBeyondTesters, roadMap } from '#config';
 import { randomColor } from '#src/constants';
-import { backButton, componentInteractionSimpleParser } from '#src/constants/components';
+import { backButton, componentInteractionDefaultParser } from '#src/constants/components';
 import { ActionRow, ButtonComponent, time, TimestampStyles } from '@discordjs/builders';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { type ButtonInteraction, Embed, ButtonStyle } from 'discord.js';
+
+export default class Roadmap extends InteractionHandler {
+  constructor(context: PieceContext) {
+    super(context, { interactionHandlerType: InteractionHandlerTypes.Button });
+  }
+
+  public override async run(interaction: ButtonInteraction, action: string) {
+    switch (action) {
+      case 'early-beyond':
+        await interaction.reply(earlyBeyond(interaction));
+        break;
+      case 'testers':
+        await interaction.reply(testerCredits(interaction));
+        break;
+      case 'roadmap':
+        await interaction.reply(roadmap(interaction));
+        break;
+      default:
+        await interaction.reply({ content: 'An improper action was received.', ephemeral: true });
+        break;
+    }
+  }
+
+  public override async parse(interaction: ButtonInteraction) {
+    return componentInteractionDefaultParser(this, interaction);
+  }
+}
 
 function earlyBeyond(interaction: ButtonInteraction) {
   const embed = new Embed()
@@ -80,31 +107,4 @@ function roadmap(interaction: ButtonInteraction) {
     ),
   ];
   return { embeds: [embed], files: [currentLogo, roadMap], components };
-}
-
-export default class Roadmap extends InteractionHandler {
-  constructor(context: PieceContext) {
-    super(context, { interactionHandlerType: InteractionHandlerTypes.Button });
-  }
-
-  public override async run(interaction: ButtonInteraction, action: string) {
-    switch (action) {
-      case 'early-beyond':
-        await interaction.reply(earlyBeyond(interaction));
-        break;
-      case 'testers':
-        await interaction.reply(testerCredits(interaction));
-        break;
-      case 'roadmap':
-        await interaction.reply(roadmap(interaction));
-        break;
-      default:
-        await interaction.reply({ content: 'An improper action was received.', ephemeral: true });
-        break;
-    }
-  }
-
-  public override async parse(interaction: ButtonInteraction) {
-    return componentInteractionSimpleParser(this, interaction);
-  }
 }

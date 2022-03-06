@@ -1,6 +1,23 @@
-import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { TextBasedChannel } from 'discord.js';
 import { ActionRow, Embed } from 'discord.js';
+
+export default class HANDLER_NAME extends InteractionHandler {
+  public constructor(context: PieceContext, options: InteractionHandler.Options) {
+    super(context, {
+      ...options,
+      name: 'HANDLER_NAME',
+      interactionHandlerType: InteractionHandlerTypes.Button,
+    });
+  }
+
+  public override parse(interaction: ButtonInteraction) {
+    return componentInteractionDefaultParser(this, interaction);
+  }
+
+  // public override async run(interaction: ButtonInteraction, data: Omit<CustomIdData, 'command'>) {
+
+  // }
+}
 
 export default {
   allowOthers: true,

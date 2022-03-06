@@ -1,5 +1,4 @@
-import type { ComponentHandler } from '#lib/interfaces/Semblance';
-import { ButtonStyle, Message, MessageComponentInteraction } from 'discord.js';
+import { ButtonStyle, type Message, type MessageComponentInteraction } from 'discord.js';
 import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 // import { Game } from '#models/Game';
 import { prefix, randomColor } from '#constants/index';
@@ -8,6 +7,24 @@ import { currentPrice } from '#constants/commands';
 import { LeaderboardUtilities } from '#src/structures/LeaderboardUtilities';
 import type { Game } from '@prisma/client';
 import { defaultEmojiToUsableEmoji, disableComponentsByLabel, filterAction } from '#src/constants/components';
+
+export default class HANDLER_NAME extends InteractionHandler {
+  public constructor(context: PieceContext, options: InteractionHandler.Options) {
+    super(context, {
+      ...options,
+      name: 'HANDLER_NAME',
+      interactionHandlerType: InteractionHandlerTypes.Button,
+    });
+  }
+
+  public override parse(interaction: ButtonInteraction) {
+    return componentInteractionDefaultParser(this, interaction);
+  }
+
+  // public override async run(interaction: ButtonInteraction, data: Omit<CustomIdData, 'command'>) {
+
+  // }
+}
 
 export default {
   buttonHandle: async (interaction, { action, id }, { client }) => {

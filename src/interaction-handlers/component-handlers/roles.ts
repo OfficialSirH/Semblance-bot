@@ -1,9 +1,26 @@
-import type { ComponentHandler } from '#lib/interfaces/Semblance';
 import type { Message, GuildMemberRoleManager } from 'discord.js';
 import { Collection, ActionRow, ButtonComponent } from 'discord.js';
 import { c2sRoles } from '#constants/index';
 import { c2sGuildId, currentLogo } from '#config';
 const cooldown: Collection<string, number> = new Collection();
+
+export default class HANDLER_NAME extends InteractionHandler {
+  public constructor(context: PieceContext, options: InteractionHandler.Options) {
+    super(context, {
+      ...options,
+      name: 'HANDLER_NAME',
+      interactionHandlerType: InteractionHandlerTypes.Button,
+    });
+  }
+
+  public override parse(interaction: ButtonInteraction) {
+    return componentInteractionDefaultParser(this, interaction);
+  }
+
+  // public override async run(interaction: ButtonInteraction, data: Omit<CustomIdData, 'command'>) {
+
+  // }
+}
 
 export default {
   buttonHandle: async (interaction, { action, id }) => {
