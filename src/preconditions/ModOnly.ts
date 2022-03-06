@@ -1,15 +1,16 @@
+import { getPermissionLevel } from '#src/constants';
 import { Precondition } from '@sapphire/framework';
 import type { ChatInputCommandInteraction, Message } from 'discord.js';
 
-export class OwnerOnly extends Precondition {
+export class ModOnly extends Precondition {
   public override messageRun(message: Message) {
-    return ['506458497718812674', '780995336293711875'].includes(message.author.id)
+    return getPermissionLevel(message.member) > 0
       ? this.ok()
       : this.error({ message: 'Only the bot owner can use this command!' });
   }
 
   public override chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
-    return ['506458497718812674', '780995336293711875'].includes(interaction.user.id)
+    return getPermissionLevel(interaction.member) > 0
       ? this.ok()
       : this.error({ message: 'Only the bot owner can use this command!' });
   }
@@ -17,6 +18,6 @@ export class OwnerOnly extends Precondition {
 
 declare module '@sapphire/framework' {
   interface Preconditions {
-    OwnerOnly: never;
+    ModOnly: never;
   }
 }

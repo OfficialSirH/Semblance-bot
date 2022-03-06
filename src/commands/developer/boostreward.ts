@@ -4,9 +4,15 @@ import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { c2sGuildId } from '#config';
 
 export default class BoostReward extends Command {
-  public override name = 'boostreward';
-  public override description = 'interact with booster rewards for users';
-  public override fullCategory = [Categories.developer];
+  public constructor(context: Command.Context, options: Command.Options) {
+    super(context, {
+      ...options,
+      name: 'boostreward',
+      description: 'interact with booster rewards for users',
+      fullCategory: [Categories.developer],
+      preconditions: ['OwnerOnly'],
+    });
+  }
 
   public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const subcommand = interaction.options.getSubcommand();
@@ -44,6 +50,7 @@ export default class BoostReward extends Command {
       {
         name: this.name,
         description: this.description,
+        defaultPermission: false,
         options: [
           {
             name: 'add',

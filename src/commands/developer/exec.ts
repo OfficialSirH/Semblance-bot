@@ -31,6 +31,7 @@ export default class Exec extends Command {
       {
         name: this.name,
         description: this.description,
+        defaultPermission: false,
         options: [
           {
             name: 'input',
