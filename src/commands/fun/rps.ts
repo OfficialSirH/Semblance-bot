@@ -9,7 +9,7 @@ import {
   type ReplyMessageOptions,
 } from 'discord.js';
 import type { Message, GuildMember } from 'discord.js';
-import { rpsGames } from '#src/interaction-handlers/componentHandlers/rps';
+import { rpsGames } from '#src/interaction-handlers/component-handlers/rps';
 import { Categories, randomColor } from '#constants/index';
 import { choiceToOutcome, countdownGIF, randomChoice } from '#constants/commands';
 import { Command } from '@sapphire/framework';
