@@ -1,5 +1,5 @@
 ﻿import type { Category, Subcategory } from '#lib/interfaces/Semblance';
-import type { GuildMember, ActionRow, MessageComponentInteraction, Snowflake, User } from 'discord.js';
+import type { GuildMember, ActionRow, MessageComponentInteraction, Snowflake, User, Guild } from 'discord.js';
 import { PermissionFlagsBits } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 
@@ -328,6 +328,12 @@ export const disableAllComponents = (interaction: MessageComponentInteraction) =
   return interaction.channel.messages.edit(interaction.message.id, {
     components: interaction.message.components as ActionRow[],
   });
+};
+export const isUserInGuild = (user: User, guild: Guild) => {
+  return guild.members
+    .fetch(user.id)
+    .then(() => true)
+    .catch(() => false);
 };
 // Command related functions and constants
 export { gameTransferPages, correctReportList, bugChannels, serversPerPage, guildBookPage } from '#constants/commands';
