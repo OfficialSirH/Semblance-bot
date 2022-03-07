@@ -1,4 +1,4 @@
-import type { ChatInputCommandInteraction, TextChannel } from 'discord.js';
+import { ApplicationCommandOptionType, ChatInputCommandInteraction, TextChannel } from 'discord.js';
 import { Embed, MessageAttachment } from 'discord.js';
 import { bugChannels } from '#constants/commands';
 import { c2sGuildId, sirhGuildId } from '#config';
@@ -43,8 +43,38 @@ export default class Bugreport extends Command {
       {
         name: this.name,
         description: this.description,
-        // TODO: implement the options for the bugreport command
-        options: [{}, {}, {}, {}, {}, {}],
+        options: [
+          {
+            name: 'report',
+            description: 'Report a bug',
+            type: ApplicationCommandOptionType.Subcommand,
+          },
+          {
+            name: 'attach',
+            description: 'Attach a file to the bug report',
+            type: ApplicationCommandOptionType.Subcommand,
+          },
+          {
+            name: 'reproduce',
+            description: "Add to someone's bug report that you can reproduce it",
+            type: ApplicationCommandOptionType.Subcommand,
+          },
+          {
+            name: 'list',
+            description: 'List all of your bug reports',
+            type: ApplicationCommandOptionType.Subcommand,
+          },
+          {
+            name: 'accept',
+            description: 'Accept a bug report',
+            type: ApplicationCommandOptionType.Subcommand,
+          },
+          {
+            name: 'deny',
+            description: 'Deny a bug report',
+            type: ApplicationCommandOptionType.Subcommand,
+          },
+        ],
       },
       {
         guildIds: [c2sGuildId],
