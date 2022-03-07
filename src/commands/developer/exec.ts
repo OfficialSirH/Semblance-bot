@@ -21,7 +21,7 @@ export default class Exec extends Command {
     exec(interaction.options.getString('input'), (error, stdout, stderr) => {
       if (error) embeds[0].setDescription(`\`\`\`js\n${error}\`\`\``);
       if (stderr) embeds[0].setDescription(`\`\`\`js\n${stderr}\`\`\``);
-      else embeds[0].setDescription(`\`\`\`js\n${stdout}\`\`\``);
+      else embeds[0].setDescription(`\`\`\`ansi\n${stdout}\`\`\``);
       return interaction.editReply({ embeds });
     });
   }
