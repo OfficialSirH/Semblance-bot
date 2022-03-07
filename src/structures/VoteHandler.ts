@@ -5,13 +5,12 @@ import { Embed, User } from 'discord.js';
 import { sirhGuildId } from '#config';
 import { randomColor } from '#constants/index';
 import type { FastifyReply } from 'fastify';
-import type { BoatsRequest } from 'discordBoats';
 import type { DBLRequest } from 'discordBotList';
 import type { DLSRequest } from 'discordListSpace';
 import type { DiscordsRequest } from 'discords';
 import type { TGGRequest } from 'topGG';
 
-type AvailableRequests = BoatsRequest | DBLRequest | DLSRequest | DiscordsRequest | TGGRequest;
+type AvailableRequests = DBLRequest | DLSRequest | DiscordsRequest | TGGRequest;
 
 export class VoteHandler {
   readonly client: SapphireClient;

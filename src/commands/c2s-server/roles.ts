@@ -3,6 +3,7 @@ import type { Message } from 'discord.js';
 import { currentLogo, c2sGuildId } from '#config';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { c2sRoles, c2sRolesInformation, Categories } from '#constants/index';
+import { buildCustomId } from '#src/constants/components';
 
 export default class Roles extends Command {
   public override name = 'roles';
@@ -58,8 +59,8 @@ export default class Roles extends Command {
           new ButtonComponent()
             .setDisabled(builder.guild.id != c2sGuildId)
             .setCustomId(
-              JSON.stringify({
-                command: 'roles',
+              buildCustomId({
+                command: this.name,
                 action: hasServerEvents ? 'remove-events' : 'add-events',
                 id: member.user.id,
               }),

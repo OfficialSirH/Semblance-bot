@@ -3,6 +3,7 @@ import type { Message } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { currentPrice } from '#src/constants/commands';
+import { buildCustomId } from '#src/constants/components';
 
 export default class Game extends Command {
   public override name = 'game';
@@ -63,7 +64,7 @@ export default class Game extends Command {
       new ActionRow().addComponents(
         new ButtonComponent()
           .setCustomId(
-            JSON.stringify({
+            buildCustomId({
               command: 'game',
               action: 'about',
               id: user.id,
@@ -74,7 +75,7 @@ export default class Game extends Command {
           .setLabel('About'),
         new ButtonComponent()
           .setCustomId(
-            JSON.stringify({
+            buildCustomId({
               command: 'game',
               action: 'collect',
               id: user.id,
@@ -86,7 +87,7 @@ export default class Game extends Command {
           .setLabel('Collect'),
         new ButtonComponent()
           .setCustomId(
-            JSON.stringify({
+            buildCustomId({
               command: 'game',
               action: 'upgrade',
               id: user.id,
@@ -98,7 +99,7 @@ export default class Game extends Command {
           .setLabel('Upgrade'),
         new ButtonComponent()
           .setCustomId(
-            JSON.stringify({
+            buildCustomId({
               command: 'game',
               action: 'leaderboard',
               id: user.id,
@@ -109,7 +110,7 @@ export default class Game extends Command {
           .setLabel('Leaderboard'),
         new ButtonComponent()
           .setCustomId(
-            JSON.stringify({
+            buildCustomId({
               command: 'game',
               action: 'vote',
               id: user.id,

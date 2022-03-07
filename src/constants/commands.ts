@@ -119,8 +119,7 @@ export const randomChoice = () => ['rock', 'paper', 'scissors', 'lizard', 'spock
 
 export const serversPerPage = 50;
 
-export function guildBookPage(client: Client, chosenPage: string | number) {
-  chosenPage = Number.parseInt(chosenPage as string);
+export function guildBookPage(client: Client, chosenPage: number) {
   const guildBook = {},
     numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
 

@@ -27,7 +27,7 @@ export default class GameTransfer extends Command {
         .setStyle(ButtonStyle.Primary),
       new ButtonComponent()
         .setCustomId(
-          JSON.stringify({
+          buildCustomId({
             command: 'gametransfer',
             action: 'right',
             id: user.id,

@@ -1,6 +1,7 @@
 import { type Message, Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 import { Categories, randomColor, Subcategories, subcategoryList } from '#constants/index';
 import { Command } from '@sapphire/framework';
+import { buildCustomId } from '#src/constants/components';
 
 export default class C2sHelp extends Command {
   public override name = 'c2shelp';
@@ -18,7 +19,7 @@ export default class C2sHelp extends Command {
       new ActionRow().addComponents(
         new ButtonComponent()
           .setCustomId(
-            JSON.stringify({
+            buildCustomId({
               command: 'help',
               action: 'metabits',
               id: user.id,
@@ -28,7 +29,7 @@ export default class C2sHelp extends Command {
           .setStyle(ButtonStyle.Primary),
         new ButtonComponent()
           .setCustomId(
-            JSON.stringify({
+            buildCustomId({
               command: 'help',
               action: 'mesoguide',
               id: user.id,

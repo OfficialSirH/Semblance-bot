@@ -9,6 +9,7 @@ import {
 import type { sizeType } from '#lib/interfaces/catAndDogAPI';
 import { fetchCatOrDog } from '#constants/commands';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { buildCustomId } from '#src/constants/components';
 
 export default class Imagegen extends Command {
   public override name = 'imagegen';
@@ -55,7 +56,7 @@ export default class Imagegen extends Command {
           .setEmoji({ name: '🔄' })
           .setStyle(ButtonStyle.Secondary)
           .setCustomId(
-            JSON.stringify({
+            buildCustomId({
               command: 'imagegen',
               action: `refresh-${wantsCat ? 'cat' : 'dog'}`,
               id: interaction.user.id,

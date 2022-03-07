@@ -1,39 +1,64 @@
-import type { Message, GuildMember, User, Snowflake } from 'discord.js';
+import {
+  type Message,
+  GuildMember,
+  type User,
+  type ChatInputCommandInteraction,
+  ApplicationCommandOptionType,
+} from 'discord.js';
 import { Embed } from 'discord.js';
-import { randomColor } from '#constants/index';
-import type { SapphireClient } from '@sapphire/framework';
+import { Categories, randomColor } from '#constants/index';
+import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
 import { Command } from '@sapphire/framework';
 
-export default {
-  description: 'Get info on a specified user or yourself by default.',
-  category: 'utility',
-  permissionRequired: 0,
-  checkArgs: () => true,
-  run: (client, message, args) => run(client, message, args),
-} as Command<'utility'>;
+export default class Profile extends Command {
+  public override name = 'profile';
+  public override description = 'Get the profile of a user.';
+  public override fullCategory = [Categories.utility];
 
-const run = async (client: SapphireClient, message: Message, args: string[]) => {
-  if (args.length == 0) return guildProfileEmbed(message, message.member);
+  public override async messageRun(message: Message, args: Args) {
+    const userResolve = await args.pickResult('user');
+    let user: User, member: GuildMember;
+    if (!userResolve.success) member = message.member;
+    else {
+      user = userResolve.value;
+      member =
+        user instanceof GuildMember
+          ? user
+          : await message.guild.members.fetch({ user: user.id, cache: false }).catch(() => null);
+    }
 
-  const userRegexed = /(?<![:\d])(?<id>\d{17,19})(?!\d)/.exec(args[0]);
-  if (!userRegexed) return message.reply("You've provided invalid input");
-  const userId = userRegexed.groups.id as Snowflake;
-  let member: GuildMember;
-  try {
-    member = await message.guild.members.fetch({ user: userId, cache: false });
-  } catch {}
-  if (member) return guildProfileEmbed(message, member);
-
-  try {
-    const user = await client.users.fetch(userId, { cache: false });
-    if (user) return userProfileEmbed(message, user);
-    message.reply("Sorry, that user couldn't be found in Discord at all");
-  } catch (e) {
-    console.log(e);
+    if (member) return message.reply(guildProfileEmbed(message, member));
+    return message.reply(userProfileEmbed(message, user));
   }
-};
 
-async function guildProfileEmbed(message: Message, member: GuildMember) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+    const user = interaction.options.getUser('user');
+    let member: GuildMember;
+    if (!user) member = interaction.member;
+    else
+      member =
+        user instanceof GuildMember ? user : await interaction.guild.members.fetch({ user: user.id, cache: false });
+
+    if (member) return interaction.reply(guildProfileEmbed(interaction, member));
+    return interaction.reply(userProfileEmbed(interaction, user));
+  }
+
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+      options: [
+        {
+          name: 'user',
+          description: 'The user to get the profile of.',
+          type: ApplicationCommandOptionType.User,
+        },
+      ],
+    });
+  }
+}
+
+function guildProfileEmbed(builder: Command['SharedBuilder'], member: GuildMember) {
   let accountCreated = `${member.user.createdAt}`;
   accountCreated = `${accountCreated.substring(0, 16)}(${daysAgo(member.user.createdAt)})`;
   let accountJoined = `${member.joinedAt}`;
@@ -43,7 +68,7 @@ async function guildProfileEmbed(message: Message, member: GuildMember) {
     .setDescription(`User data for ${member}:`)
     .setColor(randomColor)
     .setThumbnail(member.user.displayAvatarURL())
-    .addFields([
+    .addFields(
       { name: 'Username', value: member.user.tag, inline: true },
       { name: 'Discriminator', value: member.user.discriminator, inline: true },
       { name: 'Bot', value: member.user.bot.toString(), inline: true },
@@ -55,25 +80,26 @@ async function guildProfileEmbed(message: Message, member: GuildMember) {
       },
       { name: 'Created', value: accountCreated, inline: true },
       { name: 'Joined', value: accountJoined, inline: true },
-    ]);
-  message.channel.send({ embeds: [embed] });
+    );
+  return { embeds: [embed] };
 }
 
-async function userProfileEmbed(message: Message, user: User) {
-  const accountCreated = `${message.author.createdAt.toString().substring(0, 16)}(${daysAgo(user.createdTimestamp)})`;
+function userProfileEmbed(builder: Command['SharedBuilder'], user: User) {
+  const cmdCaller = 'user' in builder ? builder.user : builder.author;
+  const accountCreated = `${cmdCaller.createdAt.toString().substring(0, 16)}(${daysAgo(user.createdTimestamp)})`;
   const embed = new Embed()
     .setTitle('User Profile')
     .setDescription(`User data for ${user}:`)
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
-    .addFields([
+    .addFields(
       { name: 'Username', value: user.tag, inline: true },
       { name: 'Discriminator', value: user.discriminator, inline: true },
       { name: 'Bot', value: user.bot.toString(), inline: true },
       { name: 'User Id', value: user.id, inline: true },
       { name: 'Created', value: accountCreated, inline: true },
-    ]);
-  message.channel.send({ embeds: [embed] });
+    );
+  return { embeds: [embed] };
 }
 
 function daysAgo(date: Date | number) {

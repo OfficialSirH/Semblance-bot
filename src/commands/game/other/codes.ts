@@ -3,6 +3,7 @@ import type { Message } from 'discord.js';
 import { Categories, randomColor, Subcategories } from '#constants/index';
 import { currentLogo } from '#config';
 import { Command } from '@sapphire/framework';
+import { buildCustomId } from '#src/constants/components';
 
 export default class Codes extends Command {
   public override name = 'codes';
@@ -22,7 +23,7 @@ export default class Codes extends Command {
     const component = new ActionRow().addComponents(
       new ButtonComponent()
         .setCustomId(
-          JSON.stringify({
+          buildCustomId({
             command: 'codes',
             action: 'expired',
             id: user.id,

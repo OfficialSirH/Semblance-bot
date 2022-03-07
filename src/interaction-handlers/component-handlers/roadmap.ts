@@ -1,17 +1,21 @@
 import { currentLogo, earlyBeyondTesters, roadMap } from '#config';
 import { randomColor } from '#src/constants';
-import { backButton, componentInteractionDefaultParser } from '#src/constants/components';
+import { backButton, buildCustomId, componentInteractionDefaultParser } from '#src/constants/components';
 import { ActionRow, ButtonComponent, time, TimestampStyles } from '@discordjs/builders';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { type ButtonInteraction, Embed, ButtonStyle } from 'discord.js';
+import type { ParsedCustomIdData } from 'Semblance';
 
 export default class Roadmap extends InteractionHandler {
   constructor(context: PieceContext) {
     super(context, { interactionHandlerType: InteractionHandlerTypes.Button });
   }
 
-  public override async run(interaction: ButtonInteraction, action: string) {
-    switch (action) {
+  public override async run(
+    interaction: ButtonInteraction,
+    data: ParsedCustomIdData<'early-beyond' | 'testers' | 'roadmap'>,
+  ) {
+    switch (data.action) {
       case 'early-beyond':
         await interaction.reply(earlyBeyond(interaction));
         break;
@@ -91,6 +95,7 @@ function roadmap(interaction: ButtonInteraction) {
           buildCustomId({
             command: 'roadmap',
             action: 'testers',
+            id: interaction.user.id,
           }),
         )
         .setStyle(ButtonStyle.Primary)
@@ -100,6 +105,7 @@ function roadmap(interaction: ButtonInteraction) {
           buildCustomId({
             command: 'roadmap',
             action: 'early-beyond',
+            id: interaction.user.id,
           }),
         )
         .setStyle(ButtonStyle.Primary)

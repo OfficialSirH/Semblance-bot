@@ -1,19 +1,19 @@
-import { Embed } from 'discord.js';
-import { randomColor } from '#constants/index';
+import { Embed, type Message } from 'discord.js';
+import { Categories, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
-export default {
-  description: "Provides link to Semblance's Privacy Policy",
-  category: 'semblance',
-  aliases: ['pp', 'privacy', 'policy'],
-  permissionRequired: 0,
-  checkArgs: () => true,
-  run: (_client, message) => {
+export default class PrivacyPolicy extends Command {
+  public override name = 'privacypolicy';
+  public override description = 'Get the privacy policy for Semblance.';
+  public override fullCategory = [Categories.semblance];
+
+  public override async messageRun(message: Message) {
     const embed = new Embed()
       .setTitle('Privacy Policy')
       .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
       .setColor(randomColor)
       .setURL('https://github.com/OfficialSirH/Semblance-bot/blob/master/Privacy%20Policy.md');
-    message.channel.send({ embeds: [embed] });
-  },
-} as Command<'semblance'>;
+
+    await message.reply({ embeds: [embed] });
+  }
+}

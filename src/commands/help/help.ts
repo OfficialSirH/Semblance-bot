@@ -12,6 +12,7 @@ import {
 import type { Message } from 'discord.js';
 import { Categories, prefix, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { buildCustomId } from '#src/constants/components';
 
 export default class Help extends Command {
   public override name = 'help';
@@ -51,7 +52,7 @@ export default class Help extends Command {
       new ActionRow().addComponents(
         new ButtonComponent()
           .setCustomId(
-            JSON.stringify({
+            buildCustomId({
               command: 'help',
               action: 'c2shelp',
               id: user.id,
@@ -61,7 +62,7 @@ export default class Help extends Command {
           .setStyle(ButtonStyle.Primary),
         new ButtonComponent()
           .setCustomId(
-            JSON.stringify({
+            buildCustomId({
               command: 'help',
               action: 'calchelp',
               id: user.id,
@@ -71,7 +72,7 @@ export default class Help extends Command {
           .setStyle(ButtonStyle.Primary),
         new ButtonComponent()
           .setCustomId(
-            JSON.stringify({
+            buildCustomId({
               command: 'help',
               action: 'mischelp',
               id: user.id,
@@ -81,7 +82,7 @@ export default class Help extends Command {
           .setStyle(ButtonStyle.Primary),
         new ButtonComponent()
           .setCustomId(
-            JSON.stringify({
+            buildCustomId({
               command: 'help',
               action: 'close',
               id: user.id,
@@ -117,7 +118,7 @@ export default class Help extends Command {
           acc[index] = new ActionRow().addComponents(
             new SelectMenuComponent()
               .setCustomId(
-                JSON.stringify({
+                buildCustomId({
                   command: 'help',
                   action: `query-${index}`,
                   id: interaction.user.id,

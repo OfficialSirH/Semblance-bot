@@ -15,7 +15,7 @@ import { choiceToOutcome, countdownGIF, randomChoice } from '#constants/commands
 import { Command } from '@sapphire/framework';
 import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
 import type { RPSCommandArgs } from 'rps';
-import { defaultEmojiToUsableEmoji } from '#src/constants/components';
+import { buildCustomId, defaultEmojiToUsableEmoji } from '#src/constants/components';
 import type { MessageOptions } from 'child_process';
 
 export default class Rps extends Command {
@@ -23,7 +23,7 @@ export default class Rps extends Command {
   public override description = 'Play rock paper scissors';
   public override fullCategory = [Categories.fun];
 
-  public async rpsSharedRun<T extends Command['SharedBuilder']>(
+  public async rpsSharedRun<T extends Message | ChatInputCommandInteraction<'cached'>>(
     builder: T,
     args: RPSCommandArgs,
   ): Promise<string | (T extends Message ? MessageOptions | ReplyMessageOptions : InteractionReplyOptions)> {
@@ -54,7 +54,7 @@ export default class Rps extends Command {
           new ButtonComponent()
             .setLabel('Rock')
             .setCustomId(
-              JSON.stringify({
+              buildCustomId({
                 command: 'rps',
                 action: 'rock',
                 id: user.id,
@@ -65,7 +65,7 @@ export default class Rps extends Command {
           new ButtonComponent()
             .setLabel('Paper')
             .setCustomId(
-              JSON.stringify({
+              buildCustomId({
                 command: 'rps',
                 action: 'paper',
                 id: user.id,
@@ -76,7 +76,7 @@ export default class Rps extends Command {
           new ButtonComponent()
             .setLabel('Scissors')
             .setCustomId(
-              JSON.stringify({
+              buildCustomId({
                 command: 'rps',
                 action: 'scissors',
                 id: user.id,
@@ -87,7 +87,7 @@ export default class Rps extends Command {
           new ButtonComponent()
             .setLabel('Lizard')
             .setCustomId(
-              JSON.stringify({
+              buildCustomId({
                 command: 'rps',
                 action: 'lizard',
                 id: user.id,
@@ -98,7 +98,7 @@ export default class Rps extends Command {
           new ButtonComponent()
             .setLabel('Spock')
             .setCustomId(
-              JSON.stringify({
+              buildCustomId({
                 command: 'rps',
                 action: 'spock',
                 id: user.id,
