@@ -1,16 +1,15 @@
 /** Converts large numbers to named values */
-export const bigToName = (number: string | number) => {
-  number = Number.parseFloat(number as string);
-  if (Number.isNaN(number)) return 0;
+export const bigToName = (number: number) => {
+  if (Number.isNaN(number) ?? number == 0) return 0;
   if (number == Infinity) return Infinity;
-  if (number == 0) return 0;
-  number = number.toExponential(3);
-  const exponential = /(?<base>\d{1,10}(\.\d{1,10})?)e\+?(?<digits>-?\d{1,3})/i.exec(number);
-  let {
-    // eslint-disable-next-line prefer-const
-    groups: { base, digits },
-  } = exponential as unknown as exponential;
-  number = parseInt(number);
+
+  const parsedNumber = number.toExponential(3);
+  const exponential = /(?<base>\d{1}(\.\d{3})?)e\+?(?<digits>-?\d{1,3})/i.exec(parsedNumber);
+
+  const { groups } = exponential as unknown as exponential;
+  const { base } = groups;
+  let { digits } = groups;
+  number = base;
   if (digits < 6) return Number(`${base}e${digits}`);
   if (digits % 3 != 0 && digits < 66) (number *= Math.pow(10, digits % 3)), (digits -= digits % 3);
   if (digits >= 6 && digits < 9) return `${number} Million(E${digits})`;
@@ -35,24 +34,11 @@ export const bigToName = (number: string | number) => {
   if (digits >= 63 && digits < 66) return `${number} Vigintillion(E${digits})`;
   return `${number}E${digits}`;
 };
-/** Converts named values to Scientific Notation values */
-export const nameToScNo = (input: string) => {
-  const checkedInput =
-    /((?<value>\d{1,10})(?<name>\w{1,17}))|(?<scientific>\d{1,10}(\.\d{1,10})?(e\+?-?\d{1,3})?)/i.exec(input);
-  let {
-    // eslint-disable-next-line prefer-const
-    groups: { scientific, value, name },
-  } = checkedInput as unknown as valueGrouping;
-  if (scientific) return Number.parseFloat(scientific);
-  value = namedValueSearch(name.toLowerCase());
-  return value ? value : Number.parseFloat(input);
-};
-/** Checks if the given input is a valid named number or scientific notation */
-export const checkValue = (input: string) =>
-  !!/((\d{1,10})(\w{1,17}))|(\d{1,10}(\.\d{1,10})?(e\+?-?\d{1,3})?)/i.exec(input);
+
 export const namedValueSearch = function (name: string) {
   for (const namedValue of namedValues) if (namedValue.name.includes(name)) return namedValue.value;
 };
+
 export const namedValues = [
   {
     name: ['million', 'm'],
@@ -140,13 +126,5 @@ interface exponential {
   groups: {
     base: number;
     digits: number;
-  };
-}
-
-interface valueGrouping {
-  groups: {
-    scientific: string;
-    name: string;
-    value: number;
   };
 }

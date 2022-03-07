@@ -1,4 +1,4 @@
-import type { Snowflake } from 'discord.js';
+import type { GuildMember, Snowflake } from 'discord.js';
 
 export interface RPSGame {
   player: Player;
@@ -10,4 +10,8 @@ export interface Player {
   choice?: string;
   id: Snowflake;
   tag: string;
+}
+export interface RPSCommandArgs {
+  choice?: string;
+  opponent?: GuildMember;
 }

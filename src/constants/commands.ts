@@ -1,15 +1,5 @@
-import {
-  Client,
-  Guild,
-  GuildChannel,
-  Message,
-  MessageEmbed,
-  PartialMessage,
-  Snowflake,
-  TextChannel,
-  User,
-} from 'discord.js';
-import type { Semblance } from '#structures/Semblance';
+import { Client, Guild, GuildChannel, Message, Embed, PartialMessage, Snowflake, TextChannel, User } from 'discord.js';
+import type { SapphireClient } from '@sapphire/framework';
 import { clamp } from '#lib/utils/math';
 import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndDogAPI';
 import { fetch } from '#lib/utils/fetch';
@@ -30,7 +20,7 @@ export const gameTransferPages = [
 // bug functions and constants - correctReportList and CHANNELS
 
 export const correctReportList = async function (
-  client: Semblance,
+  client: SapphireClient,
   message: Message | PartialMessage,
   messageId: Snowflake,
 ) {
@@ -49,7 +39,10 @@ export const correctReportList = async function (
     await msg.edit({
       embeds: [
         msg.embeds[0]
-          .setAuthor(`${author.name.slice(0, author.name.indexOf('\n'))}\nBug Id: #${report.bugId - 1}`, author.iconURL)
+          .setAuthor({
+            name: `${author.name.slice(0, author.name.indexOf('\n'))}\nBug Id: #${report.bugId - 1}`,
+            iconURL: author.iconURL,
+          })
           .setFooter({ text: `#${report.bugId - 1}` }),
       ],
     });
@@ -126,8 +119,7 @@ export const randomChoice = () => ['rock', 'paper', 'scissors', 'lizard', 'spock
 
 export const serversPerPage = 50;
 
-export function guildBookPage(client: Client, chosenPage: string | number) {
-  chosenPage = Number.parseInt(chosenPage as string);
+export function guildBookPage(client: Client, chosenPage: number) {
   const guildBook = {},
     numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
 
@@ -180,7 +172,7 @@ export const fetchDeepL = async (query_params: DeepLParams) => {
 
 // game - currentPrice
 // TODO: figure some way to not need checkedLevel and have the cost automatically adjusted based on the level
-export async function currentPrice(client: Semblance, userData: Game) {
+export async function currentPrice(client: SapphireClient, userData: Game) {
   if (userData.level == userData.checkedLevel) {
     userData = await client.db.game.update({
       where: {
@@ -219,16 +211,16 @@ export const messageLinkJump = async (input: string, user: User, currentGuild: G
   const attachmentLink = attachmentLinkRegex.exec(msg.content);
   if (attachmentLink != null) msg.content = msg.content.replace(attachmentLink[0], '');
 
-  const embed = new MessageEmbed()
-    .setAuthor(msg.author.username, msg.author.displayAvatarURL())
+  const embed = new Embed()
+    .setAuthor({ name: msg.author.username, iconURL: msg.author.displayAvatarURL() })
     .setThumbnail(user.displayAvatarURL())
     .setDescription(msg.content)
-    .addField('Jump', `[Go to message!](${msg.url})`)
+    .addField({ name: 'Jump', value: `[Go to message!](${msg.url})` })
     .setFooter({ text: `#${(msg.channel as GuildChannel).name} quoted by ${user.tag}` })
     .setTimestamp(msg.createdTimestamp);
   if (msg.embeds[0] && attachmentLink == null) {
     const title = msg.embeds[0].title ? msg.embeds[0].title : 'no title';
-    embed.addField(`*Contains embed titled: ${title}*`, '\u200b');
+    embed.addField({ name: `*Contains embed titled: ${title}*`, value: '\u200b' });
     if (msg.embeds[0].image) embed.setImage(msg.embeds[0].image.url);
   }
 

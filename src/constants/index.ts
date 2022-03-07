@@ -1,18 +1,9 @@
-﻿import type { Subcategory } from '#lib/interfaces/Semblance';
-import type {
-  ColorResolvable,
-  GuildMember,
-  MessageActionRow,
-  MessageButton,
-  MessageComponentInteraction,
-  Snowflake,
-  User,
-} from 'discord.js';
-import { Permissions } from 'discord.js';
-import type { Semblance } from '../structures';
+﻿import type { Category, Subcategory } from '#lib/interfaces/Semblance';
+import type { GuildMember, ActionRow, MessageComponentInteraction, Snowflake, User, Guild } from 'discord.js';
+import { PermissionFlagsBits } from 'discord.js';
+import type { SapphireClient } from '@sapphire/framework';
 
 export const prefix = 's!';
-//export const prefix = '@Semblance ';
 
 export const getAvatar = (user: User) => {
   const avatarType = user.avatar.startsWith('a_') ? `${user.avatar}.gif` : `${user.avatar}.png`;
@@ -71,15 +62,11 @@ const partition = (list: [Snowflake, number][], left: number, right: number) => 
   }
   return i;
 };
-export const filterAction = (components: MessageActionRow[], action: string) =>
-  components.map(c => {
-    c.components = (c.components as MessageButton[]).filter(b => eval(`(${b.customId})`).action != action);
-    return c;
-  });
-export const subcategoryList = (client: Semblance, category: string, subcategory: Subcategory) =>
-  Object.keys(client.commands)
-    .filter(key => client.commands[key].category == category && client.commands[key].subcategory == subcategory)
-    .map(key => `**\`${prefix}${key}\`**`)
+export const subcategoryList = (client: SapphireClient, category: Category, subcategory: Subcategory) =>
+  client.stores
+    .get('commands')
+    .filter(c => c.category == category && c.subCategory == subcategory)
+    .map(c => `**\`${prefix}${c.name}\`**`)
     .join(', ');
 export const emojis = {
   tick: '✅',
@@ -149,11 +136,6 @@ export const customIdRegex =
   /(?<!.){command:'[a-z]{3,20}',action:'([a-z]|\d){1,20}(-([a-z]|\d){1,20})?',id:'\d{17,20}'(,page:\d{1,3})?}(?!.)/;
 export const properCustomIdRegex =
   /(?<!.){"command":"[a-z]{3,20}","action":"([a-z]|\d){1,20}(-([a-z]|\d){1,20})?","id":"\d{17,20}"(,"page":\d{1,3})?}(?!.)/;
-export const timeInputRegex =
-  /(?:(?<months>\d{1,2})mo )?(?:(?<weeks>\d{1,2})w )?(?:(?<days>\d{1,2})d )?(?:(?<hours>\d{1,2})h )?(?:(?<minutes>\d{1,2})m)?/;
-export const timeInputAutocompleteAssistantRegex =
-  /(?:\d{1,2}(?<previousInputType>mo|w|d|h|m) )?(?<numInput>\d{1,2})(?![\s\S])/;
-export const trelloLinkRegex = /https:\/\/trello\.com\/c\/([0-9]|[A-Z]){8}/i;
 export const onlyUnique = (value: unknown, index: number, self: unknown[]) => self.indexOf(value) == index;
 export const parseArgs = (_arguments: string) =>
   (_arguments.match(/"[^"]+"|[^ ]+/g) ?? []).map(argument =>
@@ -161,15 +143,6 @@ export const parseArgs = (_arguments: string) =>
   );
 export const lockMessage = (user: User) => `👮 👮 ***CHANNEL IS LOCKED BY ${user}*** 👮 👮`;
 export const formattedDate = (ms: number) => `<t:${Math.floor(ms / 1000)}:F>`;
-export const timeInputToMs = (months: number, weeks: number, days: number, hours: number, minutes: number) => {
-  let ms = 0;
-  ms += months * 30 * 24 * 60 * 60 * 1000;
-  ms += weeks * 7 * 24 * 60 * 60 * 1000;
-  ms += days * 24 * 60 * 60 * 1000;
-  ms += hours * 60 * 60 * 1000;
-  ms += minutes * 60 * 1000;
-  return ms;
-};
 export const msToTime = (ms: number) => {
   const days = Math.floor(ms / 86400000); // 24*60*60*1000
   const daysms = ms % 86400000; // 24*60*60*1000
@@ -187,14 +160,32 @@ export const msToTime = (ms: number) => {
 
   return str;
 };
+export const Categories: Record<Category, Category> = {
+  fun: 'fun',
+  game: 'game',
+  utility: 'utility',
+  calculator: 'calculator',
+  c2sServer: 'c2sServer',
+  developer: 'developer',
+  dm: 'dm',
+  secret: 'secret',
+  help: 'help',
+  semblance: 'semblance',
+};
+export const Subcategories: Record<Subcategory, Subcategory> = {
+  main: 'main',
+  mesozoic: 'mesozoic',
+  beyond: 'beyond',
+  other: 'other',
+};
 export const roles = {
-  admin: Permissions.FLAGS.ADMINISTRATOR,
-  exec: Permissions.FLAGS.MANAGE_GUILD,
-  srmod: Permissions.FLAGS.MENTION_EVERYONE,
-  mod: Permissions.FLAGS.MANAGE_CHANNELS,
-  jrmod: Permissions.FLAGS.MANAGE_ROLES,
-  helper: Permissions.FLAGS.MANAGE_MESSAGES,
-  duty: Permissions.FLAGS.MUTE_MEMBERS,
+  admin: PermissionFlagsBits.Administrator,
+  exec: PermissionFlagsBits.ManageGuild,
+  srmod: PermissionFlagsBits.MentionEveryone,
+  mod: PermissionFlagsBits.ManageChannels,
+  jrmod: PermissionFlagsBits.ManageRoles,
+  helper: PermissionFlagsBits.ManageMessages,
+  duty: PermissionFlagsBits.MuteMembers,
 };
 export const c2sRolesInformation: Record<keyof typeof c2sRoles, object> = {
   server: {
@@ -325,19 +316,25 @@ class RandomColor {
     const redString = red.toString(16),
       greenString = green.toString(16),
       blueString = blue.toString(16);
-    return ('#' + redString + greenString + blueString) as ColorResolvable;
+    return parseInt(redString + greenString + blueString, 16);
   }
 }
 export const randomColor = RandomColor.randomColor;
 
 export const disableAllComponents = (interaction: MessageComponentInteraction) => {
-  (interaction.message.components as MessageActionRow[]).forEach(component =>
+  (interaction.message.components as ActionRow[]).forEach(component =>
     component.components.forEach(comp => comp.setDisabled(true)),
   );
   return interaction.channel.messages.edit(interaction.message.id, {
-    components: interaction.message.components as MessageActionRow[],
+    components: interaction.message.components as ActionRow[],
   });
+};
+export const isUserInGuild = (user: User, guild: Guild) => {
+  return guild.members
+    .fetch(user.id)
+    .then(() => true)
+    .catch(() => false);
 };
 // Command related functions and constants
 export { gameTransferPages, correctReportList, bugChannels, serversPerPage, guildBookPage } from '#constants/commands';
-export { bigToName, nameToScNo, checkValue } from '#constants/largeNumberConversion';
+export { bigToName } from '#constants/largeNumberConversion';
