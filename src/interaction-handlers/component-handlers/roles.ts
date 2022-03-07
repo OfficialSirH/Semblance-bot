@@ -2,7 +2,7 @@ import { type ButtonInteraction, ButtonStyle } from 'discord.js';
 import { Collection, ActionRow, ButtonComponent } from 'discord.js';
 import { c2sRoles } from '#constants/index';
 import { c2sGuildId, currentLogo } from '#config';
-import { componentInteractionDefaultParser, buildCustomId, defaultEmojiToUsableEmoji } from '#src/constants/components';
+import { componentInteractionDefaultParser, buildCustomId, defaultEmojiToUsableEmoji } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 import type { ParsedCustomIdData } from 'Semblance';
 const cooldown: Collection<string, number> = new Collection();

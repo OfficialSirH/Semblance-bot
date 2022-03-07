@@ -1,5 +1,5 @@
 import { c2sGuildId } from '#config';
-import { Categories } from '#src/constants';
+import { Categories } from '#constants/index';
 import { ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { exec } from 'child_process';
 import { ApplicationCommandOptionType, ChatInputCommandInteraction, Embed } from 'discord.js';

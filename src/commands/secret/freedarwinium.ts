@@ -1,4 +1,4 @@
-import { Categories } from '#src/constants';
+import { Categories } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import { Embed, Message } from 'discord.js';
 

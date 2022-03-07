@@ -3,7 +3,7 @@ import { currentLogo } from '#config';
 import { Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Command } from '@sapphire/framework';
-import { buildCustomId } from '#src/constants/components';
+import { buildCustomId } from '#constants/components';
 
 export default class GameTransfer extends Command {
   public override name = 'gametransfer';

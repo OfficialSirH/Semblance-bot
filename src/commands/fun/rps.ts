@@ -9,13 +9,13 @@ import {
   type ReplyMessageOptions,
 } from 'discord.js';
 import type { Message, GuildMember } from 'discord.js';
-import { rpsGames } from '#src/interaction-handlers/component-handlers/rps';
+import { rpsGames } from '#interaction-handlers/component-handlers/rps';
 import { Categories, randomColor } from '#constants/index';
 import { choiceToOutcome, countdownGIF, randomChoice } from '#constants/commands';
 import { Command } from '@sapphire/framework';
 import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
 import type { RPSCommandArgs } from 'rps';
-import { buildCustomId, defaultEmojiToUsableEmoji } from '#src/constants/components';
+import { buildCustomId, defaultEmojiToUsableEmoji } from '#constants/components';
 import type { MessageOptions } from 'child_process';
 
 export default class Rps extends Command {

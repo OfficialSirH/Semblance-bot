@@ -3,7 +3,7 @@ import type { Message } from 'discord.js';
 import { Categories, randomColor, Subcategories } from '#constants/index';
 import { currentLogo } from '#config';
 import { Command } from '@sapphire/framework';
-import { buildCustomId } from '#src/constants/components';
+import { buildCustomId } from '#constants/components';
 
 export default class Codes extends Command {
   public override name = 'codes';

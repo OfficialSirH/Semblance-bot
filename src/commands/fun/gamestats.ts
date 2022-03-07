@@ -1,6 +1,6 @@
 import { ApplicationCommandOptionType, type ChatInputCommandInteraction, Embed } from 'discord.js';
 import { Categories, prefix, randomColor } from '#constants/index';
-import { currentPrice } from '#src/constants/commands';
+import { currentPrice } from '#constants/commands';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
 export default class Gamestats extends Command {

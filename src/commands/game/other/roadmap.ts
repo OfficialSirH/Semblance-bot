@@ -2,7 +2,7 @@ import { ActionRow, ButtonComponent, ButtonStyle, Embed, type Message } from 'di
 import { Categories, randomColor, Subcategories } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import { currentLogo, roadMap } from '#config';
-import { buildCustomId } from '#src/constants/components';
+import { buildCustomId } from '#constants/components';
 
 export default class Roadmap extends Command {
   public override name = 'roadmap';

@@ -26,6 +26,7 @@ declare module '@sapphire/framework' {
   }
 }
 
+import { isProduction, prefix } from '#constants/index';
 import { SapphireClient } from '@sapphire/framework';
 import {
   type Awaitable,
@@ -75,20 +76,21 @@ const app = fastify();
 // 	else twClient.on(event.name, (...args) => event.exec(...args, { client, twClient }));
 // }
 
-import router from '#src/routes/index';
-router(app, client);
+import router from '#routes/index';
+if (isProduction) router(app, client);
 
 app.get('/', (_req, res) => {
   res.redirect('https://officialsirh.github.io/');
 });
 
-import { checkTweet } from '#src/listeners/index';
-import { prefix } from '#src/constants';
+import { checkTweet } from '#listeners/index';
 // Check for Tweet from ComputerLunch
-setInterval(() => checkTweet(client), 2000);
+if (isProduction) setInterval(() => checkTweet(client), 2000);
 // TODO: remove this really shitty implementation of receiving tweets
 await client.login(process.env.token);
-const address = await app.listen(8079, '0.0.0.0');
+let address: string;
+if (isProduction) address = await app.listen(8079, '0.0.0.0');
+else address = await app.listen(8079);
 console.log('Semblance has started on: ' + address);
 // TODO: enable twitter.js implementation to replace the shitty twitter library
 // const twitterCredentials = JSON.parse(process.env.twitter);

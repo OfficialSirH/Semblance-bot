@@ -1,5 +1,5 @@
-import { getPermissionLevel } from '#src/constants';
-import { componentInteractionDefaultParser } from '#src/constants/components';
+import { getPermissionLevel } from '#constants/index';
+import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 import type { ButtonInteraction, TextBasedChannel } from 'discord.js';
 import { ActionRow, Embed } from 'discord.js';

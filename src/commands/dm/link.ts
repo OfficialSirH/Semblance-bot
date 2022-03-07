@@ -3,7 +3,7 @@ import { createHmac } from 'crypto';
 import type { Args } from '@sapphire/framework';
 import { Command } from '@sapphire/framework';
 import { ChannelType, type Message } from 'discord.js';
-import { Categories } from '#src/constants';
+import { Categories } from '#constants/index';
 
 // TODO: make this no longer require the need for stupid DMs
 

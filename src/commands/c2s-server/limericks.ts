@@ -1,5 +1,5 @@
 import { currentLogo, darwinium } from '#config';
-import { Categories, Subcategories, randomColor } from '#src/constants';
+import { Categories, Subcategories, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import { Embed, type Message } from 'discord.js';
 

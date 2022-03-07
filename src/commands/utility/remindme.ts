@@ -2,7 +2,7 @@ import { ApplicationCommandOptionType, AutocompleteInteraction, Embed } from 'di
 import type { ChatInputCommandInteraction } from 'discord.js';
 import { randomColor, formattedDate, Categories } from '#constants/index';
 import type { Reminder, UserReminder } from '@prisma/client';
-import { handleReminder } from '#src/constants/models';
+import { handleReminder } from '#constants/models';
 import { scheduleJob } from 'node-schedule';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 

@@ -2,7 +2,7 @@ import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { geodeImage, currentLogo } from '#config';
 import { Command } from '@sapphire/framework';
-import { Categories, Subcategories } from '#src/constants';
+import { Categories, Subcategories } from '#constants/index';
 
 export default class Geodes extends Command {
   public override name = 'geodes';

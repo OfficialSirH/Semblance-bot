@@ -4,6 +4,7 @@ import { PermissionFlagsBits } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 
 export const prefix = 's!';
+export const isProduction = process.env.NODE_ENV === 'production';
 
 export const getAvatar = (user: User) => {
   const avatarType = user.avatar.startsWith('a_') ? `${user.avatar}.gif` : `${user.avatar}.png`;

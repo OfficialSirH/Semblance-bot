@@ -1,4 +1,4 @@
-import { getPermissionLevel } from '#src/constants';
+import { getPermissionLevel } from '#constants/index';
 import { Precondition } from '@sapphire/framework';
 import type { ChatInputCommandInteraction, Message } from 'discord.js';
 

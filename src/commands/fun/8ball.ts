@@ -1,4 +1,4 @@
-import { Categories, randomColor } from '#src/constants';
+import { Categories, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, type Args, Command } from '@sapphire/framework';
 import { type ChatInputCommandInteraction, type Message, Embed, ApplicationCommandOptionType } from 'discord.js';
 

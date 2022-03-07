@@ -2,7 +2,7 @@ import { Embed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
-import { LeaderboardUtilities } from '#src/structures/LeaderboardUtilities';
+import { LeaderboardUtilities } from '#structures/LeaderboardUtilities';
 
 export default class VoteLeaderboard extends Command {
   public override name = 'voteleaderboard';

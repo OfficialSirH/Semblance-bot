@@ -2,7 +2,7 @@ import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 import { ActionRow, ButtonComponent, type ButtonInteraction, ButtonStyle, Embed } from 'discord.js';
 import { guildBookPage, randomColor } from '#constants/index';
 import { serversPerPage } from '#constants/commands';
-import { componentInteractionDefaultParser, buildCustomId, defaultEmojiToUsableEmoji } from '#src/constants/components';
+import { componentInteractionDefaultParser, buildCustomId, defaultEmojiToUsableEmoji } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 
 export default class ServerList extends InteractionHandler {

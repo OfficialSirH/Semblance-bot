@@ -3,7 +3,7 @@ import type { Message } from 'discord.js';
 import { randomColor, guildBookPage, Categories } from '#constants/index';
 import { Args, Command } from '@sapphire/framework';
 import { serversPerPage } from '#constants/commands';
-import { buildCustomId, defaultEmojiToUsableEmoji } from '#src/constants/components';
+import { buildCustomId, defaultEmojiToUsableEmoji } from '#constants/components';
 
 export default class ServerList extends Command {
   public constructor(context: Command.Context, options: Command.Options) {

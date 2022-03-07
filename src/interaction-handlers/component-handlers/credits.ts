@@ -1,4 +1,4 @@
-import { buildCustomId, componentInteractionDefaultParser, filterAction } from '#src/constants/components';
+import { buildCustomId, componentInteractionDefaultParser, filterAction } from '#constants/components';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { ActionRow, ButtonComponent, ButtonStyle, Embed } from 'discord.js';
 import type { ButtonInteraction } from 'discord.js';

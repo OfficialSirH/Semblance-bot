@@ -1,7 +1,7 @@
 import { Embed } from 'discord.js';
 import type { Message, ChatInputCommandInteraction } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import { Categories, randomColor } from '#src/constants';
+import { Categories, randomColor } from '#constants/index';
 
 export default class Invite extends Command {
   public override name = 'invite';

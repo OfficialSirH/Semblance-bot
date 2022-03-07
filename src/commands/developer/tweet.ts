@@ -1,7 +1,7 @@
 import type { Message } from 'discord.js';
 import Twitter from 'twitter';
 import { type Args, Command } from '@sapphire/framework';
-import { Categories } from '#src/constants';
+import { Categories } from '#constants/index';
 const twClient = new Twitter(JSON.parse(process.env.twitter));
 
 export default class Tweet extends Command {

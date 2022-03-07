@@ -1,5 +1,5 @@
-import { Categories } from '#src/constants';
-import { buildCustomId } from '#src/constants/components';
+import { Categories } from '#constants/index';
+import { buildCustomId } from '#constants/components';
 import { Command } from '@sapphire/framework';
 import { ButtonStyle, type ChatInputCommandInteraction, type TextBasedChannel } from 'discord.js';
 import { ActionRow, ButtonComponent, Embed } from 'discord.js';

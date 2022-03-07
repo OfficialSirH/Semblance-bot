@@ -1,6 +1,6 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import type { SapphireClient } from '@sapphire/framework';
-import { VoteHandler } from '#src/structures/VoteHandler';
+import { VoteHandler } from '#structures/VoteHandler';
 import type { WebhookPayload } from '@top-gg/sdk';
 import type { DiscordsVote } from '#lib/interfaces/discords';
 import type { DBLVote } from '#lib/interfaces/discordBotList';

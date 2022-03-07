@@ -2,7 +2,7 @@ import { ActionRow, ButtonComponent, type ButtonInteraction, ButtonStyle, Embed 
 import { currentLogo } from '#config';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import type { ParsedCustomIdData } from 'Semblance';
-import { buildCustomId, componentInteractionDefaultParser } from '#src/constants/components';
+import { buildCustomId, componentInteractionDefaultParser } from '#constants/components';
 
 export default class Codes extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {

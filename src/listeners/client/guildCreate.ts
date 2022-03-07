@@ -2,7 +2,7 @@ import { Listener } from '@sapphire/framework';
 import { Api as TopggApi } from '@top-gg/sdk';
 import { DBLApi, DBotsApi, DListApi, DiscordsApi } from '#structures/index';
 import { ActivityType, Events, Guild } from 'discord.js';
-import { prefix } from '#src/constants';
+import { prefix } from '#constants/index';
 
 export default class GuildCreate extends Listener<typeof Events.GuildCreate> {
   public constructor(context: Listener.Context, options: Listener.Options) {

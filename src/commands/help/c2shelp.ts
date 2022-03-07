@@ -1,7 +1,7 @@
 import { type Message, Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
 import { Categories, randomColor, Subcategories, subcategoryList } from '#constants/index';
 import { Command } from '@sapphire/framework';
-import { buildCustomId } from '#src/constants/components';
+import { buildCustomId } from '#constants/components';
 
 export default class C2sHelp extends Command {
   public override name = 'c2shelp';

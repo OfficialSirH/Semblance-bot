@@ -2,7 +2,7 @@ import type { RPSGame } from '#lib/interfaces/rps';
 import type { ButtonInteraction, Snowflake } from 'discord.js';
 import { Collection, Embed } from 'discord.js';
 import { choiceToOutcome, countdownGIF } from '#constants/commands';
-import { componentInteractionDefaultParser } from '#src/constants/components';
+import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 import type { ParsedCustomIdData } from 'Semblance';
 

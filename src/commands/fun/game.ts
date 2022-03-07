@@ -2,8 +2,8 @@ import { ActionRow, ButtonComponent, ButtonStyle, type ChatInputCommandInteracti
 import type { Message } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import { currentPrice } from '#src/constants/commands';
-import { buildCustomId } from '#src/constants/components';
+import { currentPrice } from '#constants/commands';
+import { buildCustomId } from '#constants/components';
 
 export default class Game extends Command {
   public override name = 'game';

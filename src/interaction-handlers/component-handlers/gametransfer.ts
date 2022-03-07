@@ -1,7 +1,7 @@
 import { type ButtonInteraction, Embed } from 'discord.js';
 import { gameTransferPages } from '#constants/commands';
 import { currentLogo } from '#config';
-import { componentInteractionDefaultParser } from '#src/constants/components';
+import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 import type { ParsedCustomIdData } from 'Semblance';
 

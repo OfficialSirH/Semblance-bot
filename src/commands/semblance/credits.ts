@@ -2,7 +2,7 @@ import { ActionRow, ButtonComponent, ButtonStyle, type ChatInputCommandInteracti
 import type { Message } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import { buildCustomId } from '#src/constants/components';
+import { buildCustomId } from '#constants/components';
 
 export default class Credits extends Command {
   public override name = 'credits';

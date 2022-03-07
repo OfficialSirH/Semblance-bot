@@ -3,7 +3,7 @@ import { ActionRow, ButtonComponent, Embed } from 'discord.js';
 import { prefix, randomColor } from '#constants/index';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { currentPrice } from '#constants/commands';
-import { LeaderboardUtilities } from '#src/structures/LeaderboardUtilities';
+import { LeaderboardUtilities } from '#structures/LeaderboardUtilities';
 import type { Game } from '@prisma/client';
 import {
   buildCustomId,
@@ -11,7 +11,7 @@ import {
   defaultEmojiToUsableEmoji,
   disableComponentsByLabel,
   filterAction,
-} from '#src/constants/components';
+} from '#constants/components';
 import type { ParsedCustomIdData } from 'Semblance';
 
 export default class GameHandler extends InteractionHandler {

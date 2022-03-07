@@ -9,7 +9,7 @@ import {
 import type { sizeType } from '#lib/interfaces/catAndDogAPI';
 import { fetchCatOrDog } from '#constants/commands';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import { buildCustomId } from '#src/constants/components';
+import { buildCustomId } from '#constants/components';
 
 export default class Imagegen extends Command {
   public override name = 'imagegen';

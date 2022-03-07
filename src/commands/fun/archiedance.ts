@@ -2,7 +2,7 @@ import type { Message } from 'discord.js';
 import { Embed } from 'discord.js';
 import { archieDance } from '#config';
 import { Command } from '@sapphire/framework';
-import { Categories } from '#src/constants';
+import { Categories } from '#constants/index';
 
 export default class ArchieDance extends Command {
   public override name = 'archiedance';

@@ -20,12 +20,12 @@
         "*": [
           "lib/interfaces/*"
         ],
-        "#src/*": ["./src/*"],
         "#lib/*": ["./lib/*"],
         "#structures/*": ["./src/structures/*"],
         "#models/*": ["./src/models/*"],
         "#listeners/*": ["src/listeners/*"],
         "#constants/*": ["./src/constants/*"],
+        "#interaction-handlers/*": ["./src/interaction-handlers/*"],
         "#routes/*": ["src/routes/*"],
         "#config": ["./config"],
         "#itemList": ["./lib/utils/itemList"]

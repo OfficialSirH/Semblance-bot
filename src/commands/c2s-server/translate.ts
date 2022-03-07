@@ -1,5 +1,5 @@
 import { fetchDeepL } from '#constants/commands';
-import { Categories } from '#src/constants';
+import { Categories } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import type { ContextMenuCommandInteraction } from 'discord.js';
 

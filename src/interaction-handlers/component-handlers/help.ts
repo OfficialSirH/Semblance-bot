@@ -6,7 +6,7 @@ import {
   type SelectMenuInteraction,
 } from 'discord.js';
 import { disableAllComponents } from '#constants/index';
-import { backButton, closeButton, componentInteractionDefaultParser } from '#src/constants/components';
+import { backButton, closeButton, componentInteractionDefaultParser } from '#constants/components';
 import type { ParsedCustomIdData } from 'Semblance';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 

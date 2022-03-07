@@ -3,7 +3,7 @@ import type { Message } from 'discord.js';
 import { currentLogo, c2sGuildId } from '#config';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { c2sRoles, c2sRolesInformation, Categories } from '#constants/index';
-import { buildCustomId } from '#src/constants/components';
+import { buildCustomId } from '#constants/components';
 
 export default class Roles extends Command {
   public override name = 'roles';

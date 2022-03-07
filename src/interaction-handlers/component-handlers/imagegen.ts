@@ -1,7 +1,7 @@
 import type { sizeType } from '#lib/interfaces/catAndDogAPI';
 import { ButtonInteraction, Embed } from 'discord.js';
 import { fetchCatOrDog } from '#constants/commands';
-import { componentInteractionDefaultParser } from '#src/constants/components';
+import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 import type { ParsedCustomIdData } from 'Semblance';
 
