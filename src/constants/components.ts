@@ -70,4 +70,6 @@ export const closeButton = (command: string, userId: string) =>
 
 export const defaultEmojiToUsableEmoji = (emoji: string) => ({ name: emoji });
 
-export const buildCustomId = (customIdOptions: CustomIdData) => JSON.stringify(customIdOptions);
+export const buildCustomId = <T extends CustomIdData | (CustomIdData & Record<string, unknown>) = CustomIdData>(
+  customIdOptions: T,
+) => JSON.stringify(customIdOptions);

@@ -1,5 +1,9 @@
-import type { TextBasedChannel } from 'discord.js';
+import { getPermissionLevel } from '#src/constants';
+import { componentInteractionDefaultParser } from '#src/constants/components';
+import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
+import type { ButtonInteraction, TextBasedChannel } from 'discord.js';
 import { ActionRow, Embed } from 'discord.js';
+import type { ParsedCustomIdData } from 'Semblance';
 
 export default class HANDLER_NAME extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {
@@ -11,29 +15,30 @@ export default class HANDLER_NAME extends InteractionHandler {
   }
 
   public override parse(interaction: ButtonInteraction) {
-    return componentInteractionDefaultParser(this, interaction);
+    return componentInteractionDefaultParser(this, interaction, true);
   }
 
-  // public override async run(interaction: ButtonInteraction, data: Omit<CustomIdData, 'command'>) {
+  public override async run(
+    interaction: ButtonInteraction<'cached'>,
+    data: ParsedCustomIdData<'accept' | 'deny' | 'silent-deny'>,
+  ) {
+    if (getPermissionLevel(interaction.member) == 0)
+      return interaction.reply("You don't have permission to use this button!");
+    if (!['accept', 'deny', 'silent-deny'].includes(data.action))
+      return interaction.reply("Something ain't working right");
 
-  // }
-}
-
-export default {
-  allowOthers: true,
-  buttonHandle: async (interaction, { action, id }, { permissionLevel, client }) => {
-    if (permissionLevel == 0) return interaction.reply("You don't have permission to use this button!");
-    if (!['accept', 'deny', 'silent-deny'].includes(action)) return interaction.reply("Something ain't working right");
     (interaction.message.components as ActionRow[]).forEach(component =>
       component.components.forEach(c => c.setDisabled(true)),
     );
-    interaction.update({
-      content: `${action != 'accept' ? 'denied' : 'accepted'} by ${interaction.user}`,
+    await interaction.update({
+      content: `${data.action != 'accept' ? 'denied' : 'accepted'} by ${interaction.user}`,
       components: interaction.message.components as ActionRow[],
     });
-    if (action == 'silent-deny') return;
-    const user = await client.users.fetch(id);
-    if (action == 'accept') {
+
+    if (data.action == 'silent-deny') return;
+
+    const user = await interaction.client.users.fetch(data.id);
+    if (data.action == 'accept') {
       user.send(
         'Your suggestion has been accepted! ' +
           'Note: This does not mean that your suggestion is guaranteed to be added in the game or implemented into the server(depending on the type of suggestion). ' +
@@ -47,12 +52,15 @@ export default {
         ],
       });
     }
-    if (action == 'deny')
-      user.send(
-        "Your suggestion has been denied. We deny reports if they're either a duplicate, already in-game, " +
-          'have no connection to what the game is supposed to be(i.e. "pvp dinosaur battles with Mesozoic Valley dinos"), or aren\'t detailed enough. ' +
-          "If you believe this is a mistake, please contact the staff team. You can also edit then resend your suggestion if you think it was a good suggestion that wasn't " +
-          ` written right. suggestion: \`\`\`\n${interaction.message.embeds[0].description}\`\`\``,
-      );
-  },
-} as ComponentHandler;
+
+    if (data.action == 'deny')
+      await user
+        .send(
+          "Your suggestion has been denied. We deny reports if they're either a duplicate, already in-game, " +
+            'have no connection to what the game is supposed to be(i.e. "pvp dinosaur battles with Mesozoic Valley dinos"), or aren\'t detailed enough. ' +
+            "If you believe this is a mistake, please contact the staff team. You can also edit then resend your suggestion if you think it was a good suggestion that wasn't " +
+            ` written right. suggestion: \`\`\`\n${interaction.message.embeds[0].description}\`\`\``,
+        )
+        .catch(() => null);
+  }
+}

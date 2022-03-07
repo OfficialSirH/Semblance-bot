@@ -22,7 +22,7 @@ declare module '@sapphire/framework' {
   }
 
   interface Command {
-    SharedBuilder: ChatInputCommandInteraction<'cached'> | Message;
+    SharedBuilder: Interaction<'cached'> | Message;
   }
 }
 
@@ -33,10 +33,10 @@ import {
   type Message,
   Options,
   Partials,
-  type ChatInputCommandInteraction,
   InteractionReplyOptions,
   MessageOptions,
   ReplyMessageOptions,
+  Interaction,
 } from 'discord.js';
 const client = new SapphireClient({
   allowedMentions: { parse: [] },

@@ -88,7 +88,7 @@ function roadmap(interaction: ButtonInteraction) {
     new ActionRow().addComponents(
       new ButtonComponent()
         .setCustomId(
-          JSON.stringify({
+          buildCustomId({
             command: 'roadmap',
             action: 'testers',
           }),
@@ -97,7 +97,7 @@ function roadmap(interaction: ButtonInteraction) {
         .setLabel('Early Beyond Testers'),
       new ButtonComponent()
         .setCustomId(
-          JSON.stringify({
+          buildCustomId({
             command: 'roadmap',
             action: 'early-beyond',
           }),

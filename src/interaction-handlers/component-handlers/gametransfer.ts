@@ -1,12 +1,15 @@
-import type { Embed } from 'discord.js';
+import { type ButtonInteraction, Embed } from 'discord.js';
 import { gameTransferPages } from '#constants/commands';
 import { currentLogo } from '#config';
+import { componentInteractionDefaultParser } from '#src/constants/components';
+import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
+import type { ParsedCustomIdData } from 'Semblance';
 
-export default class HANDLER_NAME extends InteractionHandler {
+export default class GameTransfer extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {
     super(context, {
       ...options,
-      name: 'HANDLER_NAME',
+      name: 'gametransfer',
       interactionHandlerType: InteractionHandlerTypes.Button,
     });
   }
@@ -15,19 +18,14 @@ export default class HANDLER_NAME extends InteractionHandler {
     return componentInteractionDefaultParser(this, interaction);
   }
 
-  // public override async run(interaction: ButtonInteraction, data: Omit<CustomIdData, 'command'>) {
+  public override async run(interaction: ButtonInteraction, data: ParsedCustomIdData<'right' | 'left'>) {
+    let embed = interaction.message.embeds[0] as Embed;
+    if (!('setDescription' in embed)) embed = new Embed(embed);
 
-  // }
-}
-
-export default {
-  buttonHandle: async (interaction, { action }) => {
-    const message = interaction.message;
-    const embed = message.embeds[0] as Embed;
     let currentPage = gameTransferPages.indexOf(embed.image.url);
 
-    if (action == 'right') currentPage = currentPage == 4 ? 0 : ++currentPage;
-    else if (action == 'left') currentPage = currentPage == 0 ? 4 : --currentPage;
+    if (data.action == 'right') currentPage = currentPage == 4 ? 0 : ++currentPage;
+    else if (data.action == 'left') currentPage = currentPage == 0 ? 4 : --currentPage;
 
     let description: string;
     if (currentPage == 3) description = '\nUpload your progress from your current device';
@@ -39,5 +37,5 @@ export default {
       .setImage(gameTransferPages[currentPage])
       .setDescription(`Step ${currentPage + 1}:${description}`);
     await interaction.update({ embeds: [embed] });
-  },
-} as ComponentHandler;
+  }
+}

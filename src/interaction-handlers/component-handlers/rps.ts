@@ -1,49 +1,47 @@
 import type { RPSGame } from '#lib/interfaces/rps';
-import type { Message, Snowflake } from 'discord.js';
+import type { ButtonInteraction, Snowflake } from 'discord.js';
 import { Collection, Embed } from 'discord.js';
 import { choiceToOutcome, countdownGIF } from '#constants/commands';
+import { componentInteractionDefaultParser } from '#src/constants/components';
+import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
+import type { ParsedCustomIdData } from 'Semblance';
 
-export default class HANDLER_NAME extends InteractionHandler {
+export const rpsGames: Collection<Snowflake, RPSGame> = new Collection();
+export default class RPS extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {
     super(context, {
       ...options,
-      name: 'HANDLER_NAME',
+      name: 'rps',
       interactionHandlerType: InteractionHandlerTypes.Button,
     });
   }
 
   public override parse(interaction: ButtonInteraction) {
-    return componentInteractionDefaultParser(this, interaction);
+    return componentInteractionDefaultParser(this, interaction, true);
   }
 
-  // public override async run(interaction: ButtonInteraction, data: Omit<CustomIdData, 'command'>) {
+  public override async run(interaction: ButtonInteraction<'cached'>, data: ParsedCustomIdData) {
+    const { user } = interaction;
 
-  // }
-}
-
-export const rpsGames: Collection<Snowflake, RPSGame> = new Collection();
-export default {
-  allowOthers: true,
-  buttonHandle: async (interaction, { action, id }) => {
-    const { user } = interaction,
-      message = interaction.message as Message;
-    if (!rpsGames.has(id) || (rpsGames.get(id).opponent.id != user.id && id != user.id))
+    if (!rpsGames.has(data.id) || (rpsGames.get(data.id).opponent.id != user.id && data.id != user.id))
       return await interaction.deferUpdate();
-    const currentGame = rpsGames.get(id);
+
+    const currentGame = rpsGames.get(data.id);
     if (
-      (id == user.id && !!currentGame.player.choice) ||
+      (data.id == user.id && !!currentGame.player.choice) ||
       (currentGame.opponent.id == user.id && !!currentGame.opponent.choice)
     )
       return await interaction.deferUpdate();
 
-    if (user.id == id) currentGame.player.choice = action;
-    else currentGame.opponent.choice = action;
-    rpsGames.set(id, currentGame);
+    if (user.id == data.id) currentGame.player.choice = data.action;
+    else currentGame.opponent.choice = data.action;
+    rpsGames.set(data.id, currentGame);
     await interaction.reply({
-      content: `You've successfully chosen ${action}!`,
+      content: `You've successfully chosen ${data.action}!`,
       ephemeral: true,
     });
-    const updatedGame = rpsGames.get(id),
+
+    const updatedGame = rpsGames.get(data.id),
       { player, opponent } = updatedGame;
 
     if (!!player.choice && !!opponent.choice) {
@@ -56,13 +54,16 @@ export default {
       else if (playerVictory) embed.setDescription(description).setTitle(`${player.tag} wins!`);
       else embed.setDescription(description).setTitle(`${opponent.tag} wins!`);
 
-      await message.edit({
+      await interaction.message.edit({
         content: null,
         embeds: [embed.setColor(0x36393f)],
         components: [],
       });
       clearTimeout(updatedGame.timeout);
-      rpsGames.delete(id);
-    } else await message.edit(`Awaiting for **${user.id == id ? updatedGame.opponent.tag : updatedGame.player.tag}**`);
-  },
-} as ComponentHandler;
+      rpsGames.delete(data.id);
+    } else
+      await interaction.message.edit(
+        `Awaiting for **${user.id == data.id ? updatedGame.opponent.tag : updatedGame.player.tag}**`,
+      );
+  }
+}

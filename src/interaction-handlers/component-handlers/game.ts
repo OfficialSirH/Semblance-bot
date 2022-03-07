@@ -1,18 +1,24 @@
-import { ButtonStyle, type Message, type MessageComponentInteraction } from 'discord.js';
+import { type ButtonInteraction, ButtonStyle, type MessageComponentInteraction } from 'discord.js';
 import { ActionRow, ButtonComponent, Embed } from 'discord.js';
-// import { Game } from '#models/Game';
 import { prefix, randomColor } from '#constants/index';
-import type { SapphireClient } from '@sapphire/framework';
+import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { currentPrice } from '#constants/commands';
 import { LeaderboardUtilities } from '#src/structures/LeaderboardUtilities';
 import type { Game } from '@prisma/client';
-import { defaultEmojiToUsableEmoji, disableComponentsByLabel, filterAction } from '#src/constants/components';
+import {
+  buildCustomId,
+  componentInteractionDefaultParser,
+  defaultEmojiToUsableEmoji,
+  disableComponentsByLabel,
+  filterAction,
+} from '#src/constants/components';
+import type { ParsedCustomIdData } from 'Semblance';
 
-export default class HANDLER_NAME extends InteractionHandler {
+export default class GameHandler extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {
     super(context, {
       ...options,
-      name: 'HANDLER_NAME',
+      name: 'game',
       interactionHandlerType: InteractionHandlerTypes.Button,
     });
   }
@@ -21,23 +27,23 @@ export default class HANDLER_NAME extends InteractionHandler {
     return componentInteractionDefaultParser(this, interaction);
   }
 
-  // public override async run(interaction: ButtonInteraction, data: Omit<CustomIdData, 'command'>) {
-
-  // }
-}
-
-export default {
-  buttonHandle: async (interaction, { action, id }, { client }) => {
-    const game = await client.db.game.findUnique({ where: { player: id } });
+  public override async run(
+    interaction: ButtonInteraction,
+    data: ParsedCustomIdData<
+      'create' | 'reset' | 'about' | 'collect' | 'upgrade' | 'leaderboard' | 'vote' | 'stats' | 'close'
+    >,
+  ) {
+    const id = interaction.user.id;
+    const game = await interaction.client.db.game.findUnique({ where: { player: id } });
     let cost: number, components: ActionRow[];
-    if (game) cost = await currentPrice(client, game);
+    if (game) cost = await currentPrice(interaction.client, game);
 
     const mainComponents = [
         new ActionRow().addComponents(
           new ButtonComponent()
             .setCustomId(
-              JSON.stringify({
-                command: 'game',
+              buildCustomId({
+                command: this.name,
                 action: 'about',
                 id,
               }),
@@ -47,8 +53,8 @@ export default {
             .setLabel('About'),
           new ButtonComponent()
             .setCustomId(
-              JSON.stringify({
-                command: 'game',
+              buildCustomId({
+                command: this.name,
                 action: 'collect',
                 id,
               }),
@@ -59,8 +65,8 @@ export default {
             .setLabel('Collect'),
           new ButtonComponent()
             .setCustomId(
-              JSON.stringify({
-                command: 'game',
+              buildCustomId({
+                command: this.name,
                 action: 'upgrade',
                 id,
               }),
@@ -71,8 +77,8 @@ export default {
             .setLabel('Upgrade'),
           new ButtonComponent()
             .setCustomId(
-              JSON.stringify({
-                command: 'game',
+              buildCustomId({
+                command: this.name,
                 action: 'leaderboard',
                 id,
               }),
@@ -82,8 +88,8 @@ export default {
             .setLabel('Leaderboard'),
           new ButtonComponent()
             .setCustomId(
-              JSON.stringify({
-                command: 'game',
+              buildCustomId({
+                command: this.name,
                 action: 'vote',
                 id,
               }),
@@ -97,8 +103,8 @@ export default {
         new ActionRow().addComponents(
           new ButtonComponent()
             .setCustomId(
-              JSON.stringify({
-                command: 'game',
+              buildCustomId({
+                command: this.name,
                 action: 'stats',
                 id,
               }),
@@ -109,19 +115,8 @@ export default {
             .setLabel('Stats'),
           new ButtonComponent()
             .setCustomId(
-              JSON.stringify({
-                command: 'game',
-                action: 'graph',
-                id,
-              }),
-            )
-            .setStyle(ButtonStyle.Primary)
-            .setEmoji(defaultEmojiToUsableEmoji('📈'))
-            .setLabel('Graph'),
-          new ButtonComponent()
-            .setCustomId(
-              JSON.stringify({
-                command: 'game',
+              buildCustomId({
+                command: this.name,
                 action: 'create',
                 id,
               }),
@@ -131,8 +126,8 @@ export default {
             .setStyle(game ? ButtonStyle.Danger : ButtonStyle.Success),
           new ButtonComponent()
             .setCustomId(
-              JSON.stringify({
-                command: 'game',
+              buildCustomId({
+                command: this.name,
                 action: 'close',
                 id,
               }),
@@ -142,43 +137,40 @@ export default {
             .setStyle(ButtonStyle.Secondary),
         ),
       ];
-    if (['about', 'collect', 'upgrade', 'leaderboard', 'vote'].includes(action)) components = endComponents;
-    else if (action == 'stats') components = mainComponents;
-    else components = filterAction(endComponents, action);
+    if (['about', 'collect', 'upgrade', 'leaderboard', 'vote'].includes(data.action)) components = endComponents;
+    else if (data.action == 'stats') components = mainComponents;
+    else components = filterAction(endComponents, data.action);
 
-    switch (action) {
+    switch (data.action) {
       case 'create':
-        game ? askConfirmation(interaction) : create(client, interaction, components);
+        game ? askConfirmation(interaction) : create(interaction, components);
         break;
       case 'reset':
-        create(client, interaction, components);
+        create(interaction, components);
         break;
       case 'about':
         about(interaction, components);
         break;
       case 'collect':
-        collect(client, interaction, components);
+        collect(interaction, components);
         break;
       case 'upgrade':
-        upgrade(client, interaction, components);
+        upgrade(interaction, components);
         break;
       case 'leaderboard':
-        leaderboard(client, interaction, components);
+        leaderboard(interaction, components);
         break;
       case 'vote':
         votes(interaction, components);
         break;
       case 'stats':
-        stats(client, interaction, components, game);
-        break;
-      case 'graph':
-        graph(interaction, components);
+        stats(interaction, components, game);
         break;
       case 'close':
-        (interaction.message as Message).delete();
+        interaction.channel.messages.delete(interaction.message.id);
     }
-  },
-} as ComponentHandler;
+  }
+}
 
 async function askConfirmation(interaction: MessageComponentInteraction) {
   const { user } = interaction;
@@ -186,8 +178,8 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
     new ActionRow().addComponents(
       new ButtonComponent()
         .setCustomId(
-          JSON.stringify({
-            command: 'game',
+          buildCustomId({
+            command: this.name,
             action: 'reset',
             id: user.id,
           }),
@@ -197,8 +189,8 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
         .setStyle(ButtonStyle.Danger),
       new ButtonComponent()
         .setCustomId(
-          JSON.stringify({
-            command: 'game',
+          buildCustomId({
+            command: this.name,
             action: 'close',
             id: user.id,
           }),
@@ -214,12 +206,12 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
   });
 }
 
-async function create(client: SapphireClient, interaction: MessageComponentInteraction, components: ActionRow[]) {
+async function create(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const { user } = interaction;
   const percent = (Math.round(Math.random() * 25) + 25) / 100 + 1;
   const startingProfits = Math.random() * 0.05 + 0.05;
 
-  const creationHandler = await client.db.game.upsert({
+  const creationHandler = await interaction.client.db.game.upsert({
     where: {
       player: user.id,
     },
@@ -272,12 +264,12 @@ async function about(interaction: MessageComponentInteraction, components: Actio
   await interaction.update({ embeds: [embed], components });
 }
 
-async function collect(client: SapphireClient, interaction: MessageComponentInteraction, components: ActionRow[]) {
+async function collect(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const { user } = interaction;
-  let collectionHandler = await client.db.game.findUnique({ where: { player: user.id } });
+  let collectionHandler = await interaction.client.db.game.findUnique({ where: { player: user.id } });
   const collected = collectionHandler.profitRate * ((Date.now() - collectionHandler.lastCollected.valueOf()) / 1000);
 
-  collectionHandler = await client.db.game.update({
+  collectionHandler = await interaction.client.db.game.update({
     where: {
       player: user.id,
     },
@@ -300,13 +292,17 @@ async function collect(client: SapphireClient, interaction: MessageComponentInte
   await interaction.update({ embeds: [embed], components });
 }
 
-async function upgrade(client: SapphireClient, interaction: MessageComponentInteraction, components: ActionRow[]) {
+async function upgrade(interaction: ButtonInteraction, components: ActionRow[]) {
   await interaction.deferUpdate();
-  const { user } = interaction,
-    message = interaction.message as Message;
-  let upgradeHandler = await client.db.game.findUnique({ where: { player: user.id } });
+  const { user } = interaction;
+  const message =
+    'edit' in interaction.message
+      ? interaction.message
+      : await interaction.channel.messages.fetch(interaction.message.id);
+
+  let upgradeHandler = await interaction.client.db.game.findUnique({ where: { player: user.id } });
   const previousLevel = upgradeHandler.level;
-  let costSubtraction = await currentPrice(client, upgradeHandler);
+  let costSubtraction = await currentPrice(interaction.client, upgradeHandler);
   if (upgradeHandler.money < costSubtraction)
     return message.edit({
       embeds: [
@@ -326,8 +322,8 @@ async function upgrade(client: SapphireClient, interaction: MessageComponentInte
     });
 
   while (upgradeHandler.money > costSubtraction) {
-    costSubtraction = await currentPrice(client, upgradeHandler);
-    upgradeHandler = await client.db.game.update({
+    costSubtraction = await currentPrice(interaction.client, upgradeHandler);
+    upgradeHandler = await interaction.client.db.game.update({
       where: {
         player: user.id,
       },
@@ -362,9 +358,9 @@ async function upgrade(client: SapphireClient, interaction: MessageComponentInte
   await message.edit({ embeds: [embed], components });
 }
 
-async function leaderboard(client: SapphireClient, interaction: MessageComponentInteraction, components: ActionRow[]) {
+async function leaderboard(interaction: MessageComponentInteraction, components: ActionRow[]) {
   const { user } = interaction;
-  let leaderboard = await LeaderboardUtilities.topTwenty(client, 'game');
+  let leaderboard = await LeaderboardUtilities.topTwenty(interaction.client, 'game');
   if (!leaderboard) leaderboard = 'There is currently no one who has upgraded their income.';
   const embed = new Embed()
     .setTitle("Semblance's idle-game leaderboard")
@@ -401,12 +397,7 @@ async function votes(interaction: MessageComponentInteraction, components: Actio
   interaction.update({ embeds: [embed], components });
 }
 
-async function stats(
-  client: SapphireClient,
-  interaction: MessageComponentInteraction,
-  components: ActionRow[],
-  game: Game,
-) {
+async function stats(interaction: ButtonInteraction, components: ActionRow[], game: Game) {
   const { user } = interaction;
   const embed = new Embed()
     .setTitle("Welcome back to Semblance's Idle-Game!")
@@ -419,22 +410,10 @@ async function stats(
       { name: 'Percent Increase', value: game.percentIncrease.toString() },
       {
         name: 'Next Upgrade Cost',
-        value: (await currentPrice(client, game)).toFixed(3).toString(),
+        value: (await currentPrice(interaction.client, game)).toFixed(3).toString(),
       },
       { name: 'Idle Profit', value: game.profitRate.toFixed(3).toString() },
     )
     .setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' });
-  await interaction.update({ embeds: [embed], components });
-}
-
-async function graph(interaction: MessageComponentInteraction, components: ActionRow[]) {
-  const { user } = interaction;
-  const embed = new Embed()
-    .setTitle("Graphed Data of Semblance's Idle Game")
-    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
-    .setColor(randomColor)
-    .setDescription(
-      '[Click Here for Game Data Graphs](https://charts.mongodb.com/charts-semblance-xnkqg/public/dashboards/5f9e8f7f-59c6-4a87-8563-0d68faed8515)',
-    );
   await interaction.update({ embeds: [embed], components });
 }

@@ -1,12 +1,15 @@
 import type { sizeType } from '#lib/interfaces/catAndDogAPI';
-import { Embed } from 'discord.js';
+import { ButtonInteraction, Embed } from 'discord.js';
 import { fetchCatOrDog } from '#constants/commands';
+import { componentInteractionDefaultParser } from '#src/constants/components';
+import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
+import type { ParsedCustomIdData } from 'Semblance';
 
-export default class HANDLER_NAME extends InteractionHandler {
+export default class ImageGen extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {
     super(context, {
       ...options,
-      name: 'HANDLER_NAME',
+      name: 'imagegen',
       interactionHandlerType: InteractionHandlerTypes.Button,
     });
   }
@@ -15,14 +18,8 @@ export default class HANDLER_NAME extends InteractionHandler {
     return componentInteractionDefaultParser(this, interaction);
   }
 
-  // public override async run(interaction: ButtonInteraction, data: Omit<CustomIdData, 'command'>) {
-
-  // }
-}
-
-export default {
-  buttonHandle: async (interaction, { action }) => {
-    const wantsCat = action === 'refresh-cat',
+  public override async run(interaction: ButtonInteraction, data: ParsedCustomIdData<'refresh-cat' | 'refresh-dog'>) {
+    const wantsCat = data.action === 'refresh-cat',
       query_params = {
         has_breeds: true,
         mime_types: 'jpg,png,gif',
@@ -45,6 +42,6 @@ export default {
       .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)
       .setImage(image_url);
 
-    interaction.update({ embeds: [embed] });
-  },
-} as ComponentHandler;
+    await interaction.update({ embeds: [embed] });
+  }
+}

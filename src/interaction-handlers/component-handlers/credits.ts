@@ -1,14 +1,14 @@
-import { componentInteractionDefaultParser, filterAction } from '#src/constants/components';
+import { buildCustomId, componentInteractionDefaultParser, filterAction } from '#src/constants/components';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { ActionRow, ButtonComponent, ButtonStyle, Embed } from 'discord.js';
 import type { ButtonInteraction } from 'discord.js';
-import type { CustomIdData } from 'Semblance';
+import type { ParsedCustomIdData } from 'Semblance';
 
-export default class HANDLER_NAME extends InteractionHandler {
+export default class Credits extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {
     super(context, {
       ...options,
-      name: 'HANDLER_NAME',
+      name: 'credits',
       interactionHandlerType: InteractionHandlerTypes.Button,
     });
   }
@@ -17,113 +17,119 @@ export default class HANDLER_NAME extends InteractionHandler {
     return componentInteractionDefaultParser(this, interaction);
   }
 
-  // public override async run(interaction: ButtonInteraction, data: Omit<CustomIdData, 'command'>) {
-
-  // }
-}
-
-export default {
-  buttonHandle: async (interaction, { action, id }) => {
+  public override async run(
+    interaction: ButtonInteraction,
+    data: ParsedCustomIdData<'credits' | 'thanks' | 'semblance' | 'semblance-beta' | 'semblance-revisioned'>,
+  ) {
     const embed = new Embed();
     const creditComponents = [
       new ButtonComponent()
         .setCustomId(
-          JSON.stringify({
-            command: 'credits',
+          buildCustomId({
+            command: this.name,
             action: 'credits',
-            id,
+            id: interaction.user.id,
           }),
         )
         .setLabel('Credits')
         .setStyle(ButtonStyle.Primary),
       new ButtonComponent()
         .setCustomId(
-          JSON.stringify({
-            command: 'credits',
+          buildCustomId({
+            command: this.name,
             action: 'thanks',
-            id,
+            id: interaction.user.id,
           }),
         )
         .setLabel('Special Thanks')
         .setStyle(ButtonStyle.Primary),
       new ButtonComponent()
         .setCustomId(
-          JSON.stringify({
-            command: 'credits',
+          buildCustomId({
+            command: this.name,
             action: 'semblance',
-            id,
+            id: interaction.user.id,
           }),
         )
         .setLabel('Preview Semblance Art')
         .setStyle(ButtonStyle.Primary),
       new ButtonComponent()
         .setCustomId(
-          JSON.stringify({
-            command: 'credits',
+          buildCustomId({
+            command: this.name,
             action: 'semblancebeta',
-            id,
+            id: interaction.user.id,
           }),
         )
         .setLabel('Preview Semblance Beta Art')
         .setStyle(ButtonStyle.Primary),
       new ButtonComponent()
         .setCustomId(
-          JSON.stringify({
-            command: 'credits',
+          buildCustomId({
+            command: this.name,
             action: 'semblancerevisioned',
-            id,
+            id: interaction.user.id,
           }),
         )
         .setLabel('Preview Semblance Revisioned Art')
         .setStyle(ButtonStyle.Primary),
     ];
-    //return console.log(interaction.message.components);
 
-    if (action == 'credits') {
-      embed.setTitle('Credits').addFields(
-        { name: 'Developer', value: 'SirH' },
-        { name: 'Special Thanks and Organizer', value: 'Aditya' },
-        {
-          name: 'Artist',
-          value: [
-            '**Semblance:** cabiie',
-            "**Semblance Beta:** Lemon ([Lemon's Instagram page](https://www.instagram.com/creations_without_limtation/))",
-            '**Semblance Revisioned:** StarLuckArt(preview soon:tm:) ([DeviantArt](https://www.deviantart.com/starluckart) and [Personal Site](https://bubblestheprotogen.wixsite.com/starluckart))',
-          ].join('\n'),
-        },
-        { name: 'Silly dude who makes up funny ideas', value: 'NerdGamer2848' },
-        { name: 'Early Testers', value: 'Aditya, Parrot, Diza, 0NrD, and Aure' },
-        {
-          name: 'Contributors',
-          value: [
-            '**Mesozoic Valley Guide:** Jojoseis',
-            '**Image for Prestige List:** Hardik Chavada',
-            '**Image for Nanobots:** SampeDrako',
-            '**Image for Currency:** Off Pringles',
-          ].join('\n'),
-        },
-      );
-    } else if (action == 'thanks')
-      embed
-        .setTitle('Special Thanks')
-        .setDescription(
-          'Special Thanks to Aditya for motivating me from the very beginning to work on this bot. ' +
-            "If it weren't for him, my bot wouldn't even be at this point right now; running on an actual server, " +
-            'built with a better Discord module than previously, and have this many features. He even convinced Hype ' +
-            "to add my bot to Cell to Singularity, which I can't thank him enough for, cause I was too shy to ask Hype. " +
-            "Thanks again, Aditya, you've helped me a lot. :D",
+    switch (data.action) {
+      case 'credits':
+        embed.setTitle('Credits').addFields(
+          { name: 'Developer', value: 'SirH' },
+          { name: 'Special Thanks and Organizer', value: 'Aditya' },
+          {
+            name: 'Artist',
+            value: [
+              '**Semblance:** cabiie',
+              "**Semblance Beta:** Lemon ([Lemon's Instagram page](https://www.instagram.com/creations_without_limtation/))",
+              '**Semblance Revisioned:** StarLuckArt(preview soon:tm:) ([DeviantArt](https://www.deviantart.com/starluckart) and [Personal Site](https://bubblestheprotogen.wixsite.com/starluckart))',
+            ].join('\n'),
+          },
+          { name: 'Silly dude who makes up funny ideas', value: 'NerdGamer2848' },
+          { name: 'Early Testers', value: 'Aditya, Parrot, Diza, 0NrD, and Aure' },
+          {
+            name: 'Contributors',
+            value: [
+              '**Mesozoic Valley Guide:** Jojoseis',
+              '**Image for Prestige List:** Hardik Chavada',
+              '**Image for Nanobots:** SampeDrako',
+              '**Image for Currency:** Off Pringles',
+            ].join('\n'),
+          },
         );
-    else if (action == 'semblance')
-      embed.setTitle('Semblance - by cabiie').setImage(interaction.client.user.displayAvatarURL() + '?size=2048');
-    else if (action == 'semblance-beta')
-      embed
-        .setTitle('Semblance Beta - by Lemon')
-        .setImage(
-          'https://cdn.discordapp.com/avatars/794049840651960350/b101b9f78fb44d2c0b0c40e53b17e677.png?size=2048',
-        );
-    else if (action == 'semblance-revisioned')
-      embed.setTitle('Semblance Revisioned - by StarLuckArt(WIP/Not previewable yet)');
-    const component = filterAction([new ActionRow().addComponents(...creditComponents)], action);
-    interaction.update({ embeds: [embed], components: component });
-  },
-} as ComponentHandler;
+        break;
+      case 'thanks':
+        embed
+          .setTitle('Special Thanks')
+          .setDescription(
+            'Special Thanks to Aditya for motivating me from the very beginning to work on this bot. ' +
+              "If it weren't for him, my bot wouldn't even be at this point right now; running on an actual server, " +
+              'built with a better Discord module than previously, and have this many features. He even convinced Hype ' +
+              "to add my bot to Cell to Singularity, which I can't thank him enough for, cause I was too shy to ask Hype. " +
+              "Thanks again, Aditya, you've helped me a lot. :D",
+          );
+        break;
+      case 'semblance':
+        embed.setTitle('Semblance - by cabiie').setImage(interaction.client.user.displayAvatarURL() + '?size=2048');
+        break;
+      case 'semblance-beta':
+        embed
+          .setTitle('Semblance Beta - by Lemon')
+          .setImage(
+            'https://cdn.discordapp.com/avatars/794049840651960350/b101b9f78fb44d2c0b0c40e53b17e677.png?size=2048',
+          );
+        break;
+      case 'semblance-revisioned':
+        embed.setTitle('Semblance Revisioned - by StarLuckArt(WIP/Not previewable yet)');
+        break;
+      default:
+        return;
+    }
+
+    const component = filterAction([new ActionRow().addComponents(...creditComponents)], data.action);
+    await interaction.update({ embeds: [embed], components: component });
+  }
+}

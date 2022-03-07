@@ -29,6 +29,10 @@ export interface CustomIdData {
   id: Snowflake;
 }
 
+export type ParsedCustomIdData<T extends string = string> = Omit<CustomIdData, 'command' | 'action'> & {
+  action: T;
+};
+
 export type Category =
   | 'fun'
   | 'game'
