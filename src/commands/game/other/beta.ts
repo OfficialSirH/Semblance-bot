@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { currentLogo } from '#config';
 import { Categories, randomColor, Subcategories } from '#constants/index';
@@ -11,7 +11,7 @@ export default class Beta extends Command {
 
   public override async sharedRun() {
     const infoHandler = await this.container.client.db.information.findUnique({ where: { type: 'beta' } });
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Beta')
       .setColor(randomColor)
       .setThumbnail(currentLogo.name)

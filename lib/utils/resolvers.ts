@@ -1,5 +1,5 @@
 import { onlyUnique } from '#constants/index';
-import { Snowflake, Guild, GuildMember, ChannelType } from 'discord.js';
+import type { Snowflake, Guild, GuildMember } from 'discord.js';
 
 export const getRole = (search: string | Snowflake, guild: Guild) =>
   guild.roles.cache.find(r => r.name == search) ??
@@ -14,7 +14,7 @@ export const getMember = (search: string | Snowflake, guild: Guild) =>
   guild.members.cache.get(getId(search) as Snowflake);
 
 export const getChannel = (search: string | Snowflake, guild: Guild) => {
-  const channels = guild.channels.cache.filter(ch => ch.type == ChannelType.GuildText && ch.viewable);
+  const channels = guild.channels.cache.filter(ch => ch.type == 'GUILD_TEXT' && ch.viewable);
   return (
     false ??
     channels.find(ch => search.toLowerCase() == ch.name.toLowerCase()) ??

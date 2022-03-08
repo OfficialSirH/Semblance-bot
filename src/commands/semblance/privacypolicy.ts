@@ -1,4 +1,4 @@
-import { Embed, type Message } from 'discord.js';
+import { MessageEmbed, type Message } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -8,7 +8,7 @@ export default class PrivacyPolicy extends Command {
   public override fullCategory = [Categories.semblance];
 
   public override async messageRun(message: Message) {
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Privacy Policy')
       .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
       .setColor(randomColor)

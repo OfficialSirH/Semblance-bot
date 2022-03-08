@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, prefix, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
@@ -12,7 +12,7 @@ export default class ItemHelp extends Command {
     const client = builder.client;
     const user = 'user' in builder ? builder.user : builder.author;
 
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Item Calculator Help')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)

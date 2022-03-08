@@ -1,8 +1,8 @@
-import { type ButtonInteraction, ButtonStyle } from 'discord.js';
-import { Collection, ActionRow, ButtonComponent } from 'discord.js';
+import type { ButtonInteraction } from 'discord.js';
+import { Collection, MessageActionRow, MessageButton } from 'discord.js';
 import { c2sRoles } from '#constants/index';
 import { c2sGuildId, currentLogo } from '#config';
-import { componentInteractionDefaultParser, buildCustomId, defaultEmojiToUsableEmoji } from '#constants/components';
+import { componentInteractionDefaultParser, buildCustomId } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 import type { ParsedCustomIdData } from 'Semblance';
 const cooldown: Collection<string, number> = new Collection();
@@ -35,8 +35,8 @@ export default class Roles extends InteractionHandler {
 
     const isAddingRole = data.action == 'add-events',
       components = [
-        new ActionRow().addComponents(
-          new ButtonComponent()
+        new MessageActionRow().addComponents(
+          new MessageButton()
             .setDisabled(guild.id != c2sGuildId)
             .setCustomId(
               buildCustomId({
@@ -45,9 +45,9 @@ export default class Roles extends InteractionHandler {
                 id: interaction.user.id,
               }),
             )
-            .setEmoji(defaultEmojiToUsableEmoji(isAddingRole ? '❌' : '✅'))
+            .setEmoji(isAddingRole ? '❌' : '✅')
             .setLabel(isAddingRole ? 'Remove Server Events Role' : 'Add Server Events Role')
-            .setStyle(isAddingRole ? ButtonStyle.Danger : ButtonStyle.Success),
+            .setStyle(isAddingRole ? 'DANGER' : 'SUCCESS'),
         ),
       ];
 

@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { currentLogo, prestige } from '#config';
 import { Categories, randomColor, Subcategories } from '#constants/index';
@@ -11,7 +11,7 @@ export default class Prestige extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Mesozoic Valley Prestige')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)

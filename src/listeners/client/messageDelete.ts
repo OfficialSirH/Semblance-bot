@@ -1,8 +1,7 @@
 import { bugChannels, correctReportList } from '#constants/index';
 import { c2sGuildId } from '#config';
 import { promisify } from 'util';
-import { Listener } from '@sapphire/framework';
-import { Events } from 'discord.js';
+import { Events, Listener } from '@sapphire/framework';
 import type { Message, PartialMessage } from 'discord.js';
 const wait = promisify(setTimeout);
 

@@ -1,6 +1,6 @@
 import { type ApplicationCommandRegistry, Command, Args } from '@sapphire/framework';
 import { messageLinkJump } from '#constants/commands';
-import { ApplicationCommandOptionType, ChatInputCommandInteraction, Message } from 'discord.js';
+import type { CommandInteraction, Message } from 'discord.js';
 
 export default class Jump extends Command {
   public override name = 'jump';
@@ -16,7 +16,7 @@ export default class Jump extends Command {
     else return message.channel.send("The argument you provided isn't a valid link.");
   }
 
-  public async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const link = interaction.options.getString('url', true);
 
     return interaction.reply(await messageLinkJump(link, interaction.user, interaction.guild, interaction.client));
@@ -29,7 +29,7 @@ export default class Jump extends Command {
       options: [
         {
           name: 'url',
-          type: ApplicationCommandOptionType.String,
+          type: 'STRING',
           required: true,
           description: 'The message to jump to',
         },

@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, randomColor, Subcategories } from '#constants/index';
 import { currentLogo, trexSkull } from '#config';
@@ -10,7 +10,7 @@ export default class Dinos extends Command {
   public override fullCategory = [Categories.game, Subcategories.mesozoic];
 
   public override sharedRun() {
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle(`${trexSkull} Mesozoic Valley`)
       .setColor(randomColor)
       .setThumbnail(currentLogo.name)

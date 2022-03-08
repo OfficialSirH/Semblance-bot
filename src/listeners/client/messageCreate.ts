@@ -1,5 +1,4 @@
-import { Listener } from '@sapphire/framework';
-import { ChannelType, Events, MessageType } from 'discord.js';
+import { Events, Listener } from '@sapphire/framework';
 import type { Message } from 'discord.js';
 import { c2sGuildId, ignoredGuilds } from '#config';
 import { createBoosterRewards } from '#constants/models';
@@ -13,13 +12,13 @@ export default class MessageCreate extends Listener<typeof Events.MessageCreate>
   }
 
   public override async run(message: Message) {
-    if (message.channel.type == ChannelType.DM) return;
+    if (message.channel.type == 'DM') return;
     if (ignoredGuilds.includes(message.guild.id) ?? message.author.bot) return;
 
     if (
       message.guild.id == c2sGuildId &&
       message.channel.name == 'booster-chat' &&
-      message.type == MessageType.UserPremiumGuildSubscription
+      message.type == 'USER_PREMIUM_GUILD_SUBSCRIPTION'
     )
       return createBoosterRewards(message.client, message);
   }

@@ -1,6 +1,6 @@
 import type { RPSGame } from '#lib/interfaces/rps';
 import type { ButtonInteraction, Snowflake } from 'discord.js';
-import { Collection, Embed } from 'discord.js';
+import { Collection, MessageEmbed } from 'discord.js';
 import { choiceToOutcome, countdownGIF } from '#constants/commands';
 import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
@@ -46,7 +46,7 @@ export default class RPS extends InteractionHandler {
 
     if (!!player.choice && !!opponent.choice) {
       const playerVictory = choiceToOutcome(player.choice, opponent.choice),
-        embed = new Embed().setThumbnail(countdownGIF),
+        embed = new MessageEmbed().setThumbnail(countdownGIF),
         description = `${player.tag} chose ${player.choice} and ${opponent.tag} chose ${opponent.choice}`;
 
       if (playerVictory == 'tie')

@@ -2,7 +2,7 @@ import { c2sGuildId } from '#config';
 import { createHmac } from 'crypto';
 import type { Args } from '@sapphire/framework';
 import { Command } from '@sapphire/framework';
-import { ChannelType, type Message } from 'discord.js';
+import type { Message } from 'discord.js';
 import { Categories } from '#constants/index';
 
 // TODO: make this no longer require the need for stupid DMs
@@ -19,7 +19,7 @@ export default class Link extends Command {
   }
 
   public override async messageRun(message: Message, args: Args) {
-    if (message.channel.type != ChannelType.DM) message.delete().catch(() => null);
+    if (message.channel.type != 'DM') message.delete().catch(() => null);
 
     const isMember = !!(await message.client.guilds.cache
       .get(c2sGuildId)

@@ -1,13 +1,10 @@
 import {
-  ActionRow,
-  ButtonComponent,
-  Embed,
-  ButtonStyle,
-  type ChatInputCommandInteraction,
-  SelectMenuComponent,
-  ApplicationCommandOptionType,
+  MessageActionRow,
+  MessageButton,
+  MessageEmbed,
+  type CommandInteraction,
+  MessageSelectMenu,
   type AutocompleteInteraction,
-  SelectMenuOption,
 } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, prefix, randomColor } from '#constants/index';
@@ -25,7 +22,7 @@ export default class Help extends Command {
       .get('commands')
       .filter(c => c.category === Categories.c2sServer)
       .map(c => `**${prefix}${c.name}**`);
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Semblance Command List')
       .setColor(randomColor)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
@@ -49,8 +46,8 @@ export default class Help extends Command {
         text: `Stay Cellular! If you really like the work I've done to Semblance, then check out ${prefix}patreon :D`,
       });
     const components = [
-      new ActionRow().addComponents(
-        new ButtonComponent()
+      new MessageActionRow().addComponents(
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'help',
@@ -59,8 +56,8 @@ export default class Help extends Command {
             }),
           )
           .setLabel('Cell to Singularity Help')
-          .setStyle(ButtonStyle.Primary),
-        new ButtonComponent()
+          .setStyle('PRIMARY'),
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'help',
@@ -69,8 +66,8 @@ export default class Help extends Command {
             }),
           )
           .setLabel('Calculator Help')
-          .setStyle(ButtonStyle.Primary),
-        new ButtonComponent()
+          .setStyle('PRIMARY'),
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'help',
@@ -79,8 +76,8 @@ export default class Help extends Command {
             }),
           )
           .setLabel('Miscellaneous Help')
-          .setStyle(ButtonStyle.Primary),
-        new ButtonComponent()
+          .setStyle('PRIMARY'),
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'help',
@@ -89,8 +86,8 @@ export default class Help extends Command {
             }),
           )
           .setLabel('Close')
-          .setEmoji({ name: '🚫' })
-          .setStyle(ButtonStyle.Secondary),
+          .setEmoji('🚫')
+          .setStyle('SECONDARY'),
       ),
     ];
     return {
@@ -104,7 +101,7 @@ export default class Help extends Command {
     await message.reply(this.sharedRun(message));
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const query = interaction.options.getString('query');
     if (!query) return interaction.reply(this.sharedRun(interaction));
 
@@ -115,8 +112,8 @@ export default class Help extends Command {
       const components = possibleQueries.reduce((acc, cur, i) => {
         const index = Math.floor(i / 25);
         if (!acc[index])
-          acc[index] = new ActionRow().addComponents(
-            new SelectMenuComponent()
+          acc[index] = new MessageActionRow().addComponents(
+            new MessageSelectMenu()
               .setCustomId(
                 buildCustomId({
                   command: 'help',
@@ -126,14 +123,12 @@ export default class Help extends Command {
               )
               .setPlaceholder('Select a query'),
           );
-        (acc[index].components[0] as SelectMenuComponent).addOptions(
-          new SelectMenuOption().setLabel(cur).setValue(cur),
-        );
+        (acc[index].components[0] as MessageSelectMenu).addOptions({ label: cur, value: cur });
         return acc;
-      }, [] as ActionRow[]);
+      }, [] as MessageActionRow[]);
       return interaction.reply({
         embeds: [
-          new Embed()
+          new MessageEmbed()
             .setTitle('Help')
             .setDescription(
               "Due to an invalid query, here's a provided list from Semblance's help command in the dropdowns below.",
@@ -173,7 +168,7 @@ export default class Help extends Command {
         {
           name: 'query',
           description: 'The query to search for.',
-          type: ApplicationCommandOptionType.String,
+          type: 'STRING',
           autocomplete: true,
         },
       ],

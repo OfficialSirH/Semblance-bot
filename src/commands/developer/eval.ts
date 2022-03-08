@@ -1,4 +1,4 @@
-import { ApplicationCommandType, type ContextMenuCommandInteraction, Embed, MessageAttachment } from 'discord.js';
+import { type ContextMenuInteraction, MessageEmbed, MessageAttachment } from 'discord.js';
 import { Categories, prefix, randomColor } from '#constants/index';
 import type { Message } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
@@ -16,10 +16,10 @@ export default class Eval extends Command {
     });
   }
 
-  public async evalSharedRun(builder: Message | ContextMenuCommandInteraction, content: string) {
-    const embed = new Embed()
+  public async evalSharedRun(builder: Message | ContextMenuInteraction, content: string) {
+    const embed = new MessageEmbed()
       .setColor(randomColor)
-      .addField({ name: '📥 Input', value: `\`\`\`js\n${content.substring(0, 1015)}\`\`\`` })
+      .addField('📥 Input', `\`\`\`js\n${content.substring(0, 1015)}\`\`\``)
       .setFooter({ text: 'Feed me code!' });
     try {
       let evaled = eval(`(async () => { ${content} })().catch(e => { return "Error: " + e })`);
@@ -30,12 +30,10 @@ export default class Eval extends Command {
         if (evaled.length > 1015) {
           const evalOutputFile = new MessageAttachment(Buffer.from(`${evaled}`), 'evalOutput.js');
           data.files = [evalOutputFile];
-          embed
-            .addField({ name: '📤 Output', value: 'Output is in file preview above' })
-            .setTitle('✅ Evaluation Completed');
+          embed.addField('📤 Output', 'Output is in file preview above').setTitle('✅ Evaluation Completed');
         } else
           embed
-            .addField({ name: '📤 Output', value: `\`\`\`js\n${evaled.substring(0, 1015)}\`\`\`` })
+            .addField('📤 Output', `\`\`\`js\n${evaled.substring(0, 1015)}\`\`\``)
             .setTitle('✅ Evaluation Completed');
         data.embeds = [embed];
         await builder.reply(data);
@@ -45,7 +43,7 @@ export default class Eval extends Command {
         // eslint-disable-next-line no-ex-assign
         e = e.replace(/`/g, '`' + String.fromCharCode(8203)).replace(/@/g, '@' + String.fromCharCode(8203));
       embed
-        .addField({ name: '📤 Output', value: `\`\`\`fix\n${e.toString().substring(0, 1014)}\`\`\`` })
+        .addField('📤 Output', `\`\`\`fix\n${e.toString().substring(0, 1014)}\`\`\``)
         .setTitle('❌ Evaluation Failed');
       await builder.reply({ embeds: [embed] });
     }
@@ -56,7 +54,7 @@ export default class Eval extends Command {
     await this.evalSharedRun(message, content);
   }
 
-  public override async contextMenuRun(interaction: ContextMenuCommandInteraction<'cached'>) {
+  public override async contextMenuRun(interaction: ContextMenuInteraction<'cached'>) {
     const message = interaction.options.getMessage('message');
     if (!message) return interaction.reply({ content: 'Could not find message.', ephemeral: true });
     const content = message.content.slice(prefix.length + this.name.length + 1);
@@ -67,7 +65,7 @@ export default class Eval extends Command {
     registry.registerContextMenuCommand(
       {
         name: this.name,
-        type: ApplicationCommandType.Message,
+        type: 'MESSAGE',
         defaultPermission: false,
       },
       {

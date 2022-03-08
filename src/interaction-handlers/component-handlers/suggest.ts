@@ -2,7 +2,7 @@ import { getPermissionLevel } from '#constants/index';
 import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 import type { ButtonInteraction, TextBasedChannel } from 'discord.js';
-import { ActionRow, Embed } from 'discord.js';
+import { MessageActionRow, MessageEmbed } from 'discord.js';
 import type { ParsedCustomIdData } from 'Semblance';
 
 export default class HANDLER_NAME extends InteractionHandler {
@@ -27,12 +27,12 @@ export default class HANDLER_NAME extends InteractionHandler {
     if (!['accept', 'deny', 'silent-deny'].includes(data.action))
       return interaction.reply("Something ain't working right");
 
-    (interaction.message.components as ActionRow[]).forEach(component =>
+    (interaction.message.components as MessageActionRow[]).forEach(component =>
       component.components.forEach(c => c.setDisabled(true)),
     );
     await interaction.update({
       content: `${data.action != 'accept' ? 'denied' : 'accepted'} by ${interaction.user}`,
-      components: interaction.message.components as ActionRow[],
+      components: interaction.message.components as MessageActionRow[],
     });
 
     if (data.action == 'silent-deny') return;
@@ -46,7 +46,7 @@ export default class HANDLER_NAME extends InteractionHandler {
       );
       return (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannel).send({
         embeds: [
-          new Embed()
+          new MessageEmbed()
             .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
             .setDescription(interaction.message.embeds[0].description),
         ],

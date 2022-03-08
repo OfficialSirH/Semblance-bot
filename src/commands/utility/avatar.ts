@@ -1,5 +1,5 @@
-import { ApplicationCommandOptionType, type ChatInputCommandInteraction, type Message, type User } from 'discord.js';
-import { Embed } from 'discord.js';
+import type { CommandInteraction, Message, User } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { Categories, getAvatar, randomColor } from '#constants/index';
 import { type Args, Command, type ApplicationCommandRegistry } from '@sapphire/framework';
 
@@ -8,12 +8,12 @@ export default class Avatar extends Command {
   public override description = 'Get the avatar of a user.';
   public override fullCategory = [Categories.utility];
 
-  public async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const user = interaction.options.getUser('user')
         ? await this.container.client.users.fetch(interaction.options.getUser('user').id)
         : interaction.member.user,
       author = interaction.member.user,
-      embed = new Embed()
+      embed = new MessageEmbed()
         .setTitle(`${user.username}'s Avatar`)
         .setAuthor({ name: `${author.tag}`, iconURL: author.displayAvatarURL() })
         .setColor(randomColor)
@@ -28,7 +28,7 @@ export default class Avatar extends Command {
     if (!userArg.success) user = message.author;
     else user = userArg.value;
 
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Avatar')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)
@@ -43,7 +43,7 @@ export default class Avatar extends Command {
       options: [
         {
           name: 'user',
-          type: ApplicationCommandOptionType.User,
+          type: 'USER',
           description: 'The user to get the avatar of.',
           required: false,
         },

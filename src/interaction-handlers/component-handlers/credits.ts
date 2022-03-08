@@ -1,6 +1,6 @@
 import { buildCustomId, componentInteractionDefaultParser, filterAction } from '#constants/components';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
-import { ActionRow, ButtonComponent, ButtonStyle, Embed } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import type { ButtonInteraction } from 'discord.js';
 import type { ParsedCustomIdData } from 'Semblance';
 
@@ -21,9 +21,9 @@ export default class Credits extends InteractionHandler {
     interaction: ButtonInteraction,
     data: ParsedCustomIdData<'credits' | 'thanks' | 'semblance' | 'semblance-beta' | 'semblance-revisioned'>,
   ) {
-    const embed = new Embed();
+    const embed = new MessageEmbed();
     const creditComponents = [
-      new ButtonComponent()
+      new MessageButton()
         .setCustomId(
           buildCustomId({
             command: this.name,
@@ -32,8 +32,8 @@ export default class Credits extends InteractionHandler {
           }),
         )
         .setLabel('Credits')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonComponent()
+        .setStyle('PRIMARY'),
+      new MessageButton()
         .setCustomId(
           buildCustomId({
             command: this.name,
@@ -42,8 +42,8 @@ export default class Credits extends InteractionHandler {
           }),
         )
         .setLabel('Special Thanks')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonComponent()
+        .setStyle('PRIMARY'),
+      new MessageButton()
         .setCustomId(
           buildCustomId({
             command: this.name,
@@ -52,8 +52,8 @@ export default class Credits extends InteractionHandler {
           }),
         )
         .setLabel('Preview Semblance Art')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonComponent()
+        .setStyle('PRIMARY'),
+      new MessageButton()
         .setCustomId(
           buildCustomId({
             command: this.name,
@@ -62,8 +62,8 @@ export default class Credits extends InteractionHandler {
           }),
         )
         .setLabel('Preview Semblance Beta Art')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonComponent()
+        .setStyle('PRIMARY'),
+      new MessageButton()
         .setCustomId(
           buildCustomId({
             command: this.name,
@@ -72,7 +72,7 @@ export default class Credits extends InteractionHandler {
           }),
         )
         .setLabel('Preview Semblance Revisioned Art')
-        .setStyle(ButtonStyle.Primary),
+        .setStyle('PRIMARY'),
     ];
 
     switch (data.action) {
@@ -129,7 +129,7 @@ export default class Credits extends InteractionHandler {
         return;
     }
 
-    const component = filterAction([new ActionRow().addComponents(...creditComponents)], data.action);
+    const component = filterAction([new MessageActionRow().addComponents(...creditComponents)], data.action);
     await interaction.update({ embeds: [embed], components: component });
   }
 }

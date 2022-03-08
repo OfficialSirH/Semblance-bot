@@ -1,13 +1,13 @@
 import { Categories } from '#constants/index';
 import { Command } from '@sapphire/framework';
-import { Embed, Message } from 'discord.js';
+import { MessageEmbed, Message } from 'discord.js';
 
 export default class Freedarwinium extends Command {
   public override name = 'freedarwinium';
   public override fullCategory = [Categories.secret];
 
   public override sharedRun() {
-    const embed = new Embed().setTitle('Secret').setURL('https://rb.gy/enaq3a');
+    const embed = new MessageEmbed().setTitle('Secret').setURL('https://rb.gy/enaq3a');
     return { embeds: [embed], ephemeral: true };
   }
 

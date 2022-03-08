@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, randomColor, Subcategories } from '#constants/index';
 import { currentLogo, sharks } from '#config';
@@ -10,7 +10,7 @@ export default class Sharks extends Command {
   public override fullCategory = [Categories.game, Subcategories.main];
 
   public override sharedRun() {
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Sharks')
       .setColor(randomColor)
       .setImage(sharks.name)

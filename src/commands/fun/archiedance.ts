@@ -1,5 +1,5 @@
 import type { Message } from 'discord.js';
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { archieDance } from '#config';
 import { Command } from '@sapphire/framework';
 import { Categories } from '#constants/index';
@@ -10,7 +10,7 @@ export default class ArchieDance extends Command {
   public override fullCategory = [Categories.fun];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Dancing Archie/Jotaru')
       .setAuthor({
         name: builder.member.user.tag,

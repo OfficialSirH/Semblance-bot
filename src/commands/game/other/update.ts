@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, randomColor, Subcategories } from '#constants/index';
 import { currentLogo } from '#config';
@@ -11,7 +11,7 @@ export default class Update extends Command {
 
   public override async sharedRun() {
     const infoHandler = await this.container.client.db.information.findUnique({ where: { type: 'update' } });
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Steam and Mobile Updates')
       .setColor(randomColor)
       .setThumbnail(currentLogo.name)

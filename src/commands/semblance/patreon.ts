@@ -1,5 +1,5 @@
-import { ActionRow, ButtonComponent, ButtonStyle, Embed } from 'discord.js';
-import type { Message, ChatInputCommandInteraction } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import type { Message, CommandInteraction } from 'discord.js';
 import { Categories } from '#constants/index';
 import { patreon, sirhGuildId } from '#config';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
@@ -10,14 +10,14 @@ export default class Patreon extends Command {
   public override fullCategory = [Categories.semblance];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
-    const component = new ActionRow().addComponents(
-      new ButtonComponent()
-        .setStyle(ButtonStyle.Link)
+    const component = new MessageActionRow().addComponents(
+      new MessageButton()
+        .setStyle('LINK')
         .setLabel('CLICK ME!')
         .setEmoji(builder.client.guilds.cache.get(sirhGuildId).emojis.cache.find(c => c.name == 'SirUwU'))
         .setURL('https://www.patreon.com/SirHDeveloper'),
     );
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('My Patreon')
       .setURL('https://www.patreon.com/SirHDeveloper')
       .setImage(patreon.name)
@@ -42,7 +42,7 @@ export default class Patreon extends Command {
     await message.reply(this.sharedRun(message));
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     await interaction.reply(this.sharedRun(interaction));
   }
 

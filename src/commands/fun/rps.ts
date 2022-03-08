@@ -1,10 +1,9 @@
 import {
-  ActionRow,
+  MessageActionRow,
   ApplicationCommandOptionType,
-  ButtonComponent,
-  ButtonStyle,
-  type ChatInputCommandInteraction,
-  Embed,
+  MessageButton,
+  type CommandInteraction,
+  MessageEmbed,
   type InteractionReplyOptions,
   type ReplyMessageOptions,
 } from 'discord.js';
@@ -23,7 +22,7 @@ export default class Rps extends Command {
   public override description = 'Play rock paper scissors';
   public override fullCategory = [Categories.fun];
 
-  public async rpsSharedRun<T extends Message | ChatInputCommandInteraction<'cached'>>(
+  public async rpsSharedRun<T extends Message | CommandInteraction<'cached'>>(
     builder: T,
     args: RPSCommandArgs,
   ): Promise<string | (T extends Message ? MessageOptions | ReplyMessageOptions : InteractionReplyOptions)> {
@@ -50,8 +49,8 @@ export default class Rps extends Command {
       return `You can't face a bot (except for me) so what are you doing trying to fight ${args.opponent?.user?.tag}?`;
 
     const components = [
-        new ActionRow().addComponents(
-          new ButtonComponent()
+        new MessageActionRow().addComponents(
+          new MessageButton()
             .setLabel('Rock')
             .setCustomId(
               buildCustomId({
@@ -60,9 +59,9 @@ export default class Rps extends Command {
                 id: user.id,
               }),
             )
-            .setEmoji(defaultEmojiToUsableEmoji('🪨'))
-            .setStyle(ButtonStyle.Secondary),
-          new ButtonComponent()
+            .setEmoji('🪨')
+            .setStyle('SECONDARY'),
+          new MessageButton()
             .setLabel('Paper')
             .setCustomId(
               buildCustomId({
@@ -71,9 +70,9 @@ export default class Rps extends Command {
                 id: user.id,
               }),
             )
-            .setEmoji(defaultEmojiToUsableEmoji('📄'))
-            .setStyle(ButtonStyle.Secondary),
-          new ButtonComponent()
+            .setEmoji('📄')
+            .setStyle('SECONDARY'),
+          new MessageButton()
             .setLabel('Scissors')
             .setCustomId(
               buildCustomId({
@@ -82,9 +81,9 @@ export default class Rps extends Command {
                 id: user.id,
               }),
             )
-            .setEmoji(defaultEmojiToUsableEmoji('✂'))
-            .setStyle(ButtonStyle.Secondary),
-          new ButtonComponent()
+            .setEmoji('✂')
+            .setStyle('SECONDARY'),
+          new MessageButton()
             .setLabel('Lizard')
             .setCustomId(
               buildCustomId({
@@ -93,9 +92,9 @@ export default class Rps extends Command {
                 id: user.id,
               }),
             )
-            .setEmoji(defaultEmojiToUsableEmoji('🦎'))
-            .setStyle(ButtonStyle.Secondary),
-          new ButtonComponent()
+            .setEmoji('🦎')
+            .setStyle('SECONDARY'),
+          new MessageButton()
             .setLabel('Spock')
             .setCustomId(
               buildCustomId({
@@ -104,11 +103,11 @@ export default class Rps extends Command {
                 id: user.id,
               }),
             )
-            .setEmoji(defaultEmojiToUsableEmoji('👽'))
-            .setStyle(ButtonStyle.Secondary),
+            .setEmoji('👽')
+            .setStyle('SECONDARY'),
         ),
       ],
-      embed = new Embed()
+      embed = new MessageEmbed()
         .setTitle(`${user.tag} has challenged ${args.opponent?.user?.tag} to Rock, Paper, Scissors, Lizard, Spock!`)
         .setThumbnail(countdownGIF)
         .setColor(randomColor)
@@ -189,7 +188,7 @@ export default class Rps extends Command {
     await message.reply((await this.rpsSharedRun(message, mappedArgs)) as ReplyMessageOptions);
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const choice = interaction.options.getString('choice');
     const opponent: GuildMember = await interaction.guild.members
       .fetch(interaction.options.getUser('opponent').id)
@@ -210,13 +209,13 @@ export default class Rps extends Command {
         {
           name: 'choice',
           description: 'The choice you want to use against your opponent',
-          type: ApplicationCommandOptionType.String,
+          type: 'STRING',
           required: false,
         },
         {
           name: 'opponent',
           description: 'Who you want to go against',
-          type: ApplicationCommandOptionType.User,
+          type: 'USER',
           required: false,
         },
       ],

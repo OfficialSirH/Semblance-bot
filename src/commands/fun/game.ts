@@ -1,4 +1,4 @@
-import { ActionRow, ButtonComponent, ButtonStyle, type ChatInputCommandInteraction, Embed } from 'discord.js';
+import { MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
@@ -15,7 +15,7 @@ export default class Game extends Command {
     const client = builder.client;
 
     const statsHandler = await client.db.game.findUnique({ where: { player: user.id } }),
-      embed = new Embed();
+      embed = new MessageEmbed();
     let cost: number;
     if (!statsHandler)
       embed
@@ -61,8 +61,8 @@ export default class Game extends Command {
         (cost = await currentPrice(client, statsHandler));
 
     const components = [
-      new ActionRow().addComponents(
-        new ButtonComponent()
+      new MessageActionRow().addComponents(
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'game',
@@ -70,10 +70,10 @@ export default class Game extends Command {
               id: user.id,
             }),
           )
-          .setStyle(ButtonStyle.Primary)
-          .setEmoji({ name: '❔' })
+          .setStyle('PRIMARY')
+          .setEmoji('❔')
           .setLabel('About'),
-        new ButtonComponent()
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'game',
@@ -82,10 +82,10 @@ export default class Game extends Command {
             }),
           )
           .setDisabled(!statsHandler)
-          .setStyle(ButtonStyle.Primary)
-          .setEmoji({ name: '💵' })
+          .setStyle('PRIMARY')
+          .setEmoji('💵')
           .setLabel('Collect'),
-        new ButtonComponent()
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'game',
@@ -94,10 +94,10 @@ export default class Game extends Command {
             }),
           )
           .setDisabled(!statsHandler || statsHandler.money < cost)
-          .setStyle(ButtonStyle.Primary)
-          .setEmoji({ name: '⬆' })
+          .setStyle('PRIMARY')
+          .setEmoji('⬆')
           .setLabel('Upgrade'),
-        new ButtonComponent()
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'game',
@@ -105,10 +105,10 @@ export default class Game extends Command {
               id: user.id,
             }),
           )
-          .setStyle(ButtonStyle.Primary)
-          .setEmoji({ name: '🏅' })
+          .setStyle('PRIMARY')
+          .setEmoji('🏅')
           .setLabel('Leaderboard'),
-        new ButtonComponent()
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'game',
@@ -116,8 +116,8 @@ export default class Game extends Command {
               id: user.id,
             }),
           )
-          .setStyle(ButtonStyle.Primary)
-          .setEmoji({ name: '💰' })
+          .setStyle('PRIMARY')
+          .setEmoji('💰')
           .setLabel('Voting Sites'),
       ),
     ];
@@ -133,7 +133,7 @@ export default class Game extends Command {
     await message.reply(await this.sharedRun(message));
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     await interaction.reply(await this.sharedRun(interaction));
   }
 

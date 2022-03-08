@@ -1,18 +1,18 @@
 import type { InteractionHandler } from '@sapphire/framework';
-import { type ActionRow, type MessageComponentInteraction, ButtonComponent, ButtonStyle } from 'discord.js';
+import { type MessageActionRow, type MessageComponentInteraction, MessageButton } from 'discord.js';
 import type { CustomIdData } from 'Semblance';
 
-export const filterAction = (components: ActionRow[], action: string) =>
+export const filterAction = (components: MessageActionRow[], action: string) =>
   components.map(
     c =>
       ({
         ...c,
-        components: c.components.filter(c => JSON.parse(c.custom_id).action != action),
-      } as ActionRow),
+        components: c.components.filter(c => JSON.parse(c.customId).action != action),
+      } as MessageActionRow),
   );
 
 export const disableComponentsByLabel = (
-  components: ActionRow[],
+  components: MessageActionRow[],
   labels: string[],
   { enableInstead = false, oppositeOfLabel = false }: { enableInstead?: boolean; oppositeOfLabel?: boolean },
 ) =>
@@ -28,7 +28,7 @@ export const disableComponentsByLabel = (
           }
           if (labels.includes(c.label)) return c.setDisabled(!enableInstead);
         }),
-      } as ActionRow),
+      } as MessageActionRow),
   );
 
 /**
@@ -55,18 +55,18 @@ export const componentInteractionDefaultParser = async (
 };
 
 export const backButton = (command: string, userId: string, whereToGo: string) =>
-  new ButtonComponent()
+  new MessageButton()
     .setCustomId(buildCustomId({ command, id: userId, action: whereToGo }))
     .setLabel('Back')
-    .setEmoji(defaultEmojiToUsableEmoji('⬅️'))
-    .setStyle(ButtonStyle.Secondary);
+    .setEmoji('⬅️')
+    .setStyle('SECONDARY');
 
 export const closeButton = (command: string, userId: string) =>
-  new ButtonComponent()
+  new MessageButton()
     .setCustomId(buildCustomId({ command, id: userId, action: 'close' }))
     .setLabel('Close')
-    .setEmoji(defaultEmojiToUsableEmoji('🚫'))
-    .setStyle(ButtonStyle.Secondary);
+    .setEmoji('🚫')
+    .setStyle('SECONDARY');
 
 export const defaultEmojiToUsableEmoji = (emoji: string) => ({ name: emoji });
 

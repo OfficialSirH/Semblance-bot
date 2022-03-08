@@ -1,5 +1,5 @@
 import {
-  ActionRow,
+  MessageActionRow,
   InteractionReplyOptions,
   type ButtonInteraction,
   type MessageComponentInteraction,
@@ -72,7 +72,7 @@ export default class Help extends InteractionHandler {
     >,
   ) {
     const client = interaction.client;
-    const components = [new ActionRow()];
+    const components = [new MessageActionRow()];
     if (data.action != 'help')
       components
         .at(0)

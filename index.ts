@@ -30,10 +30,9 @@ import { isProduction, prefix } from '#constants/index';
 import { SapphireClient } from '@sapphire/framework';
 import {
   type Awaitable,
-  GatewayIntentBits,
+  Intents,
   type Message,
   Options,
-  Partials,
   InteractionReplyOptions,
   MessageOptions,
   ReplyMessageOptions,
@@ -53,8 +52,8 @@ const client = new SapphireClient({
     GuildMemberManager: 1,
     UserManager: 1,
   }),
-  partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message],
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages],
+  partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE'],
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
 });
 client.db = new prisma.PrismaClient();
 

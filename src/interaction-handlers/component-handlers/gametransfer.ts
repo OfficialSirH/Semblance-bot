@@ -1,4 +1,4 @@
-import { type ButtonInteraction, Embed } from 'discord.js';
+import { type ButtonInteraction, MessageEmbed } from 'discord.js';
 import { gameTransferPages } from '#constants/commands';
 import { currentLogo } from '#config';
 import { componentInteractionDefaultParser } from '#constants/components';
@@ -19,8 +19,8 @@ export default class GameTransfer extends InteractionHandler {
   }
 
   public override async run(interaction: ButtonInteraction, data: ParsedCustomIdData<'right' | 'left'>) {
-    let embed = interaction.message.embeds[0] as Embed;
-    if (!('setDescription' in embed)) embed = new Embed(embed);
+    let embed = interaction.message.embeds[0] as MessageEmbed;
+    if (!('setDescription' in embed)) embed = new MessageEmbed(embed);
 
     let currentPage = gameTransferPages.indexOf(embed.image.url);
 

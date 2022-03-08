@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import { mementoMori } from '#config';
@@ -10,7 +10,7 @@ export default class Mementomori extends Command {
 
   public override async sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Memento Mori')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)

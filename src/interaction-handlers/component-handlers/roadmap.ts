@@ -1,9 +1,9 @@
 import { currentLogo, earlyBeyondTesters, roadMap } from '#config';
 import { randomColor } from '#constants/index';
 import { backButton, buildCustomId, componentInteractionDefaultParser } from '#constants/components';
-import { ActionRow, ButtonComponent, time, TimestampStyles } from '@discordjs/builders';
+import { MessageActionRow, MessageButton } from 'discord.js';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
-import { type ButtonInteraction, Embed, ButtonStyle } from 'discord.js';
+import { type ButtonInteraction, MessageEmbed } from 'discord.js';
 import type { ParsedCustomIdData } from 'Semblance';
 
 export default class Roadmap extends InteractionHandler {
@@ -37,16 +37,13 @@ export default class Roadmap extends InteractionHandler {
 }
 
 function earlyBeyond(interaction: ButtonInteraction) {
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setTitle('Beyond Clips')
     .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
       [
-        `Fun Fact: The Beyond was mentioned 5203 times since ${time(
-          1611959542848,
-          TimestampStyles.LongDate,
-        )} all the way till ${time(1635971517445, TimestampStyles.LongDate)}\n`,
+        `Fun Fact: The Beyond was mentioned 5203 times since <:F:${1611959542848}> all the way till <:F:${1635971517445}>\n`,
         '[Clip One](https://clips.twitch.tv/CharmingVibrantWatermelonPeoplesChamp)',
         '[Clip Two](https://clips.twitch.tv/GracefulSmellyYakDoggo)',
         '[Clip Three](https://clips.twitch.tv/BillowingCovertFishFeelsBadMan)',
@@ -62,12 +59,12 @@ function earlyBeyond(interaction: ButtonInteraction) {
     );
   return {
     embeds: [embed],
-    components: [new ActionRow().addComponents(backButton(this.name, interaction.user.id, 'roadmap'))],
+    components: [new MessageActionRow().addComponents(backButton(this.name, interaction.user.id, 'roadmap'))],
   };
 }
 
 function testerCredits(interaction: ButtonInteraction) {
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setTitle('Credits to our Early Private Beta Testers!')
     .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
@@ -77,20 +74,20 @@ function testerCredits(interaction: ButtonInteraction) {
     });
   return {
     embeds: [embed],
-    components: [new ActionRow().addComponents(backButton(this.name, interaction.user.id, 'roadmap'))],
+    components: [new MessageActionRow().addComponents(backButton(this.name, interaction.user.id, 'roadmap'))],
   };
 }
 
 function roadmap(interaction: ButtonInteraction) {
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setTitle('Road Map')
     .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(currentLogo.name)
     .setImage(roadMap.name);
   const components = [
-    new ActionRow().addComponents(
-      new ButtonComponent()
+    new MessageActionRow().addComponents(
+      new MessageButton()
         .setCustomId(
           buildCustomId({
             command: 'roadmap',
@@ -98,9 +95,9 @@ function roadmap(interaction: ButtonInteraction) {
             id: interaction.user.id,
           }),
         )
-        .setStyle(ButtonStyle.Primary)
+        .setStyle('PRIMARY')
         .setLabel('Early Beyond Testers'),
-      new ButtonComponent()
+      new MessageButton()
         .setCustomId(
           buildCustomId({
             command: 'roadmap',
@@ -108,7 +105,7 @@ function roadmap(interaction: ButtonInteraction) {
             id: interaction.user.id,
           }),
         )
-        .setStyle(ButtonStyle.Primary)
+        .setStyle('PRIMARY')
         .setLabel('Early Beyond Sneak Peeks'),
     ),
   ];

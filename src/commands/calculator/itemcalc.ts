@@ -2,8 +2,8 @@ import { bigToName, Categories, randomColor } from '#constants/index';
 import {
   ApplicationCommandOptionType,
   type AutocompleteInteraction,
-  type ChatInputCommandInteraction,
-  Embed,
+  type CommandInteraction,
+  MessageEmbed,
 } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { itemList } from '#itemList';
@@ -14,7 +14,7 @@ export default class ItemCalc extends Command {
   public override fullCategory = [Categories.calculator];
 
   public async itemCalc(
-    interaction: ChatInputCommandInteraction<'cached'>,
+    interaction: CommandInteraction<'cached'>,
     options: {
       item: string;
       levelGains: number;
@@ -54,7 +54,7 @@ export default class ItemCalc extends Command {
       if (!isFinite(resultingPrice)) break;
     }
     const user = interaction.member.user,
-      embed = new Embed()
+      embed = new MessageEmbed()
         .setTitle('Item Calculator Results')
         .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
         .setColor(randomColor)
@@ -70,7 +70,7 @@ export default class ItemCalc extends Command {
   }
 
   public async itemCalcRev(
-    interaction: ChatInputCommandInteraction<'cached'>,
+    interaction: CommandInteraction<'cached'>,
     options: {
       item: string;
       currentAmount: string;
@@ -97,7 +97,7 @@ export default class ItemCalc extends Command {
     const num5 = itemCost * Math.pow(1.149999976158142, options.currentLevel);
     const level = Math.floor(Math.log(num3 / num5 + 1) / Math.log(1.149999976158142));
     const user = interaction.member.user,
-      embed = new Embed()
+      embed = new MessageEmbed()
         .setTitle('Item Calculator Results')
         .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
         .setColor(randomColor)
@@ -112,7 +112,7 @@ export default class ItemCalc extends Command {
     return interaction.reply({ embeds: [embed] });
   }
 
-  public override chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override chatInputRun(interaction: CommandInteraction<'cached'>) {
     const chosenCalculator = interaction.options.getSubcommand();
     if (chosenCalculator === 'required_resources') {
       const item = interaction.options.getString('item');
@@ -153,23 +153,23 @@ export default class ItemCalc extends Command {
         {
           name: 'required_resources',
           description: 'Calculate the required resources to level up an item a specified amount',
-          type: ApplicationCommandOptionType.Subcommand,
+          type: 'SUB_COMMAND',
           options: [
             {
               name: 'item',
               description: 'The item to calculate the required resources for',
-              type: ApplicationCommandOptionType.String,
+              type: 'STRING',
               autocomplete: true,
             },
             {
               name: 'level_gains',
               description: 'The amount of levels you wish to gain',
-              type: ApplicationCommandOptionType.Number,
+              type: 'NUMBER',
             },
             {
               name: 'current_level',
               description: 'The current level of the item',
-              type: ApplicationCommandOptionType.Number,
+              type: 'NUMBER',
               required: false,
             },
           ],
@@ -177,23 +177,23 @@ export default class ItemCalc extends Command {
         {
           name: 'obtainable_levels',
           description: 'Calculate the number of levels an item can obtain with specified resources',
-          type: ApplicationCommandOptionType.Subcommand,
+          type: 'SUB_COMMAND',
           options: [
             {
               name: 'item',
               description: 'The item to calculate the required resources for',
-              type: ApplicationCommandOptionType.String,
+              type: 'STRING',
               autocomplete: true,
             },
             {
               name: 'current_amount',
               description: "The amount of currency you've got available for the item",
-              type: ApplicationCommandOptionType.String,
+              type: 'STRING',
             },
             {
               name: 'current_level',
               description: 'The current level of the item',
-              type: ApplicationCommandOptionType.Number,
+              type: 'NUMBER',
               required: false,
             },
           ],

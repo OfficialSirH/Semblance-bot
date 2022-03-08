@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
@@ -13,7 +13,7 @@ export default class VoteLeaderboard extends Command {
     let leaderboard = await LeaderboardUtilities.topTwenty(this.container.client, 'vote');
     if (!leaderboard)
       leaderboard = "No one has voted for Semblance :( (or the leaderboard just isn't working properly at the moment)";
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Voting Leaderboard')
       .setThumbnail(this.container.client.user.displayAvatarURL())
       .setColor(randomColor)
