@@ -27,7 +27,7 @@ declare module '@sapphire/framework' {
 }
 
 import { isProduction, prefix } from '#constants/index';
-import { SapphireClient } from '@sapphire/framework';
+import { ApplicationCommandRegistries, RegisterBehavior, SapphireClient } from '@sapphire/framework';
 import {
   type Awaitable,
   Intents,
@@ -38,8 +38,12 @@ import {
   ReplyMessageOptions,
   Interaction,
 } from 'discord.js';
+
+ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
+
 const client = new SapphireClient({
   allowedMentions: { parse: [] },
+  fetchPrefix: () => prefix,
   defaultPrefix: prefix,
   caseInsensitiveCommands: true,
   caseInsensitivePrefixes: true,
@@ -83,7 +87,7 @@ app.get('/', (_req, res) => {
   res.redirect('https://officialsirh.github.io/');
 });
 
-import { checkTweet } from '#listeners/index';
+import { checkTweet } from './src/twitter-events/checkTweet';
 // Check for Tweet from ComputerLunch
 if (isProduction) setInterval(() => checkTweet(client), 2000);
 // TODO: remove this really shitty implementation of receiving tweets
