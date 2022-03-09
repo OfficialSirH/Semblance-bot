@@ -1,10 +1,4 @@
-import {
-  MessageActionRow,
-  ApplicationCommandOptionType,
-  MessageButton,
-  type CommandInteraction,
-  MessageEmbed,
-} from 'discord.js';
+import { MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
 import type { sizeType } from '#lib/interfaces/catAndDogAPI';
 import { fetchCatOrDog } from '#constants/commands';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';

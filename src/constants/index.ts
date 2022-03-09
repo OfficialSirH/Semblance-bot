@@ -3,7 +3,7 @@ import type { GuildMember, MessageActionRow, MessageComponentInteraction, Snowfl
 import { Permissions } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 
-export const prefix = 's!';
+export const prefix = 's?';
 export const isProduction = process.env.NODE_ENV === 'production';
 
 export const getAvatar = (user: User) => {

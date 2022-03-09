@@ -2,7 +2,7 @@
   "name": "semblance",
   "version": "1.0.0",
   "description": "The AI that runs the Reality Engine",
-  "main": "dist/index.js",
+  "main": "dist/src/index.js",
   "author": "SirH",
   "type": "module",
   "dependencies": {

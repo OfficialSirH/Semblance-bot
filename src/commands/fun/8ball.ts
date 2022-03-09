@@ -1,6 +1,6 @@
 import { Categories, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, type Args, Command } from '@sapphire/framework';
-import { type CommandInteraction, type Message, MessageEmbed, ApplicationCommandOptionType } from 'discord.js';
+import { type CommandInteraction, type Message, MessageEmbed } from 'discord.js';
 
 function createAnswer(question: string) {
   const randomizedChoice = Math.ceil(Math.random() * 20);

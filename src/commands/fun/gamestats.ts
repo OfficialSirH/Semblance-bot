@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, type CommandInteraction, MessageEmbed } from 'discord.js';
+import { type CommandInteraction, MessageEmbed } from 'discord.js';
 import { Categories, prefix, randomColor } from '#constants/index';
 import { currentPrice } from '#constants/commands';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';

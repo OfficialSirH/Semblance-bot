@@ -2,7 +2,7 @@ import { c2sGuildId } from '#config';
 import { Categories } from '#constants/index';
 import { ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { exec } from 'child_process';
-import { ApplicationCommandOptionType, CommandInteraction, MessageEmbed } from 'discord.js';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
 
 export default class Exec extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -37,6 +37,7 @@ export default class Exec extends Command {
             name: 'input',
             description: 'The command to execute.',
             type: 'STRING',
+            required: true,
           },
         ],
       },

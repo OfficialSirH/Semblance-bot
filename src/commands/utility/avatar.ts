@@ -45,7 +45,6 @@ export default class Avatar extends Command {
           name: 'user',
           type: 'USER',
           description: 'The user to get the avatar of.',
-          required: false,
         },
       ],
     });

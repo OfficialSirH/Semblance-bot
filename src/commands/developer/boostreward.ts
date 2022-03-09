@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, CommandInteraction, MessageAttachment, User } from 'discord.js';
+import { CommandInteraction, MessageAttachment, User } from 'discord.js';
 import { Categories, formattedDate, isUserInGuild } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { c2sGuildId } from '#config';
@@ -61,12 +61,12 @@ export default class BoostReward extends Command {
                 name: 'user',
                 description: 'the user to add to the booster reward list',
                 type: 'USER',
+                required: true,
               },
               {
                 name: 'days',
                 description: 'the number of days till the user gets their reward (defaults to 28)',
                 type: 'INTEGER',
-                required: false,
               },
             ],
           },
@@ -79,11 +79,13 @@ export default class BoostReward extends Command {
                 name: 'user',
                 description: 'the user to edit in the booster reward list',
                 type: 'USER',
+                required: true,
               },
               {
                 name: 'days',
                 description: 'the number of days till the user gets their reward',
                 type: 'INTEGER',
+                required: true,
               },
             ],
           },
@@ -96,6 +98,7 @@ export default class BoostReward extends Command {
                 name: 'user',
                 description: 'the user to remove from the booster reward list',
                 type: 'USER',
+                required: true,
               },
             ],
           },

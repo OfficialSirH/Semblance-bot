@@ -1,10 +1,4 @@
-import {
-  type Message,
-  GuildMember,
-  type User,
-  type CommandInteraction,
-  ApplicationCommandOptionType,
-} from 'discord.js';
+import { type Message, GuildMember, type User, type CommandInteraction } from 'discord.js';
 import { MessageEmbed } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';

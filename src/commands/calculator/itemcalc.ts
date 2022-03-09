@@ -1,10 +1,5 @@
 import { bigToName, Categories, randomColor } from '#constants/index';
-import {
-  ApplicationCommandOptionType,
-  type AutocompleteInteraction,
-  type CommandInteraction,
-  MessageEmbed,
-} from 'discord.js';
+import { type AutocompleteInteraction, type CommandInteraction, MessageEmbed } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { itemList } from '#itemList';
 
@@ -160,17 +155,18 @@ export default class ItemCalc extends Command {
               description: 'The item to calculate the required resources for',
               type: 'STRING',
               autocomplete: true,
+              required: true,
             },
             {
               name: 'level_gains',
               description: 'The amount of levels you wish to gain',
               type: 'NUMBER',
+              required: true,
             },
             {
               name: 'current_level',
               description: 'The current level of the item',
               type: 'NUMBER',
-              required: false,
             },
           ],
         },
@@ -184,17 +180,18 @@ export default class ItemCalc extends Command {
               description: 'The item to calculate the required resources for',
               type: 'STRING',
               autocomplete: true,
+              required: true,
             },
             {
               name: 'current_amount',
               description: "The amount of currency you've got available for the item",
               type: 'STRING',
+              required: true,
             },
             {
               name: 'current_level',
               description: 'The current level of the item',
               type: 'NUMBER',
-              required: false,
             },
           ],
         },

@@ -1,5 +1,5 @@
 import { bigToName, Categories, randomColor } from '#constants/index';
-import { ApplicationCommandOptionType, type CommandInteraction, MessageEmbed } from 'discord.js';
+import { type CommandInteraction, MessageEmbed } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
 export default class MetaCalc extends Command {
@@ -17,13 +17,13 @@ export default class MetaCalc extends Command {
     const parsedEntropy = parseFloat(options.entropy);
     const parsedIdeas = parseFloat(options.ideas);
 
-    if (parsedEntropy)
+    if (!parsedEntropy)
       return interaction.reply({
         content: "Invalid input for 'entropy'.",
         ephemeral: true,
       });
 
-    if (parsedIdeas)
+    if (!parsedIdeas)
       return interaction.reply({
         content: "Invalid input for 'ideas'.",
         ephemeral: true,
@@ -83,12 +83,13 @@ export default class MetaCalc extends Command {
               name: 'entropy',
               description: 'The amount of entropy to include in the calculation',
               type: 'STRING',
-              autocomplete: true,
+              required: true,
             },
             {
               name: 'ideas',
               description: 'The amount of ideas to include in the calculation',
               type: 'STRING',
+              required: true,
             },
           ],
         },
@@ -101,6 +102,7 @@ export default class MetaCalc extends Command {
               name: 'metabits',
               description: 'The amount of metabits to calculate the required accumulation for',
               type: 'NUMBER',
+              required: true,
             },
           ],
         },

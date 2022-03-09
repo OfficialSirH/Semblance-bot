@@ -1,5 +1,5 @@
 import { bigToName, Categories, randomColor } from '#constants/index';
-import { ApplicationCommandOptionType, type CommandInteraction, MessageEmbed } from 'discord.js';
+import { type CommandInteraction, MessageEmbed } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { clamp } from '#lib/utils/math';
 
@@ -13,6 +13,8 @@ export default class MetaspeedCalc extends Command {
       metabits = options.getNumber('metabits'),
       dinoRanks = options.getInteger('mv_ranks') ? clamp(options.getInteger('mv_ranks'), 0, 550) : 0,
       simSpeed = options.getInteger('speed_upgrades') ? clamp(options.getInteger('speed_upgrades'), 0, 2105) : 0;
+    console.log(metabits, dinoRanks, simSpeed);
+    if (!metabits && dinoRanks == 0 && simSpeed == 0) return;
 
     let num = 1.0;
 
@@ -80,6 +82,7 @@ export default class MetaspeedCalc extends Command {
           name: 'metabits',
           description: 'The amount of metabits to calculate the multiplier for.',
           type: 'NUMBER',
+          required: true,
         },
         {
           name: 'mv_ranks',

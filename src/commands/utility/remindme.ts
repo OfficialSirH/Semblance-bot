@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, AutocompleteInteraction, MessageEmbed } from 'discord.js';
+import { AutocompleteInteraction, MessageEmbed } from 'discord.js';
 import type { CommandInteraction } from 'discord.js';
 import { randomColor, formattedDate, Categories } from '#constants/index';
 import type { Reminder, UserReminder } from '@prisma/client';
@@ -99,11 +99,13 @@ export default class RemindMe extends Command {
               description: 'the amount of time to wait before the reminder',
               type: 'INTEGER',
               autocomplete: true,
+              required: true,
             },
             {
               name: 'reminder',
               description: 'the reminder to be sent',
               type: 'STRING',
+              required: true,
             },
           ],
         },
@@ -117,19 +119,18 @@ export default class RemindMe extends Command {
               description: 'the id of the reminder to edit',
               type: 'INTEGER',
               choices: reminderIdChoices,
+              required: true,
             },
             {
               name: 'amount',
               description: 'the amount of time to wait before the reminder',
               type: 'INTEGER',
               autocomplete: true,
-              required: false,
             },
             {
               name: 'reminder',
               description: 'the reminder to be sent',
               type: 'STRING',
-              required: false,
             },
           ],
         },
@@ -143,6 +144,7 @@ export default class RemindMe extends Command {
               description: 'the id of the reminder to delete',
               type: 'INTEGER',
               choices: reminderIdChoices,
+              required: true,
             },
           ],
         },

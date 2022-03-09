@@ -1,6 +1,5 @@
 import {
   MessageActionRow,
-  ApplicationCommandOptionType,
   MessageButton,
   type CommandInteraction,
   MessageEmbed,
@@ -14,7 +13,7 @@ import { choiceToOutcome, countdownGIF, randomChoice } from '#constants/commands
 import { Command } from '@sapphire/framework';
 import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
 import type { RPSCommandArgs } from 'rps';
-import { buildCustomId, defaultEmojiToUsableEmoji } from '#constants/components';
+import { buildCustomId } from '#constants/components';
 import type { MessageOptions } from 'child_process';
 
 export default class Rps extends Command {
@@ -210,13 +209,11 @@ export default class Rps extends Command {
           name: 'choice',
           description: 'The choice you want to use against your opponent',
           type: 'STRING',
-          required: false,
         },
         {
           name: 'opponent',
           description: 'Who you want to go against',
           type: 'USER',
-          required: false,
         },
       ],
     });

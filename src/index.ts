@@ -87,11 +87,11 @@ app.get('/', (_req, res) => {
   res.redirect('https://officialsirh.github.io/');
 });
 
-import { checkTweet } from './src/listeners/twitter/checkTweet.js';
+import { checkTweet } from './twitter/checkTweet.js';
 // Check for Tweet from ComputerLunch
 if (isProduction) setInterval(() => checkTweet(client), 2000);
 // TODO: remove this really shitty implementation of receiving tweets
-await client.login(process.env.token);
+await client.login(process.env.token).then(() => console.log(client.stores.get('commands').map(c => c.name)));
 let address: string;
 if (isProduction) address = await app.listen(8079, '0.0.0.0');
 else address = await app.listen(8079);
