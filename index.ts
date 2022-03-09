@@ -87,7 +87,7 @@ app.get('/', (_req, res) => {
   res.redirect('https://officialsirh.github.io/');
 });
 
-import { checkTweet } from './src/twitter-events/checkTweet.js';
+import { checkTweet } from './src/listeners/twitter/checkTweet.js';
 // Check for Tweet from ComputerLunch
 if (isProduction) setInterval(() => checkTweet(client), 2000);
 // TODO: remove this really shitty implementation of receiving tweets
