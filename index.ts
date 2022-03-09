@@ -43,6 +43,7 @@ const client = new SapphireClient({
   defaultPrefix: prefix,
   caseInsensitiveCommands: true,
   caseInsensitivePrefixes: true,
+  loadMessageCommandListeners: true,
   defaultCooldown: {
     delay: 2_000,
   },
