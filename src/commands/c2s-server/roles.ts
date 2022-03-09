@@ -6,9 +6,15 @@ import { c2sRoles, c2sRolesInformation, Categories } from '#constants/index';
 import { buildCustomId } from '#constants/components';
 
 export default class Roles extends Command {
-  public override name = 'roles';
-  public override description = 'see the list of available roles for the c2s server';
-  public override fullCategory = [Categories.c2sServer];
+  public constructor(context: Command.Context, options: Command.Options) {
+    super(context, {
+      ...options,
+      name: 'roles',
+      description: 'see the list of available roles for the c2s server',
+      fullCategory: [Categories.c2sServer],
+      preconditions: ['C2SOnly'],
+    });
+  }
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const member = builder.member;

@@ -11,7 +11,7 @@ export default class Translate extends Command {
       name: 'translate',
       description: 'Translates a message to English.',
       fullCategory: [Categories.c2sServer],
-      preconditions: ['ModOnly'],
+      preconditions: ['ModOnly', 'C2SOnly'],
     });
   }
 

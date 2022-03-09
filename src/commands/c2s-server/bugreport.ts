@@ -11,6 +11,7 @@ export default class Bugreport extends Command {
       ...options,
       name: 'bugreport',
       description: 'Report a Cell to Singularity bug',
+      preconditions: ['C2SOnly'],
     });
   }
 
