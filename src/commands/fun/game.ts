@@ -123,7 +123,10 @@ export default class Game extends Command {
     ];
 
     return {
-      content: "note: There's a slash command for this now, if your Discord client allows it, you can use /game",
+      content:
+        'user' in builder
+          ? null
+          : "note: There's a slash command for this now, if your Discord client allows it, you can use /game",
       embeds: [embed],
       components,
     };

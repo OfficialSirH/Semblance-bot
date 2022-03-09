@@ -31,7 +31,9 @@ export default class Profile extends Command {
     if (!user) member = interaction.member;
     else
       member =
-        user instanceof GuildMember ? user : await interaction.guild.members.fetch({ user: user.id, cache: false });
+        user instanceof GuildMember
+          ? user
+          : await interaction.guild.members.fetch({ user: user.id, cache: false }).catch(() => null);
 
     if (member) return interaction.reply(guildProfileEmbed(interaction, member));
     return interaction.reply(userProfileEmbed(interaction, user));

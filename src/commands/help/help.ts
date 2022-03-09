@@ -91,7 +91,8 @@ export default class Help extends Command {
       ),
     ];
     return {
-      content: 'side note: if your Discord client supports it, you can use: `/help` instead.',
+      content:
+        'user' in builder ? null : 'side note: if your Discord client supports it, you can use: `/help` instead.',
       embeds: [embed],
       components,
     };
