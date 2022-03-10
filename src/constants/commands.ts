@@ -204,10 +204,7 @@ export const messageLinkJump = async (input: string, user: User, currentGuild: G
   const channel = guild.channels.cache.get(channelId) as TextChannel;
   if (channel.nsfw ?? guild.id != currentGuild.id) return 'This channel is not allowed to be jumped to';
 
-  const msg = await channel.messages.fetch(messageId).catch(err => {
-    console.log(err);
-    return 'No message found.';
-  });
+  const msg = await channel.messages.fetch(messageId).catch(() => 'No message found.');
   if (typeof msg == 'string') return msg;
   const attachmentLink = attachmentLinkRegex.exec(msg.content);
   if (attachmentLink != null) msg.content = msg.content.replace(attachmentLink[0], '');

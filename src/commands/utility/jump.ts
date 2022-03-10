@@ -18,7 +18,7 @@ export default class Jump extends Command {
 
   public async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const link = interaction.options.getString('url', true);
-
+    console.log(link);
     return interaction.reply(await messageLinkJump(link, interaction.user, interaction.guild, interaction.client));
   }
 
