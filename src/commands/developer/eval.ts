@@ -17,6 +17,8 @@ export default class Eval extends Command {
   }
 
   public async evalSharedRun(builder: Message | ContextMenuInteraction, content: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { client } = builder;
     const embed = new MessageEmbed()
       .setColor(randomColor)
       .addField('📥 Input', `\`\`\`js\n${content.substring(0, 1015)}\`\`\``)

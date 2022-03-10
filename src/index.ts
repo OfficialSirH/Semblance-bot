@@ -53,9 +53,9 @@ const client = new SapphireClient({
   },
   makeCache: Options.cacheWithLimits({
     ThreadManager: 10,
-    MessageManager: 5,
-    GuildMemberManager: 1,
-    UserManager: 1,
+    MessageManager: 10,
+    GuildMemberManager: 10,
+    UserManager: 10,
   }),
   partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE'],
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
