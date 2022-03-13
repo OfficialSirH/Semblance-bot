@@ -33,6 +33,8 @@ export default class Rps extends Command {
         ephemeral: true,
       };
 
+    if (!args.opponent) args.opponent = await builder.guild.members.fetch(builder.client.user.id);
+
     if (args.opponent?.guild?.id != builder.guild.id)
       return {
         content: "The opponent you choose isn't a part of this guild (or the command just wanted to have an issue).",

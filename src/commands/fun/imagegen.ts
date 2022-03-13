@@ -9,12 +9,8 @@ export default class Imagegen extends Command {
   public override description = 'Generates a random image of either a cat or dog.';
 
   public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+    if (!interaction.options.getSubcommand()) return;
     const wantsCat = interaction.options.getSubcommand() === 'cat';
-
-    await interaction.reply({
-      content: "Something didn't work quite right. Please try again.",
-      ephemeral: true,
-    });
 
     const query_params = {
       has_breeds: true,

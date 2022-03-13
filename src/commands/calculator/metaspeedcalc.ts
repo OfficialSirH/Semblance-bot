@@ -13,7 +13,6 @@ export default class MetaspeedCalc extends Command {
       metabits = options.getNumber('metabits'),
       dinoRanks = options.getInteger('mv_ranks') ? clamp(options.getInteger('mv_ranks'), 0, 550) : 0,
       simSpeed = options.getInteger('speed_upgrades') ? clamp(options.getInteger('speed_upgrades'), 0, 2105) : 0;
-    console.log(metabits, dinoRanks, simSpeed);
     if (!metabits && dinoRanks == 0 && simSpeed == 0) return;
 
     let num = 1.0;

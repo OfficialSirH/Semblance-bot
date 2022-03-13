@@ -1,4 +1,4 @@
-import { CommandInteraction, MessageAttachment, User } from 'discord.js';
+import { type CommandInteraction, MessageAttachment, type User } from 'discord.js';
 import { Categories, formattedDate, isUserInGuild } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { c2sGuildId } from '#config';
@@ -20,21 +20,21 @@ export default class BoostReward extends Command {
     switch (subcommand) {
       case 'add': {
         const user = interaction.options.getUser('user');
-        if (!user || (await isUserInGuild(user, interaction.guild)))
+        if (!user || !(await isUserInGuild(user, interaction.guild)))
           return interaction.reply({ content: 'invalid user', ephemeral: true });
         const days = interaction.options.getInteger('days') ?? 28;
         return addBooster(interaction, { user, days });
       }
       case 'edit': {
         const user = interaction.options.getUser('user');
-        if (!user || (await isUserInGuild(user, interaction.guild)))
+        if (!user || !(await isUserInGuild(user, interaction.guild)))
           return interaction.reply({ content: 'invalid user', ephemeral: true });
         const days = interaction.options.getInteger('days');
         return editBooster(interaction, { user, days });
       }
       case 'remove': {
         const user = interaction.options.getUser('user');
-        if (!user || (await isUserInGuild(user, interaction.guild)))
+        if (!user || !(await isUserInGuild(user, interaction.guild)))
           return interaction.reply({ content: 'invalid user', ephemeral: true });
         return removeBooster(interaction, user);
       }

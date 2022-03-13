@@ -18,9 +18,9 @@ export default class ServerList extends Command {
 
   public override async messageRun(message: Message, args: Args) {
     const resolvablePage = await args.pickResult('number');
-    if (!resolvablePage.success) return message.reply('Invalid page number.');
+    const page = resolvablePage.success ? resolvablePage.value : 1;
 
-    const { chosenPage, pageDetails } = guildBookPage(message.client, resolvablePage.value);
+    const { chosenPage, pageDetails } = guildBookPage(message.client, page);
     const numOfPages = Math.ceil(message.client.guilds.cache.size / serversPerPage);
 
     const components = [
