@@ -59,7 +59,10 @@ export default class Eval extends Command {
   public override async contextMenuRun(interaction: ContextMenuInteraction<'cached'>) {
     const message = interaction.options.getMessage('message');
     if (!message) return interaction.reply({ content: 'Could not find message.', ephemeral: true });
-    const content = message.content.slice(prefix.length + this.name.length + 1);
+    const content =
+      message.content.startsWith('```js\n') && message.content.endsWith('```')
+        ? message.content.slice(6, -3)
+        : message.content;
     await this.evalSharedRun(interaction, content);
   }
 
