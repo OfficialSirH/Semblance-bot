@@ -55,12 +55,12 @@ export default class Edit extends Command {
         embed.setDescription(infoHandler.value);
         break;
       case 'codes':
-        if (args[1] == 'expired')
+        if (action.value == 'expired')
           infoHandler = await message.client.db.information.update({
             where: { type: 'codes' },
             data: { expired: info.value },
           });
-        else if (args[1] == 'footer')
+        else if (action.value == 'footer')
           infoHandler = await message.client.db.information.update({
             where: { type: 'codes' },
             data: { footer: info.value },
@@ -76,7 +76,7 @@ export default class Edit extends Command {
           .setFooter({ text: infoHandler.footer });
         break;
       case 'boostercodes':
-        switch (args[1]) {
+        switch (action.value) {
           case 'list':
             return listBoosterCodes(message);
           case 'add':
@@ -94,7 +94,9 @@ export default class Edit extends Command {
         embed.setDescription(infoHandler.value);
         break;
       default:
-        return message.channel.send("What are you trying to type? The options are `beta`, `update`, and 'codes'");
+        return message.channel.send(
+          'What are you trying to type? The options are `beta`, `update`, `boostercodes`, and `codes`.',
+        );
     }
     message.channel.send({ embeds: [embed] });
   }
