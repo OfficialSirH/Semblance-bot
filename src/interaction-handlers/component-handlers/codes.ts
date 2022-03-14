@@ -53,9 +53,6 @@ export default class Codes extends InteractionHandler {
             .setLabel('View Expired Codes')
             .setStyle('PRIMARY'),
         );
-        break;
-      default:
-        return;
     }
 
     embed.setThumbnail(currentLogo.name);

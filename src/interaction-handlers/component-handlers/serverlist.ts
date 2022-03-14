@@ -1,9 +1,13 @@
-import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
+import type { CustomIdData, ParsedCustomIdData } from '#lib/interfaces/Semblance';
 import { MessageActionRow, type ButtonInteraction, MessageEmbed, MessageButton } from 'discord.js';
 import { guildBookPage, randomColor } from '#constants/index';
 import { serversPerPage } from '#constants/commands';
 import { componentInteractionDefaultParser, buildCustomId } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
+
+interface ServerListCustomIdData extends CustomIdData {
+  page: number;
+}
 
 export default class ServerList extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {
@@ -15,12 +19,16 @@ export default class ServerList extends InteractionHandler {
   }
 
   public override parse(interaction: ButtonInteraction) {
-    return componentInteractionDefaultParser(this, interaction);
+    return componentInteractionDefaultParser<ServerListCustomIdData>(this, interaction, {
+      extraProps: {
+        page: 'number',
+      },
+    });
   }
 
   public override async run(
     interaction: ButtonInteraction<'cached'>,
-    data: ParsedCustomIdData<'left' | 'right' | 'first' | 'last'> & { page: number },
+    data: ParsedCustomIdData<'left' | 'right' | 'first' | 'last', ServerListCustomIdData>,
   ) {
     const { client, user } = interaction;
     let page = data.page;

@@ -5,17 +5,17 @@ import type { ButtonInteraction, TextBasedChannel } from 'discord.js';
 import { MessageActionRow, MessageEmbed } from 'discord.js';
 import type { ParsedCustomIdData } from 'Semblance';
 
-export default class HANDLER_NAME extends InteractionHandler {
+export default class Suggest extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {
     super(context, {
       ...options,
-      name: 'HANDLER_NAME',
+      name: 'suggest',
       interactionHandlerType: InteractionHandlerTypes.Button,
     });
   }
 
   public override parse(interaction: ButtonInteraction) {
-    return componentInteractionDefaultParser(this, interaction, true);
+    return componentInteractionDefaultParser(this, interaction, { allowOthers: true });
   }
 
   public override async run(

@@ -29,7 +29,10 @@ export interface CustomIdData {
   id: Snowflake;
 }
 
-export type ParsedCustomIdData<T extends string = string> = Omit<CustomIdData, 'command' | 'action'> & {
+export type ParsedCustomIdData<T extends string = string, NewData extends CustomIdData = CustomIdData> = Omit<
+  NewData,
+  'command' | 'action'
+> & {
   action: T;
 };
 

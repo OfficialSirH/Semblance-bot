@@ -17,7 +17,7 @@ export default class RPS extends InteractionHandler {
   }
 
   public override parse(interaction: ButtonInteraction) {
-    return componentInteractionDefaultParser(this, interaction, true);
+    return componentInteractionDefaultParser(this, interaction, { allowOthers: true });
   }
 
   public override async run(interaction: ButtonInteraction<'cached'>, data: ParsedCustomIdData) {
