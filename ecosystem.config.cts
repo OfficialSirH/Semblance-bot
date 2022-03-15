@@ -6,7 +6,7 @@ module.exports = {
       watch: true,
       instances: '1',
       env: {
-        NODE_ENV: 'development',
+        NODE_ENV: 'production',
       },
       env_production: {
         NODE_ENV: 'production',
