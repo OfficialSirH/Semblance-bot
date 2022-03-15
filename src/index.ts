@@ -42,6 +42,7 @@ import {
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
 
 const client = new SapphireClient({
+  preventFailedToFetchLogForGuildIds: [process.env.TEMP_GUILD_IDS],
   allowedMentions: { parse: [] },
   fetchPrefix: () => prefix,
   defaultPrefix: prefix,
