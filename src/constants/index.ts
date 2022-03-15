@@ -3,8 +3,8 @@ import type { GuildMember, MessageActionRow, MessageComponentInteraction, Snowfl
 import { Permissions } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 
-export const prefix = 's?';
 export const isProduction = process.env.NODE_ENV === 'production';
+export const prefix = isProduction ? 's!' : 's?';
 
 export const getAvatar = (user: User) => {
   const avatarType = user.avatar.startsWith('a_') ? `${user.avatar}.gif` : `${user.avatar}.png`;
