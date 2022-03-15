@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor, msToTime, Categories } from '#constants/index';
 import { Command } from '@sapphire/framework';
@@ -15,7 +15,7 @@ export default class Latency extends Command {
       duration = msToTime(uptime),
       responseTime = Date.now() - builder.createdTimestamp,
       userAvatar = user.displayAvatarURL(),
-      embed = new Embed()
+      embed = new MessageEmbed()
         .setTitle('Latency')
         .setColor(randomColor)
         .setThumbnail(userAvatar)

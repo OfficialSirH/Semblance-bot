@@ -27,34 +27,38 @@ declare module '@sapphire/framework' {
 }
 
 import { isProduction, prefix } from '#constants/index';
-import { SapphireClient } from '@sapphire/framework';
+import { ApplicationCommandRegistries, RegisterBehavior, SapphireClient } from '@sapphire/framework';
 import {
   type Awaitable,
-  GatewayIntentBits,
+  Intents,
   type Message,
   Options,
-  Partials,
   InteractionReplyOptions,
   MessageOptions,
   ReplyMessageOptions,
   Interaction,
 } from 'discord.js';
+
+ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
+
 const client = new SapphireClient({
   allowedMentions: { parse: [] },
+  fetchPrefix: () => prefix,
   defaultPrefix: prefix,
   caseInsensitiveCommands: true,
   caseInsensitivePrefixes: true,
+  loadMessageCommandListeners: true,
   defaultCooldown: {
     delay: 2_000,
   },
   makeCache: Options.cacheWithLimits({
     ThreadManager: 10,
-    MessageManager: 5,
-    GuildMemberManager: 1,
-    UserManager: 1,
+    MessageManager: 10,
+    GuildMemberManager: 10,
+    UserManager: 10,
   }),
-  partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message],
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.DirectMessages],
+  partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE'],
+  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
 });
 client.db = new prisma.PrismaClient();
 
@@ -83,7 +87,7 @@ app.get('/', (_req, res) => {
   res.redirect('https://officialsirh.github.io/');
 });
 
-import { checkTweet } from '#listeners/index';
+import { checkTweet } from './twitter/checkTweet.js';
 // Check for Tweet from ComputerLunch
 if (isProduction) setInterval(() => checkTweet(client), 2000);
 // TODO: remove this really shitty implementation of receiving tweets

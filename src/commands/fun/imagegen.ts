@@ -1,11 +1,4 @@
-import {
-  ActionRow,
-  ApplicationCommandOptionType,
-  ButtonComponent,
-  ButtonStyle,
-  type ChatInputCommandInteraction,
-  Embed,
-} from 'discord.js';
+import { MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
 import type { sizeType } from '#lib/interfaces/catAndDogAPI';
 import { fetchCatOrDog } from '#constants/commands';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
@@ -15,13 +8,9 @@ export default class Imagegen extends Command {
   public override name = 'imagegen';
   public override description = 'Generates a random image of either a cat or dog.';
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+    if (!interaction.options.getSubcommand()) return;
     const wantsCat = interaction.options.getSubcommand() === 'cat';
-
-    await interaction.reply({
-      content: "Something didn't work quite right. Please try again.",
-      ephemeral: true,
-    });
 
     const query_params = {
       has_breeds: true,
@@ -43,18 +32,18 @@ export default class Imagegen extends Command {
       image_url = image.url,
       breed = image.breeds[0];
 
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle(`Here's a ${breed.name}!`)
       .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)
       .setImage(image_url);
 
     const components = [
-      new ActionRow().addComponents(
-        new ButtonComponent()
+      new MessageActionRow().addComponents(
+        new MessageButton()
           .setLabel('Refresh')
-          .setEmoji({ name: '🔄' })
-          .setStyle(ButtonStyle.Secondary)
+          .setEmoji('🔄')
+          .setStyle('SECONDARY')
           .setCustomId(
             buildCustomId({
               command: 'imagegen',
@@ -79,12 +68,12 @@ export default class Imagegen extends Command {
         {
           name: 'cat',
           description: 'Generates a random cat image.',
-          type: ApplicationCommandOptionType.Subcommand,
+          type: 'SUB_COMMAND',
         },
         {
           name: 'dog',
           description: 'Generates a random dog image.',
-          type: ApplicationCommandOptionType.Subcommand,
+          type: 'SUB_COMMAND',
         },
       ],
     });

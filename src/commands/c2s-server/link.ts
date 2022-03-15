@@ -2,7 +2,7 @@ import { c2sGuildId } from '#config';
 import { createHmac } from 'crypto';
 import type { Args } from '@sapphire/framework';
 import { Command } from '@sapphire/framework';
-import { ChannelType, type Message } from 'discord.js';
+import type { Message } from 'discord.js';
 import { Categories } from '#constants/index';
 
 // TODO: make this no longer require the need for stupid DMs
@@ -19,8 +19,6 @@ export default class Link extends Command {
   }
 
   public override async messageRun(message: Message, args: Args) {
-    if (message.channel.type != ChannelType.DM) message.delete().catch(() => null);
-
     const isMember = !!(await message.client.guilds.cache
       .get(c2sGuildId)
       .members.fetch(message.author.id)
@@ -53,14 +51,22 @@ export default class Link extends Command {
       })
       .then(async () => {
         console.log(`${message.author.tag}(${message.author.id}) successfully linked their C2S data.`);
-        await message.channel.send(
-          'The link was successful, now you can use the Discord button in-game to upload your progress.',
-        );
+        if (message.channel.type != 'DM') {
+          await message.channel.send(
+            `Successfully linked your C2S data, ${message.author.tag}, but please remember to use this link command in DMs next time, having to delete your message every time is such a hassle.`,
+          );
+          await message.delete().catch(() => null);
+        } else
+          await message.channel.send(
+            'The link was successful, now you can use the Discord button in-game to upload your progress.',
+          );
       })
       .catch(() =>
         message.channel.send(
           "An error occured, either you provided incorrect input or something randomly didn't want to work.",
         ),
       );
+
+    if (message.channel.type != 'DM') await message.delete().catch(() => null);
   }
 }

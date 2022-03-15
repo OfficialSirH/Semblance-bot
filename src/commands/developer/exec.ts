@@ -2,7 +2,7 @@ import { c2sGuildId } from '#config';
 import { Categories } from '#constants/index';
 import { ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { exec } from 'child_process';
-import { ApplicationCommandOptionType, ChatInputCommandInteraction, Embed } from 'discord.js';
+import { CommandInteraction, MessageEmbed } from 'discord.js';
 
 export default class Exec extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -15,9 +15,9 @@ export default class Exec extends Command {
     });
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     await interaction.deferReply();
-    const embeds = [new Embed()];
+    const embeds = [new MessageEmbed()];
     exec(interaction.options.getString('input'), (error, stdout, stderr) => {
       if (error) embeds[0].setDescription(`\`\`\`js\n${error}\`\`\``);
       if (stderr) embeds[0].setDescription(`\`\`\`js\n${stderr}\`\`\``);
@@ -36,7 +36,8 @@ export default class Exec extends Command {
           {
             name: 'input',
             description: 'The command to execute.',
-            type: ApplicationCommandOptionType.String,
+            type: 'STRING',
+            required: true,
           },
         ],
       },

@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, prefix, randomColor, Subcategories } from '#constants/index';
 import { Command } from '@sapphire/framework';
@@ -10,7 +10,7 @@ export default class Secret extends Command {
   public override aliases = ['secrets'];
 
   public override sharedRun() {
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Secret Achievements')
       .setColor(randomColor)
       .setDescription(

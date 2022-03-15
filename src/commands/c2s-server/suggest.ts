@@ -1,27 +1,34 @@
 import { Categories } from '#constants/index';
 import { buildCustomId } from '#constants/components';
-import { Command } from '@sapphire/framework';
-import { ButtonStyle, type ChatInputCommandInteraction, type TextBasedChannel } from 'discord.js';
-import { ActionRow, ButtonComponent, Embed } from 'discord.js';
+import { ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import type { CommandInteraction, TextBasedChannel } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { c2sGuildId } from '#config';
 
 export default class Suggest extends Command {
-  public override name = 'suggest';
-  public override description = 'Submit suggestions for Cell to Singularity or the server.';
-  public override fullCategory = [Categories.c2sServer];
+  public constructor(context: Command.Context, options: Command.Options) {
+    super(context, {
+      ...options,
+      name: 'suggest',
+      description: 'Submit suggestions for Cell to Singularity or the server.',
+      fullCategory: [Categories.c2sServer],
+      preconditions: ['C2SOnly'],
+    });
+  }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const suggestion = interaction.options.getString('suggestion');
 
     if (!suggestion) return interaction.reply('Please provide a suggestion.');
 
-    const embed = new Embed()
+    const embed = new MessageEmbed()
         .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
         .setDescription(suggestion),
-      component = new ActionRow().addComponents(
-        new ButtonComponent()
+      component = new MessageActionRow().addComponents(
+        new MessageButton()
           .setLabel('Accept')
-          .setStyle(ButtonStyle.Success)
-          .setEmoji({ name: '✅' })
+          .setStyle('SUCCESS')
+          .setEmoji('✅')
           .setCustomId(
             buildCustomId({
               command: this.name,
@@ -29,10 +36,10 @@ export default class Suggest extends Command {
               id: interaction.user.id,
             }),
           ),
-        new ButtonComponent()
+        new MessageButton()
           .setLabel('Deny')
-          .setStyle(ButtonStyle.Danger)
-          .setEmoji({ name: '❌' })
+          .setStyle('DANGER')
+          .setEmoji('❌')
           .setCustomId(
             buildCustomId({
               command: this.name,
@@ -40,10 +47,10 @@ export default class Suggest extends Command {
               id: interaction.user.id,
             }),
           ),
-        new ButtonComponent()
+        new MessageButton()
           .setLabel('Silent Deny')
-          .setStyle(ButtonStyle.Danger)
-          .setEmoji({ name: '❌' })
+          .setStyle('DANGER')
+          .setEmoji('❌')
           .setCustomId(
             buildCustomId({
               command: this.name,
@@ -64,5 +71,25 @@ export default class Suggest extends Command {
         "You'll receive a DM when your suggestion is either accepted or denied so make sure to have your DMs opened.",
       ephemeral: true,
     });
+  }
+
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'suggestion',
+            description: 'The suggestion to submit.',
+            type: 'STRING',
+            required: true,
+          },
+        ],
+      },
+      {
+        guildIds: [c2sGuildId],
+      },
+    );
   }
 }

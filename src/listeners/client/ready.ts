@@ -1,7 +1,6 @@
-import { ActivityType, Events } from 'discord.js';
-import { Listener, type SapphireClient } from '@sapphire/framework';
+import { Events, Listener, type SapphireClient } from '@sapphire/framework';
 import * as schedule from 'node-schedule';
-import { prefix } from '#constants/index';
+import { isProduction, prefix } from '#constants/index';
 import { handleBoosterReward, handleReminder } from '#constants/models';
 import type { Reminder } from '@prisma/client';
 
@@ -22,20 +21,22 @@ export default class Ready extends Listener<typeof Events.ClientReady> {
       .filter(g => g)
       .reduce((total, cur) => (total += cur), 0);
     const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
-    client.user.setActivity(activity, { type: ActivityType.Watching });
+    client.user.setActivity(activity, { type: 'WATCHING' });
 
     /* Reminder scheduling */
-    const reminders = (await client.db.reminder.findMany({})) as unknown as Reminder[];
-    reminders.forEach(reminderData => {
-      reminderData.reminders.forEach(reminder => {
-        schedule.scheduleJob(reminder.time, () => handleReminder(client, reminderData, reminder));
+    if (isProduction) {
+      const reminders = (await client.db.reminder.findMany({})) as unknown as Reminder[];
+      reminders.forEach(reminderData => {
+        reminderData.reminders.forEach(reminder => {
+          schedule.scheduleJob(reminder.time, () => handleReminder(client, reminderData, reminder));
+        });
       });
-    });
 
-    /* Booster rewards scheduling */
-    const boosterRewards = await client.db.boosterReward.findMany({});
-    boosterRewards.forEach(boosterReward => {
-      schedule.scheduleJob(boosterReward.rewardingDate, () => handleBoosterReward(client, boosterReward));
-    });
+      /* Booster rewards scheduling */
+      const boosterRewards = await client.db.boosterReward.findMany({});
+      boosterRewards.forEach(boosterReward => {
+        schedule.scheduleJob(boosterReward.rewardingDate, () => handleBoosterReward(client, boosterReward));
+      });
+    }
   }
 }

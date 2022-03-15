@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, randomColor, Subcategories } from '#constants/index';
 import { Command } from '@sapphire/framework';
@@ -11,7 +11,7 @@ export default class Feedback extends Command {
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const feedbackImage = 'https://i.imgur.com/lKQh5zW.png';
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Feedback')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)

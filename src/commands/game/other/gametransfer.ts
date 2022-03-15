@@ -1,6 +1,6 @@
 ﻿import { Categories, gameTransferPages, randomColor, Subcategories } from '#constants/index';
 import { currentLogo } from '#config';
-import { Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
+import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
@@ -13,19 +13,19 @@ export default class GameTransfer extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Game Transfer')
       .setColor(randomColor)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setThumbnail(currentLogo.name)
       .setImage(gameTransferPages[0])
       .setDescription('Step 1:');
-    const component = new ActionRow().addComponents(
-      new ButtonComponent()
+    const component = new MessageActionRow().addComponents(
+      new MessageButton()
         .setCustomId(buildCustomId({ command: 'gametransfer', action: 'left', id: user.id }))
-        .setEmoji({ name: '⬅️' })
-        .setStyle(ButtonStyle.Primary),
-      new ButtonComponent()
+        .setEmoji('⬅️')
+        .setStyle('PRIMARY'),
+      new MessageButton()
         .setCustomId(
           buildCustomId({
             command: 'gametransfer',
@@ -33,8 +33,8 @@ export default class GameTransfer extends Command {
             id: user.id,
           }),
         )
-        .setEmoji({ name: '➡️' })
-        .setStyle(ButtonStyle.Primary),
+        .setEmoji('➡️')
+        .setStyle('PRIMARY'),
     );
     return {
       embeds: [embed],

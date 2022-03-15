@@ -1,4 +1,5 @@
-import { Client, Guild, GuildChannel, Message, Embed, PartialMessage, Snowflake, TextChannel, User } from 'discord.js';
+import type { Client, Guild, GuildChannel, Message, PartialMessage, Snowflake, TextChannel, User } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 import { clamp } from '#lib/utils/math';
 import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndDogAPI';
@@ -203,24 +204,21 @@ export const messageLinkJump = async (input: string, user: User, currentGuild: G
   const channel = guild.channels.cache.get(channelId) as TextChannel;
   if (channel.nsfw ?? guild.id != currentGuild.id) return 'This channel is not allowed to be jumped to';
 
-  const msg = await channel.messages.fetch(messageId).catch(err => {
-    console.log(err);
-    return 'No message found.';
-  });
+  const msg = await channel.messages.fetch(messageId).catch(() => 'No message found.');
   if (typeof msg == 'string') return msg;
   const attachmentLink = attachmentLinkRegex.exec(msg.content);
   if (attachmentLink != null) msg.content = msg.content.replace(attachmentLink[0], '');
 
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setAuthor({ name: msg.author.username, iconURL: msg.author.displayAvatarURL() })
     .setThumbnail(user.displayAvatarURL())
     .setDescription(msg.content)
-    .addField({ name: 'Jump', value: `[Go to message!](${msg.url})` })
+    .addField('Jump', `[Go to message!](${msg.url})`)
     .setFooter({ text: `#${(msg.channel as GuildChannel).name} quoted by ${user.tag}` })
     .setTimestamp(msg.createdTimestamp);
   if (msg.embeds[0] && attachmentLink == null) {
     const title = msg.embeds[0].title ? msg.embeds[0].title : 'no title';
-    embed.addField({ name: `*Contains embed titled: ${title}*`, value: '\u200b' });
+    embed.addField(`*Contains embed titled: ${title}*`, '\u200b');
     if (msg.embeds[0].image) embed.setImage(msg.embeds[0].image.url);
   }
 

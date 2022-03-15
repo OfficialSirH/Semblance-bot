@@ -1,4 +1,4 @@
-import { Embed, version } from 'discord.js';
+import { MessageEmbed, version } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor, msToTime, Categories } from '#constants/index';
 import { singularity, entropy, metabit, mutagen, idea } from '#config';
@@ -35,7 +35,7 @@ export default class Info extends Command {
       shardCount = 0;
     }
 
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle(`Bot Information - ${client.user.tag}`)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)
@@ -74,20 +74,20 @@ export default class Info extends Command {
       .setFooter({ text: 'The all powerful Semblance has spoken!' });
 
     if (client.shard)
-      embed.addField({
-        name: `${metabit} This Shard (${builder.guild.shardId})`,
-        value: `**Guilds:** ${guilds}\n` + `**Users:** ${users}`,
-      });
+      embed.addField(
+        `${metabit} This Shard (${builder.guild.shardId})`,
+        `**Guilds:** ${guilds}\n` + `**Users:** ${users}`,
+      );
 
-    embed.addField({
-      name: `${mutagen} Links`,
-      value: [
+    embed.addField(
+      `${mutagen} Links`,
+      [
         `- [Semblance Invite](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=274878295040&scope=bot+applications.commands)`,
         '- [Semblance Support/Main](https://discord.gg/XFMaTn6taf)',
         '- [Cell to Singularity](https://discord.gg/celltosingularity)',
       ].join('\n'),
-      inline: true,
-    });
+      true,
+    );
     return { embeds: [embed] };
   }
 

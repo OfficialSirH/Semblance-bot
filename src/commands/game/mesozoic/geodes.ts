@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { geodeImage, currentLogo } from '#config';
 import { Command } from '@sapphire/framework';
@@ -11,7 +11,7 @@ export default class Geodes extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Geodes Comparison')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setThumbnail(currentLogo.name)

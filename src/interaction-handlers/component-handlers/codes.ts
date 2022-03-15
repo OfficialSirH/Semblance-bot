@@ -1,4 +1,4 @@
-import { ActionRow, ButtonComponent, type ButtonInteraction, ButtonStyle, Embed } from 'discord.js';
+import { MessageActionRow, MessageButton, type ButtonInteraction, MessageEmbed } from 'discord.js';
 import { currentLogo } from '#config';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import type { ParsedCustomIdData } from 'Semblance';
@@ -19,15 +19,15 @@ export default class Codes extends InteractionHandler {
 
   public override async run(interaction: ButtonInteraction, data: ParsedCustomIdData<'expired' | 'valid'>) {
     const codeHandler = await interaction.client.db.information.findUnique({ where: { type: 'codes' } });
-    let embed = interaction.message.embeds[0] as Embed;
-    if (!('setDescription' in embed)) embed = new Embed(embed);
-    let component: ActionRow;
+    let embed = interaction.message.embeds[0] as MessageEmbed;
+    if (!('setDescription' in embed)) embed = new MessageEmbed(embed);
+    let component: MessageActionRow;
 
     switch (data.action) {
       case 'expired':
         embed.setDescription(codeHandler.expired);
-        component = new ActionRow().addComponents(
-          new ButtonComponent()
+        component = new MessageActionRow().addComponents(
+          new MessageButton()
             .setCustomId(
               buildCustomId({
                 command: this.name,
@@ -36,13 +36,13 @@ export default class Codes extends InteractionHandler {
               }),
             )
             .setLabel('View Valid Codes')
-            .setStyle(ButtonStyle.Primary),
+            .setStyle('PRIMARY'),
         );
         break;
       case 'valid':
         embed.setDescription(codeHandler.value);
-        component = new ActionRow().addComponents(
-          new ButtonComponent()
+        component = new MessageActionRow().addComponents(
+          new MessageButton()
             .setCustomId(
               buildCustomId({
                 command: 'codes',
@@ -51,11 +51,8 @@ export default class Codes extends InteractionHandler {
               }),
             )
             .setLabel('View Expired Codes')
-            .setStyle(ButtonStyle.Primary),
+            .setStyle('PRIMARY'),
         );
-        break;
-      default:
-        return;
     }
 
     embed.setThumbnail(currentLogo.name);

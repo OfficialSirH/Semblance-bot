@@ -1,16 +1,22 @@
 import { currentLogo, darwinium } from '#config';
-import { Categories, Subcategories, randomColor } from '#constants/index';
+import { Categories, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
-import { Embed, type Message } from 'discord.js';
+import { MessageEmbed, type Message } from 'discord.js';
 
 export default class Limericks extends Command {
-  public override name = 'limericks';
-  public override description = 'details on the limericks contest';
-  public override fullCategory = [Categories.game, Subcategories.other];
+  public constructor(context: Command.Context, options: Command.Options) {
+    super(context, {
+      ...options,
+      name: 'limericks',
+      description: 'details on the limericks contest',
+      fullCategory: [Categories.c2sServer],
+      preconditions: ['C2SOnly'],
+    });
+  }
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Limericks Contest winners')
       .setColor(randomColor)
       .setThumbnail(currentLogo.name)

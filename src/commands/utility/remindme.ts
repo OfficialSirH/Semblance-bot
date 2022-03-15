@@ -1,5 +1,5 @@
-import { ApplicationCommandOptionType, AutocompleteInteraction, Embed } from 'discord.js';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { AutocompleteInteraction, MessageEmbed } from 'discord.js';
+import type { CommandInteraction } from 'discord.js';
 import { randomColor, formattedDate, Categories } from '#constants/index';
 import type { Reminder, UserReminder } from '@prisma/client';
 import { handleReminder } from '#constants/models';
@@ -15,7 +15,7 @@ export default class RemindMe extends Command {
   public override description = 'create reminders for yourself';
   public override fullCategory = [Categories.utility];
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const action = interaction.options.getSubcommand();
 
     switch (action) {
@@ -36,7 +36,9 @@ export default class RemindMe extends Command {
   }
 
   public override async autocompleteRun(interaction: AutocompleteInteraction<'cached'>) {
-    const inputtedAmount = interaction.options.getFocused() as number;
+    let inputtedAmount = interaction.options.getFocused();
+    inputtedAmount = parseInt(inputtedAmount as string);
+    if (!inputtedAmount || inputtedAmount < 1) inputtedAmount = 1;
 
     await interaction.respond([
       {
@@ -92,71 +94,73 @@ export default class RemindMe extends Command {
         {
           name: 'create',
           description: 'create a reminder',
-          type: ApplicationCommandOptionType.Subcommand,
+          type: 'SUB_COMMAND',
           options: [
             {
               name: 'amount',
               description: 'the amount of time to wait before the reminder',
-              type: ApplicationCommandOptionType.Integer,
+              type: 'INTEGER',
               autocomplete: true,
+              required: true,
             },
             {
               name: 'reminder',
               description: 'the reminder to be sent',
-              type: ApplicationCommandOptionType.String,
+              type: 'STRING',
+              required: true,
             },
           ],
         },
         {
           name: 'edit',
           description: 'edit a reminder',
-          type: ApplicationCommandOptionType.Subcommand,
+          type: 'SUB_COMMAND',
           options: [
             {
               name: 'reminderid',
               description: 'the id of the reminder to edit',
-              type: ApplicationCommandOptionType.Integer,
+              type: 'INTEGER',
               choices: reminderIdChoices,
+              required: true,
             },
             {
               name: 'amount',
               description: 'the amount of time to wait before the reminder',
-              type: ApplicationCommandOptionType.Integer,
+              type: 'INTEGER',
               autocomplete: true,
-              required: false,
             },
             {
               name: 'reminder',
               description: 'the reminder to be sent',
-              type: ApplicationCommandOptionType.String,
-              required: false,
+              type: 'STRING',
             },
           ],
         },
         {
           name: 'delete',
           description: 'delete a reminder',
-          type: ApplicationCommandOptionType.Subcommand,
+          type: 'SUB_COMMAND',
           options: [
             {
               name: 'reminderid',
               description: 'the id of the reminder to delete',
-              type: ApplicationCommandOptionType.Integer,
+              type: 'INTEGER',
               choices: reminderIdChoices,
+              required: true,
             },
           ],
         },
         {
           name: 'list',
           description: 'list all of your reminders',
-          type: ApplicationCommandOptionType.Subcommand,
+          type: 'SUB_COMMAND',
         },
       ],
     });
   }
 }
 
-async function create(interaction: ChatInputCommandInteraction<'cached'>) {
+async function create(interaction: CommandInteraction<'cached'>) {
   const timeAmount = interaction.options.getInteger('amount') * MILLISECONDS_TO_MINUTES,
     reminder = interaction.options.getString('reminder'),
     user = interaction.member.user;
@@ -174,7 +178,7 @@ async function create(interaction: ChatInputCommandInteraction<'cached'>) {
       ephemeral: true,
     });
 
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setTitle('Reminder')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
@@ -231,7 +235,7 @@ async function create(interaction: ChatInputCommandInteraction<'cached'>) {
   );
 }
 
-async function edit(interaction: ChatInputCommandInteraction<'cached'>) {
+async function edit(interaction: CommandInteraction<'cached'>) {
   const user = interaction.member.user,
     currentReminderData = (await interaction.client.db.reminder.findUnique({
       where: { userId: user.id },
@@ -280,7 +284,7 @@ async function edit(interaction: ChatInputCommandInteraction<'cached'>) {
       ephemeral: true,
     });
 
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setTitle('Edited Reminder')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
@@ -293,7 +297,7 @@ async function edit(interaction: ChatInputCommandInteraction<'cached'>) {
   await interaction.reply({ embeds: [embed] });
 }
 
-async function deleteReminder(interaction: ChatInputCommandInteraction<'cached'>) {
+async function deleteReminder(interaction: CommandInteraction<'cached'>) {
   const user = interaction.member.user,
     reminderId = interaction.options.getInteger('reminderid'),
     currentReminderData = (await interaction.client.db.reminder.findUnique({
@@ -327,7 +331,7 @@ async function deleteReminder(interaction: ChatInputCommandInteraction<'cached'>
       },
     });
 
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setTitle('Deleted Reminder')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
@@ -336,7 +340,7 @@ async function deleteReminder(interaction: ChatInputCommandInteraction<'cached'>
   await interaction.reply({ embeds: [embed] });
 }
 
-async function list(interaction: ChatInputCommandInteraction<'cached'>) {
+async function list(interaction: CommandInteraction<'cached'>) {
   const user = interaction.member.user,
     currentReminderData = (await interaction.client.db.reminder.findUnique({
       where: { userId: user.id },
@@ -348,7 +352,7 @@ async function list(interaction: ChatInputCommandInteraction<'cached'>) {
       ephemeral: true,
     });
 
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setTitle('Reminder List')
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())

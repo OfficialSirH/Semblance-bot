@@ -1,4 +1,4 @@
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import { type Args, Command } from '@sapphire/framework';
@@ -26,7 +26,7 @@ export default class Edit extends Command {
 
     const infoWithAction = `${action.value} ${info.value}`;
 
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle(`${commandName.value.charAt(0).toUpperCase() + commandName.value.slice(1)} Info Changed!`)
       .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
       .setColor(randomColor);
@@ -55,12 +55,12 @@ export default class Edit extends Command {
         embed.setDescription(infoHandler.value);
         break;
       case 'codes':
-        if (args[1] == 'expired')
+        if (action.value == 'expired')
           infoHandler = await message.client.db.information.update({
             where: { type: 'codes' },
             data: { expired: info.value },
           });
-        else if (args[1] == 'footer')
+        else if (action.value == 'footer')
           infoHandler = await message.client.db.information.update({
             where: { type: 'codes' },
             data: { footer: info.value },
@@ -72,11 +72,11 @@ export default class Edit extends Command {
           });
         embed
           .setDescription(infoHandler.value)
-          .addField({ name: 'Expired Codes', value: infoHandler.expired })
+          .addField('Expired Codes', infoHandler.expired)
           .setFooter({ text: infoHandler.footer });
         break;
       case 'boostercodes':
-        switch (args[1]) {
+        switch (action.value) {
           case 'list':
             return listBoosterCodes(message);
           case 'add':
@@ -94,7 +94,9 @@ export default class Edit extends Command {
         embed.setDescription(infoHandler.value);
         break;
       default:
-        return message.channel.send("What are you trying to type? The options are `beta`, `update`, and 'codes'");
+        return message.channel.send(
+          'What are you trying to type? The options are `beta`, `update`, `boostercodes`, and `codes`.',
+        );
     }
     message.channel.send({ embeds: [embed] });
   }
@@ -103,7 +105,7 @@ export default class Edit extends Command {
 const listBoosterCodes = async (message: Message) => {
   const darwiniumCodes = await message.client.db.boosterCodes.findMany({});
   const list = darwiniumCodes.length > 0 ? darwiniumCodes.map(c => c.code).join(', ') : 'None';
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setTitle('Booster Codes')
     .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setDescription(`number of codes: ${darwiniumCodes.length}\n\`\`\`\n${list}\`\`\``)
@@ -124,7 +126,7 @@ const addBoosterCode = async (message: Message, codes: string[]) => {
   });
 
   const list = darwiniumCodes.map(c => c.code).concat(codes);
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setTitle('Booster Codes')
     .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setDescription(
@@ -154,7 +156,7 @@ const removeBoosterCode = async (message: Message, codes: string[]) => {
     },
   });
 
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setTitle('Booster Codes')
     .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
     .setDescription(

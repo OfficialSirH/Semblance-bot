@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ChatInputCommandInteraction, MessageAttachment, User } from 'discord.js';
+import { type CommandInteraction, MessageAttachment, type User } from 'discord.js';
 import { Categories, formattedDate, isUserInGuild } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { c2sGuildId } from '#config';
@@ -14,27 +14,27 @@ export default class BoostReward extends Command {
     });
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const subcommand = interaction.options.getSubcommand();
 
     switch (subcommand) {
       case 'add': {
         const user = interaction.options.getUser('user');
-        if (!user || (await isUserInGuild(user, interaction.guild)))
+        if (!user || !(await isUserInGuild(user, interaction.guild)))
           return interaction.reply({ content: 'invalid user', ephemeral: true });
         const days = interaction.options.getInteger('days') ?? 28;
         return addBooster(interaction, { user, days });
       }
       case 'edit': {
         const user = interaction.options.getUser('user');
-        if (!user || (await isUserInGuild(user, interaction.guild)))
+        if (!user || !(await isUserInGuild(user, interaction.guild)))
           return interaction.reply({ content: 'invalid user', ephemeral: true });
         const days = interaction.options.getInteger('days');
         return editBooster(interaction, { user, days });
       }
       case 'remove': {
         const user = interaction.options.getUser('user');
-        if (!user || (await isUserInGuild(user, interaction.guild)))
+        if (!user || !(await isUserInGuild(user, interaction.guild)))
           return interaction.reply({ content: 'invalid user', ephemeral: true });
         return removeBooster(interaction, user);
       }
@@ -55,54 +55,57 @@ export default class BoostReward extends Command {
           {
             name: 'add',
             description: 'add a user to the booster reward list',
-            type: ApplicationCommandOptionType.Subcommand,
+            type: 'SUB_COMMAND',
             options: [
               {
                 name: 'user',
                 description: 'the user to add to the booster reward list',
-                type: ApplicationCommandOptionType.User,
+                type: 'USER',
+                required: true,
               },
               {
                 name: 'days',
                 description: 'the number of days till the user gets their reward (defaults to 28)',
-                type: ApplicationCommandOptionType.Integer,
-                required: false,
+                type: 'INTEGER',
               },
             ],
           },
           {
             name: 'edit',
             description: 'edit a user in the booster reward list',
-            type: ApplicationCommandOptionType.Subcommand,
+            type: 'SUB_COMMAND',
             options: [
               {
                 name: 'user',
                 description: 'the user to edit in the booster reward list',
-                type: ApplicationCommandOptionType.User,
+                type: 'USER',
+                required: true,
               },
               {
                 name: 'days',
                 description: 'the number of days till the user gets their reward',
-                type: ApplicationCommandOptionType.Integer,
+                type: 'INTEGER',
+                required: true,
               },
             ],
           },
           {
             name: 'remove',
             description: 'remove a user from the booster reward list',
-            type: ApplicationCommandOptionType.Subcommand,
+            type: 'SUB_COMMAND',
             options: [
               {
                 name: 'user',
                 description: 'the user to remove from the booster reward list',
-                type: ApplicationCommandOptionType.User,
+                type: 'USER',
+                required: true,
               },
             ],
           },
           {
             name: 'list',
             description: 'list all users in the booster reward list',
-            type: ApplicationCommandOptionType.Subcommand,
+            type: 'SUB_COMMAND',
           },
         ],
       },
@@ -113,10 +116,7 @@ export default class BoostReward extends Command {
   }
 }
 
-const addBooster = async (
-  interaction: ChatInputCommandInteraction<'cached'>,
-  options: { user: User; days: number },
-) => {
+const addBooster = async (interaction: CommandInteraction<'cached'>, options: { user: User; days: number }) => {
   let boosterRewards = await interaction.client.db.boosterReward.findUnique({ where: { userId: options.user.id } });
   if (boosterRewards)
     return interaction.reply(
@@ -136,10 +136,7 @@ const addBooster = async (
   );
 };
 
-const editBooster = async (
-  interaction: ChatInputCommandInteraction<'cached'>,
-  options: { user: User; days: number },
-) => {
+const editBooster = async (interaction: CommandInteraction<'cached'>, options: { user: User; days: number }) => {
   let boosterRewards = await interaction.client.db.boosterReward.findUnique({ where: { userId: options.user.id } });
   if (!boosterRewards) return interaction.reply('That user is not listed to receive an automated reward');
 
@@ -158,14 +155,14 @@ const editBooster = async (
   );
 };
 
-const removeBooster = async (interaction: ChatInputCommandInteraction<'cached'>, user: User) => {
+const removeBooster = async (interaction: CommandInteraction<'cached'>, user: User) => {
   const boosterRewards = await interaction.client.db.boosterReward.delete({ where: { userId: user.id } });
   if (!boosterRewards) return interaction.reply('That user is not listed to receive an automated reward');
 
   await interaction.reply('That user will no longer receive an automated reward');
 };
 
-const listBoosters = async (interaction: ChatInputCommandInteraction<'cached'>) => {
+const listBoosters = async (interaction: CommandInteraction<'cached'>) => {
   const boosterRewards = await interaction.client.db.boosterReward.findMany({});
   if (!boosterRewards.length) return interaction.reply('There are no booster rewards to list');
 

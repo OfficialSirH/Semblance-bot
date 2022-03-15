@@ -1,4 +1,4 @@
-import { ActionRow, ButtonComponent, ButtonStyle, type ChatInputCommandInteraction, Embed } from 'discord.js';
+import { MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { currentLogo, c2sGuildId } from '#config';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
@@ -6,15 +6,21 @@ import { c2sRoles, c2sRolesInformation, Categories } from '#constants/index';
 import { buildCustomId } from '#constants/components';
 
 export default class Roles extends Command {
-  public override name = 'roles';
-  public override description = 'see the list of available roles for the c2s server';
-  public override fullCategory = [Categories.c2sServer];
+  public constructor(context: Command.Context, options: Command.Options) {
+    super(context, {
+      ...options,
+      name: 'roles',
+      description: 'see the list of available roles for the c2s server',
+      fullCategory: [Categories.c2sServer],
+      preconditions: ['C2SOnly'],
+    });
+  }
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const member = builder.member;
     const guildRoles = builder.client.guilds.cache.get(c2sGuildId).roles.cache;
 
-    const embed = new Embed()
+    const embed = new MessageEmbed()
         .setTitle('C2S Roles')
         .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
         .setThumbnail(currentLogo.name)
@@ -55,8 +61,8 @@ export default class Roles extends Command {
         .setFooter({ text: '*Epic* roles.' }),
       hasServerEvents = member.roles.cache.has(c2sRoles.server.serverEvents),
       components = [
-        new ActionRow().addComponents(
-          new ButtonComponent()
+        new MessageActionRow().addComponents(
+          new MessageButton()
             .setDisabled(builder.guild.id != c2sGuildId)
             .setCustomId(
               buildCustomId({
@@ -65,9 +71,9 @@ export default class Roles extends Command {
                 id: member.user.id,
               }),
             )
-            .setEmoji({ name: hasServerEvents ? '❌' : '✅' })
+            .setEmoji(hasServerEvents ? '❌' : '✅')
             .setLabel(hasServerEvents ? 'Remove Server Events Role' : 'Add Server Events Role')
-            .setStyle(hasServerEvents ? ButtonStyle.Danger : ButtonStyle.Success),
+            .setStyle(hasServerEvents ? 'DANGER' : 'SUCCESS'),
         ),
       ];
     return { embeds: [embed], files: [currentLogo], components };
@@ -77,7 +83,7 @@ export default class Roles extends Command {
     await message.reply(this.sharedRun(message));
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     await interaction.reply(this.sharedRun(interaction));
   }
 

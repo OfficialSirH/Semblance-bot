@@ -2,7 +2,7 @@
 import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
 import type { Message, MessageOptions, Snowflake, TextBasedChannel, TextChannel, User } from 'discord.js';
 import { type Args, Command } from '@sapphire/framework';
-import { type APIInvite, ChannelType, type APIUser } from 'discord-api-types';
+import type { APIInvite, ChannelType, APIUser } from 'discord-api-types';
 import { Categories, onlyUnique, randomColor } from '#constants/index';
 
 export default class Lookup extends Command {
@@ -205,7 +205,7 @@ export default class Lookup extends Command {
 
     // message lookup
     const channels = message.guild.channels.cache
-      .filter(ch => [ChannelType.GuildNews, ChannelType.GuildText].includes(ch.type))
+      .filter(ch => ['GUILDNEWS', 'GUILDTEXT'].includes(ch.type))
       .map(c => c) as TextChannel[];
     for (const ch of channels)
       try {

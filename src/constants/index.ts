@@ -1,9 +1,9 @@
 ﻿import type { Category, Subcategory } from '#lib/interfaces/Semblance';
-import type { GuildMember, ActionRow, MessageComponentInteraction, Snowflake, User, Guild } from 'discord.js';
-import { PermissionFlagsBits } from 'discord.js';
+import type { GuildMember, MessageActionRow, MessageComponentInteraction, Snowflake, User, Guild } from 'discord.js';
+import { Permissions } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 
-export const prefix = 's!';
+export const prefix = 's?';
 export const isProduction = process.env.NODE_ENV === 'production';
 
 export const getAvatar = (user: User) => {
@@ -180,13 +180,13 @@ export const Subcategories: Record<Subcategory, Subcategory> = {
   other: 'other',
 };
 export const roles = {
-  admin: PermissionFlagsBits.Administrator,
-  exec: PermissionFlagsBits.ManageGuild,
-  srmod: PermissionFlagsBits.MentionEveryone,
-  mod: PermissionFlagsBits.ManageChannels,
-  jrmod: PermissionFlagsBits.ManageRoles,
-  helper: PermissionFlagsBits.ManageMessages,
-  duty: PermissionFlagsBits.MuteMembers,
+  admin: Permissions.FLAGS.ADMINISTRATOR,
+  exec: Permissions.FLAGS.MANAGE_GUILD,
+  srmod: Permissions.FLAGS.MENTION_EVERYONE,
+  mod: Permissions.FLAGS.MANAGE_CHANNELS,
+  jrmod: Permissions.FLAGS.MANAGE_ROLES,
+  helper: Permissions.FLAGS.MANAGE_MESSAGES,
+  duty: Permissions.FLAGS.MUTE_MEMBERS,
 };
 export const c2sRolesInformation: Record<keyof typeof c2sRoles, object> = {
   server: {
@@ -323,11 +323,11 @@ class RandomColor {
 export const randomColor = RandomColor.randomColor;
 
 export const disableAllComponents = (interaction: MessageComponentInteraction) => {
-  (interaction.message.components as ActionRow[]).forEach(component =>
+  (interaction.message.components as MessageActionRow[]).forEach(component =>
     component.components.forEach(comp => comp.setDisabled(true)),
   );
   return interaction.channel.messages.edit(interaction.message.id, {
-    components: interaction.message.components as ActionRow[],
+    components: interaction.message.components as MessageActionRow[],
   });
 };
 export const isUserInGuild = (user: User, guild: Guild) => {

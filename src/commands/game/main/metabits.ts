@@ -1,4 +1,4 @@
-import { Embed, Message, MessageAttachment } from 'discord.js';
+import { MessageEmbed, Message, MessageAttachment } from 'discord.js';
 import { Command } from '@sapphire/framework';
 import { Categories, randomColor, Subcategories } from '#constants/index';
 
@@ -10,7 +10,7 @@ export default class Metabits extends Command {
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const metabitAttachment = new MessageAttachment('./src/images/emojis/Metabit.png', 'attachment://Metabit.png'),
-      embed = new Embed()
+      embed = new MessageEmbed()
         .setTitle('Ways to earn Metabits faster')
         .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
         .setColor(randomColor)

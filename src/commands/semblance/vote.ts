@@ -1,4 +1,4 @@
-import { type Message, Embed } from 'discord.js';
+import { type Message, MessageEmbed } from 'discord.js';
 import { Categories, prefix, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -10,7 +10,7 @@ export default class Vote extends Command {
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const { client } = builder;
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Vote')
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())

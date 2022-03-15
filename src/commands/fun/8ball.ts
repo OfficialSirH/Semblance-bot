@@ -1,6 +1,6 @@
 import { Categories, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, type Args, Command } from '@sapphire/framework';
-import { type ChatInputCommandInteraction, type Message, Embed, ApplicationCommandOptionType } from 'discord.js';
+import { type CommandInteraction, type Message, MessageEmbed } from 'discord.js';
 
 function createAnswer(question: string) {
   const randomizedChoice = Math.ceil(Math.random() * 20);
@@ -38,7 +38,7 @@ export default class EightBall extends Command {
 
     if (!choice.success) return message.channel.send('You need to provide a question for the 8ball to answer.');
 
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('8ball')
       .setAuthor({ name: message.author.tag, iconURL: message.author.displayAvatarURL() })
       .setColor(randomColor)
@@ -47,11 +47,11 @@ export default class EightBall extends Command {
     await message.reply({ embeds: [embed] });
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const question = interaction.options.getString('question', true);
 
     const user = interaction.member.user;
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('8ball')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor);
@@ -66,7 +66,7 @@ export default class EightBall extends Command {
       options: [
         {
           name: 'question',
-          type: ApplicationCommandOptionType.String,
+          type: 'STRING',
           description: 'The question to ask the 8ball.',
           required: true,
         },

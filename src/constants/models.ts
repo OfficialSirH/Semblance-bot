@@ -1,5 +1,5 @@
 import type { SapphireClient } from '@sapphire/framework';
-import { Embed } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import type { TextChannel, GuildMember, Message } from 'discord.js';
 import { sirhId, adityaId, c2sGuildId, darwinium } from '#config';
 import { formattedDate } from '#constants/index';
@@ -29,7 +29,7 @@ export const handleBoosterReward = async (client: SapphireClient, boosterReward:
   await member.user
     .send({
       embeds: [
-        new Embed()
+        new MessageEmbed()
           .setTitle('Booster reward')
           .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
           .setDescription(

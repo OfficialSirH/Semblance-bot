@@ -1,4 +1,4 @@
-import { type Message, Embed, ActionRow, ButtonComponent, ButtonStyle } from 'discord.js';
+import { type Message, MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
 import { Categories, randomColor, Subcategories, subcategoryList } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
@@ -16,8 +16,8 @@ export default class C2sHelp extends Command {
     const mesozoicCommands = subcategoryList(client, Categories.game, Subcategories.mesozoic);
     const otherCommands = subcategoryList(client, Categories.game, Subcategories.other);
     const components = [
-      new ActionRow().addComponents(
-        new ButtonComponent()
+      new MessageActionRow().addComponents(
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'help',
@@ -26,8 +26,8 @@ export default class C2sHelp extends Command {
             }),
           )
           .setLabel('Metabits Guide')
-          .setStyle(ButtonStyle.Primary),
-        new ButtonComponent()
+          .setStyle('PRIMARY'),
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'help',
@@ -36,10 +36,10 @@ export default class C2sHelp extends Command {
             }),
           )
           .setLabel('Mesozoic Valley Guide')
-          .setStyle(ButtonStyle.Primary),
+          .setStyle('PRIMARY'),
       ),
     ];
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('**-> Cell to Singularity Commands**')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)

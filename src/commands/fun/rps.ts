@@ -1,10 +1,8 @@
 import {
-  ActionRow,
-  ApplicationCommandOptionType,
-  ButtonComponent,
-  ButtonStyle,
-  type ChatInputCommandInteraction,
-  Embed,
+  MessageActionRow,
+  MessageButton,
+  type CommandInteraction,
+  MessageEmbed,
   type InteractionReplyOptions,
   type ReplyMessageOptions,
 } from 'discord.js';
@@ -15,7 +13,7 @@ import { choiceToOutcome, countdownGIF, randomChoice } from '#constants/commands
 import { Command } from '@sapphire/framework';
 import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
 import type { RPSCommandArgs } from 'rps';
-import { buildCustomId, defaultEmojiToUsableEmoji } from '#constants/components';
+import { buildCustomId } from '#constants/components';
 import type { MessageOptions } from 'child_process';
 
 export default class Rps extends Command {
@@ -23,7 +21,7 @@ export default class Rps extends Command {
   public override description = 'Play rock paper scissors';
   public override fullCategory = [Categories.fun];
 
-  public async rpsSharedRun<T extends Message | ChatInputCommandInteraction<'cached'>>(
+  public async rpsSharedRun<T extends Message | CommandInteraction<'cached'>>(
     builder: T,
     args: RPSCommandArgs,
   ): Promise<string | (T extends Message ? MessageOptions | ReplyMessageOptions : InteractionReplyOptions)> {
@@ -34,6 +32,8 @@ export default class Rps extends Command {
         content: 'You have an RPS game still running, please finish your previous game first',
         ephemeral: true,
       };
+
+    if (!args.opponent) args.opponent = await builder.guild.members.fetch(builder.client.user.id);
 
     if (args.opponent?.guild?.id != builder.guild.id)
       return {
@@ -50,8 +50,8 @@ export default class Rps extends Command {
       return `You can't face a bot (except for me) so what are you doing trying to fight ${args.opponent?.user?.tag}?`;
 
     const components = [
-        new ActionRow().addComponents(
-          new ButtonComponent()
+        new MessageActionRow().addComponents(
+          new MessageButton()
             .setLabel('Rock')
             .setCustomId(
               buildCustomId({
@@ -60,9 +60,9 @@ export default class Rps extends Command {
                 id: user.id,
               }),
             )
-            .setEmoji(defaultEmojiToUsableEmoji('🪨'))
-            .setStyle(ButtonStyle.Secondary),
-          new ButtonComponent()
+            .setEmoji('🪨')
+            .setStyle('SECONDARY'),
+          new MessageButton()
             .setLabel('Paper')
             .setCustomId(
               buildCustomId({
@@ -71,9 +71,9 @@ export default class Rps extends Command {
                 id: user.id,
               }),
             )
-            .setEmoji(defaultEmojiToUsableEmoji('📄'))
-            .setStyle(ButtonStyle.Secondary),
-          new ButtonComponent()
+            .setEmoji('📄')
+            .setStyle('SECONDARY'),
+          new MessageButton()
             .setLabel('Scissors')
             .setCustomId(
               buildCustomId({
@@ -82,9 +82,9 @@ export default class Rps extends Command {
                 id: user.id,
               }),
             )
-            .setEmoji(defaultEmojiToUsableEmoji('✂'))
-            .setStyle(ButtonStyle.Secondary),
-          new ButtonComponent()
+            .setEmoji('✂')
+            .setStyle('SECONDARY'),
+          new MessageButton()
             .setLabel('Lizard')
             .setCustomId(
               buildCustomId({
@@ -93,9 +93,9 @@ export default class Rps extends Command {
                 id: user.id,
               }),
             )
-            .setEmoji(defaultEmojiToUsableEmoji('🦎'))
-            .setStyle(ButtonStyle.Secondary),
-          new ButtonComponent()
+            .setEmoji('🦎')
+            .setStyle('SECONDARY'),
+          new MessageButton()
             .setLabel('Spock')
             .setCustomId(
               buildCustomId({
@@ -104,11 +104,11 @@ export default class Rps extends Command {
                 id: user.id,
               }),
             )
-            .setEmoji(defaultEmojiToUsableEmoji('👽'))
-            .setStyle(ButtonStyle.Secondary),
+            .setEmoji('👽')
+            .setStyle('SECONDARY'),
         ),
       ],
-      embed = new Embed()
+      embed = new MessageEmbed()
         .setTitle(`${user.tag} has challenged ${args.opponent?.user?.tag} to Rock, Paper, Scissors, Lizard, Spock!`)
         .setThumbnail(countdownGIF)
         .setColor(randomColor)
@@ -189,7 +189,7 @@ export default class Rps extends Command {
     await message.reply((await this.rpsSharedRun(message, mappedArgs)) as ReplyMessageOptions);
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const choice = interaction.options.getString('choice');
     const opponent: GuildMember = await interaction.guild.members
       .fetch(interaction.options.getUser('opponent').id)
@@ -210,14 +210,12 @@ export default class Rps extends Command {
         {
           name: 'choice',
           description: 'The choice you want to use against your opponent',
-          type: ApplicationCommandOptionType.String,
-          required: false,
+          type: 'STRING',
         },
         {
           name: 'opponent',
           description: 'Who you want to go against',
-          type: ApplicationCommandOptionType.User,
-          required: false,
+          type: 'USER',
         },
       ],
     });

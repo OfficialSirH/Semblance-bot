@@ -1,5 +1,5 @@
 import { bigToName, Categories, randomColor } from '#constants/index';
-import { ApplicationCommandOptionType, type ChatInputCommandInteraction, Embed } from 'discord.js';
+import { type CommandInteraction, MessageEmbed } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
 export default class MetaCalc extends Command {
@@ -8,7 +8,7 @@ export default class MetaCalc extends Command {
   public override fullCategory = [Categories.calculator];
 
   public async metaCalc(
-    interaction: ChatInputCommandInteraction<'cached'>,
+    interaction: CommandInteraction<'cached'>,
     options: {
       entropy: string;
       ideas: string;
@@ -17,13 +17,13 @@ export default class MetaCalc extends Command {
     const parsedEntropy = parseFloat(options.entropy);
     const parsedIdeas = parseFloat(options.ideas);
 
-    if (parsedEntropy)
+    if (!parsedEntropy)
       return interaction.reply({
         content: "Invalid input for 'entropy'.",
         ephemeral: true,
       });
 
-    if (parsedIdeas)
+    if (!parsedIdeas)
       return interaction.reply({
         content: "Invalid input for 'ideas'.",
         ephemeral: true,
@@ -31,7 +31,7 @@ export default class MetaCalc extends Command {
 
     const metabits = Math.floor(Math.pow(parsedEntropy + parsedIdeas, 0.3333333333333333) / 10000 - 1),
       user = interaction.member.user,
-      embed = new Embed()
+      embed = new MessageEmbed()
         .setTitle('Metabits Produced')
         .setColor(randomColor)
         .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
@@ -43,10 +43,10 @@ export default class MetaCalc extends Command {
     return interaction.reply({ embeds: [embed] });
   }
 
-  public async metaCalcRev(interaction: ChatInputCommandInteraction<'cached'>, metabits: number): Promise<void> {
+  public async metaCalcRev(interaction: CommandInteraction<'cached'>, metabits: number): Promise<void> {
     const accumulated = Math.floor(Math.pow((metabits + 1) * 10000, 1 / 0.3333333333333333)),
       user = interaction.member.user,
-      embed = new Embed()
+      embed = new MessageEmbed()
         .setTitle('Accumulation Requirements')
         .setColor(randomColor)
         .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
@@ -54,7 +54,7 @@ export default class MetaCalc extends Command {
     return interaction.reply({ embeds: [embed] });
   }
 
-  public override chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override chatInputRun(interaction: CommandInteraction<'cached'>) {
     const chosenCalculator = interaction.options.getSubcommand();
 
     if (chosenCalculator === 'obtainable_metabits') {
@@ -77,30 +77,32 @@ export default class MetaCalc extends Command {
         {
           name: 'obtainable_metabits',
           description: 'Calculate the required resources to level up an item a specified amount',
-          type: ApplicationCommandOptionType.Subcommand,
+          type: 'SUB_COMMAND',
           options: [
             {
               name: 'entropy',
               description: 'The amount of entropy to include in the calculation',
-              type: ApplicationCommandOptionType.String,
-              autocomplete: true,
+              type: 'STRING',
+              required: true,
             },
             {
               name: 'ideas',
               description: 'The amount of ideas to include in the calculation',
-              type: ApplicationCommandOptionType.String,
+              type: 'STRING',
+              required: true,
             },
           ],
         },
         {
           name: 'required_accumulation',
           description: 'The amount of accumulated entropy and ideas required for a specified amount of metabits',
-          type: ApplicationCommandOptionType.Subcommand,
+          type: 'SUB_COMMAND',
           options: [
             {
               name: 'metabits',
               description: 'The amount of metabits to calculate the required accumulation for',
-              type: ApplicationCommandOptionType.Number,
+              type: 'NUMBER',
+              required: true,
             },
           ],
         },

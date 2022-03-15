@@ -1,4 +1,4 @@
-import { ActionRow, ButtonComponent, ButtonStyle, type ChatInputCommandInteraction, Embed } from 'discord.js';
+import { MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
@@ -11,7 +11,7 @@ export default class Credits extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Credits')
       .setColor(randomColor)
       .addFields(
@@ -37,23 +37,23 @@ export default class Credits extends Command {
           ].join('\n'),
         },
       );
-    const component = new ActionRow().addComponents(
-      new ButtonComponent()
+    const component = new MessageActionRow().addComponents(
+      new MessageButton()
         .setCustomId(buildCustomId({ command: 'credits', action: 'thanks', id: user.id }))
         .setLabel('Special Thanks')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonComponent()
+        .setStyle('PRIMARY'),
+      new MessageButton()
         .setCustomId(buildCustomId({ command: 'credits', action: 'semblance', id: user.id }))
         .setLabel('Preview Semblance Art')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonComponent()
+        .setStyle('PRIMARY'),
+      new MessageButton()
         .setCustomId(buildCustomId({ command: 'credits', action: 'semblance-beta', id: user.id }))
         .setLabel('Preview Semblance Beta Art')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonComponent()
+        .setStyle('PRIMARY'),
+      new MessageButton()
         .setCustomId(buildCustomId({ command: 'credits', action: 'semblance-revisioned', id: user.id }))
         .setLabel('Preview Semblance Revisioned Art')
-        .setStyle(ButtonStyle.Primary),
+        .setStyle('PRIMARY'),
     );
 
     return { embeds: [embed], components: [component] };
@@ -63,7 +63,7 @@ export default class Credits extends Command {
     await message.reply(this.sharedRun(message));
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     await interaction.reply(this.sharedRun(interaction));
   }
 

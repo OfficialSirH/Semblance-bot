@@ -1,11 +1,5 @@
-import {
-  type Message,
-  GuildMember,
-  type User,
-  type ChatInputCommandInteraction,
-  ApplicationCommandOptionType,
-} from 'discord.js';
-import { Embed } from 'discord.js';
+import { type Message, GuildMember, type User, type CommandInteraction } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
 import { Command } from '@sapphire/framework';
@@ -31,13 +25,15 @@ export default class Profile extends Command {
     return message.reply(userProfileEmbed(message, user));
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const user = interaction.options.getUser('user');
     let member: GuildMember;
     if (!user) member = interaction.member;
     else
       member =
-        user instanceof GuildMember ? user : await interaction.guild.members.fetch({ user: user.id, cache: false });
+        user instanceof GuildMember
+          ? user
+          : await interaction.guild.members.fetch({ user: user.id, cache: false }).catch(() => null);
 
     if (member) return interaction.reply(guildProfileEmbed(interaction, member));
     return interaction.reply(userProfileEmbed(interaction, user));
@@ -51,7 +47,7 @@ export default class Profile extends Command {
         {
           name: 'user',
           description: 'The user to get the profile of.',
-          type: ApplicationCommandOptionType.User,
+          type: 'USER',
         },
       ],
     });
@@ -63,7 +59,7 @@ function guildProfileEmbed(builder: Command['SharedBuilder'], member: GuildMembe
   accountCreated = `${accountCreated.substring(0, 16)}(${daysAgo(member.user.createdAt)})`;
   let accountJoined = `${member.joinedAt}`;
   accountJoined = `${accountJoined.substring(0, 16)}(${daysAgo(member.joinedAt)})`;
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setTitle('Guild User Profile')
     .setDescription(`User data for ${member}:`)
     .setColor(randomColor)
@@ -87,7 +83,7 @@ function guildProfileEmbed(builder: Command['SharedBuilder'], member: GuildMembe
 function userProfileEmbed(builder: Command['SharedBuilder'], user: User) {
   const cmdCaller = 'user' in builder ? builder.user : builder.author;
   const accountCreated = `${cmdCaller.createdAt.toString().substring(0, 16)}(${daysAgo(user.createdTimestamp)})`;
-  const embed = new Embed()
+  const embed = new MessageEmbed()
     .setTitle('User Profile')
     .setDescription(`User data for ${user}:`)
     .setColor(randomColor)

@@ -1,5 +1,5 @@
-import { ApplicationCommandOptionType, ChatInputCommandInteraction, TextChannel } from 'discord.js';
-import { Embed, MessageAttachment } from 'discord.js';
+import type { CommandInteraction, TextChannel } from 'discord.js';
+import { MessageEmbed, MessageAttachment } from 'discord.js';
 import { bugChannels } from '#constants/commands';
 import { c2sGuildId, sirhGuildId } from '#config';
 import { emojis } from '#constants/index';
@@ -11,11 +11,12 @@ export default class Bugreport extends Command {
       ...options,
       name: 'bugreport',
       description: 'Report a Cell to Singularity bug',
+      preconditions: ['C2SOnly'],
     });
   }
 
   // TODO: later replace this with a modal interaction instead
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const action = interaction.options.getSubcommand(true);
     switch (action) {
       case 'report':
@@ -47,32 +48,32 @@ export default class Bugreport extends Command {
           {
             name: 'report',
             description: 'Report a bug',
-            type: ApplicationCommandOptionType.Subcommand,
+            type: 'SUB_COMMAND',
           },
           {
             name: 'attach',
             description: 'Attach a file to the bug report',
-            type: ApplicationCommandOptionType.Subcommand,
+            type: 'SUB_COMMAND',
           },
           {
             name: 'reproduce',
             description: "Add to someone's bug report that you can reproduce it",
-            type: ApplicationCommandOptionType.Subcommand,
+            type: 'SUB_COMMAND',
           },
           {
             name: 'list',
             description: 'List all of your bug reports',
-            type: ApplicationCommandOptionType.Subcommand,
+            type: 'SUB_COMMAND',
           },
           {
             name: 'accept',
             description: 'Accept a bug report',
-            type: ApplicationCommandOptionType.Subcommand,
+            type: 'SUB_COMMAND',
           },
           {
             name: 'deny',
             description: 'Deny a bug report',
-            type: ApplicationCommandOptionType.Subcommand,
+            type: 'SUB_COMMAND',
           },
         ],
       },
@@ -83,7 +84,7 @@ export default class Bugreport extends Command {
   }
 }
 
-async function report(interaction: ChatInputCommandInteraction): Promise<void> {
+async function report(interaction: CommandInteraction): Promise<void> {
   const { user } = interaction;
   const title = interaction.options.getString('title', true),
     result = interaction.options.getString('result', true),
@@ -96,7 +97,7 @@ async function report(interaction: ChatInputCommandInteraction): Promise<void> {
 
   const message = await (interaction.guild.channels.cache.get(bugChannels.queue) as TextChannel).send({
     embeds: [
-      new Embed()
+      new MessageEmbed()
         .setAuthor({
           name: `${user.tag} (${user.id})\nBug Id: #${newBugId}`,
           iconURL: user.displayAvatarURL(),
@@ -124,7 +125,7 @@ async function report(interaction: ChatInputCommandInteraction): Promise<void> {
 
   interaction.reply({
     embeds: [
-      new Embed()
+      new MessageEmbed()
         .setTitle('Report Successfully sent!')
         .setURL(message.url)
         .setAuthor({ name: `${user.tag} (${user.id})`, iconURL: user.displayAvatarURL() })
@@ -141,7 +142,7 @@ async function report(interaction: ChatInputCommandInteraction): Promise<void> {
   });
 }
 
-async function attach(interaction: ChatInputCommandInteraction): Promise<void> {
+async function attach(interaction: CommandInteraction): Promise<void> {
   const bugId = interaction.options.getNumber('bugid'),
     link = interaction.options.getString('link'),
     report = await interaction.client.db.report.findUnique({ where: { bugId } });
@@ -209,7 +210,7 @@ async function attach(interaction: ChatInputCommandInteraction): Promise<void> {
   message.edit({ embeds: [embed] });
 }
 
-async function reproduce(interaction: ChatInputCommandInteraction<'cached'>): Promise<void> {
+async function reproduce(interaction: CommandInteraction<'cached'>): Promise<void> {
   const { user } = interaction,
     bugId = interaction.options.getNumber('bugid'),
     os = interaction.options.getString('os'),
@@ -239,7 +240,7 @@ async function reproduce(interaction: ChatInputCommandInteraction<'cached'>): Pr
   }
 }
 
-async function list(interaction: ChatInputCommandInteraction<'cached'>): Promise<void> {
+async function list(interaction: CommandInteraction<'cached'>): Promise<void> {
   const { user } = interaction;
 
   const reports = (await interaction.client.db.report.findMany({ where: { userId: user.id } })).reverse().slice(0, 10);
@@ -248,7 +249,7 @@ async function list(interaction: ChatInputCommandInteraction<'cached'>): Promise
 
   interaction.reply({
     embeds: [
-      new Embed()
+      new MessageEmbed()
         .setTitle('Bug Reports')
         .setDescription(
           reports
@@ -265,7 +266,7 @@ async function list(interaction: ChatInputCommandInteraction<'cached'>): Promise
   });
 }
 
-async function accept(interaction: ChatInputCommandInteraction<'cached'>): Promise<void> {
+async function accept(interaction: CommandInteraction<'cached'>): Promise<void> {
   const bugId = interaction.options.getNumber('bugid'),
     report = await interaction.client.db.report.findUnique({ where: { bugId } });
 
@@ -286,12 +287,14 @@ async function accept(interaction: ChatInputCommandInteraction<'cached'>): Promi
 
   return interaction.reply({
     content: `Bug ${bugId} has been successfully approved.`,
-    embeds: [new Embed().setTitle('Bug Approved').setDescription(`[${bugId}](${message.url})`).setColor(0x17db4a)],
+    embeds: [
+      new MessageEmbed().setTitle('Bug Approved').setDescription(`[${bugId}](${message.url})`).setColor(0x17db4a),
+    ],
     ephemeral: true,
   });
 }
 
-async function deny(interaction: ChatInputCommandInteraction): Promise<void> {
+async function deny(interaction: CommandInteraction): Promise<void> {
   const bugId = interaction.options.getNumber('bugid'),
     reason = interaction.options.getString('reason'),
     report = await interaction.client.db.report.findUnique({ where: { bugId } });
@@ -305,12 +308,12 @@ async function deny(interaction: ChatInputCommandInteraction): Promise<void> {
   user
     .send({
       content: 'Your report was denied.',
-      embeds: [reportMessage.embeds[0].setColor(0xd72020).addField({ name: 'Denial Message', value: reason })],
+      embeds: [reportMessage.embeds[0].setColor(0xd72020).addField('Denial Message', reason)],
     })
     .catch(() => {
       (interaction.guild.channels.cache.find(c => c.name == 'mod-alerts') as TextChannel).send({
         content: `${user.user.tag}'s report was denied but couldn't receive the DM.`,
-        embeds: [reportMessage.embeds[0].setColor(0xd72020).addField({ name: 'Denial Message', value: reason })],
+        embeds: [reportMessage.embeds[0].setColor(0xd72020).addField('Denial Message', reason)],
       });
     });
 

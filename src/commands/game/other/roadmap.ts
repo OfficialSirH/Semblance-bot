@@ -1,4 +1,4 @@
-import { ActionRow, ButtonComponent, ButtonStyle, Embed, type Message } from 'discord.js';
+import { MessageActionRow, MessageButton, MessageEmbed, type Message } from 'discord.js';
 import { Categories, randomColor, Subcategories } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import { currentLogo, roadMap } from '#config';
@@ -11,14 +11,14 @@ export default class Roadmap extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new Embed()
+    const embed = new MessageEmbed()
       .setTitle('Road Map')
       .setColor(randomColor)
       .setThumbnail(currentLogo.name)
       .setImage(roadMap.name);
     const components = [
-      new ActionRow().addComponents(
-        new ButtonComponent()
+      new MessageActionRow().addComponents(
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'roadmap',
@@ -26,9 +26,9 @@ export default class Roadmap extends Command {
               id: user.id,
             }),
           )
-          .setStyle(ButtonStyle.Primary)
+          .setStyle('PRIMARY')
           .setLabel('Early Beyond Testers'),
-        new ButtonComponent()
+        new MessageButton()
           .setCustomId(
             buildCustomId({
               command: 'roadmap',
@@ -36,7 +36,7 @@ export default class Roadmap extends Command {
               id: user.id,
             }),
           )
-          .setStyle(ButtonStyle.Primary)
+          .setStyle('PRIMARY')
           .setLabel('Early Beyond Sneak Peeks'),
       ),
     ];

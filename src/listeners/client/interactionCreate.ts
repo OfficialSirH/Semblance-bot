@@ -1,5 +1,4 @@
-import { Listener } from '@sapphire/framework';
-import { Events } from 'discord.js';
+import { Events, Listener } from '@sapphire/framework';
 
 export default class InteractionCreate extends Listener<typeof Events.InteractionCreate> {
   public constructor(context: Listener.Context, options: Listener.Options) {
