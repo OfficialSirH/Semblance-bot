@@ -3,7 +3,7 @@ module.exports = {
     {
       name: 'Semblance',
       script: './dist/src/index.js',
-      watch: true,
+      watch: false,
       instances: '1',
       env: {
         NODE_ENV: 'production',
