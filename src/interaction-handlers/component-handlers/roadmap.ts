@@ -11,16 +11,20 @@ export default class Roadmap extends InteractionHandler {
     super(context, { interactionHandlerType: InteractionHandlerTypes.Button });
   }
 
+  public override async parse(interaction: ButtonInteraction) {
+    return componentInteractionDefaultParser(this, interaction);
+  }
+
   public override async run(
     interaction: ButtonInteraction,
     data: ParsedCustomIdData<'early-beyond' | 'testers' | 'roadmap'>,
   ) {
     switch (data.action) {
       case 'early-beyond':
-        await interaction.reply(earlyBeyond(interaction));
+        await interaction.reply(earlyBeyond(interaction, this.name));
         break;
       case 'testers':
-        await interaction.reply(testerCredits(interaction));
+        await interaction.reply(testerCredits(interaction, this.name));
         break;
       case 'roadmap':
         await interaction.reply(roadmap(interaction));
@@ -30,13 +34,9 @@ export default class Roadmap extends InteractionHandler {
         break;
     }
   }
-
-  public override async parse(interaction: ButtonInteraction) {
-    return componentInteractionDefaultParser(this, interaction);
-  }
 }
 
-function earlyBeyond(interaction: ButtonInteraction) {
+function earlyBeyond(interaction: ButtonInteraction, name: string) {
   const embed = new MessageEmbed()
     .setTitle('Beyond Clips')
     .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
@@ -59,11 +59,11 @@ function earlyBeyond(interaction: ButtonInteraction) {
     );
   return {
     embeds: [embed],
-    components: [new MessageActionRow().addComponents(backButton(this.name, interaction.user.id, 'roadmap'))],
+    components: [new MessageActionRow().addComponents(backButton(name, interaction.user.id, 'roadmap'))],
   };
 }
 
-function testerCredits(interaction: ButtonInteraction) {
+function testerCredits(interaction: ButtonInteraction, name: string) {
   const embed = new MessageEmbed()
     .setTitle('Credits to our Early Private Beta Testers!')
     .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
@@ -74,7 +74,7 @@ function testerCredits(interaction: ButtonInteraction) {
     });
   return {
     embeds: [embed],
-    components: [new MessageActionRow().addComponents(backButton(this.name, interaction.user.id, 'roadmap'))],
+    components: [new MessageActionRow().addComponents(backButton(name, interaction.user.id, 'roadmap'))],
   };
 }
 

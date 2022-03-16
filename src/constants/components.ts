@@ -70,7 +70,15 @@ export const componentInteractionDefaultParser = async <T extends CustomIdData =
     await interaction.reply({ content: 'You did not call this command', ephemeral: true });
     return handler.none();
   }
-  return handler.some({ action: data.action, id: data.id });
+
+  const finalizedData = {
+    action: data.action,
+    id: data.id,
+  };
+  for (const prop of Object.keys(extraProps)) {
+    finalizedData[prop] = data[prop];
+  }
+  return handler.some(finalizedData);
 };
 
 export const backButton = (command: string, userId: string, whereToGo: string) =>
