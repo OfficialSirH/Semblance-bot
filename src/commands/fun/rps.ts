@@ -192,7 +192,7 @@ export default class Rps extends Command {
   public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const choice = interaction.options.getString('choice');
     const opponent: GuildMember = await interaction.guild.members
-      .fetch(interaction.options.getUser('opponent').id)
+      .fetch(interaction.options.getUser('opponent')?.id)
       .catch(() => null);
     const mappedArgs: RPSCommandArgs = {};
 
