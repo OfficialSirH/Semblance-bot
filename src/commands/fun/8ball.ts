@@ -34,7 +34,7 @@ export default class EightBall extends Command {
   public override fullCategory = [Categories.fun];
 
   public override async messageRun(message: Message, args: Args) {
-    const choice = await args.pickResult('string');
+    const choice = await args.restResult('string');
 
     if (!choice.success) return message.channel.send('You need to provide a question for the 8ball to answer.');
 
