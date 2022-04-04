@@ -21,13 +21,13 @@ export default class Roadmap extends InteractionHandler {
   ) {
     switch (data.action) {
       case 'early-beyond':
-        await interaction.reply(earlyBeyond(interaction, this.name));
+        await interaction.channel.messages.edit(interaction.message.id, earlyBeyond(interaction, this.name));
         break;
       case 'testers':
-        await interaction.reply(testerCredits(interaction, this.name));
+        await interaction.channel.messages.edit(interaction.message.id, testerCredits(interaction, this.name));
         break;
       case 'roadmap':
-        await interaction.reply(roadmap(interaction));
+        await interaction.channel.messages.edit(interaction.message.id, roadmap(interaction));
         break;
       default:
         await interaction.reply({ content: 'An improper action was received.', ephemeral: true });
