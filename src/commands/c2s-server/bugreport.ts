@@ -204,6 +204,7 @@ async function report(interaction: CommandInteraction): Promise<void> {
 
   await interaction.client.db.report.create({
     data: {
+      bugId: newBugId,
       userId: user.id,
       messageId: message.id,
       channelId: message.channel.id,
