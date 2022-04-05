@@ -49,16 +49,72 @@ export default class Bugreport extends Command {
             name: 'report',
             description: 'Report a bug',
             type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'title',
+                description: 'The title of the bug report',
+                type: 'STRING',
+              },
+              {
+                name: 'result',
+                description: 'What results from the bug?',
+                type: 'STRING',
+              },
+              {
+                name: 'expected',
+                description: 'What should happen in this scenario?',
+                type: 'STRING',
+              },
+              {
+                name: 'os',
+                description: 'What operating system is this bug on?',
+                type: 'STRING',
+              },
+              {
+                name: 'version',
+                description: 'What version of the game is this bug on?',
+                type: 'STRING',
+              },
+            ],
           },
           {
             name: 'attach',
             description: 'Attach a file to the bug report',
             type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'bugid',
+                description: 'The ID of the bug to attach to',
+                type: 'INTEGER',
+              },
+              {
+                name: 'link',
+                description: 'The link to the file to attach',
+                type: 'STRING',
+              },
+            ],
           },
           {
             name: 'reproduce',
             description: "Add to someone's bug report that you can reproduce it",
             type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'bugid',
+                description: 'The ID of the bug to add reproduction to',
+                type: 'INTEGER',
+              },
+              {
+                name: 'os',
+                description: 'What operating system is this bug on?',
+                type: 'STRING',
+              },
+              {
+                name: 'version',
+                description: 'What version of the game is this bug on?',
+                type: 'STRING',
+              },
+            ],
           },
           {
             name: 'list',
@@ -69,11 +125,30 @@ export default class Bugreport extends Command {
             name: 'accept',
             description: 'Accept a bug report',
             type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'bugid',
+                description: 'The ID of the bug to accept',
+                type: 'INTEGER',
+              },
+            ],
           },
           {
             name: 'deny',
             description: 'Deny a bug report',
             type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'bugid',
+                description: 'The ID of the bug to deny',
+                type: 'INTEGER',
+              },
+              {
+                name: 'reason',
+                description: 'The reason for denying the bug',
+                type: 'STRING',
+              },
+            ],
           },
         ],
       },
