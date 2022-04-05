@@ -231,7 +231,7 @@ async function report(interaction: CommandInteraction): Promise<void> {
 }
 
 async function attach(interaction: CommandInteraction): Promise<void> {
-  const bugId = interaction.options.getNumber('bugid'),
+  const bugId = interaction.options.getInteger('bugid'),
     link = interaction.options.getString('link'),
     report = await interaction.client.db.report.findUnique({ where: { bugId } });
 
@@ -300,7 +300,7 @@ async function attach(interaction: CommandInteraction): Promise<void> {
 
 async function reproduce(interaction: CommandInteraction<'cached'>): Promise<void> {
   const { user } = interaction,
-    bugId = interaction.options.getNumber('bugid'),
+    bugId = interaction.options.getInteger('bugid'),
     os = interaction.options.getString('os'),
     version = interaction.options.getString('version'),
     report = await interaction.client.db.report.findUnique({ where: { bugId } });
@@ -355,7 +355,7 @@ async function list(interaction: CommandInteraction<'cached'>): Promise<void> {
 }
 
 async function accept(interaction: CommandInteraction<'cached'>): Promise<void> {
-  const bugId = interaction.options.getNumber('bugid'),
+  const bugId = interaction.options.getInteger('bugid'),
     report = await interaction.client.db.report.findUnique({ where: { bugId } });
 
   if (!report) return interaction.reply({ content: 'Invalid bug ID.', ephemeral: true });
@@ -383,7 +383,7 @@ async function accept(interaction: CommandInteraction<'cached'>): Promise<void> 
 }
 
 async function deny(interaction: CommandInteraction): Promise<void> {
-  const bugId = interaction.options.getNumber('bugid'),
+  const bugId = interaction.options.getInteger('bugid'),
     reason = interaction.options.getString('reason'),
     report = await interaction.client.db.report.findUnique({ where: { bugId } });
 
