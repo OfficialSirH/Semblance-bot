@@ -27,6 +27,7 @@ export const disableComponentsByLabel = (
             return c;
           }
           if (labels.includes(c.label)) return c.setDisabled(!enableInstead);
+          return c;
         }),
       } as MessageActionRow),
   );

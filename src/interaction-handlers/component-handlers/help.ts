@@ -26,16 +26,7 @@ export default class Help extends InteractionHandler {
   public override async run(
     interaction: MessageComponentInteraction<'cached'>,
     data: ParsedCustomIdData<
-      | 'c2shelp'
-      | 'calchelp'
-      | 'mischelp'
-      | 'metabits'
-      | 'mesoguide'
-      | 'largenumbers'
-      | 'metahelp'
-      | 'itemhelp'
-      | 'help'
-      | 'close'
+      'c2shelp' | 'mischelp' | 'metabits' | 'mesoguide' | 'largenumbers' | 'metahelp' | 'itemhelp' | 'help' | 'close'
     >,
   ) {
     if (interaction.isButton()) return this.buttonRun(interaction, data);
@@ -59,16 +50,7 @@ export default class Help extends InteractionHandler {
   public async buttonRun(
     interaction: ButtonInteraction<'cached'>,
     data: ParsedCustomIdData<
-      | 'c2shelp'
-      | 'calchelp'
-      | 'mischelp'
-      | 'metabits'
-      | 'mesoguide'
-      | 'largenumbers'
-      | 'metahelp'
-      | 'itemhelp'
-      | 'help'
-      | 'close'
+      'c2shelp' | 'mischelp' | 'metabits' | 'mesoguide' | 'largenumbers' | 'metahelp' | 'itemhelp' | 'help' | 'close'
     >,
   ) {
     const client = interaction.client;
@@ -84,9 +66,6 @@ export default class Help extends InteractionHandler {
       // Main Help Page
       case 'c2shelp':
         options = await client.stores.get('commands').get('c2shelp').sharedRun(interaction);
-        break;
-      case 'calchelp':
-        options = await client.stores.get('commands').get('calchelp').sharedRun(interaction);
         break;
       case 'mischelp':
         options = await client.stores.get('commands').get('mischelp').sharedRun(interaction);

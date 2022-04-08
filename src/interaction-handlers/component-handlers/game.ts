@@ -142,7 +142,7 @@ export default class GameHandler extends InteractionHandler {
 
     switch (data.action) {
       case 'create':
-        game ? askConfirmation(interaction) : create(interaction, components);
+        game ? askConfirmation(interaction, this.name) : create(interaction, components);
         break;
       case 'reset':
         create(interaction, components);
@@ -171,14 +171,14 @@ export default class GameHandler extends InteractionHandler {
   }
 }
 
-async function askConfirmation(interaction: MessageComponentInteraction) {
+async function askConfirmation(interaction: MessageComponentInteraction, name: string) {
   const { user } = interaction;
   const components = [
     new MessageActionRow().addComponents(
       new MessageButton()
         .setCustomId(
           buildCustomId({
-            command: this.name,
+            command: name,
             action: 'reset',
             id: user.id,
           }),
@@ -189,7 +189,7 @@ async function askConfirmation(interaction: MessageComponentInteraction) {
       new MessageButton()
         .setCustomId(
           buildCustomId({
-            command: this.name,
+            command: name,
             action: 'close',
             id: user.id,
           }),
