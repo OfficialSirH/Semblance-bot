@@ -28,16 +28,8 @@ declare module '@sapphire/framework' {
 
 import { isProduction, prefix } from '#constants/index';
 import { ApplicationCommandRegistries, RegisterBehavior, SapphireClient } from '@sapphire/framework';
-import {
-  type Awaitable,
-  Intents,
-  type Message,
-  Options,
-  InteractionReplyOptions,
-  MessageOptions,
-  ReplyMessageOptions,
-  Interaction,
-} from 'discord.js';
+import type { InteractionReplyOptions, MessageOptions, ReplyMessageOptions, Interaction } from 'discord.js';
+import { type Awaitable, Intents, type Message, Options } from 'discord.js';
 
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
 

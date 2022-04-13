@@ -4,6 +4,8 @@ import { Categories, randomColor } from '#constants/index';
 import { type Args, Command } from '@sapphire/framework';
 import type { Information } from '@prisma/client';
 
+// TODO: re-rewrite this command for a more flawless handling of edits, it's a shit show of unreadable code
+
 export default class Edit extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, {
@@ -21,8 +23,6 @@ export default class Edit extends Command {
     const action = await args.pickResult('string');
     if (!action.success) return message.reply('resolving the optional action failed.');
     const info = await args.restResult('string');
-    if (!info.success)
-      return message.reply("You need to provide the information you want to replace the command's current info with.");
 
     const infoWithAction = `${action.value} ${info.value}`;
 
@@ -55,17 +55,25 @@ export default class Edit extends Command {
         embed.setDescription(infoHandler.value);
         break;
       case 'codes':
-        if (action.value == 'expired')
+        if (action.value == 'expired') {
+          if (!info.success)
+            return message.reply(
+              "You need to provide the information you want to replace the command's current info with.",
+            );
           infoHandler = await message.client.db.information.update({
             where: { type: 'codes' },
             data: { expired: info.value },
           });
-        else if (action.value == 'footer')
+        } else if (action.value == 'footer') {
+          if (!info.success)
+            return message.reply(
+              "You need to provide the information you want to replace the command's current info with.",
+            );
           infoHandler = await message.client.db.information.update({
             where: { type: 'codes' },
             data: { footer: info.value },
           });
-        else
+        } else
           infoHandler = await message.client.db.information.update({
             where: { type: 'codes' },
             data: { value: infoWithAction },
@@ -80,8 +88,16 @@ export default class Edit extends Command {
           case 'list':
             return listBoosterCodes(message);
           case 'add':
+            if (!info.success)
+              return message.reply(
+                "You need to provide the information you want to replace the command's current info with.",
+              );
             return addBoosterCode(message, info.value.split(' '));
           case 'remove':
+            if (!info.success)
+              return message.reply(
+                "You need to provide the information you want to replace the command's current info with.",
+              );
             return removeBoosterCode(message, info.value.split(' '));
           default:
             return message.reply('Invalid argument for boostercodes option. Choose `list`, `add`, or `remove`.');
