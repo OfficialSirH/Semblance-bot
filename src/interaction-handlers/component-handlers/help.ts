@@ -99,6 +99,7 @@ export default class Help extends InteractionHandler {
     if (typeof options != 'string') {
       if (options.components) options.components.at(0).components.concat(components.at(0).components);
       else options.components = components;
+      options.files = [];
     }
     return interaction.update(options);
   }

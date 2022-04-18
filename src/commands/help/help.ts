@@ -61,16 +61,6 @@ export default class Help extends Command {
           .setCustomId(
             buildCustomId({
               command: 'help',
-              action: 'calchelp',
-              id: user.id,
-            }),
-          )
-          .setLabel('Calculator Help')
-          .setStyle('PRIMARY'),
-        new MessageButton()
-          .setCustomId(
-            buildCustomId({
-              command: 'help',
               action: 'mischelp',
               id: user.id,
             }),
