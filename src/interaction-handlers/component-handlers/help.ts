@@ -1,6 +1,6 @@
+import type { InteractionReplyOptions } from 'discord.js';
 import {
   MessageActionRow,
-  InteractionReplyOptions,
   type ButtonInteraction,
   type MessageComponentInteraction,
   type SelectMenuInteraction,
@@ -100,6 +100,6 @@ export default class Help extends InteractionHandler {
       if (options.components) options.components.at(0).components.concat(components.at(0).components);
       else options.components = components;
     }
-    return interaction.reply(options);
+    return interaction.update(options);
   }
 }

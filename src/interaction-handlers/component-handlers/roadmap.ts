@@ -21,13 +21,13 @@ export default class Roadmap extends InteractionHandler {
   ) {
     switch (data.action) {
       case 'early-beyond':
-        await interaction.channel.messages.edit(interaction.message.id, earlyBeyond(interaction, this.name));
+        await interaction.update(earlyBeyond(interaction, this.name));
         break;
       case 'testers':
-        await interaction.channel.messages.edit(interaction.message.id, testerCredits(interaction, this.name));
+        await interaction.update(testerCredits(interaction, this.name));
         break;
       case 'roadmap':
-        await interaction.channel.messages.edit(interaction.message.id, roadmap(interaction));
+        await interaction.update(roadmap(interaction));
         break;
       default:
         await interaction.reply({ content: 'An improper action was received.', ephemeral: true });
@@ -43,7 +43,7 @@ function earlyBeyond(interaction: ButtonInteraction, name: string) {
     .setColor(randomColor)
     .setDescription(
       [
-        `Fun Fact: The Beyond was mentioned 5203 times since <:F:${1611959542848}> all the way till <:F:${1635971517445}>\n`,
+        `Fun Fact: The Beyond was mentioned 5203 times since <t:${1611959542848}:F> all the way till <t:${1635971517445}:F>\n`,
         '[Clip One](https://clips.twitch.tv/CharmingVibrantWatermelonPeoplesChamp)',
         '[Clip Two](https://clips.twitch.tv/GracefulSmellyYakDoggo)',
         '[Clip Three](https://clips.twitch.tv/BillowingCovertFishFeelsBadMan)',
@@ -60,6 +60,7 @@ function earlyBeyond(interaction: ButtonInteraction, name: string) {
   return {
     embeds: [embed],
     components: [new MessageActionRow().addComponents(backButton(name, interaction.user.id, 'roadmap'))],
+    files: [],
   };
 }
 
@@ -75,6 +76,7 @@ function testerCredits(interaction: ButtonInteraction, name: string) {
   return {
     embeds: [embed],
     components: [new MessageActionRow().addComponents(backButton(name, interaction.user.id, 'roadmap'))],
+    files: [],
   };
 }
 
