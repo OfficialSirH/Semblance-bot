@@ -84,11 +84,11 @@ import { checkTweet } from './twitter/checkTweet.js';
 // Check for Tweet from ComputerLunch
 if (isProduction) setInterval(() => checkTweet(client), 2000);
 // TODO: remove this really shitty implementation of receiving tweets
-await client.login(process.env.token);
+await client.login(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
 let address: string;
 if (isProduction) address = await app.listen(8079, '0.0.0.0');
 else address = await app.listen(8079);
-console.log('Semblance has started on: ' + address);
+console.log(`Bot listening on port ${address}`);
 // TODO: enable twitter.js implementation to replace the shitty twitter library
 // const twitterCredentials = JSON.parse(process.env.twitter);
 // await twClient.loginWithBearerToken(twitterCredentials.bearer_token);
