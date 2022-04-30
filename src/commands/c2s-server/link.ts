@@ -1,4 +1,4 @@
-import { c2sGuildId } from '#config';
+import { c2sGuildId, sirhId } from '#config';
 import { createHmac } from 'crypto';
 import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
 import { Command } from '@sapphire/framework';
@@ -26,8 +26,7 @@ export default class Link extends Command {
     const dataAlreadyExists = await interaction.client.db.userData.findUnique({ where: { token } });
     if (dataAlreadyExists)
       return interaction.reply({
-        content:
-          'The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(SirH).',
+        content: `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${sirhId}>).`,
         ephemeral: true,
       });
 
@@ -74,7 +73,7 @@ export default class Link extends Command {
     const dataAlreadyExists = await message.client.db.userData.findUnique({ where: { token } });
     if (dataAlreadyExists)
       return message.channel.send(
-        'The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(SirH).',
+        `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${sirhId}>).`,
       );
 
     await message.client.db.userData
