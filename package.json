@@ -52,9 +52,9 @@
     ]
   },
   "scripts": {
-    "start": "npm run build && pm2 start --name \"Semblance\" dist/ecosystem.config.cjs",
-    "reload": "npm run build && pm2 reload dist/ecosystem.config.cjs",
-    "build": "npm i && tsc --project tsconfig.json",
+    "start": "npm run build && pm2 start dist/ecosystem.config.cjs",
+    "start:prod": "npm run build && pm2 start dist/ecosystem.config.cjs --env production",
+    "build": "npm i && cleanup && tsc --project tsconfig.json",
     "cleanup": "rm -rf dist",
     "setup": "npm run lint:fix && npm run prettier",
     "prettier": "prettier --write config.ts src/**/*.ts lib/**/*.ts",
