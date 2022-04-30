@@ -19,8 +19,8 @@ export default class Link extends Command {
   }
 
   public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
-    const playerId = interaction.options.getString('playerId', true);
-    const playerToken = interaction.options.getString('playerToken', true);
+    const playerId = interaction.options.getString('playerid', true);
+    const playerToken = interaction.options.getString('playertoken', true);
     const { user } = interaction;
 
     const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
@@ -112,13 +112,13 @@ export default class Link extends Command {
         description: this.description,
         options: [
           {
-            name: 'playerId',
+            name: 'playerid',
             type: 'STRING',
             description: 'Your in-game player Id.',
             required: true,
           },
           {
-            name: 'playerToken',
+            name: 'playertoken',
             type: 'STRING',
             description: 'Your in-game player Token.',
             required: true,
