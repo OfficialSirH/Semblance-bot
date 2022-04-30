@@ -1,5 +1,6 @@
 import type { sizeType } from '#lib/interfaces/catAndDogAPI';
-import { ButtonInteraction, MessageEmbed } from 'discord.js';
+import type { ButtonInteraction } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { fetchCatOrDog } from '#constants/commands';
 import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';

@@ -1,7 +1,8 @@
 import type { Guild, Message } from 'discord.js';
 import { MessageEmbed } from 'discord.js';
 import { Categories, getPermissionLevel, randomColor } from '#constants/index';
-import { Args, Command } from '@sapphire/framework';
+import type { Args } from '@sapphire/framework';
+import { Command } from '@sapphire/framework';
 
 export default class ServerInfo extends Command {
   public override name = 'serverinfo';

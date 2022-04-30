@@ -1,5 +1,5 @@
-import { AutocompleteInteraction, MessageEmbed } from 'discord.js';
-import type { CommandInteraction } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
+import type { CommandInteraction, AutocompleteInteraction } from 'discord.js';
 import { randomColor, formattedDate, Categories } from '#constants/index';
 import type { Reminder, UserReminder } from '@prisma/client';
 import { handleReminder } from '#constants/models';

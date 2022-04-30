@@ -1,4 +1,5 @@
-import { type ApplicationCommandRegistry, Command, Args } from '@sapphire/framework';
+import type { Args } from '@sapphire/framework';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { messageLinkJump } from '#constants/commands';
 import type { CommandInteraction, Message } from 'discord.js';
 
