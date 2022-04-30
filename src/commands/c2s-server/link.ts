@@ -12,8 +12,7 @@ export default class Link extends Command {
     super(context, {
       ...options,
       name: 'link',
-      description:
-        'link your C2S game progress with your Discord account for simplifying the process of gaining roles in the community.',
+      description: 'Link C2S data with your Discord Id.',
       fullCategory: [Categories.dm],
     });
   }
