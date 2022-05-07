@@ -24,7 +24,7 @@ export class DBotsApi extends BaseAPI {
    * await client.postStats({ guildCount: 69, shardCount: 420 });
    */
   async postStats(stats: BotStats): Promise<BotStats> {
-    if (!stats || stats.guildCount) throw new Error('Missing guild count');
+    if (!stats || !stats.guildCount) throw new Error('Missing guild count');
     await this._request('POST', '/bots/794033850665533450/stats', {
       guildCount: stats.guildCount,
       shardCount: stats.shardCount,

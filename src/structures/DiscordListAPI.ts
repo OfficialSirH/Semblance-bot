@@ -25,7 +25,7 @@ export class DListApi extends BaseAPI {
   async postStats(serverCount: number): Promise<number> {
     if (!serverCount) throw new Error('Missing serverCount');
     await this._request('POST', '/bots/794033850665533450', {
-      server_count: serverCount,
+      serverCount,
     });
     return serverCount;
   }
