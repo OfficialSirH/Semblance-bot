@@ -1,4 +1,5 @@
-import { MessageEmbed, Message, MessageAttachment } from 'discord.js';
+import type { Message } from 'discord.js';
+import { MessageEmbed, MessageAttachment } from 'discord.js';
 import { Command } from '@sapphire/framework';
 import { Categories, randomColor, Subcategories } from '#constants/index';
 

@@ -1,6 +1,7 @@
 import { Categories } from '#constants/index';
 import { buildCustomId } from '#constants/components';
-import { ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import type { ApplicationCommandRegistry } from '@sapphire/framework';
+import { Command } from '@sapphire/framework';
 import type { CommandInteraction, TextBasedChannel } from 'discord.js';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import { c2sGuildId } from '#config';

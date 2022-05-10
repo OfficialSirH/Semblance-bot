@@ -1,22 +1,87 @@
-import { MessageEmbed } from 'discord.js';
+import { type CommandInteraction, MessageEmbed, MessageAttachment, MessageButton, MessageActionRow } from 'discord.js';
 import type { Message } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
-import { type Args, Command } from '@sapphire/framework';
+import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
+import { Command } from '@sapphire/framework';
 import type { Information } from '@prisma/client';
-
-// TODO: re-rewrite this command for a more flawless handling of edits, it's a shit show of unreadable code
+import { MessageButtonStyles } from 'discord.js/typings/enums';
+import { buildCustomId } from '#constants/components';
+import { c2sGuildId, sirhGuildId } from '#config';
 
 export default class Edit extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, {
       ...options,
-      name: 'edit',
+      name: 'info-editor',
       description: 'edit information on commands that has ever-changing information',
       fullCategory: [Categories.developer],
       preconditions: ['OwnerOnly'],
     });
   }
 
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+    // verify that the provided subject exists in the database
+    // if it doesn't, return an error
+    // if it does:
+    //   - get the information from the database
+    //   - allow the user to copy the information so they can make changes to it accordingly
+    //   - add a button that opens a modal to allow the user to edit the information
+
+    const subject = await this.container.client.db.information.findUnique({
+      where: {
+        type: interaction.options.getString('subject'),
+      },
+    });
+    if (!subject) return interaction.reply('Invalid subject.');
+
+    const embed = new MessageEmbed()
+      .setTitle(subject.type)
+      .setColor(randomColor)
+      .setThumbnail(this.container.client.user.displayAvatarURL())
+      .setDescription('Copy the following information within the provided file to make changes to it.');
+
+    const file = new MessageAttachment(Buffer.from(subject.toString()), `${subject.type}.json`);
+
+    const modalPopup = new MessageActionRow().setComponents(
+      new MessageButton({
+        label: 'Edit',
+        style: MessageButtonStyles.PRIMARY,
+        customId: buildCustomId({
+          command: this.name,
+          action: 'edit',
+          id: interaction.user.id,
+        }),
+      }),
+    );
+
+    return interaction.reply({ embeds: [embed], files: [file], components: [modalPopup], ephemeral: true });
+  }
+  // TODO: figure out why the command isn't being created
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        defaultPermission: false,
+        options: [
+          {
+            name: 'subject',
+            description: 'the information to edit',
+            type: 'STRING',
+            choices: this.container.client.tempSubjectKeys.map(i => ({ name: i, value: i })),
+          },
+        ],
+      },
+      {
+        guildIds: [c2sGuildId, sirhGuildId],
+      },
+    );
+
+    // throw away tempSubjectKeys from the client
+    delete this.container.client.tempSubjectKeys;
+  }
+
+  // TODO: replace this god awful command with an interactive slash command
   public override async messageRun(message: Message, args: Args) {
     const commandName = await args.pickResult('string');
     if (!commandName.success) return message.reply('You need to provide a command name.');

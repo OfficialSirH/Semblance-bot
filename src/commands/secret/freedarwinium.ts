@@ -1,6 +1,7 @@
 import { Categories } from '#constants/index';
 import { Command } from '@sapphire/framework';
-import { MessageEmbed, Message } from 'discord.js';
+import type { Message } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 
 export default class Freedarwinium extends Command {
   public override name = 'freedarwinium';

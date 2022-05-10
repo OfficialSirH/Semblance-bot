@@ -1,7 +1,8 @@
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
 import { randomColor, guildBookPage, Categories } from '#constants/index';
-import { Args, Command } from '@sapphire/framework';
+import type { Args } from '@sapphire/framework';
+import { Command } from '@sapphire/framework';
 import { serversPerPage } from '#constants/commands';
 import { buildCustomId } from '#constants/components';
 
