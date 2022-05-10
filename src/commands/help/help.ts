@@ -41,10 +41,7 @@ export default class Help extends Command {
             `[here](https://discord.com/oauth2/authorize?client_id=${builder.client.user.id}&permissions=274878295040&scope=bot+applications.commands) to authorize Semblance.`,
           ].join(' '),
         },
-      )
-      .setFooter({
-        text: `Stay Cellular! If you really like the work I've done to Semblance, then check out ${prefix}patreon :D`,
-      });
+      );
     const components = [
       new MessageActionRow().addComponents(
         new MessageButton()

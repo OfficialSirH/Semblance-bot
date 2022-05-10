@@ -253,7 +253,6 @@ async function about(interaction: MessageComponentInteraction, components: Messa
     .setColor(randomColor)
     .setDescription(
       "SIG, AKA Semblance's Idle-Game, is an RNG idle-game that uses a currency called Random-Bucks \n" +
-        `which yes, I asked Semblance whether or not I should use Random-Bucks as the name by using \`${prefix}8ball\`. ` +
         'If you\'re confused by the acronym RNG, it\'s an acronym for "Random Number Generation/Generator", which ' +
         'means that everything is kind of random and runs on random chance in the game. Everything that is random ' +
         'within this game is the cost multiplier per upgrade, starting profits, and the amount your profits increase.\n\n' +
@@ -371,7 +370,7 @@ async function leaderboard(interaction: MessageComponentInteraction, components:
 }
 
 async function votes(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
-  const { user, client } = interaction,
+  const { client } = interaction,
     embed = new MessageEmbed()
       .setTitle('Vote')
       .setColor(randomColor)
@@ -388,12 +387,8 @@ async function votes(interaction: MessageComponentInteraction, components: Messa
           '**Unvotable sites**',
           `[Discord.bots.gg](https://discord.bots.gg/bots/${client.user.id})`,
         ].join('\n'),
-      )
-      .setFooter({
-        text: `Thanks, ${user.tag}, for considering to support my bot through voting, you may also support me with ${prefix}patreon :D`,
-        iconURL: user.displayAvatarURL(),
-      });
-  interaction.update({ embeds: [embed], components });
+      );
+  return interaction.update({ embeds: [embed], components });
 }
 
 async function stats(interaction: ButtonInteraction, components: MessageActionRow[], game: Game) {

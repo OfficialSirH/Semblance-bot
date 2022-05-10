@@ -1,5 +1,5 @@
 import { type Message, MessageEmbed } from 'discord.js';
-import { Categories, prefix, randomColor } from '#constants/index';
+import { Categories, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class Vote extends Command {
@@ -8,7 +8,6 @@ export default class Vote extends Command {
   public override fullCategory = [Categories.semblance];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
     const { client } = builder;
     const embed = new MessageEmbed()
       .setTitle('Vote')
@@ -25,11 +24,8 @@ export default class Vote extends Command {
           '**Unvotable sites**',
           `[Discord.bots.gg](https://discord.bots.gg/bots/${client.user.id})`,
         ].join('\n'),
-      ) // Old Semblance Id: 668688939888148480
-      .setFooter({
-        text: `Thanks, ${user.tag}, for considering to support my bot through voting, you may also support me with ${prefix}patreon :D`,
-        iconURL: user.displayAvatarURL(),
-      });
+      ); // Old Semblance Id: 668688939888148480
+
     return { embeds: [embed] };
   }
 
