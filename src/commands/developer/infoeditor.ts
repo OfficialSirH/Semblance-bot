@@ -4,7 +4,7 @@ import { Categories, randomColor } from '#constants/index';
 import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
 import { Command } from '@sapphire/framework';
 import type { Information } from '@prisma/client';
-import { MessageButtonStyles } from 'discord.js/typings/enums';
+import { Constants } from 'discord.js';
 import { buildCustomId } from '#constants/components';
 import { c2sGuildId, sirhGuildId } from '#config';
 
@@ -45,7 +45,7 @@ export default class Edit extends Command {
     const modalPopup = new MessageActionRow().setComponents(
       new MessageButton({
         label: 'Edit',
-        style: MessageButtonStyles.PRIMARY,
+        style: Constants.MessageButtonStyles.PRIMARY,
         customId: buildCustomId({
           command: this.name,
           action: 'edit',
@@ -56,8 +56,16 @@ export default class Edit extends Command {
 
     return interaction.reply({ embeds: [embed], files: [file], components: [modalPopup], ephemeral: true });
   }
-  // TODO: figure out why the command isn't being created
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+
+  public override async registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    const infoSubjects = (
+      await this.container.client.db.information.findMany({
+        select: {
+          type: true,
+        },
+      })
+    ).map(i => ({ name: i.type, value: i.type }));
+
     registry.registerChatInputCommand(
       {
         name: this.name,
@@ -68,7 +76,7 @@ export default class Edit extends Command {
             name: 'subject',
             description: 'the information to edit',
             type: 'STRING',
-            choices: this.container.client.tempSubjectKeys.map(i => ({ name: i, value: i })),
+            choices: infoSubjects,
           },
         ],
       },
@@ -76,9 +84,6 @@ export default class Edit extends Command {
         guildIds: [c2sGuildId, sirhGuildId],
       },
     );
-
-    // throw away tempSubjectKeys from the client
-    delete this.container.client.tempSubjectKeys;
   }
 
   // TODO: replace this god awful command with an interactive slash command

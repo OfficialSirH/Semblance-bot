@@ -2,11 +2,11 @@ import type { ButtonInteraction } from 'discord.js';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { componentInteractionDefaultParser } from '#constants/components';
 
-export default class Edit extends InteractionHandler {
+export default class InfoEditor extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {
     super(context, {
       ...options,
-      name: 'edit',
+      name: 'info-editor',
       interactionHandlerType: InteractionHandlerTypes.Button,
     });
   }

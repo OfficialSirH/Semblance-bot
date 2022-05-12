@@ -7,7 +7,6 @@ import prisma from '@prisma/client';
 declare module 'discord.js' {
   interface Client {
     db: prisma.PrismaClient;
-    tempSubjectKeys: string[] | null;
   }
 }
 
@@ -55,15 +54,6 @@ const client = new SapphireClient({
   intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
 });
 client.db = new prisma.PrismaClient();
-
-// temporary field, will be thrown away within ./commands/developer/edit.ts after the command is registered
-client.tempSubjectKeys = (
-  await client.db.information.findMany({
-    select: {
-      type: true,
-    },
-  })
-).map(i => i.type);
 
 // import { Client } from 'twitter.js';
 // TODO: enable twitter.js implementation to replace the shitty twitter library
