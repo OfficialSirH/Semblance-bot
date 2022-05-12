@@ -40,7 +40,7 @@ export default class Edit extends Command {
       .setThumbnail(this.container.client.user.displayAvatarURL())
       .setDescription('Copy the following information within the provided file to make changes to it.');
 
-    const file = new MessageAttachment(Buffer.from(subject.toString()), `${subject.type}.json`);
+    const file = new MessageAttachment(Buffer.from(JSON.stringify(subject)), `${subject.type}.json`);
 
     const modalPopup = new MessageActionRow().setComponents(
       new MessageButton({
