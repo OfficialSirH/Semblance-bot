@@ -69,7 +69,7 @@ function testerCredits(interaction: ButtonInteraction, name: string) {
     .setTitle('Credits to our Early Private Beta Testers!')
     .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
-    .setDescription(earlyBeyondTesters.join('\n'))
+    .setDescription(earlyBeyondTesters.map(e => `<@${e}>`).join('\n'))
     .setFooter({
       text: 'Thank you Early Private Beta Testers for helping the ComputerLunch team with testing The Beyond! :D',
     });
