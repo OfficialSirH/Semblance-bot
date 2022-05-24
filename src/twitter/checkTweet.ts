@@ -33,19 +33,19 @@ export const checkTweet = (client: SapphireClient) =>
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-              content: `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`,
+              content: `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}?s=21`,
             }),
           });
           let guild = client.guilds.cache.get(c2sGuildId),
             channel = guild.channels.cache.find(c => c.name == 'cells-tweets') as TextChannel;
           channel.send(
-            `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`,
+            `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}?s=21`,
           );
 
           (guild = client.guilds.cache.get(lunchGuildId)),
             (channel = guild.channels.cache.find(c => c.name == 'tweets') as TextChannel);
           channel.send(
-            `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}`,
+            `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}?s=21`,
           );
         }
       } catch {}
