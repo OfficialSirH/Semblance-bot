@@ -79,7 +79,9 @@ export default class Help extends Command {
     ];
     return {
       content:
-        'user' in builder ? null : 'side note: if your Discord client supports it, you can use: `/help` instead.',
+        'user' in builder
+          ? null
+          : `side note: you can use: \`/help\` instead.\n**Warning:** \`s!\` will be replaced with <@${builder.client.id}> in the future.`,
       embeds: [embed],
       components,
     };
