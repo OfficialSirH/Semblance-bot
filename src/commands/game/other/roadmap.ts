@@ -1,6 +1,6 @@
-import { MessageActionRow, MessageButton, MessageEmbed, type Message } from 'discord.js';
+import { type CommandInteraction, MessageActionRow, MessageButton, MessageEmbed, type Message } from 'discord.js';
 import { Categories, randomColor, Subcategories } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { currentLogo, roadMap } from '#config';
 import { buildCustomId } from '#constants/components';
 
@@ -8,6 +8,10 @@ export default class Roadmap extends Command {
   public override name = 'roadmap';
   public override description = 'details on the C2S Roadmap';
   public override fullCategory = [Categories.game, Subcategories.other];
+
+  public async chatInputRun(interaction: CommandInteraction<'cached'>) {
+    await interaction.reply(this.sharedRun(interaction));
+  }
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
@@ -41,6 +45,13 @@ export default class Roadmap extends Command {
       ),
     ];
     return { embeds: [embed], files: [currentLogo, roadMap], components };
+  }
+
+  public registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+    });
   }
 
   public override async messageRun(message: Message) {
