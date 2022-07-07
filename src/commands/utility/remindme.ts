@@ -36,7 +36,7 @@ export default class RemindMe extends Command {
   }
 
   public override async autocompleteRun(interaction: AutocompleteInteraction<'cached'>) {
-    let inputtedAmount = interaction.options.getFocused();
+    let inputtedAmount: string | number = interaction.options.getFocused();
     inputtedAmount = parseInt(inputtedAmount as string);
     if (!inputtedAmount || inputtedAmount < 1) inputtedAmount = 1;
 

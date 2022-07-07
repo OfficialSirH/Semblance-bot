@@ -1,8 +1,8 @@
 import Twitter from 'twitter';
-import { fetch } from '#lib/utils/fetch';
 import { c2sGuildId, lunchGuildId } from '#config';
 import type { SapphireClient } from '@sapphire/framework';
 import type { TextChannel } from 'discord.js';
+import { request } from 'undici';
 const twClient = new Twitter(JSON.parse(process.env.twitter));
 let current_id = null;
 const screen_name = 'ComputerLunch';
@@ -27,7 +27,7 @@ export const checkTweet = (client: SapphireClient) =>
       const tweet = tweets[0];
       try {
         if (tweet.id_str !== current_id && current_id) {
-          fetch(process.env.C2SWebhook, {
+          request(process.env.C2SWebhook, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

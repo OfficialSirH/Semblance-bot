@@ -1,4 +1,4 @@
-import type { InteractionReplyOptions } from 'discord.js';
+import type { InteractionReplyOptions, InteractionUpdateOptions } from 'discord.js';
 import {
   MessageActionRow,
   type ButtonInteraction,
@@ -101,6 +101,6 @@ export default class Help extends InteractionHandler {
       else options.components = components;
       options.files = [];
     }
-    return interaction.update(options);
+    return interaction.update(options as InteractionUpdateOptions);
   }
 }

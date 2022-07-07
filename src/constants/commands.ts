@@ -3,10 +3,10 @@ import { MessageEmbed } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 import { clamp } from '#lib/utils/math';
 import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndDogAPI';
-import { fetch } from '#lib/utils/fetch';
 import type { DeepLParams, DeepLResponse } from '#lib/interfaces/deepLAPI';
 import { messageLinkRegex, attachmentLinkRegex } from '#constants/index';
 import type { Game } from '@prisma/client';
+import { request } from 'undici';
 
 // gametransfer pages
 
@@ -157,7 +157,7 @@ export const fetchCatOrDog = async (query_params: AnimalAPIParams, wantsCat: boo
     )}`,
     API_KEY = wantsCat ? process.env.CAT_API_KEY : process.env.DOG_API_KEY;
 
-  return (await fetch(API_URL, { headers: { 'X-API-KEY': API_KEY } })).json() as Promise<AnimalAPIResponse>;
+  return (await request(API_URL, { headers: { 'X-API-KEY': API_KEY } })).body.json() as Promise<AnimalAPIResponse>;
 };
 
 // deepL API fetch
@@ -167,7 +167,7 @@ export const fetchDeepL = async (query_params: DeepLParams) => {
   const API_URL = `https://api-free.deepl.com/v2/translate?${new URLSearchParams(
     query_params as Record<string, string>,
   )}`;
-  const translateData = (await (await fetch(API_URL)).json()) as DeepLResponse;
+  const translateData = (await (await request(API_URL)).body.json()) as DeepLResponse;
   return translateData.translations[0];
 };
 

@@ -1,4 +1,3 @@
-import type { Snowflake } from 'discord-api-types';
 import type { TextChannel } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 import { MessageEmbed, User } from 'discord.js';
@@ -28,7 +27,7 @@ export class VoteHandler {
   }
 
   public async sendVotedEmbed(
-    user: Snowflake | User,
+    user: string | User,
     description: string,
     { hasGame, weekendBonus }: { hasGame: boolean; weekendBonus?: boolean } = {
       hasGame: false,
@@ -62,7 +61,7 @@ export class VoteHandler {
       });
     }
 
-    let userId: Snowflake;
+    let userId: string;
     if ('user' in vote && typeof vote.user == 'string') userId = vote.user;
     else if ('user' in vote && typeof vote.user == 'object') userId = vote.user.id;
     else if ('id' in vote) userId = vote.id;

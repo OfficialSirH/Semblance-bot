@@ -1,9 +1,9 @@
-﻿import { fetch } from '#lib/utils/fetch';
-import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
+﻿import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
 import type { Message, MessageOptions, Snowflake, TextBasedChannel, TextChannel, User } from 'discord.js';
 import { type Args, Command } from '@sapphire/framework';
-import type { APIInvite, ChannelType, APIUser } from 'discord-api-types';
+import type { APIInvite, ChannelType, APIUser } from 'discord-api-types/v10';
 import { Categories, onlyUnique, randomColor } from '#constants/index';
+import { request } from 'undici';
 
 export default class Lookup extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -34,8 +34,8 @@ export default class Lookup extends Command {
       const user = await getUser(unknownItem.value, message.guild);
       if (user) {
         if (user.bot) {
-          const botblock = (await fetch(`https://botblock.org/api/bots/${user.id}`).then(res =>
-            res.json(),
+          const botblock = (await request(`https://botblock.org/api/bots/${user.id}`).then(res =>
+            res.body.json(),
           )) as BotBlock;
           if (botblock.discriminator == '0000')
             return send(
@@ -129,9 +129,9 @@ export default class Lookup extends Command {
     try {
       const _invite = await message.client.fetchInvite(unknownItem.value);
       if (_invite) {
-        const invite = (await fetch('https://discordapp.com/api/v8/invites/' + _invite.code + '?with_counts=true').then(
-          res => res.json(),
-        )) as APIInvite;
+        const invite = (await request(
+          'https://discordapp.com/api/v8/invites/' + _invite.code + '?with_counts=true',
+        ).then(res => res.body.json())) as APIInvite;
 
         const fields = [],
           add = values => {
@@ -195,8 +195,8 @@ export default class Lookup extends Command {
 
     // emoji lookup
     try {
-      const res = await fetch(`https://cdn.discordapp.com/emojis/${unknownItem.value}.png`);
-      if (res.ok)
+      const res = await request(`https://cdn.discordapp.com/emojis/${unknownItem.value}.png`);
+      if (res.statusCode == 200)
         return send(
           message.channel,
           `✅ This Id is an emoji Id: https://cdn.discordapp.com/emojis/${unknownItem.value}.png`,

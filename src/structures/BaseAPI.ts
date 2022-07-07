@@ -1,6 +1,6 @@
-import { fetch } from '#lib/utils/fetch';
-import { Headers } from 'undici';
+import { Headers, request } from 'undici';
 import { ApiError } from '#structures/ApiError';
+import type { HttpMethod } from 'undici/types/dispatcher';
 
 interface APIOptions {
   token: string;
@@ -29,7 +29,7 @@ export class BaseAPI {
     };
   }
 
-  protected async _request(method: string, path: string, body?: Record<string, unknown>): Promise<unknown> {
+  protected async _request(method: HttpMethod, path: string, body?: Record<string, unknown>): Promise<unknown> {
     const headers = new Headers();
     if (this.options.token) headers.set('Authorization', this.options.token);
     if (method !== 'GET') headers.set('Content-Type', 'application/json');
@@ -38,21 +38,27 @@ export class BaseAPI {
 
     if (body && method === 'GET') url += `?${new URLSearchParams(body as Record<string, string>)}`;
 
-    const response = await fetch(url, {
+    const requestHeaders: Record<string, string> = {};
+
+    for (const [key, value] of headers.entries()) {
+      requestHeaders[key] = value;
+    }
+
+    const response = await request(url, {
       method,
-      headers,
+      headers: requestHeaders,
       body: body && method !== 'GET' ? JSON.stringify(body) : undefined,
     });
 
     let responseBody: unknown;
-    if (response.headers.get('Content-Type')?.startsWith('application/json')) {
-      responseBody = await response.json();
+    if (response.headers['content-type']?.startsWith('application/json')) {
+      responseBody = await response.body.json();
     } else {
-      responseBody = await response.text();
+      responseBody = await response.body.text();
     }
 
-    if (!response.ok) {
-      throw new ApiError(this.options.baseUrl, response.status, response.statusText, response);
+    if (!response.statusCode.toString().startsWith('2')) {
+      throw new ApiError(this.options.baseUrl, response.statusCode, 'failed in some way', response);
     }
 
     return responseBody;
