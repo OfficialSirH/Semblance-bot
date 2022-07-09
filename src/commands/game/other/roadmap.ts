@@ -48,10 +48,13 @@ export default class Roadmap extends Command {
   }
 
   public registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+      },
+      { idHints: ['995106591441424414'] },
+    );
   }
 
   public override async messageRun(message: Message) {

@@ -16,7 +16,7 @@ export default class StartBoosterRewards extends Command {
 
   public async chatInputRun(interaction: CommandInteraction<'cached'>) {
     if (!interaction.member.roles.cache.has(boosterRole))
-      return interaction.reply('You need to have the booster role to use this command.');
+      return interaction.reply({ content: 'You need to have the booster role to use this command.', ephemeral: true });
 
     return interaction.reply(await createBoosterRewards(interaction.client, interaction.user.id));
   }
@@ -29,6 +29,7 @@ export default class StartBoosterRewards extends Command {
       },
       {
         guildIds: [c2sGuildId],
+        idHints: ['995106586865434676'],
       },
     );
   }

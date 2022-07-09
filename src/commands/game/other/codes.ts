@@ -44,10 +44,15 @@ export default class Codes extends Command {
   }
 
   public registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+      },
+      {
+        idHints: ['995106590581608458'],
+      },
+    );
   }
 
   public override async messageRun(message: Message) {

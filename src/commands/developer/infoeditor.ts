@@ -1,4 +1,4 @@
-import { type CommandInteraction, MessageEmbed, MessageAttachment } from 'discord.js';
+import { type CommandInteraction, MessageEmbed, MessageAttachment, Util } from 'discord.js';
 import { Categories, randomColor } from '#constants/index';
 import type { ApplicationCommandRegistry } from '@sapphire/framework';
 import { Command } from '@sapphire/framework';
@@ -17,7 +17,7 @@ export default class Edit extends Command {
   }
 
   public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
-    if (interaction.options.getSubcommandGroup() == 'boostercodes') {
+    if (interaction.options.getSubcommandGroup(false) == 'boostercodes') {
       const subCommand = interaction.options.getSubcommand();
 
       if (subCommand == 'add') {
@@ -51,20 +51,20 @@ export default class Edit extends Command {
       const embed = new MessageEmbed()
         .setTitle(`Editing ${subjectValue.type}`)
         .setDescription(
-          `**Original values:**\`\`\`\nPrimary value: ${subjectValue.value}\nFooter: ${subjectValue.footer}\nExpired: ${subjectValue.expired}\`\`\``,
+          `**Original values:**\`\`\`\n${Util.escapeCodeBlock(
+            `Primary value: ${subjectValue.value}\nFooter: ${subjectValue.footer}\nExpired: ${subjectValue.expired}`,
+          )}\`\`\``,
         );
-
-      const { getString } = interaction.options;
 
       const updatedSubject = await this.container.client.db.information.update({
         where: {
           type: subjectValue.type,
         },
         data: {
-          value: getString('value') ? getString('value') : subjectValue.value,
-          footer: getString('footer') ? getString('footer') : subjectValue.footer,
+          value: interaction.options.getString('value') || subjectValue.value,
+          footer: interaction.options.getString('footer') || subjectValue.footer,
           expired:
-            subjectValue.type == 'codes' ? (getString('expired') ? getString('expired') : subjectValue.expired) : null,
+            subjectValue.type == 'codes' ? interaction.options.getString('expired') || subjectValue.expired : null,
         },
       });
 
@@ -72,7 +72,9 @@ export default class Edit extends Command {
 
       embed.setDescription(
         embed.description +
-          `\n\n**Updated values:**\`\`\`\nPrimary value: ${updatedSubject.value}\nFooter: ${updatedSubject.footer}\nExpired: ${updatedSubject.expired}\`\`\``,
+          `\n\n**Updated values:**\`\`\`\n${Util.escapeCodeBlock(
+            `Primary value: ${updatedSubject.value}\nFooter: ${updatedSubject.footer}\nExpired: ${updatedSubject.expired}`,
+          )}\`\`\``,
       );
 
       return interaction.reply({ embeds: [embed], ephemeral: true });
