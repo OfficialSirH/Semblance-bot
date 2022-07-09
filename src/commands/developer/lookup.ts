@@ -1,5 +1,5 @@
 ﻿import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
-import type { Message, MessageOptions, Snowflake, TextBasedChannel, TextChannel, User } from 'discord.js';
+import type { EmbedField, Message, MessageOptions, Snowflake, TextBasedChannel, TextChannel, User } from 'discord.js';
 import { type Args, Command } from '@sapphire/framework';
 import type { APIInvite, ChannelType, APIUser } from 'discord-api-types/v10';
 import { Categories, onlyUnique, randomColor } from '#constants/index';
@@ -43,9 +43,14 @@ export default class Lookup extends Command {
               `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}). Unfortunately, this bot is not listed on any of BotBlock's bot lists.`,
             );
 
-          const fields = [],
-            add = values => {
-              for (const name in values) fields.push({ name, value: values[name], inline: true });
+          const fields: EmbedField[] = [],
+            add = (values: Record<string, unknown>) => {
+              for (const name in values)
+                fields.push({
+                  name,
+                  value: (typeof values[name] != 'string' ? values[name].toString() : <string>values[name]) || 'N/A',
+                  inline: true,
+                });
             };
 
           const lists = Object.keys(botblock.list_data)
@@ -133,9 +138,14 @@ export default class Lookup extends Command {
           'https://discordapp.com/api/v8/invites/' + _invite.code + '?with_counts=true',
         ).then(res => res.body.json())) as APIInvite;
 
-        const fields = [],
-          add = values => {
-            for (const name in values) fields.push({ name, value: values[name], inline: true });
+        const fields: EmbedField[] = [],
+          add = (values: Record<string, unknown>, inline = true) => {
+            for (const name in values)
+              fields.push({
+                name,
+                value: (typeof values[name] != 'string' ? values[name].toString() : <string>values[name]) || 'N/A',
+                inline,
+              });
           };
 
         add({
@@ -152,7 +162,6 @@ export default class Lookup extends Command {
               invite.inviter.id
             })`,
           });
-        if (invite.guild.features.length) add({ Features: invite.guild.features.join(', ') });
         if (invite.guild.vanity_url_code)
           add({
             'Original Vanity URL': `https://discord.gg/${invite.guild.vanity_url_code}`,
@@ -168,6 +177,7 @@ export default class Lookup extends Command {
               'Verified phone number',
             ][invite.guild.verification_level],
           });
+        if (invite.guild.features.length) add({ Features: invite.guild.features.join(', ') }, true);
 
         return send(message.channel, {
           content: '✅ This Id is a Discord invite.',
