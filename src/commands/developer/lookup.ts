@@ -1,6 +1,6 @@
 ﻿import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
-import type { EmbedField, Message, MessageOptions, Snowflake, TextBasedChannel, TextChannel, User } from 'discord.js';
-import { type Args, Command } from '@sapphire/framework';
+import type { CommandInteraction, EmbedField, Snowflake, TextChannel, User } from 'discord.js';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import type { APIInvite, ChannelType, APIUser } from 'discord-api-types/v10';
 import { Categories, onlyUnique, randomColor } from '#constants/index';
 import { request } from 'undici';
@@ -13,33 +13,49 @@ export default class Lookup extends Command {
       description: 'Lookup something unknown, like an Id or an invite, and hopefully get the meaning behind it!',
       fullCategory: [Categories.developer],
       preconditions: ['OwnerOnly'],
-      aliases: ['bot-lookup', 'id-lookup', 'invite-lookup', 'whatis', 'wit', 'whatisthis'],
     });
   }
 
-  public override async messageRun(message: Message, args: Args) {
-    const unknownItem = await args.pickResult('string');
-    if (!unknownItem.success) return message.reply('Please provide a valid ID or invite!');
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'unknown_item',
+            description: 'The item you want to lookup.',
+            type: 'STRING',
+            required: true,
+          },
+        ],
+      },
+      {
+        idHints: ['995453942341308466'],
+      },
+    );
+  }
 
-    message.channel.sendTyping();
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+    const unknownItem = interaction.options.getString('unknown_item');
+    if (!unknownItem) return interaction.reply('Please provide a valid ID or invite!');
 
-    const role = getRole(unknownItem.value, message.guild);
-    if (role) return send(message.channel, `✅ This Id is a role Id for the role ${role.name}.`);
+    const role = getRole(unknownItem, interaction.guild);
+    if (role) return interaction.reply(`✅ This Id is a role Id for the role ${role.name}.`);
 
-    const channel = getChannel(unknownItem.value, message.guild);
-    if (channel) return send(message.channel, `✅ This Id is a channel Id for the channel ${channel}.`);
+    const channel = getChannel(unknownItem, interaction.guild);
+    if (channel) return interaction.reply(`✅ This Id is a channel Id for the channel ${channel}.`);
 
     // user lookup
     try {
-      const user = await getUser(unknownItem.value, message.guild);
+      const user = await getUser(unknownItem, interaction.guild);
       if (user) {
         if (user.bot) {
           const botblock = (await request(`https://botblock.org/api/bots/${user.id}`).then(res =>
             res.body.json(),
           )) as BotBlock;
           if (botblock.discriminator == '0000')
-            return send(
-              message.channel,
+            return interaction.reply(
               `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}). Unfortunately, this bot is not listed on any of BotBlock's bot lists.`,
             );
 
@@ -100,13 +116,13 @@ export default class Lookup extends Command {
             botblock.owners
               .filter(o => !o.includes('#'))
               .filter(onlyUnique)
-              .map(u => getUser(u, message.guild)),
+              .map(u => getUser(u, interaction.guild)),
           );
           owners = owners.filter(o => o).map(o => `${o.username}#${o.discriminator} (${o.id})`);
           if (owners.length > 1) add({ Owners: owners.join('\n') });
           else add({ Owner: owners[0] });
 
-          return send(message.channel, {
+          return interaction.reply({
             content: `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}).`,
             embeds: [
               {
@@ -121,10 +137,7 @@ export default class Lookup extends Command {
             ],
           });
         } else
-          return send(
-            message.channel,
-            `✅ This Id is a user Id of ${user.username}#${user.discriminator} (${user.id}).`,
-          );
+          return interaction.reply(`✅ This Id is a user Id of ${user.username}#${user.discriminator} (${user.id}).`);
       }
     } catch (e) {
       console.log(e);
@@ -132,7 +145,7 @@ export default class Lookup extends Command {
 
     // invite lookup
     try {
-      const _invite = await message.client.fetchInvite(unknownItem.value);
+      const _invite = await interaction.client.fetchInvite(unknownItem);
       if (_invite) {
         const invite = (await request(
           'https://discordapp.com/api/v8/invites/' + _invite.code + '?with_counts=true',
@@ -179,7 +192,7 @@ export default class Lookup extends Command {
           });
         if (invite.guild.features.length) add({ Features: invite.guild.features.join(', ') }, true);
 
-        return send(message.channel, {
+        return interaction.reply({
           content: '✅ This Id is a Discord invite.',
           embeds: [
             {
@@ -205,36 +218,29 @@ export default class Lookup extends Command {
 
     // emoji lookup
     try {
-      const res = await request(`https://cdn.discordapp.com/emojis/${unknownItem.value}.png`);
+      const res = await request(`https://cdn.discordapp.com/emojis/${unknownItem}.png`);
       if (res.statusCode == 200)
-        return send(
-          message.channel,
-          `✅ This Id is an emoji Id: https://cdn.discordapp.com/emojis/${unknownItem.value}.png`,
-        );
+        return interaction.reply(`✅ This Id is an emoji Id: https://cdn.discordapp.com/emojis/${unknownItem}.png`);
     } catch (e) {}
 
     // message lookup
-    const channels = message.guild.channels.cache
+    const channels = interaction.guild.channels.cache
       .filter(ch => ['GUILDNEWS', 'GUILDTEXT'].includes(ch.type))
       .map(c => c) as TextChannel[];
     for (const ch of channels)
       try {
-        const m = await ch.messages.fetch(unknownItem.value as Snowflake);
+        const m = await ch.messages.fetch(unknownItem as Snowflake);
         if (m)
-          return send(
-            message.channel,
+          return interaction.reply(
             `✅ This Id is a message Id: <https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}>`,
           );
       } catch (e) {}
 
-    return send(
-      message.channel,
-      `🚫 I don't know what the Id \`${unknownItem.value}\` is coming from. Maybe the deep abyss known as The Beyond?`,
+    return interaction.reply(
+      `🚫 I don't know what the Id \`${unknownItem}\` is coming from. Maybe the deep abyss known as The Beyond?`,
     );
   }
 }
-
-const send = (channel: TextBasedChannel, options: string | MessageOptions) => channel.send(options);
 
 interface BotBlock extends APIUser {
   owners: string[];
