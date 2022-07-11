@@ -28,9 +28,11 @@ export default class GameTransfer extends InteractionHandler {
     else if (data.action == 'left') currentPage = currentPage == 0 ? 4 : --currentPage;
 
     let description: string;
-    if (currentPage == 3) description = '\nUpload your progress from your current device';
-    else if (currentPage == 4)
-      description = '\nDownload your progress onto the other device you wish to put your progress on';
+    if (currentPage == 0) description = '\nClick on the Game transfer button in the menu';
+    else if (currentPage == 1) description = '\nCreate an account and login into it';
+    else if (currentPage == 2) description = '\nClick on the Transfer Save Data button after logging into your account';
+    else if (currentPage == 3) description = '\nUpload your progress from your current device';
+    else if (currentPage == 4) description = '\nDownload your progress onto the other device you wish to put your progress on';
 
     embed
       .setThumbnail(currentLogo.name)
