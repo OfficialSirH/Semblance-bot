@@ -17,11 +17,17 @@ export const handleBoosterReward = async (client: SapphireClient, boosterReward:
 
   const darwiniumCodes = await client.db.boosterCodes.findMany({});
 
-  if (darwiniumCodes.length == 0)
-    return boosterChannel(client).send({
+  if (darwiniumCodes.length == 0) {
+    await boosterChannel(client).send({
       content: `<@${sirhId}> <@${adityaId}> No booster codes left! ${member.user.tag} needs a code`,
       allowedMentions: { users: [sirhId, adityaId] },
     });
+
+    return client.db.boosterReward.update({
+      where: { userId: boosterReward.userId },
+      data: { rewardingDate: new Date(Date.now() + 1000 * 3600 * 24 * 28) },
+    });
+  }
 
   const ogCodeLength = darwiniumCodes.length,
     darwiniumCode = darwiniumCodes.shift();
@@ -33,7 +39,7 @@ export const handleBoosterReward = async (client: SapphireClient, boosterReward:
           .setTitle('Booster reward')
           .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
           .setDescription(
-            `Thank you for boosting Cell to Singularity for 2 weeks! As a reward, here's 150 ${darwinium}!\nCode: ||${darwiniumCode.code}||`,
+            `Thank you for boosting Cell to Singularity for a month! As a reward, here's 120 ${darwinium}!\nCode: ||${darwiniumCode.code}||`,
           ),
       ],
     })

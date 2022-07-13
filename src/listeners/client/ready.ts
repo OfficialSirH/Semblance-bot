@@ -2,7 +2,7 @@ import { Events, Listener, type SapphireClient } from '@sapphire/framework';
 import * as schedule from 'node-schedule';
 import { isProduction, prefix } from '#constants/index';
 import { handleBoosterReward, handleReminder } from '#constants/models';
-import type { Reminder } from '@prisma/client';
+import type { BoosterReward, Reminder } from '@prisma/client';
 
 export default class Ready extends Listener<typeof Events.ClientReady> {
   public constructor(context: Listener.Context, options: Listener.Options) {
@@ -34,9 +34,24 @@ export default class Ready extends Listener<typeof Events.ClientReady> {
 
       /* Booster rewards scheduling */
       const boosterRewards = await client.db.boosterReward.findMany({});
-      boosterRewards.forEach(boosterReward => {
-        schedule.scheduleJob(boosterReward.rewardingDate, () => handleBoosterReward(client, boosterReward));
-      });
+      const dueBoosterRewards: Promise<BoosterReward>[] = [];
+
+      boosterRewards
+        .filter(boosterReward => {
+          if (boosterReward.rewardingDate.getTime() <= Date.now()) {
+            dueBoosterRewards.push(handleBoosterReward(client, boosterReward));
+            return false;
+          }
+          return true;
+        })
+        .forEach(boosterReward => {
+          schedule.scheduleJob(
+            boosterReward.rewardingDate,
+            async () => await handleBoosterReward(client, boosterReward),
+          );
+        });
+
+      await Promise.all(dueBoosterRewards);
     }
   }
 }
