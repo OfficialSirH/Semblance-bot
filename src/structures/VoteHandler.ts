@@ -5,11 +5,10 @@ import { sirhGuildId } from '#config';
 import { randomColor } from '#constants/index';
 import type { FastifyReply } from 'fastify';
 import type { DBLRequest } from 'discordBotList';
-import type { DLSRequest } from 'discordListSpace';
 import type { DiscordsRequest } from 'discords';
 import type { TGGRequest } from 'topGG';
 
-type AvailableRequests = DBLRequest | DLSRequest | DiscordsRequest | TGGRequest;
+type AvailableRequests = DBLRequest | DiscordsRequest | TGGRequest;
 
 export class VoteHandler {
   readonly client: SapphireClient;
