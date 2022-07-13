@@ -1,6 +1,6 @@
 import { Events, Listener } from '@sapphire/framework';
 import { Api as TopggApi } from '@top-gg/sdk';
-import { DBLApi, DBotsApi, DListApi, DiscordsApi } from '#structures/index';
+import { DBLApi, DBotsApi, DiscordsApi } from '#structures/index';
 import type { Guild } from 'discord.js';
 import { prefix } from '#constants/index';
 
@@ -26,7 +26,6 @@ export default class GuildCreate extends Listener<typeof Events.GuildCreate> {
     const topggApi = new TopggApi(process.env.topGGAuth),
       dblApi = new DBLApi(process.env.discordBotListAuth),
       dbotsApi = new DBotsApi(process.env.discordBotsGGAuth),
-      dlistApi = new DListApi(process.env.botListSpaceAuth),
       discordsApi = new DiscordsApi(process.env.botsForDiscordAuth);
 
     topggApi.postStats({
@@ -45,8 +44,6 @@ export default class GuildCreate extends Listener<typeof Events.GuildCreate> {
       guildCount: client.guilds.cache.size,
       shardCount: client.options.shardCount,
     });
-
-    dlistApi.postStats(client.guilds.cache.size);
 
     discordsApi.postStats(client.guilds.cache.size);
   }
