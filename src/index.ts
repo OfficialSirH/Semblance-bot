@@ -55,9 +55,9 @@ const client = new SapphireClient({
 });
 client.db = new prisma.PrismaClient();
 
-// import { Client } from 'twitter.js';
+import { TwitterApi } from 'twitter-api-v2';
 // TODO: enable twitter.js implementation to replace the shitty twitter library
-// const twClient = new Client({ events: ['FILTERED_TWEET_CREATE'] });
+const twClient = new TwitterApi(JSON.parse(process.env.twitter).bearer_token);
 
 // TODO: enable twitter.js implementation to replace the shitty twitter library
 // import type { TwitterJSEventHandler } from '#lib/interfaces/Semblance';
