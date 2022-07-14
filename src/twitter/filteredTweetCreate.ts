@@ -11,5 +11,6 @@ export const filteredTweetCreate = async (client: SapphireClient, tweet: TweetV2
   console.log(`Hey! **ComputerLunch** just posted a new Tweet!\n${tweet.data.source}`);
 
   // the tweet should be sent to this channel but can't do that until we're sure this implementation is correct and will work properly
-  // c2sTwitterChannel.send(tweetMessage);
+  // const msg = await c2sTwitterChannel.send(`Hey! **ComputerLunch** just posted a new Tweet!\n${tweet.data.source}`);
+  // await msg.crosspost();
 };

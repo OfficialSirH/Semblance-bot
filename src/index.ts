@@ -55,18 +55,9 @@ const client = new SapphireClient({
 });
 client.db = new prisma.PrismaClient();
 
-import { ETwitterStreamEvent, TwitterApi } from 'twitter-api-v2';
-import { filteredTweetCreate } from './twitter/filteredTweetCreate.js';
-
 // fastify routing
 import fastify from 'fastify';
 const app = fastify();
-
-// for (const file of twitterEventFiles) {
-// 	const event = (await import(`./src/events/twitter/${file}`)).default as TwitterJSEventHandler;
-// 	if (event.once) twClient.once(event.name, (...args) => event.exec(...args, { client, twClient }));
-// 	else twClient.on(event.name, (...args) => event.exec(...args, { client, twClient }));
-// }
 
 import router from '#routes/index';
 if (isProduction) router(app, client);
@@ -75,34 +66,74 @@ app.get('/', (_req, res) => {
   res.redirect('https://officialsirh.github.io/');
 });
 
-import { checkTweet } from './twitter/checkTweet.js';
-// Check for Tweet from ComputerLunch
-if (isProduction) setInterval(() => checkTweet(client), 2000);
-else {
-  const twClient = new TwitterApi(JSON.parse(process.env.twitter).bearer_token);
-
-  const currentTwRules = await twClient.readOnly.v2.streamRules();
-
-  if (currentTwRules.data.length === 0) {
-    await twClient.readWrite.v2.updateStreamRules({
-      add: [
-        {
-          value: 'from:ComputerLunch',
-        },
-      ],
-    });
-  }
-
-  const stream = await twClient.v2.searchStream({
-    'tweet.fields': ['source'],
-  });
-  stream.autoReconnect = true;
-
-  stream.on(ETwitterStreamEvent.Data, async tweet => await filteredTweetCreate(client, tweet));
-}
-
 await client.login(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
 let address: string;
 if (isProduction) address = await app.listen({ port: 8079, host: '0.0.0.0' });
 else address = await app.listen({ port: 8079 });
 console.log(`Bot listening on port ${address}`);
+
+import type { TweetStream, TweetV2SingleStreamResult } from 'twitter-api-v2';
+import { ETwitterStreamEvent, TwitterApi } from 'twitter-api-v2';
+import { filteredTweetCreate } from './twitter/filteredTweetCreate.js';
+import { checkTweet } from './twitter/checkTweet.js';
+import { promisify } from 'util';
+// Check for Tweet from ComputerLunch
+if (isProduction) setInterval(() => checkTweet(client), 2000);
+else {
+  const twClient = new TwitterApi(JSON.parse(process.env.twitter).bearer_token);
+
+  let retryTimer = 1000;
+  const wait = promisify(setTimeout);
+
+  const initRules = async () => {
+    try {
+      retryTimer = retryTimer >= 60_000 ? 60_000 : retryTimer * 2;
+
+      const currentTwRules = await twClient.readOnly.v2.streamRules();
+
+      if (!currentTwRules.data || currentTwRules.data?.length === 0)
+        await twClient.readWrite.v2.updateStreamRules({
+          add: [
+            {
+              value: 'from:ComputerLunch',
+            },
+          ],
+        });
+
+      return true;
+    } catch (e) {
+      console.error(e);
+      return false;
+    }
+  };
+
+  while (!(await initRules())) {
+    console.log(`Failed to init rules, retrying in ${retryTimer / 1000} seconds`);
+    await wait(retryTimer);
+  }
+
+  let stream: TweetStream<TweetV2SingleStreamResult>;
+  const initStream = async () => {
+    try {
+      retryTimer = retryTimer >= 60_000 ? 60_000 : retryTimer * 2;
+
+      stream = await twClient.v2.searchStream({
+        'tweet.fields': ['source'],
+      });
+      return true;
+    } catch (e) {
+      console.error(e);
+      console.log(e.toString().slice(-3, 0)); // may implement retries to only occur for 429+ errors
+      return false;
+    }
+  };
+
+  while (!(await initStream())) {
+    console.log(`Failed to init stream, retrying in ${retryTimer / 1000} seconds`);
+    await wait(retryTimer);
+  }
+
+  stream.autoReconnect = true;
+
+  stream.on(ETwitterStreamEvent.Data, async tweet => await filteredTweetCreate(client, tweet));
+}
