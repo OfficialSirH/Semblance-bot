@@ -62,8 +62,7 @@ export class VoteHandler {
 
     let userId: string;
     if ('user' in vote && typeof vote.user == 'string') userId = vote.user;
-    else if ('user' in vote && typeof vote.user == 'object') userId = vote.user.id;
-    else if ('id' in vote) userId = vote.id;
+    else if (!('user' in vote)) userId = vote.id;
 
     const user = await this.client.users.fetch(userId, { cache: false });
 
