@@ -55,13 +55,8 @@ const client = new SapphireClient({
 });
 client.db = new prisma.PrismaClient();
 
-import { TwitterApi } from 'twitter-api-v2';
-// TODO: enable twitter.js implementation to replace the shitty twitter library
-const twClient = new TwitterApi(JSON.parse(process.env.twitter).bearer_token);
-
-// TODO: enable twitter.js implementation to replace the shitty twitter library
-// import type { TwitterJSEventHandler } from '#lib/interfaces/Semblance';
-// const twitterEventFiles = (await fs.readdir('./dist/src/events/twitter')).filter(file => file.endsWith('.js'));
+import { ETwitterStreamEvent, TwitterApi } from 'twitter-api-v2';
+import { filteredTweetCreate } from './twitter/filteredTweetCreate.js';
 
 // fastify routing
 import fastify from 'fastify';
@@ -83,12 +78,31 @@ app.get('/', (_req, res) => {
 import { checkTweet } from './twitter/checkTweet.js';
 // Check for Tweet from ComputerLunch
 if (isProduction) setInterval(() => checkTweet(client), 2000);
-// TODO: remove this really shitty implementation of receiving tweets
+else {
+  const twClient = new TwitterApi(JSON.parse(process.env.twitter).bearer_token);
+
+  const currentTwRules = await twClient.readOnly.v2.streamRules();
+
+  if (currentTwRules.data.length === 0) {
+    await twClient.readWrite.v2.updateStreamRules({
+      add: [
+        {
+          value: 'from:ComputerLunch',
+        },
+      ],
+    });
+  }
+
+  const stream = await twClient.v2.searchStream({
+    'tweet.fields': ['source'],
+  });
+  stream.autoReconnect = true;
+
+  stream.on(ETwitterStreamEvent.Data, async tweet => await filteredTweetCreate(client, tweet));
+}
+
 await client.login(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
 let address: string;
 if (isProduction) address = await app.listen({ port: 8079, host: '0.0.0.0' });
 else address = await app.listen({ port: 8079 });
 console.log(`Bot listening on port ${address}`);
-// TODO: enable twitter.js implementation to replace the shitty twitter library
-// const twitterCredentials = JSON.parse(process.env.twitter);
-// await twClient.loginWithBearerToken(twitterCredentials.bearer_token);
