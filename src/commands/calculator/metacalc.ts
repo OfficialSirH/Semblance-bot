@@ -70,43 +70,46 @@ export default class MetaCalc extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'obtainable_metabits',
-          description: 'Calculate the required resources to level up an item a specified amount',
-          type: 'SUB_COMMAND',
-          options: [
-            {
-              name: 'entropy',
-              description: 'The amount of entropy to include in the calculation',
-              type: 'STRING',
-              required: true,
-            },
-            {
-              name: 'ideas',
-              description: 'The amount of ideas to include in the calculation',
-              type: 'STRING',
-              required: true,
-            },
-          ],
-        },
-        {
-          name: 'required_accumulation',
-          description: 'The amount of accumulated entropy and ideas required for a specified amount of metabits',
-          type: 'SUB_COMMAND',
-          options: [
-            {
-              name: 'metabits',
-              description: 'The amount of metabits to calculate the required accumulation for',
-              type: 'NUMBER',
-              required: true,
-            },
-          ],
-        },
-      ],
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'obtainable_metabits',
+            description: 'Calculate the required resources to level up an item a specified amount',
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'entropy',
+                description: 'The amount of entropy to include in the calculation',
+                type: 'STRING',
+                required: true,
+              },
+              {
+                name: 'ideas',
+                description: 'The amount of ideas to include in the calculation',
+                type: 'STRING',
+                required: true,
+              },
+            ],
+          },
+          {
+            name: 'required_accumulation',
+            description: 'The amount of accumulated entropy and ideas required for a specified amount of metabits',
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'metabits',
+                description: 'The amount of metabits to calculate the required accumulation for',
+                type: 'NUMBER',
+                required: true,
+              },
+            ],
+          },
+        ],
+      },
+      { idHints: ['973689078291779584'] },
+    );
   }
 }

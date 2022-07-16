@@ -194,6 +194,7 @@ export default class Edit extends Command {
       },
       {
         guildIds: [c2sGuildId, sirhGuildId],
+        idHints: ['974139651801636924', '974139652959244308'],
       },
     );
   }

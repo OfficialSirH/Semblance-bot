@@ -42,16 +42,19 @@ export default class Gamestats extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'user',
-          description: 'The user to display stats for.',
-          type: 'USER',
-        },
-      ],
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'user',
+            description: 'The user to display stats for.',
+            type: 'USER',
+          },
+        ],
+      },
+      { idHints: ['973689164094660689'] },
+    );
   }
 }

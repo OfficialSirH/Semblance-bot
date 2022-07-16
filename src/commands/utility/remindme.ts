@@ -87,76 +87,79 @@ export default class RemindMe extends Command {
         value: 1,
       },
     ];
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'create',
-          description: 'create a reminder',
-          type: 'SUB_COMMAND',
-          options: [
-            {
-              name: 'amount',
-              description: 'the amount of time to wait before the reminder',
-              type: 'INTEGER',
-              autocomplete: true,
-              required: true,
-            },
-            {
-              name: 'reminder',
-              description: 'the reminder to be sent',
-              type: 'STRING',
-              required: true,
-            },
-          ],
-        },
-        {
-          name: 'edit',
-          description: 'edit a reminder',
-          type: 'SUB_COMMAND',
-          options: [
-            {
-              name: 'reminderid',
-              description: 'the id of the reminder to edit',
-              type: 'INTEGER',
-              choices: reminderIdChoices,
-              required: true,
-            },
-            {
-              name: 'amount',
-              description: 'the amount of time to wait before the reminder',
-              type: 'INTEGER',
-              autocomplete: true,
-            },
-            {
-              name: 'reminder',
-              description: 'the reminder to be sent',
-              type: 'STRING',
-            },
-          ],
-        },
-        {
-          name: 'delete',
-          description: 'delete a reminder',
-          type: 'SUB_COMMAND',
-          options: [
-            {
-              name: 'reminderid',
-              description: 'the id of the reminder to delete',
-              type: 'INTEGER',
-              choices: reminderIdChoices,
-              required: true,
-            },
-          ],
-        },
-        {
-          name: 'list',
-          description: 'list all of your reminders',
-          type: 'SUB_COMMAND',
-        },
-      ],
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'create',
+            description: 'create a reminder',
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'amount',
+                description: 'the amount of time to wait before the reminder',
+                type: 'INTEGER',
+                autocomplete: true,
+                required: true,
+              },
+              {
+                name: 'reminder',
+                description: 'the reminder to be sent',
+                type: 'STRING',
+                required: true,
+              },
+            ],
+          },
+          {
+            name: 'edit',
+            description: 'edit a reminder',
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'reminderid',
+                description: 'the id of the reminder to edit',
+                type: 'INTEGER',
+                choices: reminderIdChoices,
+                required: true,
+              },
+              {
+                name: 'amount',
+                description: 'the amount of time to wait before the reminder',
+                type: 'INTEGER',
+                autocomplete: true,
+              },
+              {
+                name: 'reminder',
+                description: 'the reminder to be sent',
+                type: 'STRING',
+              },
+            ],
+          },
+          {
+            name: 'delete',
+            description: 'delete a reminder',
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'reminderid',
+                description: 'the id of the reminder to delete',
+                type: 'INTEGER',
+                choices: reminderIdChoices,
+                required: true,
+              },
+            ],
+          },
+          {
+            name: 'list',
+            description: 'list all of your reminders',
+            type: 'SUB_COMMAND',
+          },
+        ],
+      },
+      { idHints: ['973689252598677624'] },
+    );
   }
 }
 

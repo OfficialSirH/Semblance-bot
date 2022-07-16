@@ -73,27 +73,30 @@ export default class MetaspeedCalc extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'metabits',
-          description: 'The amount of metabits to calculate the multiplier for.',
-          type: 'NUMBER',
-          required: true,
-        },
-        {
-          name: 'mv_ranks',
-          description: 'The amount of Mesozoic Valley ranks to calculate the multiplier for.',
-          type: 'INTEGER',
-        },
-        {
-          name: 'speed_upgrades',
-          description: 'The amount of simulation speed upgrades to calculate the multiplier for.',
-          type: 'INTEGER',
-        },
-      ],
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'metabits',
+            description: 'The amount of metabits to calculate the multiplier for.',
+            type: 'NUMBER',
+            required: true,
+          },
+          {
+            name: 'mv_ranks',
+            description: 'The amount of Mesozoic Valley ranks to calculate the multiplier for.',
+            type: 'INTEGER',
+          },
+          {
+            name: 'speed_upgrades',
+            description: 'The amount of simulation speed upgrades to calculate the multiplier for.',
+            type: 'INTEGER',
+          },
+        ],
+      },
+      { idHints: ['973689078979637278'] },
+    );
   }
 }

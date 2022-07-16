@@ -24,17 +24,20 @@ export default class Jump extends Command {
   }
 
   public registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'url',
-          type: 'STRING',
-          required: true,
-          description: 'The message to jump to',
-        },
-      ],
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'url',
+            type: 'STRING',
+            required: true,
+            description: 'The message to jump to',
+          },
+        ],
+      },
+      { idHints: ['973689251206144020'] },
+    );
   }
 }

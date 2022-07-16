@@ -95,6 +95,7 @@ export default class Roles extends Command {
       },
       {
         guildIds: [c2sGuildId],
+        idHints: ['973689074395271248'],
       },
     );
   }

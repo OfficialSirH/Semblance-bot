@@ -90,6 +90,7 @@ export default class Suggest extends Command {
       },
       {
         guildIds: [c2sGuildId],
+        idHints: ['973689075758432266'],
       },
     );
   }

@@ -111,6 +111,7 @@ export default class BoostReward extends Command {
       },
       {
         guildIds: [c2sGuildId],
+        idHints: ['973689159548035123'],
       },
     );
   }

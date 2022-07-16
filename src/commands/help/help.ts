@@ -151,17 +151,20 @@ export default class Help extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'query',
-          description: 'The query to search for.',
-          type: 'STRING',
-          autocomplete: true,
-        },
-      ],
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'query',
+            description: 'The query to search for.',
+            type: 'STRING',
+            autocomplete: true,
+          },
+        ],
+      },
+      { idHints: ['973689166124703764'] },
+    );
   }
 }

@@ -125,6 +125,7 @@ export default class Link extends Command {
       },
       {
         guildIds: [c2sGuildId],
+        idHints: ['973689073623498803'],
       },
     );
   }

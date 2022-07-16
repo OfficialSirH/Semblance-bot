@@ -40,17 +40,20 @@ export default class Profile extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'user',
-          description: 'The user to get the profile of.',
-          type: 'USER',
-        },
-      ],
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'user',
+            description: 'The user to get the profile of.',
+            type: 'USER',
+          },
+        ],
+      },
+      { idHints: ['973689251386523689'] },
+    );
   }
 }
 

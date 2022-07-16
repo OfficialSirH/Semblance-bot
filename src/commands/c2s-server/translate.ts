@@ -36,6 +36,7 @@ export default class Translate extends Command {
       },
       {
         guildIds: [c2sGuildId],
+        idHints: ['973689076484034630'],
       },
     );
   }

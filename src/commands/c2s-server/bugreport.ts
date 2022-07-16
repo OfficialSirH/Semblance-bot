@@ -166,6 +166,7 @@ export default class Bugreport extends Command {
       },
       {
         guildIds: [c2sGuildId],
+        idHints: ['973689072721752128'],
       },
     );
   }

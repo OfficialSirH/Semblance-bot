@@ -68,9 +68,12 @@ export default class Credits extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+      },
+      { idHints: ['973689166791606283'] },
+    );
   }
 }

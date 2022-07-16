@@ -41,9 +41,14 @@ export default class Tweet extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+      },
+      {
+        idHints: ['997199709544394822'],
+      },
+    );
   }
 }

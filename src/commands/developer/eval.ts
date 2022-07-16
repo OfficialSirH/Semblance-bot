@@ -75,6 +75,7 @@ export default class Eval extends Command {
       },
       {
         guildIds: [c2sGuildId, sirhGuildId],
+        idHints: ['973689160412069938', '973689161179607111'],
       },
     );
   }
