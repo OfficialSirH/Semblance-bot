@@ -103,6 +103,7 @@ else {
       return true;
     } catch (e) {
       console.error(e);
+      if (Number(e.slice(-3)) < 429) return true;
       return false;
     }
   };
@@ -123,7 +124,7 @@ else {
       return true;
     } catch (e) {
       console.error(e);
-      console.log(e.toString().slice(-3, 0)); // may implement retries to only occur for 429+ errors
+      if (Number(e.slice(-3)) < 429) return true;
       return false;
     }
   };
