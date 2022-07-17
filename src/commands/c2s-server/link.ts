@@ -5,7 +5,7 @@ import { Command } from '@sapphire/framework';
 import type { CommandInteraction, Message } from 'discord.js';
 import { Categories } from '#constants/index';
 
-// TODO: make this no longer require the need for stupid DMs
+// TODO: rewrite to use Discord Link API for proper verification of provided data
 
 export default class Link extends Command {
   constructor(context: Command.Context, options: Command.Options) {

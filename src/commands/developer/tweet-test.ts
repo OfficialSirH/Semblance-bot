@@ -4,6 +4,8 @@ import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
 import { Categories } from '#constants/index';
 const twClient = new Twitter(JSON.parse(process.env.twitter));
 
+// TODO: rewrite this command to be a tweet manager for allowing reinitilization of the tweet handler and testing fetch functionality
+
 export default class Tweet extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, {
