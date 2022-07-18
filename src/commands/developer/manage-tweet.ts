@@ -74,6 +74,10 @@ export default class Tweet extends Command {
       .catch((e: ApiResponseError) => e.data.detail);
     if (typeof tweets === 'string') return interaction.reply(tweets);
 
-    return interaction.reply(`Here's **ComputerLunch's** most recent Tweet!\n${tweets.data.data.at(0).source}`);
+    return interaction.reply(
+      `Here's **ComputerLunch's** most recent Tweet!\nhttps://twitter.com/ComputerLunch/status/${
+        tweets.data.data.at(0).id
+      }?s=21`,
+    );
   }
 }
