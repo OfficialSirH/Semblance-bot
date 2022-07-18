@@ -72,80 +72,8 @@ if (isProduction) address = await app.listen({ port: 8079, host: '0.0.0.0' });
 else address = await app.listen({ port: 8079 });
 console.log(`Bot listening on port ${address}`);
 
-import type { ApiResponseError, TweetStream, TweetV2SingleStreamResult } from 'twitter-api-v2';
-import { ETwitterStreamEvent, TwitterApi } from 'twitter-api-v2';
-import { filteredTweetCreate } from './twitter/filteredTweetCreate.js';
 import { checkTweet } from './twitter/checkTweet.js';
-import { promisify } from 'util';
+import { TwitterInitialization } from '#structures/TwitterInitialization';
 // Check for Tweet from ComputerLunch
 if (isProduction) setInterval(() => checkTweet(client), 2000);
-else {
-  const twClient = new TwitterApi(JSON.parse(process.env.twitter).bearer_token);
-
-  let retryTimer = 1000;
-  const wait = promisify(setTimeout);
-
-  const initRules = async () => {
-    retryTimer = retryTimer >= 60_000 ? 60_000 : retryTimer * 2;
-
-    const currentTwRules = await twClient.readOnly.v2.streamRules().catch((e: ApiResponseError) => {
-      console.error(e.data);
-      if (e.code < 429) return true;
-      return false;
-    });
-
-    if (typeof currentTwRules === 'boolean') return currentTwRules;
-
-    if (!currentTwRules.data || currentTwRules.data?.length === 0)
-      return twClient.readWrite.v2
-        .updateStreamRules({
-          add: [
-            {
-              value: 'from:ComputerLunch',
-            },
-          ],
-        })
-        .catch((e: ApiResponseError) => {
-          console.error(e.data);
-          if (e.code < 429) return true;
-          return false;
-        });
-
-    return true;
-  };
-
-  while (!(await initRules())) {
-    console.log(`Failed to init rules, retrying in ${retryTimer / 1000} seconds`);
-    await wait(retryTimer);
-  }
-
-  let stream: TweetStream<TweetV2SingleStreamResult>;
-  const initStream = async () => {
-    retryTimer = retryTimer >= 60_000 ? 60_000 : retryTimer * 2;
-
-    const maybeStream = await twClient.v2
-      .searchStream({
-        'tweet.fields': ['source'],
-      })
-      .catch((e: ApiResponseError) => {
-        console.error(e.data);
-        if (e.code < 429) return true;
-        return false;
-      });
-
-    if (typeof maybeStream === 'boolean') return maybeStream;
-
-    stream = maybeStream;
-
-    return true;
-  };
-
-  while (!(await initStream())) {
-    console.log(`Failed to init stream, retrying in ${retryTimer / 1000} seconds`);
-    await wait(retryTimer);
-  }
-
-  stream.autoReconnect = true;
-
-  stream.on(ETwitterStreamEvent.Data, async tweet => await filteredTweetCreate(client, tweet));
-}
+else await TwitterInitialization.initialize(client);

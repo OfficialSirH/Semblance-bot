@@ -1,10 +1,12 @@
 import type { CommandInteraction } from 'discord.js';
 import { Constants } from 'discord.js';
 import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
-import { Categories } from '#constants/index';
+import { Categories, msToTime } from '#constants/index';
 import { c2sGuildId, sirhGuildId } from '#config';
 import type { ApiResponseError } from 'twitter-api-v2';
+import { TweetStream } from 'twitter-api-v2';
 import { TwitterApi } from 'twitter-api-v2';
+import { TwitterInitialization } from '#structures/TwitterInitialization';
 
 // TODO: rewrite this command to be a tweet manager for allowing reinitilization of the tweet handler and testing fetch functionality
 
@@ -27,8 +29,10 @@ export default class Tweet extends Command {
         return this.testFetch(interaction);
       case 'reload-handler':
         return this.reloadHandler(interaction);
+      case 'handler-status':
+        return this.handlerStatus(interaction);
       default:
-        return interaction.reply(`Unknown subcommand ${subcommand}`);
+        return interaction.reply(`Unknown subcommand: \`${subcommand}\``);
     }
   }
 
@@ -38,6 +42,11 @@ export default class Tweet extends Command {
         name: this.name,
         description: this.description,
         options: [
+          {
+            name: 'handler-status',
+            description: 'Check if the Twitter handler is running',
+            type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+          },
           {
             name: 'reload-handler',
             description: 'Reload the Twitter handler',
@@ -57,8 +66,33 @@ export default class Tweet extends Command {
     );
   }
 
+  public async handlerStatus(interaction: CommandInteraction<'cached'>) {
+    return interaction.reply(
+      `Twitter Handler status: ${TwitterInitialization.stream instanceof TweetStream ? 'online' : 'offline'}`,
+    );
+  }
+
   public async reloadHandler(interaction: CommandInteraction<'cached'>) {
-    return interaction.reply('unimplemented');
+    await interaction.reply('Reloading Twitter handler, this may take a while...');
+
+    const startTime = Date.now();
+
+    const reloadCall = await TwitterInitialization.reloadStream(this.container.client).catch(e => ({
+      success: false,
+      message: e,
+    }));
+
+    const endTime = Date.now();
+
+    if (reloadCall.success)
+      return interaction.channel.send(
+        `Successfully reloaded the Twitter handler!\nTime taken: ${msToTime(endTime - startTime)}`,
+      );
+    return interaction.channel.send(
+      `Failed to reload the Twitter handler!\nTime taken: ${msToTime(endTime - startTime)}\nreason: ${
+        reloadCall.message
+      }`,
+    );
   }
 
   public async testFetch(interaction: CommandInteraction<'cached'>) {
