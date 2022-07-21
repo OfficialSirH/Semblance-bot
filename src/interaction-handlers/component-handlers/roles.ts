@@ -4,7 +4,7 @@ import { c2sRoles } from '#constants/index';
 import { c2sGuildId, currentLogo } from '#config';
 import { componentInteractionDefaultParser, buildCustomId } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
-import type { ParsedCustomIdData } from 'Semblance';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 const cooldown: Collection<string, number> = new Collection();
 
 export default class Roles extends InteractionHandler {

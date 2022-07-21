@@ -1,6 +1,6 @@
 import type { InteractionHandler } from '@sapphire/framework';
 import { type MessageActionRow, type MessageComponentInteraction, MessageButton } from 'discord.js';
-import type { CustomIdData } from 'Semblance';
+import type { CustomIdData } from '#lib/interfaces/Semblance';
 
 export const filterAction = (components: MessageActionRow[], action: string) =>
   components.map(

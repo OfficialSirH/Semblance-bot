@@ -18,37 +18,38 @@ export default class Link extends Command {
   }
 
   public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
-    const playerId = interaction.options.getString('playerid', true);
+    const playerEmail = interaction.options.getString('playeremail', true);
     const playerToken = interaction.options.getString('playertoken', true);
+    const isEmail = interaction.options.getBoolean('isemail');
     const { user } = interaction;
 
-    const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
-    const dataAlreadyExists = await interaction.client.db.userData.findUnique({ where: { token } });
-    if (dataAlreadyExists)
-      return interaction.reply({
-        content: `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${sirhId}>).`,
-        ephemeral: true,
-      });
+    // const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
+    // const dataAlreadyExists = await interaction.client.db.userData.findUnique({ where: { token } });
+    // if (dataAlreadyExists)
+    //   return interaction.reply({
+    //     content: `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${sirhId}>).`,
+    //     ephemeral: true,
+    //   });
 
-    await interaction.client.db.userData
-      .upsert({
-        where: { discord_id: user.id },
-        update: { token },
-        create: { discord_id: user.id, token },
-      })
-      .then(async () => {
-        console.log(`${user.tag}(${user.id}) successfully linked their C2S data.`);
-        await interaction.reply({
-          content: 'The link was successful, now you can use the Discord button in-game to upload your progress.',
-          ephemeral: true,
-        });
-      })
-      .catch(() =>
-        interaction.reply({
-          content: "An error occured, either you provided incorrect input or something randomly didn't want to work.",
-          ephemeral: true,
-        }),
-      );
+    // await interaction.client.db.userData
+    //   .upsert({
+    //     where: { discord_id: user.id },
+    //     update: { token },
+    //     create: { discord_id: user.id, token },
+    //   })
+    //   .then(async () => {
+    //     console.log(`${user.tag}(${user.id}) successfully linked their C2S data.`);
+    //     await interaction.reply({
+    //       content: 'The link was successful, now you can use the Discord button in-game to upload your progress.',
+    //       ephemeral: true,
+    //     });
+    //   })
+    //   .catch(() =>
+    //     interaction.reply({
+    //       content: "An error occured, either you provided incorrect input or something randomly didn't want to work.",
+    //       ephemeral: true,
+    //     }),
+    //   );
   }
 
   public override async messageRun(message: Message, args: Args) {
@@ -61,46 +62,46 @@ export default class Link extends Command {
         'You need to be a member of the Cell to Singularity community server to use this command.',
       );
 
-    const playerId = await args.pickResult('string');
-    if (!playerId.success) return message.reply('You need to provide a player ID.');
+    const playerEmail = await args.pickResult('string');
+    if (!playerEmail.success) return message.reply('You need to provide a player email.');
     const playerToken = await args.pickResult('string');
     if (!playerToken.success) return message.reply('You need to provide a player token.');
 
-    const token = createHmac('sha1', process.env.USERDATA_AUTH)
-      .update(playerId.value)
-      .update(playerToken.value)
-      .digest('hex');
-    const dataAlreadyExists = await message.client.db.userData.findUnique({ where: { token } });
-    if (dataAlreadyExists)
-      return message.channel.send(
-        `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${sirhId}>).`,
-      );
+    // const token = createHmac('sha1', process.env.USERDATA_AUTH)
+    //   .update(playerId.value)
+    //   .update(playerToken.value)
+    //   .digest('hex');
+    // const dataAlreadyExists = await message.client.db.userData.findUnique({ where: { token } });
+    // if (dataAlreadyExists)
+    //   return message.channel.send(
+    //     `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${sirhId}>).`,
+    //   );
 
-    await message.client.db.userData
-      .upsert({
-        where: { discord_id: message.author.id },
-        update: { token },
-        create: { discord_id: message.author.id, token },
-      })
-      .then(async () => {
-        console.log(`${message.author.tag}(${message.author.id}) successfully linked their C2S data.`);
-        if (message.channel.type != 'DM') {
-          await message.channel.send(
-            `Successfully linked your C2S data, ${message.author.tag}, but please remember to use this link command in DMs next time, having to delete your message every time is such a hassle.`,
-          );
-          await message.delete().catch(() => null);
-        } else
-          await message.channel.send(
-            'The link was successful, now you can use the Discord button in-game to upload your progress.',
-          );
-      })
-      .catch(() =>
-        message.channel.send(
-          "An error occured, either you provided incorrect input or something randomly didn't want to work.",
-        ),
-      );
+    // await message.client.db.userData
+    //   .upsert({
+    //     where: { discord_id: message.author.id },
+    //     update: { token },
+    //     create: { discord_id: message.author.id, token },
+    //   })
+    //   .then(async () => {
+    //     console.log(`${message.author.tag}(${message.author.id}) successfully linked their C2S data.`);
+    //     if (message.channel.type != 'DM') {
+    //       await message.channel.send(
+    //         `Successfully linked your C2S data, ${message.author.tag}, but please remember to use this link command in DMs next time, having to delete your message every time is such a hassle.`,
+    //       );
+    //       await message.delete().catch(() => null);
+    //     } else
+    //       await message.channel.send(
+    //         'The link was successful, now you can use the Discord button in-game to upload your progress.',
+    //       );
+    //   })
+    //   .catch(() =>
+    //     message.channel.send(
+    //       "An error occured, either you provided incorrect input or something randomly didn't want to work.",
+    //     ),
+    //   );
 
-    if (message.channel.type != 'DM') await message.delete().catch(() => null);
+    // if (message.channel.type != 'DM') await message.delete().catch(() => null);
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
@@ -110,16 +111,22 @@ export default class Link extends Command {
         description: this.description,
         options: [
           {
-            name: 'playerid',
+            name: 'playeremail',
             type: 'STRING',
-            description: 'Your in-game player Id.',
+            description: 'The email bound to your Game Transfer account.',
             required: true,
           },
           {
             name: 'playertoken',
             type: 'STRING',
-            description: 'Your in-game player Token.',
+            description: 'The player token bound to your Game Transfer account.',
             required: true,
+          },
+          {
+            name: 'isemail',
+            type: 'BOOLEAN',
+            description: 'indicates if the playeremail option is an email or a player id.',
+            required: false,
           },
         ],
       },

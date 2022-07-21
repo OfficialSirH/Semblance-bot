@@ -11,7 +11,7 @@ import {
   disableComponentsByLabel,
   filterAction,
 } from '#constants/components';
-import type { ParsedCustomIdData } from 'Semblance';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class GameHandler extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {

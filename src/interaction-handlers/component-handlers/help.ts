@@ -7,7 +7,7 @@ import {
 } from 'discord.js';
 import { disableAllComponents } from '#constants/index';
 import { backButton, closeButton, componentInteractionDefaultParser } from '#constants/components';
-import type { ParsedCustomIdData } from 'Semblance';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 
 export default class Help extends InteractionHandler {

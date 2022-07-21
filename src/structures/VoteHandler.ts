@@ -4,9 +4,9 @@ import { MessageEmbed, User } from 'discord.js';
 import { sirhGuildId } from '#config';
 import { randomColor } from '#constants/index';
 import type { FastifyReply } from 'fastify';
-import type { DBLRequest } from 'discordBotList';
-import type { DiscordsRequest } from 'discords';
-import type { TGGRequest } from 'topGG';
+import type { DBLRequest } from '#lib/interfaces/discordBotList';
+import type { DiscordsRequest } from '#lib/interfaces/discords';
+import type { TGGRequest } from '#lib/interfaces/topGG';
 
 type AvailableRequests = DBLRequest | DiscordsRequest | TGGRequest;
 

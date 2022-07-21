@@ -1,3 +1,4 @@
+import type { Dispatcher } from 'undici';
 import { Headers, request } from 'undici';
 import { ApiError } from '#structures/ApiError';
 import type { HttpMethod } from 'undici/types/dispatcher';
@@ -17,7 +18,7 @@ interface APIOptions {
  * ```
  */
 export class BaseAPI {
-  private options: APIOptions;
+  protected options: APIOptions;
   /**
    * Create base API instance
    * @param {object} options API Options
@@ -58,9 +59,13 @@ export class BaseAPI {
     }
 
     if (!response.statusCode.toString().startsWith('2')) {
-      throw new ApiError(this.options.baseUrl, response.statusCode, 'failed in some way', response);
+      this.apiErrorHandler(response);
     }
 
     return responseBody;
+  }
+
+  private apiErrorHandler(response: Dispatcher.ResponseData) {
+    throw new ApiError(this.options.baseUrl, response.statusCode, 'failed in some way', response);
   }
 }
