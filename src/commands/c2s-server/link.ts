@@ -1,11 +1,9 @@
-import { c2sGuildId, sirhId } from '#config';
-import { createHmac } from 'crypto';
+import { c2sGuildId } from '#config';
 import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
 import { Command } from '@sapphire/framework';
 import type { CommandInteraction, Message } from 'discord.js';
 import { Categories } from '#constants/index';
-
-// TODO: rewrite to use Discord Link API for proper verification of provided data
+import { DiscordLinkAPI } from '#structures/DiscordLinkAPI';
 
 export default class Link extends Command {
   constructor(context: Command.Context, options: Command.Options) {
@@ -21,7 +19,20 @@ export default class Link extends Command {
     const playerEmail = interaction.options.getString('playeremail', true);
     const playerToken = interaction.options.getString('playertoken', true);
     const isEmail = interaction.options.getBoolean('isemail');
-    const { user } = interaction;
+
+    const discordLinkClient = new DiscordLinkAPI(
+      Buffer.from(playerEmail + ':' + playerToken).toString('base64'),
+      isEmail ? 'v2' : 'v1',
+    );
+
+    const response = await discordLinkClient.linkDiscordUser(interaction.user.id);
+
+    let msg: string;
+    if (typeof response !== 'string')
+      msg = 'message' in response ? response.message : 'Successfully linked your account.';
+    else msg = response;
+
+    return interaction.reply(msg);
 
     // const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
     // const dataAlreadyExists = await interaction.client.db.userData.findUnique({ where: { token } });
@@ -66,6 +77,25 @@ export default class Link extends Command {
     if (!playerEmail.success) return message.reply('You need to provide a player email.');
     const playerToken = await args.pickResult('string');
     if (!playerToken.success) return message.reply('You need to provide a player token.');
+    const isEmailPick = await args.pickResult('boolean');
+    let isEmail: boolean;
+    if (!isEmailPick.success) isEmail = false;
+    else isEmail = isEmailPick.value;
+
+    if (message.channel.type == 'DM') await message.delete();
+
+    const discordLinkClient = new DiscordLinkAPI(
+      Buffer.from(playerEmail + ':' + playerToken).toString('base64'),
+      isEmail ? 'v2' : 'v1',
+    );
+
+    const response = await discordLinkClient.linkDiscordUser(message.author.id);
+
+    let msg: string;
+    if (typeof response !== 'string') msg = 'message' in response ? response.message : 'Successfully linked account.';
+    else msg = response;
+
+    return message.channel.send(msg);
 
     // const token = createHmac('sha1', process.env.USERDATA_AUTH)
     //   .update(playerId.value)

@@ -13,7 +13,7 @@ export class DiscordLinkAPI {
    * @param {string} basicAuth The authorization to use for the API
    * @param {string} version The version of the API to use
    */
-  constructor(private basicAuth: string, version: string) {
+  constructor(private basicAuth: string, version: 'v1' | 'v2') {
     this.baseUrl = isProduction
       ? `${process.env.DISCORD_LINK_API_URL}/${version}/userdata`
       : `${process.env.DEV_DISCORD_LINK_API_URL}/${version}/userdata`;
@@ -24,7 +24,7 @@ export class DiscordLinkAPI {
    *
    * @param {string} discordId The discord id of the user
    */
-  public async linkDiscordUser(discordId: string): Promise<UserData | string> {
+  public async linkDiscordUser(discordId: string): Promise<UserData | { message: string } | string> {
     return request(`${this.baseUrl}/${discordId}`, {
       method: 'POST',
       headers: {
@@ -32,6 +32,6 @@ export class DiscordLinkAPI {
       },
     })
       .then(response => response.body.json() as Promise<UserData>)
-      .catch(error => error as string);
+      .catch(error => (typeof error === 'object' ? error.toString() : error) as string);
   }
 }

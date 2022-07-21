@@ -8,8 +8,6 @@ import { TweetStream } from 'twitter-api-v2';
 import { TwitterApi } from 'twitter-api-v2';
 import { TwitterInitialization } from '#structures/TwitterInitialization';
 
-// TODO: rewrite this command to be a tweet manager for allowing reinitilization of the tweet handler and testing fetch functionality
-
 export default class Tweet extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, {
