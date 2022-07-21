@@ -77,11 +77,13 @@ export default class Help extends Command {
           .setStyle('SECONDARY'),
       ),
     ];
+
+    const command = builder.client.application.commands.cache.find(c => c.name === this.name);
     return {
       content:
         'user' in builder
           ? null
-          : `side note: you can use: \`/help\` instead.\n**Warning:** \`s!\` will be replaced with <@${builder.client.id}> in the future.`,
+          : `side note: There's a slash command variant of this command (</${command.name}:${command.id}>) that is recommended to be used and message commands may be removed later.`,
       embeds: [embed],
       components,
     };

@@ -122,11 +122,12 @@ export default class Game extends Command {
       ),
     ];
 
+    const command = client.application.commands.cache.find(c => c.name == this.name);
     return {
       content:
         'user' in builder
           ? null
-          : "note: There's a slash command for this now, if your Discord client allows it, you can use /game",
+          : `note: It's recommended to use the slash command variant of this command (</${command.name}:${command.id}>) as normal commands may be removed from Semblance later.`,
       embeds: [embed],
       components,
     };
