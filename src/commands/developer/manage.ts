@@ -8,12 +8,12 @@ import { TweetStream } from 'twitter-api-v2';
 import { TwitterApi } from 'twitter-api-v2';
 import { TwitterInitialization } from '#structures/TwitterInitialization';
 
-export default class Tweet extends Command {
+export default class Manage extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, {
       ...options,
-      name: 'manage-tweet',
-      description: 'Manage Twitter Handler and test if the Twitter API is functional',
+      name: 'manage',
+      description: 'Manage the bot.',
       fullCategory: [Categories.developer],
       preconditions: ['OwnerOnly'],
     });
@@ -41,19 +41,71 @@ export default class Tweet extends Command {
         description: this.description,
         options: [
           {
-            name: 'handler-status',
-            description: 'Check if the Twitter handler is running',
-            type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+            name: 'discord-link',
+            description: 'Manage linked C2S accounts',
+            type: 'SUB_COMMAND_GROUP',
+            options: [
+              {
+                name: 'get',
+                description: 'Get a linked C2S account',
+                type: 'SUB_COMMAND',
+                options: [
+                  {
+                    name: 'discord-id',
+                    description: 'The Discord ID of the user',
+                    type: 'STRING',
+                    required: true,
+                  },
+                ],
+              },
+              {
+                name: 'create',
+                description: 'Create a linked C2S account',
+                type: 'SUB_COMMAND',
+                options: [
+                  {
+                    name: 'discord-id',
+                    description: 'The Discord ID of the user',
+                    type: 'STRING',
+                    required: true,
+                  },
+                  {
+                    name: 'playeremail',
+                    description: 'The email bound to your Game Transfer account.',
+                    type: 'STRING',
+                    required: true,
+                  },
+                  {
+                    name: 'playertoken',
+                    description: 'The token bound to your Game Transfer account.',
+                    type: 'STRING',
+                    required: true,
+                  },
+                ],
+              },
+            ],
           },
           {
-            name: 'reload-handler',
-            description: 'Reload the Twitter handler',
-            type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
-          },
-          {
-            name: 'test-fetch',
-            description: 'Test if the Twitter API is functional',
-            type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+            name: 'twitter',
+            description: 'Manage Twitter',
+            type: 'SUB_COMMAND_GROUP',
+            options: [
+              {
+                name: 'handler-status',
+                description: 'Check if the Twitter handler is running',
+                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+              },
+              {
+                name: 'reload-handler',
+                description: 'Reload the Twitter handler',
+                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+              },
+              {
+                name: 'test-fetch',
+                description: 'Test if the Twitter API is functional',
+                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+              },
+            ],
           },
         ],
       },
