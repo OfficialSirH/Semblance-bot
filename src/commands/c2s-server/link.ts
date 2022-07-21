@@ -1,9 +1,10 @@
-import { c2sGuildId } from '#config';
+import { c2sGuildId, sirhId } from '#config';
 import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
 import { Command } from '@sapphire/framework';
 import type { CommandInteraction, Message } from 'discord.js';
 import { Categories } from '#constants/index';
 import { DiscordLinkAPI } from '#structures/DiscordLinkAPI';
+import { createHmac } from 'crypto';
 
 export default class Link extends Command {
   constructor(context: Command.Context, options: Command.Options) {
@@ -20,47 +21,47 @@ export default class Link extends Command {
     const playerToken = interaction.options.getString('playertoken', true);
     const isEmail = interaction.options.getBoolean('isemail');
 
-    const discordLinkClient = new DiscordLinkAPI(
-      Buffer.from(playerEmail + ':' + playerToken).toString('base64'),
-      isEmail ? 'v2' : 'v1',
-    );
+    if (isEmail) {
+      const discordLinkClient = new DiscordLinkAPI(Buffer.from(playerEmail + ':' + playerToken).toString('base64'));
 
-    const response = await discordLinkClient.linkDiscordUser(interaction.user.id);
+      const response = await discordLinkClient.linkDiscordUser({ discord_id: interaction.user.id });
 
-    let msg: string;
-    if (typeof response !== 'string')
-      msg = 'message' in response ? response.message : 'Successfully linked your account.';
-    else msg = response;
+      let msg: string;
+      if (typeof response !== 'string')
+        msg = 'message' in response ? response.message : 'Successfully linked your account.';
+      else msg = response;
 
-    return interaction.reply(msg);
+      return interaction.reply(msg);
+    }
+    const { user } = interaction;
 
-    // const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
-    // const dataAlreadyExists = await interaction.client.db.userData.findUnique({ where: { token } });
-    // if (dataAlreadyExists)
-    //   return interaction.reply({
-    //     content: `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${sirhId}>).`,
-    //     ephemeral: true,
-    //   });
+    const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerEmail).update(playerToken).digest('hex');
+    const dataAlreadyExists = await interaction.client.db.userData.findUnique({ where: { token } });
+    if (dataAlreadyExists)
+      return interaction.reply({
+        content: `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${sirhId}>).`,
+        ephemeral: true,
+      });
 
-    // await interaction.client.db.userData
-    //   .upsert({
-    //     where: { discord_id: user.id },
-    //     update: { token },
-    //     create: { discord_id: user.id, token },
-    //   })
-    //   .then(async () => {
-    //     console.log(`${user.tag}(${user.id}) successfully linked their C2S data.`);
-    //     await interaction.reply({
-    //       content: 'The link was successful, now you can use the Discord button in-game to upload your progress.',
-    //       ephemeral: true,
-    //     });
-    //   })
-    //   .catch(() =>
-    //     interaction.reply({
-    //       content: "An error occured, either you provided incorrect input or something randomly didn't want to work.",
-    //       ephemeral: true,
-    //     }),
-    //   );
+    await interaction.client.db.userData
+      .upsert({
+        where: { discord_id: user.id },
+        update: { token },
+        create: { discord_id: user.id, token },
+      })
+      .then(async () => {
+        console.log(`${user.tag}(${user.id}) successfully linked their C2S data.`);
+        await interaction.reply({
+          content: 'The link was successful, now you can use the Discord button in-game to upload your progress.',
+          ephemeral: true,
+        });
+      })
+      .catch(() =>
+        interaction.reply({
+          content: "An error occured, either you provided incorrect input or something randomly didn't want to work.",
+          ephemeral: true,
+        }),
+      );
   }
 
   public override async messageRun(message: Message, args: Args) {
@@ -84,54 +85,53 @@ export default class Link extends Command {
 
     if (message.channel.type == 'DM') await message.delete();
 
-    const discordLinkClient = new DiscordLinkAPI(
-      Buffer.from(playerEmail + ':' + playerToken).toString('base64'),
-      isEmail ? 'v2' : 'v1',
-    );
+    if (isEmail) {
+      const discordLinkClient = new DiscordLinkAPI(Buffer.from(playerEmail + ':' + playerToken).toString('base64'));
 
-    const response = await discordLinkClient.linkDiscordUser(message.author.id);
+      const response = await discordLinkClient.linkDiscordUser({ discord_id: message.author.id });
 
-    let msg: string;
-    if (typeof response !== 'string') msg = 'message' in response ? response.message : 'Successfully linked account.';
-    else msg = response;
+      let msg: string;
+      if (typeof response !== 'string') msg = 'message' in response ? response.message : 'Successfully linked account.';
+      else msg = response;
 
-    return message.channel.send(msg);
+      return message.channel.send(msg);
+    }
 
-    // const token = createHmac('sha1', process.env.USERDATA_AUTH)
-    //   .update(playerId.value)
-    //   .update(playerToken.value)
-    //   .digest('hex');
-    // const dataAlreadyExists = await message.client.db.userData.findUnique({ where: { token } });
-    // if (dataAlreadyExists)
-    //   return message.channel.send(
-    //     `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${sirhId}>).`,
-    //   );
+    const token = createHmac('sha1', process.env.USERDATA_AUTH)
+      .update(playerEmail.value)
+      .update(playerToken.value)
+      .digest('hex');
+    const dataAlreadyExists = await message.client.db.userData.findUnique({ where: { token } });
+    if (dataAlreadyExists)
+      return message.channel.send(
+        `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${sirhId}>).`,
+      );
 
-    // await message.client.db.userData
-    //   .upsert({
-    //     where: { discord_id: message.author.id },
-    //     update: { token },
-    //     create: { discord_id: message.author.id, token },
-    //   })
-    //   .then(async () => {
-    //     console.log(`${message.author.tag}(${message.author.id}) successfully linked their C2S data.`);
-    //     if (message.channel.type != 'DM') {
-    //       await message.channel.send(
-    //         `Successfully linked your C2S data, ${message.author.tag}, but please remember to use this link command in DMs next time, having to delete your message every time is such a hassle.`,
-    //       );
-    //       await message.delete().catch(() => null);
-    //     } else
-    //       await message.channel.send(
-    //         'The link was successful, now you can use the Discord button in-game to upload your progress.',
-    //       );
-    //   })
-    //   .catch(() =>
-    //     message.channel.send(
-    //       "An error occured, either you provided incorrect input or something randomly didn't want to work.",
-    //     ),
-    //   );
+    await message.client.db.userData
+      .upsert({
+        where: { discord_id: message.author.id },
+        update: { token },
+        create: { discord_id: message.author.id, token },
+      })
+      .then(async () => {
+        console.log(`${message.author.tag}(${message.author.id}) successfully linked their C2S data.`);
+        if (message.channel.type != 'DM') {
+          await message.channel.send(
+            `Successfully linked your C2S data, ${message.author.tag}, but please remember to use this link command in DMs next time, having to delete your message every time is such a hassle.`,
+          );
+          await message.delete().catch(() => null);
+        } else
+          await message.channel.send(
+            'The link was successful, now you can use the Discord button in-game to upload your progress.',
+          );
+      })
+      .catch(() =>
+        message.channel.send(
+          "An error occured, either you provided incorrect input or something randomly didn't want to work.",
+        ),
+      );
 
-    // if (message.channel.type != 'DM') await message.delete().catch(() => null);
+    if (message.channel.type != 'DM') await message.delete().catch(() => null);
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
