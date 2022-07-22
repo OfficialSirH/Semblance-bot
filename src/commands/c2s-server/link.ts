@@ -31,7 +31,7 @@ export default class Link extends Command {
         msg = 'message' in response ? response.message : 'Successfully linked your account.';
       else msg = response;
 
-      return interaction.reply(msg);
+      return interaction.reply({ content: msg, ephemeral: true });
     }
     const { user } = interaction;
 
