@@ -24,6 +24,8 @@ export default class Link extends Command {
     if (isEmail) {
       const discordLinkClient = new DiscordLinkAPI(Buffer.from(playerEmail + ':' + playerToken).toString('base64'));
 
+      await interaction.deferReply({ ephemeral: true });
+
       const response = await discordLinkClient.linkDiscordUser({ discord_id: interaction.user.id });
 
       let msg: string;
@@ -31,7 +33,7 @@ export default class Link extends Command {
         msg = 'message' in response ? response.message : 'Successfully linked your account.';
       else msg = response;
 
-      return interaction.reply({ content: msg, ephemeral: true });
+      return interaction.editReply(msg);
     }
     const { user } = interaction;
 
