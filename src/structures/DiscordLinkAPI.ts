@@ -11,7 +11,6 @@ export class DiscordLinkAPI {
   /**
    * Create a new DiscordLinkAPI instance
    * @param {string} basicAuth The authorization to use for the API
-   * @param {string} version The version of the API to use
    */
   constructor(private basicAuth: string) {
     this.baseUrl = isProduction
