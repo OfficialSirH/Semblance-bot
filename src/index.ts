@@ -34,7 +34,7 @@ import { type Awaitable, Intents, type Message, Options } from 'discord.js';
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
 
 const client = new SapphireClient({
-  preventFailedToFetchLogForGuildIds: process.env.TEMP_GUILD_IDS.split(','),
+  preventFailedToFetchLogForGuilds: process.env.TEMP_GUILD_IDS.split(','),
   allowedMentions: { parse: [] },
   fetchPrefix: () => prefix,
   defaultPrefix: prefix,

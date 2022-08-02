@@ -85,7 +85,7 @@ export default class Link extends Command {
     if (!isEmailPick.success) isEmail = false;
     else isEmail = isEmailPick.value;
 
-    if (message.channel.type == 'DM') await message.delete();
+    if (message.channel.type != 'DM') await message.delete();
 
     if (isEmail) {
       const discordLinkClient = new DiscordLinkAPI(Buffer.from(playerEmail + ':' + playerToken).toString('base64'));
