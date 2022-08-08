@@ -37,7 +37,6 @@ const client = new SapphireClient({
   preventFailedToFetchLogForGuilds: process.env.TEMP_GUILD_IDS.split(','),
   allowedMentions: { parse: [] },
   fetchPrefix: () => prefix,
-  defaultPrefix: prefix,
   caseInsensitiveCommands: true,
   caseInsensitivePrefixes: true,
   loadMessageCommandListeners: true,

@@ -1,6 +1,6 @@
 import type { CommandInteraction, Message, User } from 'discord.js';
 import { MessageEmbed } from 'discord.js';
-import { Categories, getAvatar, randomColor } from '#constants/index';
+import { Categories, randomColor } from '#constants/index';
 import { type Args, Command, type ApplicationCommandRegistry } from '@sapphire/framework';
 
 export default class Avatar extends Command {
@@ -17,7 +17,7 @@ export default class Avatar extends Command {
         .setTitle(`${user.username}'s Avatar`)
         .setAuthor({ name: `${author.tag}`, iconURL: author.displayAvatarURL() })
         .setColor(randomColor)
-        .setImage(getAvatar(user));
+        .setImage(user.displayAvatarURL({ dynamic: true }));
     return interaction.reply({ embeds: [embed] });
   }
 
@@ -32,7 +32,7 @@ export default class Avatar extends Command {
       .setTitle('Avatar')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)
-      .setImage(getAvatar(user));
+      .setImage(user.displayAvatarURL({ dynamic: true }));
     message.channel.send({ embeds: [embed] });
   }
 
