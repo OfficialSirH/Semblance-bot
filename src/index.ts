@@ -74,5 +74,8 @@ console.log(`Bot listening on port ${address}`);
 import { checkTweet } from './twitter/checkTweet.js';
 import { TwitterInitialization } from '#structures/TwitterInitialization';
 // Check for Tweet from ComputerLunch
-if (isProduction) setInterval(() => checkTweet(client), 2000);
-else await TwitterInitialization.initialize(client);
+const twitterAvailabilityTimer = setTimeout(() => {
+  if (!TwitterInitialization.online) TwitterInitialization.fallbackHandlerInterval = setInterval(checkTweet, 2_000);
+}, 300_000);
+await TwitterInitialization.initialize(client);
+clearTimeout(twitterAvailabilityTimer);

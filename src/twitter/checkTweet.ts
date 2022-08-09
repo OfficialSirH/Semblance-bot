@@ -1,41 +1,52 @@
-import Twitter from 'twitter';
 import { c2sGuildId } from '#config';
+import { isProduction } from '#constants/index';
+import { TwitterInitialization } from '#structures/TwitterInitialization';
 import type { SapphireClient } from '@sapphire/framework';
 import type { TextBasedChannel } from 'discord.js';
-const twClient = new Twitter(JSON.parse(process.env.twitter));
-let current_id = null;
+import { type ApiResponseError, TwitterApi } from 'twitter-api-v2';
+let current_id: string = null;
 const screen_name = 'ComputerLunch';
-// TODO: get rid of this file after implementing a better twitter library
+const userId = 'VXNlcjo2MTgyMzU5NjA='; // ComputerLunch's id
 /**
- * @deprecated Use a better twitter library instead
+ * fallback for when the stream is not working
  * @param client the main discord client
  * @returns void
  */
-export const checkTweet = (client: SapphireClient) =>
-  twClient.get(
-    'statuses/user_timeline',
-    {
-      screen_name,
-      exclude_replies: true,
-      count: 1,
-    },
-    async (error, tweets) => {
-      if (error) return console.error(error);
+export const checkTweet = async (client: SapphireClient) => {
+  if (TwitterInitialization.online) {
+    clearInterval(TwitterInitialization.fallbackHandlerInterval);
+    TwitterInitialization.fallbackHandlerInterval = null;
+    return;
+  }
 
-      const tweet = tweets[0];
-      try {
-        if (tweet.id_str !== current_id && current_id) {
-          const c2sTwitterChannel = client.guilds.cache
-            .get(c2sGuildId)
-            .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannel;
+  const twClient = new TwitterApi(JSON.parse(process.env.twitter).bearer_token);
+  const tweets = await twClient.v2.readOnly
+    .userTimeline(userId, { exclude: 'replies', since_id: current_id })
+    .catch((e: ApiResponseError) => e.data.detail);
 
-          const msg = await c2sTwitterChannel.send(
-            `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${tweet.id_str}?s=21`,
-          );
+  if (typeof tweets === 'string') {
+    console.error(tweets);
+    return;
+  }
 
-          await msg.crosspost();
-        }
-      } catch {}
-      current_id = tweet.id_str;
-    },
-  );
+  if (!isProduction) {
+    console.log(JSON.stringify(tweets));
+    return;
+  }
+
+  const new_id = tweets.data.data.at(0).id;
+
+  if (new_id !== current_id && new_id !== null) {
+    current_id = new_id;
+
+    const c2sTwitterChannel = client.guilds.cache
+      .get(c2sGuildId)
+      .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannel;
+
+    const msg = await c2sTwitterChannel.send(
+      `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${current_id}?s=21`,
+    );
+
+    await msg.crosspost();
+  }
+};

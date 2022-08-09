@@ -4,6 +4,8 @@ import { promisify } from 'util';
 import type { SapphireClient } from '@sapphire/framework';
 
 export class TwitterInitialization {
+  static online = false;
+  static fallbackHandlerInterval: number | null = null;
   static twitterClient: TwitterApi;
   static stream: TweetStream;
 
@@ -94,5 +96,7 @@ export class TwitterInitialization {
     await this.reloadRules();
 
     await this.reloadStream(client);
+
+    this.online = true;
   }
 }
