@@ -268,7 +268,7 @@ async function edit(interaction: CommandInteraction<'cached'>) {
   const updatedReminder = {} as UserReminder;
 
   updatedReminder.message = reminder ? reminder : currentReminderData.reminders[reminderId - 1].message;
-  if (amount) updatedReminder.time = new Date(Date.now() + amount);
+  updatedReminder.time = amount ? new Date(Date.now() + amount) : currentReminderData.reminders[reminderId - 1].time;
   updatedReminder.reminderId = reminderId;
   updatedReminder.channelId = currentReminderData.reminders.find(r => r.reminderId === reminderId).channelId;
 
