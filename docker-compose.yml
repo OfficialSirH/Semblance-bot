@@ -1,6 +1,0 @@
-services:
-  app:
-    build: .
-    container_name: semblance
-    stdin_open: true
-    tty: true
