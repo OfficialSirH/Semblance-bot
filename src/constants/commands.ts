@@ -1,10 +1,8 @@
-import type { Client, Guild, GuildChannel, Message, PartialMessage, Snowflake, TextChannel, User } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import type { Client, Message, PartialMessage, Snowflake, TextChannel } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 import { clamp } from '#lib/utils/math';
 import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndDogAPI';
 import type { DeepLParams, DeepLResponse } from '#lib/interfaces/deepLAPI';
-import { messageLinkRegex, attachmentLinkRegex } from '#constants/index';
 import type { Game } from '@prisma/client';
 import { request } from 'undici';
 
@@ -192,40 +190,3 @@ export async function currentPrice(client: SapphireClient, userData: Game) {
   }
   return userData.cost == 0 ? 1 : userData.cost;
 }
-
-export const messageLinkJump = async (input: string, user: User, currentGuild: Guild, client: Client) => {
-  const messageLink = messageLinkRegex.exec(input);
-  if (messageLink == null) return 'No message link found.';
-  const {
-    groups: { guildId, channelId, messageId },
-  } = messageLink;
-
-  const guild = client.guilds.cache.get(guildId);
-  const channel = guild.channels.cache.get(channelId) as TextChannel;
-  if (channel.nsfw ?? guild.id != currentGuild.id) return 'This channel is not allowed to be jumped to';
-
-  const msg = await channel.messages.fetch(messageId).catch(() => 'No message found.');
-  if (typeof msg == 'string') return msg;
-  const attachmentLink = attachmentLinkRegex.exec(msg.content);
-  if (attachmentLink != null) msg.content = msg.content.replace(attachmentLink[0], '');
-
-  const embed = new MessageEmbed()
-    .setAuthor({ name: msg.author.username, iconURL: msg.author.displayAvatarURL() })
-    .setThumbnail(user.displayAvatarURL())
-    .setDescription(msg.content)
-    .addField('Jump', `[Go to message!](${msg.url})`)
-    .setFooter({ text: `#${(msg.channel as GuildChannel).name} quoted by ${user.tag}` })
-    .setTimestamp(msg.createdTimestamp);
-  if (msg.embeds[0] && attachmentLink == null) {
-    const title = msg.embeds[0].title ? msg.embeds[0].title : 'no title';
-    embed.addField(`*Contains embed titled: ${title}*`, '\u200b');
-    if (msg.embeds[0].image) embed.setImage(msg.embeds[0].image.url);
-  }
-
-  if (!embed.image && (msg.attachments.size > 0 ?? !attachmentLink))
-    embed.setImage(
-      msg.attachments.size > 0 ? msg.attachments.map(a => a.url).filter(item => item)[0] : attachmentLink[0],
-    );
-
-  return { embeds: [embed] };
-};
