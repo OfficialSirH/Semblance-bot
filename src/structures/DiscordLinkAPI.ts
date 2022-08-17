@@ -31,11 +31,11 @@ export class DiscordLinkAPI {
       },
       body,
     })
-      .then<Promise<UserData | string> | string>(response => {
+      .then<Promise<UserData | string> | string>(async response => {
         if (response.statusCode === 200) return response.body.json() as Promise<UserData>;
         if (response.statusCode === 404) return 'Not found';
 
-        return `link failed: ${response.body.text()}`;
+        return `link failed: ${await response.body.text()}`;
       })
       .catch(error => (typeof error === 'object' ? error.toString() : error) as string) as Promise<
       UserData | string | { message: string }
