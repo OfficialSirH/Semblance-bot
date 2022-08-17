@@ -16,7 +16,6 @@ declare module 'process' {
 
         readonly USERDATA_AUTH: string;
         readonly DISCORD_LINK_API_URL: string;
-        readonly DEV_DISCORD_LINK_API_URL: string;
 
         readonly CAT_API_KEY: string;
         readonly DOG_API_KEY: string;

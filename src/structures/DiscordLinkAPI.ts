@@ -13,9 +13,7 @@ export class DiscordLinkAPI {
    * @param {string} basicAuth The authorization to use for the API
    */
   constructor(private basicAuth: string) {
-    this.baseUrl = isProduction
-      ? `${process.env.DISCORD_LINK_API_URL}/v2/userdata`
-      : `${process.env.DEV_DISCORD_LINK_API_URL}/v2/userdata`;
+    this.baseUrl = `${process.env.DISCORD_LINK_API_URL}/v2/userdata`;
   }
 
   /**
