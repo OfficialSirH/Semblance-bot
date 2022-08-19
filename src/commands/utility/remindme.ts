@@ -370,5 +370,5 @@ async function list(interaction: CommandInteraction<'cached'>) {
         .join('\n\n'),
     )
     .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
-  await interaction.reply({ embeds: [embed] });
+  await interaction.reply({ embeds: [embed], ephemeral: true });
 }

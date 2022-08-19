@@ -66,7 +66,7 @@ app.get('/', (_req, res) => {
 });
 
 await client.login(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
-let address = await app.listen({ port: 8079, host: '0.0.0.0' });
+const address = await app.listen({ port: 8079, host: '0.0.0.0' });
 console.log(`Bot listening on port ${address}`);
 
 import { checkTweet } from './twitter/checkTweet.js';

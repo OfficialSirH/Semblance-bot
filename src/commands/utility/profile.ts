@@ -12,9 +12,9 @@ export default class Profile extends Command {
   public override async messageRun(message: Message, args: Args) {
     const userResolve = await args.pickResult('user');
     let user: User, member: GuildMember;
-    if (!userResolve.success) member = message.member;
+    if (userResolve.isErr) member = message.member;
     else {
-      user = userResolve.value;
+      user = userResolve.unwrap();
       member =
         user instanceof GuildMember
           ? user

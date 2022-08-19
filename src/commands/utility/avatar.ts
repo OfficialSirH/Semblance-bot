@@ -25,8 +25,8 @@ export default class Avatar extends Command {
     const userArg = await args.pickResult('user');
     let user: User;
 
-    if (!userArg.success) user = message.author;
-    else user = userArg.value;
+    if (userArg.isErr) user = message.author;
+    else user = userArg.unwrap();
 
     const embed = new MessageEmbed()
       .setTitle('Avatar')

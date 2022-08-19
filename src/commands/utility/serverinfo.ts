@@ -13,7 +13,10 @@ export default class ServerInfo extends Command {
     let guild: Guild;
     if (getPermissionLevel(message.member) == 7) {
       const guildId = await args.pickResult('string');
-      guild = guildId.success ? message.client.guilds.cache.get(guildId.value) : message.guild;
+      guild =
+        guildId.isOk && message.client.guilds.cache.has(guildId.unwrap())
+          ? message.client.guilds.cache.get(guildId.unwrap())
+          : message.guild;
     } else guild = message.guild;
 
     let textChannel = 0,

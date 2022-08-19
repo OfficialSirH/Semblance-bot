@@ -77,18 +77,20 @@ export default class Link extends Command {
       );
 
     const playerEmail = await args.pickResult('string');
-    if (!playerEmail.success) return message.reply('You need to provide a player email.');
+    if (playerEmail.isErr) return message.reply('You need to provide a player email.');
     const playerToken = await args.pickResult('string');
-    if (!playerToken.success) return message.reply('You need to provide a player token.');
+    if (playerToken.isErr) return message.reply('You need to provide a player token.');
     const isEmailPick = await args.pickResult('boolean');
     let isEmail: boolean;
-    if (!isEmailPick.success) isEmail = false;
-    else isEmail = isEmailPick.value;
+    if (isEmailPick.isErr) isEmail = false;
+    else isEmail = isEmailPick.unwrap();
 
     if (message.channel.type != 'DM') await message.delete();
 
     if (isEmail) {
-      const discordLinkClient = new DiscordLinkAPI(Buffer.from(playerEmail + ':' + playerToken).toString('base64'));
+      const discordLinkClient = new DiscordLinkAPI(
+        Buffer.from(playerEmail.unwrap() + ':' + playerToken.unwrap()).toString('base64'),
+      );
 
       const response = await discordLinkClient.linkDiscordUser({ discord_id: message.author.id });
 
@@ -100,8 +102,8 @@ export default class Link extends Command {
     }
 
     const token = createHmac('sha1', process.env.USERDATA_AUTH)
-      .update(playerEmail.value)
-      .update(playerToken.value)
+      .update(playerEmail.unwrap())
+      .update(playerToken.unwrap())
       .digest('hex');
     const dataAlreadyExists = await message.client.db.userData.findUnique({ where: { token } });
     if (dataAlreadyExists)
