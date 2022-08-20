@@ -1,12 +1,15 @@
 FROM node:16-alpine as builder
 
-WORKDIR /
-
-COPY package*.json ./
-COPY tsconfig*.json ./
+WORKDIR /build
 
 RUN apk add --no-cache python3 make g++
-RUN npm install
+
+RUN yarn set version stable
+
+COPY package.json tsconfig.json yarn.lock ./
+COPY  .yarn ./.yarn
+
+RUN yarn install
 
 COPY . ./
 
