@@ -13,7 +13,6 @@
     "discord-api-types": "^0.37.3",
     "discord.js": "^13.10.2",
     "dotenv": "^16.0.1",
-    "erlpack": "github:discord/erlpack",
     "fastify": "^4.5.2",
     "node-schedule": "^2.1.0",
     "source-map-support": "^0.5.21",
@@ -52,11 +51,8 @@
     ]
   },
   "scripts": {
-    "start": "npm run build && pm2 start dist/ecosystem.config.cjs",
-    "start:prod": "npm run build && pm2 start dist/ecosystem.config.cjs --env production",
     "start:docker": "node dist/src/index.js",
     "build:docker": "npx prisma generate && npx tsc --project tsconfig.json",
-    "build": "npm i && npm run cleanup && tsc --project tsconfig.json",
     "cleanup": "rm -rf dist",
     "setup": "npm run lint:fix && npm run prettier",
     "prettier": "prettier --write config.ts src/**/*.ts lib/**/*.ts",
