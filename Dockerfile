@@ -21,8 +21,8 @@ EXPOSE 8079
 
 COPY . .
 
-COPY --from=builder dist ./dist
+COPY --from=builder build/dist ./dist
 
-COPY --from=builder node_modules ./node_modules
+COPY --from=builder build/node_modules ./node_modules
 
 CMD [ "npm", "run", "start:docker" ]
