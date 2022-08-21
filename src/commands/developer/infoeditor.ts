@@ -61,7 +61,7 @@ export default class Edit extends Command {
           type: subjectValue.type,
         },
         data: {
-          value: interaction.options.getString('value').replaceAll('\\n', '\n') || subjectValue.value,
+          value: interaction.options.getString('value')?.replaceAll('\\n', '\n') || subjectValue.value,
           footer: interaction.options.getString('footer') || subjectValue.footer,
           expired:
             subjectValue.type == 'codes' ? interaction.options.getString('expired') || subjectValue.expired : null,
