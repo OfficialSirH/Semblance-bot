@@ -479,3 +479,6 @@ MigrationBackup/
 FodyWeavers.xsd
 
 .vs/
+
+# yarn v3
+!.yarn/releases
