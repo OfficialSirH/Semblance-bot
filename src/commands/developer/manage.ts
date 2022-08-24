@@ -1,12 +1,14 @@
 import type { CommandInteraction } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { Constants } from 'discord.js';
 import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
-import { Categories, msToTime } from '#constants/index';
+import { bigToName, Categories, msToTime } from '#constants/index';
 import { c2sGuildId, sirhGuildId } from '#config';
 import type { ApiResponseError } from 'twitter-api-v2';
 import { TweetStream } from 'twitter-api-v2';
 import { TwitterApi } from 'twitter-api-v2';
 import { TwitterInitialization } from '#structures/TwitterInitialization';
+import { DiscordLinkAPI } from '#structures/DiscordLinkAPI';
 
 export default class Manage extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -53,7 +55,7 @@ export default class Manage extends Command {
                   {
                     name: 'discord-id',
                     description: 'The Discord ID of the user',
-                    type: 'STRING',
+                    type: 'USER',
                     required: true,
                   },
                 ],
@@ -66,7 +68,7 @@ export default class Manage extends Command {
                   {
                     name: 'discord-id',
                     description: 'The Discord ID of the user',
-                    type: 'STRING',
+                    type: 'USER',
                     required: true,
                   },
                   {
@@ -114,6 +116,48 @@ export default class Manage extends Command {
         idHints: ['998060368616226917', '998060369564155965'],
       },
     );
+  }
+
+  public async discordLinkGet(interaction: CommandInteraction<'cached'>) {
+    const user = interaction.options.getUser('discord-id');
+    const linkedAccount = await this.container.client.db.userData.findUnique({ where: { discord_id: user.id } });
+
+    if (!linkedAccount) return interaction.reply(`No linked account found for ${user.tag}`);
+
+    const embed = new MessageEmbed()
+      .setTitle(`Linked account for ${user.tag}(${user.id})`)
+      .setDescription(
+        `Beta Tester: ${linkedAccount.beta_tester ? 'yes' : 'no'}\nSimulation Resets ${
+          linkedAccount.prestige_rank
+        }\nMesozoic Valley Rank: ${linkedAccount.dino_rank}\nBeyond Rank: ${
+          linkedAccount.beyond_rank
+        }\nMetabits: ${bigToName(Number(linkedAccount.metabits))}\nSingularity Speedrun Time: ${
+          linkedAccount.singularity_speedrun_time
+        } seconds\nAll Sharks Obtained: ${
+          linkedAccount.all_sharks_obtained ? 'yes' : 'no'
+        }\nAll Hidden Achievements Found: ${linkedAccount.all_hidden_achievements_obtained ? 'yes' : 'no'}`,
+      );
+
+    return interaction.reply({ embeds: [embed], ephemeral: true });
+  }
+
+  public async discordLinkCreate(interaction: CommandInteraction<'cached'>) {
+    const user = interaction.options.getUser('discord-id');
+    const playerEmail = interaction.options.getString('playeremail');
+    const playerToken = interaction.options.getString('playertoken');
+
+    const discordLinkClient = new DiscordLinkAPI(Buffer.from(playerEmail + ':' + playerToken).toString('base64'));
+
+    const linkedAccount = await discordLinkClient.linkDiscordUser({ discord_id: user.id });
+
+    const content =
+      typeof linkedAccount == 'string'
+        ? linkedAccount
+        : 'message' in linkedAccount
+        ? linkedAccount.message
+        : `\`\`\`json\n${JSON.stringify(linkedAccount)}\`\`\``;
+
+    return interaction.reply(content);
   }
 
   public async handlerStatus(interaction: CommandInteraction<'cached'>) {
