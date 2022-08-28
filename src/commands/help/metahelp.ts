@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { Categories, prefix, randomColor } from '#constants/index';
+import { Categories, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 export default class MetaHelp extends Command {
   public override name = 'metahelp';
@@ -18,7 +18,7 @@ export default class MetaHelp extends Command {
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setDescription(
         'The Metabit Calculator supports Scientific Notation, which means you can type numbers like 1E25, as well as names for numbers like million all the way to vigintillion;' +
-          ` Use ${prefix}largenumbers to get more info on large numbers.`,
+          ` Use ${client.user}largenumbers to get more info on large numbers.`,
       )
       .addFields(
         {
@@ -33,11 +33,11 @@ export default class MetaHelp extends Command {
         },
         {
           name: 'metacalc example',
-          value: `${prefix}metacalc 1E23 1.59E49, this example shows 1E23 entropy and 1.59E49 ideas being used for input.`,
+          value: `${client.user}metacalc 1E23 1.59E49, this example shows 1E23 entropy and 1.59E49 ideas being used for input.`,
         },
         {
           name: 'metacalcrev example',
-          value: `${prefix}metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`,
+          value: `${client.user}metacalcrev 1E6, this example is using 1E6 (or 1 million) metabits as input.`,
         },
       )
       .setFooter({ text: 'Metabit Calculator goes brrr.' });

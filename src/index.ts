@@ -26,7 +26,7 @@ declare module '@sapphire/framework' {
   }
 }
 
-import { isProduction, prefix } from '#constants/index';
+import { isProduction } from '#constants/index';
 import { ApplicationCommandRegistries, RegisterBehavior, SapphireClient } from '@sapphire/framework';
 import type { InteractionReplyOptions, MessageOptions, ReplyMessageOptions, Interaction } from 'discord.js';
 import { type Awaitable, Intents, type Message, Options } from 'discord.js';
@@ -36,9 +36,7 @@ ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior
 const client = new SapphireClient({
   preventFailedToFetchLogForGuilds: process.env.TEMP_GUILD_IDS.split(','),
   allowedMentions: { parse: [] },
-  fetchPrefix: () => prefix,
   caseInsensitiveCommands: true,
-  caseInsensitivePrefixes: true,
   loadMessageCommandListeners: true,
   defaultCooldown: {
     delay: 2_000,

@@ -7,7 +7,7 @@ import {
   type AutocompleteInteraction,
 } from 'discord.js';
 import type { Message } from 'discord.js';
-import { Categories, prefix, randomColor } from '#constants/index';
+import { Categories, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
 
@@ -21,7 +21,7 @@ export default class Help extends Command {
     const c2sServerCommands = builder.client.stores
       .get('commands')
       .filter(c => c.category === Categories.c2sServer)
-      .map(c => `**${prefix}${c.name}**`);
+      .map(c => `**${builder.client.user}${c.name}**`);
     const embed = new MessageEmbed()
       .setTitle('Semblance Command List')
       .setColor(randomColor)

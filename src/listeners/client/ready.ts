@@ -1,6 +1,6 @@
 import { Events, Listener, type SapphireClient } from '@sapphire/framework';
 import * as schedule from 'node-schedule';
-import { isProduction, prefix } from '#constants/index';
+import { isProduction } from '#constants/index';
 import { handleBoosterReward, handleReminder } from '#constants/models';
 import type { BoosterReward, Reminder } from '@prisma/client';
 
@@ -20,11 +20,11 @@ export default class Ready extends Listener<typeof Events.ClientReady> {
       .map(g => g.memberCount)
       .filter(g => g)
       .reduce((total, cur) => (total += cur), 0);
-    const activity = `${prefix}help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
+    const activity = `@${client.user.username} help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
     client.user.setActivity(activity, { type: 'WATCHING' });
 
-    /* Reminder scheduling */
     if (isProduction) {
+      /* Reminder scheduling */
       const reminders = (await client.db.reminder.findMany({})) as unknown as Reminder[];
       reminders.forEach(reminderData => {
         reminderData.reminders.forEach(reminder => {

@@ -1,5 +1,5 @@
 import { type CommandInteraction, MessageEmbed } from 'discord.js';
-import { Categories, prefix, randomColor } from '#constants/index';
+import { Categories, randomColor } from '#constants/index';
 import { currentPrice } from '#constants/commands';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
@@ -18,7 +18,7 @@ export default class Gamestats extends Command {
         content:
           user.id != interaction.user.id
             ? 'This user does not exist'
-            : `You have not created a game yet; if you'd like to create a game, use \`${prefix}game create\``,
+            : `You have not created a game yet; if you'd like to create a game, use \`${interaction.client.user}game create\``,
         ephemeral: true,
       });
     const nxtUpgrade = await currentPrice(interaction.client, statsHandler);

@@ -4,7 +4,6 @@ import { Permissions } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 
 export const isProduction = process.env.NODE_ENV === 'production';
-export const prefix = isProduction ? 's!' : 's?';
 
 export const quickSort = (list: [Snowflake, number][], left: number, right: number) => {
   let index: number;
@@ -51,7 +50,7 @@ export const subcategoryList = (client: SapphireClient, category: Category, subc
   client.stores
     .get('commands')
     .filter(c => c.category == category && c.subCategory == subcategory)
-    .map(c => `**\`${prefix}${c.name}\`**`)
+    .map(c => `**\`${client.user}${c.name}\`**`)
     .join(', ');
 export const emojis = {
   tick: '✅',

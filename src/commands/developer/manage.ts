@@ -22,18 +22,30 @@ export default class Manage extends Command {
   }
 
   public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+    const subcommandGroup = interaction.options.getSubcommandGroup();
     const subcommand = interaction.options.getSubcommand();
 
-    switch (subcommand) {
-      case 'test-fetch':
-        return this.testFetch(interaction);
-      case 'reload-handler':
-        return this.reloadHandler(interaction);
-      case 'handler-status':
-        return this.handlerStatus(interaction);
-      default:
-        return interaction.reply(`Unknown subcommand: \`${subcommand}\``);
-    }
+    if (subcommandGroup === 'discord-link')
+      switch (subcommand) {
+        case 'create':
+          return this.discordLinkCreate(interaction);
+        case 'get':
+          return this.discordLinkGet(interaction);
+        default:
+          return interaction.reply(`Unknown subcommand \`${subcommand}\``);
+      }
+
+    if (subcommandGroup === 'twitter')
+      switch (subcommand) {
+        case 'test-fetch':
+          return this.testFetch(interaction);
+        case 'reload-handler':
+          return this.reloadHandler(interaction);
+        case 'handler-status':
+          return this.handlerStatus(interaction);
+        default:
+          return interaction.reply(`Unknown subcommand: \`${subcommand}\``);
+      }
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
@@ -122,7 +134,8 @@ export default class Manage extends Command {
     const user = interaction.options.getUser('discord-id');
     const linkedAccount = await this.container.client.db.userData.findUnique({ where: { discord_id: user.id } });
 
-    if (!linkedAccount) return interaction.reply(`No linked account found for ${user.tag}`);
+    if (!linkedAccount)
+      return interaction.reply({ content: `No linked account found for ${user.tag}`, ephemeral: true });
 
     const embed = new MessageEmbed()
       .setTitle(`Linked account for ${user.tag}(${user.id})`)
@@ -132,10 +145,10 @@ export default class Manage extends Command {
         }\nMesozoic Valley Rank: ${linkedAccount.dino_rank}\nBeyond Rank: ${
           linkedAccount.beyond_rank
         }\nMetabits: ${bigToName(Number(linkedAccount.metabits))}\nSingularity Speedrun Time: ${
-          linkedAccount.singularity_speedrun_time
-        } seconds\nAll Sharks Obtained: ${
-          linkedAccount.all_sharks_obtained ? 'yes' : 'no'
-        }\nAll Hidden Achievements Found: ${linkedAccount.all_hidden_achievements_obtained ? 'yes' : 'no'}`,
+          linkedAccount.singularity_speedrun_time ? msToTime(linkedAccount.singularity_speedrun_time) : 'none'
+        }\nAll Sharks Obtained: ${linkedAccount.all_sharks_obtained ? 'yes' : 'no'}\nAll Hidden Achievements Found: ${
+          linkedAccount.all_hidden_achievements_obtained ? 'yes' : 'no'
+        }`,
       );
 
     return interaction.reply({ embeds: [embed], ephemeral: true });
@@ -157,7 +170,7 @@ export default class Manage extends Command {
         ? linkedAccount.message
         : `\`\`\`json\n${JSON.stringify(linkedAccount)}\`\`\``;
 
-    return interaction.reply(content);
+    return interaction.reply({ content, ephemeral: true });
   }
 
   public async handlerStatus(interaction: CommandInteraction<'cached'>) {
