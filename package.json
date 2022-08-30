@@ -12,7 +12,7 @@
     "bufferutil": "^4.0.6",
     "discord-api-types": "^0.37.3",
     "discord.js": "^13.10.2",
-    "dotenv": "^16.0.1",
+    "dotenv": "^16.0.2",
     "fastify": "^4.5.2",
     "node-schedule": "^2.1.0",
     "source-map-support": "^0.5.21",
