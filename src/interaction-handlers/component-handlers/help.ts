@@ -1,4 +1,4 @@
-import type { InteractionReplyOptions } from 'discord.js';
+import type { InteractionReplyOptions, InteractionUpdateOptions } from 'discord.js';
 import {
   MessageActionRow,
   type ButtonInteraction,
@@ -7,7 +7,7 @@ import {
 } from 'discord.js';
 import { disableAllComponents } from '#constants/index';
 import { backButton, closeButton, componentInteractionDefaultParser } from '#constants/components';
-import type { ParsedCustomIdData } from 'Semblance';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 
 export default class Help extends InteractionHandler {
@@ -101,6 +101,6 @@ export default class Help extends InteractionHandler {
       else options.components = components;
       options.files = [];
     }
-    return interaction.update(options);
+    return interaction.update(options as InteractionUpdateOptions);
   }
 }

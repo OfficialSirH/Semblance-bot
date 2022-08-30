@@ -4,7 +4,7 @@ import { backButton, buildCustomId, componentInteractionDefaultParser } from '#c
 import { MessageActionRow, MessageButton } from 'discord.js';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { type ButtonInteraction, MessageEmbed } from 'discord.js';
-import type { ParsedCustomIdData } from 'Semblance';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Roadmap extends InteractionHandler {
   constructor(context: PieceContext) {

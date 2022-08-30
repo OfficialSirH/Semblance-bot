@@ -1,6 +1,6 @@
 import type { ButtonInteraction, MessageComponentInteraction } from 'discord.js';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
-import { prefix, randomColor } from '#constants/index';
+import { randomColor } from '#constants/index';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { currentPrice } from '#constants/commands';
 import { LeaderboardUtilities } from '#structures/LeaderboardUtilities';
@@ -11,7 +11,7 @@ import {
   disableComponentsByLabel,
   filterAction,
 } from '#constants/components';
-import type { ParsedCustomIdData } from 'Semblance';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class GameHandler extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {
@@ -235,7 +235,7 @@ async function create(interaction: MessageComponentInteraction, components: Mess
     .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
     .setDescription(
-      `Game Successfully created! Now you can start collecting Random-Bucks by typing '${prefix}game collect' and upgrade your Random-Bucks with \`${prefix}game upgrade\`\n\n` +
+      `Game Successfully created! Now you can start collecting Random-Bucks by typing '${interaction.client.user}game collect' and upgrade your Random-Bucks with \`${interaction.client.user}game upgrade\`\n\n` +
         `Price Increase: ${(creationHandler.percentIncrease - 1) * 100}%\n` +
         `Starting Profits: ${creationHandler.profitRate.toFixed(3)}/sec\n\n` +
         "Reminder, don't be constantly spamming and creating a new game just cause your RNG stats aren't perfect \n",
@@ -351,7 +351,7 @@ async function upgrade(interaction: ButtonInteraction, components: MessageAction
       )} Random-Bucks.\n\nYour current profit is ${upgradeHandler.profitRate.toFixed(3)} Random-Bucks/sec.`,
     )
     .setFooter({
-      text: `Upgrades will raise your rank in the '${prefix}game leaderboard', also, '${prefix}game upgrade max' will upgrade the max amount you're able to upgrade.`,
+      text: `Upgrades will raise your rank in the '${interaction.client.user}game leaderboard', also, '${interaction.client.user}game upgrade max' will upgrade the max amount you're able to upgrade.`,
     });
   await message.edit({ embeds: [embed], components });
 }

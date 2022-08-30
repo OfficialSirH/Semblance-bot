@@ -1,6 +1,4 @@
-import type { SapphireClient } from '@sapphire/framework';
 import type { Snowflake } from 'discord.js';
-import type { Client, ClientEventsMapping } from 'twitter.js';
 
 type NonNestedDirectories = 'commands' | 'images' | 'infoBuilders';
 type ApplicationCommandsDirectories =
@@ -48,9 +46,3 @@ export type Category =
   | 'help'
   | 'semblance';
 export type Subcategory = 'main' | 'mesozoic' | 'beyond' | 'other';
-
-export interface TwitterJSEventHandler<T extends keyof ClientEventsMapping = keyof ClientEventsMapping> {
-  name: T;
-  once?: boolean;
-  exec: (...args: [...ClientEventsMapping[T], { client: SapphireClient; twClient: Client }]) => Promise<void>;
-}

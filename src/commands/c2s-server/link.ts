@@ -1,11 +1,10 @@
 import { c2sGuildId, sirhId } from '#config';
-import { createHmac } from 'crypto';
 import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
 import { Command } from '@sapphire/framework';
 import type { CommandInteraction, Message } from 'discord.js';
 import { Categories } from '#constants/index';
-
-// TODO: make this no longer require the need for stupid DMs
+import { DiscordLinkAPI } from '#structures/DiscordLinkAPI';
+import { createHmac } from 'crypto';
 
 export default class Link extends Command {
   constructor(context: Command.Context, options: Command.Options) {
@@ -18,11 +17,27 @@ export default class Link extends Command {
   }
 
   public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
-    const playerId = interaction.options.getString('playerid', true);
+    const playerEmail = interaction.options.getString('playeremail', true);
     const playerToken = interaction.options.getString('playertoken', true);
+    const isEmail = interaction.options.getBoolean('isemail');
+
+    if (isEmail) {
+      const discordLinkClient = new DiscordLinkAPI(Buffer.from(playerEmail + ':' + playerToken).toString('base64'));
+
+      await interaction.deferReply({ ephemeral: true });
+
+      const response = await discordLinkClient.linkDiscordUser({ discord_id: interaction.user.id });
+
+      let msg: string;
+      if (typeof response !== 'string')
+        msg = 'message' in response ? response.message : 'Successfully linked your account.';
+      else msg = response;
+
+      return interaction.editReply(msg);
+    }
     const { user } = interaction;
 
-    const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
+    const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerEmail).update(playerToken).digest('hex');
     const dataAlreadyExists = await interaction.client.db.userData.findUnique({ where: { token } });
     if (dataAlreadyExists)
       return interaction.reply({
@@ -61,14 +76,34 @@ export default class Link extends Command {
         'You need to be a member of the Cell to Singularity community server to use this command.',
       );
 
-    const playerId = await args.pickResult('string');
-    if (!playerId.success) return message.reply('You need to provide a player ID.');
+    const playerEmail = await args.pickResult('string');
+    if (playerEmail.isErr) return message.reply('You need to provide a player email.');
     const playerToken = await args.pickResult('string');
-    if (!playerToken.success) return message.reply('You need to provide a player token.');
+    if (playerToken.isErr) return message.reply('You need to provide a player token.');
+    const isEmailPick = await args.pickResult('boolean');
+    let isEmail: boolean;
+    if (isEmailPick.isErr) isEmail = false;
+    else isEmail = isEmailPick.unwrap();
+
+    if (message.channel.type != 'DM') await message.delete();
+
+    if (isEmail) {
+      const discordLinkClient = new DiscordLinkAPI(
+        Buffer.from(playerEmail.unwrap() + ':' + playerToken.unwrap()).toString('base64'),
+      );
+
+      const response = await discordLinkClient.linkDiscordUser({ discord_id: message.author.id });
+
+      let msg: string;
+      if (typeof response !== 'string') msg = 'message' in response ? response.message : 'Successfully linked account.';
+      else msg = response;
+
+      return message.channel.send(msg);
+    }
 
     const token = createHmac('sha1', process.env.USERDATA_AUTH)
-      .update(playerId.value)
-      .update(playerToken.value)
+      .update(playerEmail.unwrap())
+      .update(playerToken.unwrap())
       .digest('hex');
     const dataAlreadyExists = await message.client.db.userData.findUnique({ where: { token } });
     if (dataAlreadyExists)
@@ -110,21 +145,28 @@ export default class Link extends Command {
         description: this.description,
         options: [
           {
-            name: 'playerid',
+            name: 'playeremail',
             type: 'STRING',
-            description: 'Your in-game player Id.',
+            description: 'The email bound to your Game Transfer account.',
             required: true,
           },
           {
             name: 'playertoken',
             type: 'STRING',
-            description: 'Your in-game player Token.',
+            description: 'The player token bound to your Game Transfer account.',
             required: true,
+          },
+          {
+            name: 'isemail',
+            type: 'BOOLEAN',
+            description: 'indicates if the playeremail option is an email or a player id.',
+            required: false,
           },
         ],
       },
       {
         guildIds: [c2sGuildId],
+        idHints: ['973689073623498803'],
       },
     );
   }

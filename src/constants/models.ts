@@ -1,6 +1,6 @@
 import type { SapphireClient } from '@sapphire/framework';
-import { MessageEmbed } from 'discord.js';
-import type { TextChannel, GuildMember, Message } from 'discord.js';
+import { type InteractionReplyOptions, MessageEmbed } from 'discord.js';
+import type { TextChannel, GuildMember } from 'discord.js';
 import { sirhId, adityaId, c2sGuildId, darwinium } from '#config';
 import { formattedDate } from '#constants/index';
 import { scheduleJob } from 'node-schedule';
@@ -17,11 +17,17 @@ export const handleBoosterReward = async (client: SapphireClient, boosterReward:
 
   const darwiniumCodes = await client.db.boosterCodes.findMany({});
 
-  if (darwiniumCodes.length == 0)
-    return boosterChannel(client).send({
+  if (darwiniumCodes.length == 0) {
+    await boosterChannel(client).send({
       content: `<@${sirhId}> <@${adityaId}> No booster codes left! ${member.user.tag} needs a code`,
       allowedMentions: { users: [sirhId, adityaId] },
     });
+
+    return client.db.boosterReward.update({
+      where: { userId: boosterReward.userId },
+      data: { rewardingDate: new Date(Date.now() + 1000 * 3600 * 24 * 28) },
+    });
+  }
 
   const ogCodeLength = darwiniumCodes.length,
     darwiniumCode = darwiniumCodes.shift();
@@ -33,7 +39,7 @@ export const handleBoosterReward = async (client: SapphireClient, boosterReward:
           .setTitle('Booster reward')
           .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
           .setDescription(
-            `Thank you for boosting Cell to Singularity for 2 weeks! As a reward, here's 150 ${darwinium}!\nCode: ||${darwiniumCode.code}||`,
+            `Thank you for boosting Cell to Singularity for a month! As a reward, here's 120 ${darwinium}!\nCode: ||${darwiniumCode.code}||`,
           ),
       ],
     })
@@ -66,29 +72,32 @@ export const boosterChannel = (client: SapphireClient) =>
 export const boosterRole = '660930089990488099';
 
 // BoosterRewards - create automatic booster rewards for author of message
-export const createBoosterRewards = async (client: SapphireClient, message: Message) => {
-  const boosterReward = await client.db.boosterReward.findUnique({ where: { userId: message.author.id } });
-  if (boosterReward) return;
+export const createBoosterRewards = async (
+  client: SapphireClient,
+  userId: string,
+): Promise<InteractionReplyOptions> => {
+  const boosterReward = await client.db.boosterReward.findUnique({ where: { userId } });
+  if (boosterReward) return { content: 'You already have a booster reward!', ephemeral: true };
 
   const newBoosterReward = await client.db.boosterReward.create({
     data: {
-      userId: message.author.id,
+      userId,
       rewardingDate: new Date(Date.now() + 1000 * 3600 * 24 * 28),
     },
   });
 
   if (!newBoosterReward)
-    return message.channel.send({
-      content: `<@${sirhId}> the automated rewarder failed at creating the scheduled reward for ${message.author.username}`,
-      allowedMentions: { users: [sirhId] },
-    });
+    return {
+      content: `the automated rewarder failed at creating the scheduled reward, try again. If it continues to fail, DM <@${sirhId}>.`,
+      ephemeral: true,
+    };
 
-  message.channel.send(
-    `Thank you for boosting the server, ${
-      message.author.username
-    }! You will receive your booster reward on ${formattedDate(newBoosterReward.rewardingDate.valueOf())}`,
-  );
   scheduleJob(newBoosterReward.rewardingDate, () => handleBoosterReward(client, newBoosterReward));
+
+  return {
+    content: `You will receive your booster reward on ${formattedDate(newBoosterReward.rewardingDate.valueOf())}`,
+    ephemeral: true,
+  };
 };
 
 // Reminder - handle finished reminder

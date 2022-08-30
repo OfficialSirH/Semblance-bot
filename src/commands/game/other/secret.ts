@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { Categories, prefix, randomColor, Subcategories } from '#constants/index';
+import { Categories, randomColor, Subcategories } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class Secret extends Command {
@@ -17,7 +17,7 @@ export default class Secret extends Command {
         [
           '1. Make an ape dab by tapping on it numerous times.',
           '2. Make an archosaur, named Archie, dance by tapping the archosaur with a tuxedo/suit.',
-          `3. Unlock all sharks, *check ${prefix}sharks*.`,
+          `3. Unlock all sharks, *check ${this.container.client.user}sharks*.`,
           '**Secrets in the land garden:**',
           '4. Click the paradise bird, an all brown bird with a blue face.',
           '5. While your game camera is still focused on the paradise bird, wait till the bird flies near a small island with the darwin bust statue and click the island.',

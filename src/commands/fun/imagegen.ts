@@ -61,21 +61,24 @@ export default class Imagegen extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'cat',
-          description: 'Generates a random cat image.',
-          type: 'SUB_COMMAND',
-        },
-        {
-          name: 'dog',
-          description: 'Generates a random dog image.',
-          type: 'SUB_COMMAND',
-        },
-      ],
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'cat',
+            description: 'Generates a random cat image.',
+            type: 'SUB_COMMAND',
+          },
+          {
+            name: 'dog',
+            description: 'Generates a random dog image.',
+            type: 'SUB_COMMAND',
+          },
+        ],
+      },
+      { idHints: ['973689165281652736'] },
+    );
   }
 }

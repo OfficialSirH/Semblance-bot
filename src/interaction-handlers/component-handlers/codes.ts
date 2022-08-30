@@ -1,7 +1,7 @@
 import { MessageActionRow, MessageButton, type ButtonInteraction, MessageEmbed } from 'discord.js';
 import { currentLogo } from '#config';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
-import type { ParsedCustomIdData } from 'Semblance';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 import { buildCustomId, componentInteractionDefaultParser } from '#constants/components';
 
 export default class Codes extends InteractionHandler {

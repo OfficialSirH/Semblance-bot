@@ -7,7 +7,7 @@ import {
   type AutocompleteInteraction,
 } from 'discord.js';
 import type { Message } from 'discord.js';
-import { Categories, prefix, randomColor } from '#constants/index';
+import { Categories, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
 
@@ -21,7 +21,7 @@ export default class Help extends Command {
     const c2sServerCommands = builder.client.stores
       .get('commands')
       .filter(c => c.category === Categories.c2sServer)
-      .map(c => `**${prefix}${c.name}**`);
+      .map(c => `**${builder.client.user}${c.name}**`);
     const embed = new MessageEmbed()
       .setTitle('Semblance Command List')
       .setColor(randomColor)
@@ -77,9 +77,13 @@ export default class Help extends Command {
           .setStyle('SECONDARY'),
       ),
     ];
+
+    const command = builder.client.application.commands.cache.find(c => c.name === this.name);
     return {
       content:
-        'user' in builder ? null : 'side note: if your Discord client supports it, you can use: `/help` instead.',
+        'user' in builder
+          ? null
+          : `side note: There's a slash command variant of this command (</${command.name}:${command.id}>) that is recommended to be used and message commands may be removed later.`,
       embeds: [embed],
       components,
     };
@@ -149,17 +153,20 @@ export default class Help extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'query',
-          description: 'The query to search for.',
-          type: 'STRING',
-          autocomplete: true,
-        },
-      ],
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'query',
+            description: 'The query to search for.',
+            type: 'STRING',
+            autocomplete: true,
+          },
+        ],
+      },
+      { idHints: ['973689166124703764'] },
+    );
   }
 }

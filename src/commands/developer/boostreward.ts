@@ -111,6 +111,7 @@ export default class BoostReward extends Command {
       },
       {
         guildIds: [c2sGuildId],
+        idHints: ['973689159548035123'],
       },
     );
   }
@@ -128,7 +129,7 @@ const addBooster = async (interaction: CommandInteraction<'cached'>, options: { 
   boosterRewards = await interaction.client.db.boosterReward.create({
     data: {
       userId: options.user.id,
-      rewardingDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 14),
+      rewardingDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * options.days),
     },
   });
   await interaction.reply(

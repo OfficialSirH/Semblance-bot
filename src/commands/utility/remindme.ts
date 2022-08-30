@@ -36,7 +36,7 @@ export default class RemindMe extends Command {
   }
 
   public override async autocompleteRun(interaction: AutocompleteInteraction<'cached'>) {
-    let inputtedAmount = interaction.options.getFocused();
+    let inputtedAmount: string | number = interaction.options.getFocused();
     inputtedAmount = parseInt(inputtedAmount as string);
     if (!inputtedAmount || inputtedAmount < 1) inputtedAmount = 1;
 
@@ -87,76 +87,79 @@ export default class RemindMe extends Command {
         value: 1,
       },
     ];
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'create',
-          description: 'create a reminder',
-          type: 'SUB_COMMAND',
-          options: [
-            {
-              name: 'amount',
-              description: 'the amount of time to wait before the reminder',
-              type: 'INTEGER',
-              autocomplete: true,
-              required: true,
-            },
-            {
-              name: 'reminder',
-              description: 'the reminder to be sent',
-              type: 'STRING',
-              required: true,
-            },
-          ],
-        },
-        {
-          name: 'edit',
-          description: 'edit a reminder',
-          type: 'SUB_COMMAND',
-          options: [
-            {
-              name: 'reminderid',
-              description: 'the id of the reminder to edit',
-              type: 'INTEGER',
-              choices: reminderIdChoices,
-              required: true,
-            },
-            {
-              name: 'amount',
-              description: 'the amount of time to wait before the reminder',
-              type: 'INTEGER',
-              autocomplete: true,
-            },
-            {
-              name: 'reminder',
-              description: 'the reminder to be sent',
-              type: 'STRING',
-            },
-          ],
-        },
-        {
-          name: 'delete',
-          description: 'delete a reminder',
-          type: 'SUB_COMMAND',
-          options: [
-            {
-              name: 'reminderid',
-              description: 'the id of the reminder to delete',
-              type: 'INTEGER',
-              choices: reminderIdChoices,
-              required: true,
-            },
-          ],
-        },
-        {
-          name: 'list',
-          description: 'list all of your reminders',
-          type: 'SUB_COMMAND',
-        },
-      ],
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'create',
+            description: 'create a reminder',
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'amount',
+                description: 'the amount of time to wait before the reminder',
+                type: 'INTEGER',
+                autocomplete: true,
+                required: true,
+              },
+              {
+                name: 'reminder',
+                description: 'the reminder to be sent',
+                type: 'STRING',
+                required: true,
+              },
+            ],
+          },
+          {
+            name: 'edit',
+            description: 'edit a reminder',
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'reminderid',
+                description: 'the id of the reminder to edit',
+                type: 'INTEGER',
+                choices: reminderIdChoices,
+                required: true,
+              },
+              {
+                name: 'amount',
+                description: 'the amount of time to wait before the reminder',
+                type: 'INTEGER',
+                autocomplete: true,
+              },
+              {
+                name: 'reminder',
+                description: 'the reminder to be sent',
+                type: 'STRING',
+              },
+            ],
+          },
+          {
+            name: 'delete',
+            description: 'delete a reminder',
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'reminderid',
+                description: 'the id of the reminder to delete',
+                type: 'INTEGER',
+                choices: reminderIdChoices,
+                required: true,
+              },
+            ],
+          },
+          {
+            name: 'list',
+            description: 'list all of your reminders',
+            type: 'SUB_COMMAND',
+          },
+        ],
+      },
+      { idHints: ['973689252598677624'] },
+    );
   }
 }
 
@@ -265,7 +268,7 @@ async function edit(interaction: CommandInteraction<'cached'>) {
   const updatedReminder = {} as UserReminder;
 
   updatedReminder.message = reminder ? reminder : currentReminderData.reminders[reminderId - 1].message;
-  if (amount) updatedReminder.time = new Date(Date.now() + amount);
+  updatedReminder.time = amount ? new Date(Date.now() + amount) : currentReminderData.reminders[reminderId - 1].time;
   updatedReminder.reminderId = reminderId;
   updatedReminder.channelId = currentReminderData.reminders.find(r => r.reminderId === reminderId).channelId;
 
@@ -367,5 +370,5 @@ async function list(interaction: CommandInteraction<'cached'>) {
         .join('\n\n'),
     )
     .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
-  await interaction.reply({ embeds: [embed] });
+  await interaction.reply({ embeds: [embed], ephemeral: true });
 }

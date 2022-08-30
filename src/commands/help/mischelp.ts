@@ -1,6 +1,6 @@
 import { MessageEmbed } from 'discord.js';
 import type { Message } from 'discord.js';
-import { Categories, prefix, randomColor } from '#constants/index';
+import { Categories, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class MiscHelp extends Command {
@@ -15,15 +15,15 @@ export default class MiscHelp extends Command {
     const funCommands = client.stores
       .get('commands')
       .filter(c => c.category === Categories.fun)
-      .map(c => `**${prefix}${c.name}**`);
+      .map(c => `**${client.user}${c.name}**`);
     const utilityCommands = client.stores
       .get('commands')
       .filter(c => c.category === Categories.utility)
-      .map(c => `**${prefix}${c.name}**`);
+      .map(c => `**${client.user}${c.name}**`);
     const semblanceCommands = client.stores
       .get('commands')
       .filter(c => c.category === Categories.semblance)
-      .map(c => `**${prefix}${c.name}**`);
+      .map(c => `**${client.user}${c.name}**`);
 
     const embed = new MessageEmbed()
       .setTitle('Miscellaneous Commands')

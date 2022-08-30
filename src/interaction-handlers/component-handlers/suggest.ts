@@ -3,7 +3,7 @@ import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 import type { ButtonInteraction, TextBasedChannel, MessageActionRow } from 'discord.js';
 import { MessageEmbed } from 'discord.js';
-import type { ParsedCustomIdData } from 'Semblance';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Suggest extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {

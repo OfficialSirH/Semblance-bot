@@ -1,11 +1,28 @@
-FROM node:alpine
+FROM node:16-alpine as builder
 
-WORKDIR /
+WORKDIR /build
 
-COPY package*.json ./
+RUN apk add --no-cache python3 make g++
 
-RUN npm install
+RUN yarn set version stable
+
+COPY package.json tsconfig.json yarn.lock ./
+COPY  .yarn ./.yarn
+
+RUN yarn install
+
+COPY . ./
+
+RUN npm run build:docker
+
+FROM node:16-alpine as runtime
+
+EXPOSE 8079
 
 COPY . .
 
-CMD [ "npm", "run", "start:prod" ]
+COPY --from=builder build/dist ./dist
+
+COPY --from=builder build/node_modules ./node_modules
+
+CMD [ "npm", "run", "start:docker" ]

@@ -1,4 +1,4 @@
-import { c2sGuildId } from '#config';
+import { c2sGuildId, sirhGuildId } from '#config';
 import { Categories } from '#constants/index';
 import type { ApplicationCommandRegistry } from '@sapphire/framework';
 import { Command } from '@sapphire/framework';
@@ -44,7 +44,8 @@ export default class Exec extends Command {
         ],
       },
       {
-        guildIds: [c2sGuildId],
+        guildIds: [c2sGuildId, sirhGuildId],
+        idHints: ['973689162035257444', '997700143593824350'],
       },
     );
   }

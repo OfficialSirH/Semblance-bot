@@ -12,9 +12,9 @@ export default class Profile extends Command {
   public override async messageRun(message: Message, args: Args) {
     const userResolve = await args.pickResult('user');
     let user: User, member: GuildMember;
-    if (!userResolve.success) member = message.member;
+    if (userResolve.isErr) member = message.member;
     else {
-      user = userResolve.value;
+      user = userResolve.unwrap();
       member =
         user instanceof GuildMember
           ? user
@@ -40,17 +40,20 @@ export default class Profile extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'user',
-          description: 'The user to get the profile of.',
-          type: 'USER',
-        },
-      ],
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'user',
+            description: 'The user to get the profile of.',
+            type: 'USER',
+          },
+        ],
+      },
+      { idHints: ['973689251386523689'] },
+    );
   }
 }
 

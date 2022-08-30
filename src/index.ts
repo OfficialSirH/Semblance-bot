@@ -26,7 +26,7 @@ declare module '@sapphire/framework' {
   }
 }
 
-import { isProduction, prefix } from '#constants/index';
+import { isProduction } from '#constants/index';
 import { ApplicationCommandRegistries, RegisterBehavior, SapphireClient } from '@sapphire/framework';
 import type { InteractionReplyOptions, MessageOptions, ReplyMessageOptions, Interaction } from 'discord.js';
 import { type Awaitable, Intents, type Message, Options } from 'discord.js';
@@ -34,12 +34,9 @@ import { type Awaitable, Intents, type Message, Options } from 'discord.js';
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
 
 const client = new SapphireClient({
-  preventFailedToFetchLogForGuildIds: process.env.TEMP_GUILD_IDS.split(','),
+  preventFailedToFetchLogForGuilds: process.env.TEMP_GUILD_IDS.split(','),
   allowedMentions: { parse: [] },
-  fetchPrefix: () => prefix,
-  defaultPrefix: prefix,
   caseInsensitiveCommands: true,
-  caseInsensitivePrefixes: true,
   loadMessageCommandListeners: true,
   defaultCooldown: {
     delay: 2_000,
@@ -55,23 +52,9 @@ const client = new SapphireClient({
 });
 client.db = new prisma.PrismaClient();
 
-// import { Client } from 'twitter.js';
-// TODO: enable twitter.js implementation to replace the shitty twitter library
-// const twClient = new Client({ events: ['FILTERED_TWEET_CREATE'] });
-
-// TODO: enable twitter.js implementation to replace the shitty twitter library
-// import type { TwitterJSEventHandler } from '#lib/interfaces/Semblance';
-// const twitterEventFiles = (await fs.readdir('./dist/src/events/twitter')).filter(file => file.endsWith('.js'));
-
 // fastify routing
 import fastify from 'fastify';
 const app = fastify();
-
-// for (const file of twitterEventFiles) {
-// 	const event = (await import(`./src/events/twitter/${file}`)).default as TwitterJSEventHandler;
-// 	if (event.once) twClient.once(event.name, (...args) => event.exec(...args, { client, twClient }));
-// 	else twClient.on(event.name, (...args) => event.exec(...args, { client, twClient }));
-// }
 
 import router from '#routes/index';
 if (isProduction) router(app, client);
@@ -80,15 +63,15 @@ app.get('/', (_req, res) => {
   res.redirect('https://officialsirh.github.io/');
 });
 
-import { checkTweet } from './twitter/checkTweet.js';
-// Check for Tweet from ComputerLunch
-if (isProduction) setInterval(() => checkTweet(client), 2000);
-// TODO: remove this really shitty implementation of receiving tweets
 await client.login(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
-let address: string;
-if (isProduction) address = await app.listen(8079, '0.0.0.0');
-else address = await app.listen(8079);
+const address = await app.listen({ port: 8079, host: '0.0.0.0' });
 console.log(`Bot listening on port ${address}`);
-// TODO: enable twitter.js implementation to replace the shitty twitter library
-// const twitterCredentials = JSON.parse(process.env.twitter);
-// await twClient.loginWithBearerToken(twitterCredentials.bearer_token);
+
+import { checkTweet } from './twitter/checkTweet.js';
+import { TwitterInitialization } from '#structures/TwitterInitialization';
+// Check for Tweet from ComputerLunch
+const twitterAvailabilityTimer = setTimeout(() => {
+  if (!TwitterInitialization.online) TwitterInitialization.fallbackHandlerInterval = setInterval(checkTweet, 2_000);
+}, 300_000);
+await TwitterInitialization.initialize(client);
+clearTimeout(twitterAvailabilityTimer);

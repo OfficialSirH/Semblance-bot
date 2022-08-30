@@ -141,61 +141,66 @@ export default class ItemCalc extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'required_resources',
-          description: 'Calculate the required resources to level up an item a specified amount',
-          type: 'SUB_COMMAND',
-          options: [
-            {
-              name: 'item',
-              description: 'The item to calculate the required resources for',
-              type: 'STRING',
-              autocomplete: true,
-              required: true,
-            },
-            {
-              name: 'level_gains',
-              description: 'The amount of levels you wish to gain',
-              type: 'NUMBER',
-              required: true,
-            },
-            {
-              name: 'current_level',
-              description: 'The current level of the item',
-              type: 'NUMBER',
-            },
-          ],
-        },
-        {
-          name: 'obtainable_levels',
-          description: 'Calculate the number of levels an item can obtain with specified resources',
-          type: 'SUB_COMMAND',
-          options: [
-            {
-              name: 'item',
-              description: 'The item to calculate the required resources for',
-              type: 'STRING',
-              autocomplete: true,
-              required: true,
-            },
-            {
-              name: 'current_amount',
-              description: "The amount of currency you've got available for the item",
-              type: 'STRING',
-              required: true,
-            },
-            {
-              name: 'current_level',
-              description: 'The current level of the item',
-              type: 'NUMBER',
-            },
-          ],
-        },
-      ],
-    });
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'required_resources',
+            description: 'Calculate the required resources to level up an item a specified amount',
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'item',
+                description: 'The item to calculate the required resources for',
+                type: 'STRING',
+                autocomplete: true,
+                required: true,
+              },
+              {
+                name: 'level_gains',
+                description: 'The amount of levels you wish to gain',
+                type: 'NUMBER',
+                required: true,
+              },
+              {
+                name: 'current_level',
+                description: 'The current level of the item',
+                type: 'NUMBER',
+              },
+            ],
+          },
+          {
+            name: 'obtainable_levels',
+            description: 'Calculate the number of levels an item can obtain with specified resources',
+            type: 'SUB_COMMAND',
+            options: [
+              {
+                name: 'item',
+                description: 'The item to calculate the required resources for',
+                type: 'STRING',
+                autocomplete: true,
+                required: true,
+              },
+              {
+                name: 'current_amount',
+                description: "The amount of currency you've got available for the item",
+                type: 'STRING',
+                required: true,
+              },
+              {
+                name: 'current_level',
+                description: 'The current level of the item',
+                type: 'NUMBER',
+              },
+            ],
+          },
+        ],
+      },
+      {
+        idHints: ['973689077431951370'],
+      },
+    );
   }
 }

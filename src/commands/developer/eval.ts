@@ -1,7 +1,8 @@
 import { type ContextMenuInteraction, MessageEmbed, MessageAttachment } from 'discord.js';
-import { Categories, prefix, randomColor } from '#constants/index';
+import { Categories, randomColor } from '#constants/index';
 import type { Message } from 'discord.js';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
+import { Command } from '@sapphire/framework';
 import { inspect } from 'util';
 import { c2sGuildId, sirhGuildId } from '#config';
 
@@ -51,9 +52,12 @@ export default class Eval extends Command {
     }
   }
 
-  public override async messageRun(message: Message) {
-    const content = message.content.slice(prefix.length + this.name.length + 1);
-    await this.evalSharedRun(message, content);
+  public override async messageRun(message: Message, args: Args) {
+    const content = await args.restResult('string');
+
+    if (content.isErr()) return message.reply(content.unwrapErr().message);
+
+    await this.evalSharedRun(message, content.unwrap());
   }
 
   public override async contextMenuRun(interaction: ContextMenuInteraction<'cached'>) {
@@ -75,6 +79,7 @@ export default class Eval extends Command {
       },
       {
         guildIds: [c2sGuildId, sirhGuildId],
+        idHints: ['973689160412069938', '973689161179607111'],
       },
     );
   }

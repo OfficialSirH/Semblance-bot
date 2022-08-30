@@ -4,7 +4,7 @@ import { MessageEmbed } from 'discord.js';
 import { fetchCatOrDog } from '#constants/commands';
 import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
-import type { ParsedCustomIdData } from 'Semblance';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class ImageGen extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {

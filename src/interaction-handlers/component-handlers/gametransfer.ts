@@ -3,7 +3,7 @@ import { gameTransferPages } from '#constants/commands';
 import { currentLogo } from '#config';
 import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
-import type { ParsedCustomIdData } from 'Semblance';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class GameTransfer extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {

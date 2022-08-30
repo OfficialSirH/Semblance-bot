@@ -4,24 +4,7 @@ import { Permissions } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 
 export const isProduction = process.env.NODE_ENV === 'production';
-export const prefix = isProduction ? 's!' : 's?';
 
-export const getAvatar = (user: User) => {
-  const avatarType = user.avatar.startsWith('a_') ? `${user.avatar}.gif` : `${user.avatar}.png`;
-  return `https://cdn.discordapp.com/avatars/${user.id}/${avatarType}?size=4096`;
-};
-export const insertionsort = (list: [Snowflake, number][]) => {
-  for (let i = 0; i < list.length; i++) {
-    const curItem = list[i];
-    let curIndex = i - 1;
-    while (curIndex >= 0 && curItem[1] > list[curIndex][1]) {
-      list[curIndex + 1] = list[curIndex];
-      curIndex--;
-    }
-    list[curIndex + 1] = curItem;
-  }
-  return list;
-};
 export const quickSort = (list: [Snowflake, number][], left: number, right: number) => {
   let index: number;
   if (list.length > 1) {
@@ -67,7 +50,7 @@ export const subcategoryList = (client: SapphireClient, category: Category, subc
   client.stores
     .get('commands')
     .filter(c => c.category == category && c.subCategory == subcategory)
-    .map(c => `**\`${prefix}${c.name}\`**`)
+    .map(c => `**\`${client.user}${c.name}\`**`)
     .join(', ');
 export const emojis = {
   tick: '✅',
@@ -142,7 +125,6 @@ export const parseArgs = (_arguments: string) =>
   (_arguments.match(/"[^"]+"|[^ ]+/g) ?? []).map(argument =>
     argument.startsWith('"') && argument.endsWith('"') ? argument.slice(1).slice(0, -1) : argument,
   );
-export const lockMessage = (user: User) => `👮 👮 ***CHANNEL IS LOCKED BY ${user}*** 👮 👮`;
 export const formattedDate = (ms: number) => `<t:${Math.floor(ms / 1000)}:F>`;
 export const msToTime = (ms: number) => {
   const days = Math.floor(ms / 86400000); // 24*60*60*1000

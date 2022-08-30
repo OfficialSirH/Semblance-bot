@@ -2,7 +2,7 @@ import { buildCustomId, componentInteractionDefaultParser, filterAction } from '
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
 import type { ButtonInteraction } from 'discord.js';
-import type { ParsedCustomIdData } from 'Semblance';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Credits extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {

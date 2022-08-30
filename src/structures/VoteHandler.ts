@@ -1,16 +1,14 @@
-import type { Snowflake } from 'discord-api-types';
 import type { TextChannel } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 import { MessageEmbed, User } from 'discord.js';
 import { sirhGuildId } from '#config';
 import { randomColor } from '#constants/index';
 import type { FastifyReply } from 'fastify';
-import type { DBLRequest } from 'discordBotList';
-import type { DLSRequest } from 'discordListSpace';
-import type { DiscordsRequest } from 'discords';
-import type { TGGRequest } from 'topGG';
+import type { DBLRequest } from '#lib/interfaces/discordBotList';
+import type { DiscordsRequest } from '#lib/interfaces/discords';
+import type { TGGRequest } from '#lib/interfaces/topGG';
 
-type AvailableRequests = DBLRequest | DLSRequest | DiscordsRequest | TGGRequest;
+type AvailableRequests = DBLRequest | DiscordsRequest | TGGRequest;
 
 export class VoteHandler {
   readonly client: SapphireClient;
@@ -28,7 +26,7 @@ export class VoteHandler {
   }
 
   public async sendVotedEmbed(
-    user: Snowflake | User,
+    user: string | User,
     description: string,
     { hasGame, weekendBonus }: { hasGame: boolean; weekendBonus?: boolean } = {
       hasGame: false,
@@ -62,10 +60,9 @@ export class VoteHandler {
       });
     }
 
-    let userId: Snowflake;
+    let userId: string;
     if ('user' in vote && typeof vote.user == 'string') userId = vote.user;
-    else if ('user' in vote && typeof vote.user == 'object') userId = vote.user.id;
-    else if ('id' in vote) userId = vote.id;
+    else if (!('user' in vote)) userId = vote.id;
 
     const user = await this.client.users.fetch(userId, { cache: false });
 
