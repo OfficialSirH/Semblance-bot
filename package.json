@@ -51,6 +51,8 @@
     ]
   },
   "scripts": {
+    "build-image": "docker build -t sirh/c2s:semblance .",
+    "push-image": "docker push sirh/c2s:semblance",
     "start:docker": "node dist/src/index.js",
     "build:docker": "npx prisma generate && npx tsc --project tsconfig.json",
     "cleanup": "rm -rf dist",
