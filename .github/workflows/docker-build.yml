@@ -1,0 +1,56 @@
+# name: Docker Image CI
+
+# on:
+#   push:
+#     branches:
+#       - 'main'
+
+# jobs:
+#   docker:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - name: Build Docker Image
+#         run: docker build . --file Dockerfile --tag sirh/c2s:semblance
+      # - name: Set up QEMU
+      #   uses: docker/setup-qemu-action@v2
+      # - name: Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v2
+      # - name: Login to DockerHub
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+      # - name: create env file
+      #   run: |
+      #     touch .env
+      #     echo TOKEN=${{ secrets.TOKEN }} >> .env
+      #     echo DEV_TOKEN=${{ secrets.DEV_TOKEN }} >> .env
+
+      #     echo C2SWebhook=${{ secrets.C2SWebhook }} >> .env
+
+      #     echo botsForDiscordAuth=${{ secrets.botsForDiscordAuth }} >> .env
+      #     echo discordBotListAuth=${{ secrets.discordBotListAuth }} >> .env
+      #     echo discordBotsGGAuth=${{ secrets.discordBotsGGAuth }} >> .env
+      #     echo topGGAuth=${{ secrets.topGGAuth }} >> .env
+      #     echo BOT_LISTING_AUTH=${{ secrets.BOT_LISTING_AUTH }} >> .env
+
+      #     echo twitter=${{ secrets.twitter }} >> .env
+
+      #     echo USERDATA_AUTH=${{ secrets.USERDATA_AUTH }} >> .env
+      #     echo DISCORD_LINK_API_URL="http://api:3000" >> .env
+
+      #     echo CAT_API_KEY=${{ secrets.CAT_API_KEY }} >> .env
+      #     echo DOG_API_KEY=${{ secrets.DOG_API_KEY }} >> .env
+      #     echo DEEPL_API_KEY=${{ secrets.DEEPL_API_KEY }} >> .env
+
+      #     echo DATABASE_URL=${{ secrets.DATABASE_URL }} >> .env
+
+      #     echo NODE_ENV=${{ secrets.NODE_ENV }} >> .env
+
+      #     echo TEMP_GUILD_IDS=${{ secrets.TEMP_GUILD_IDS }} >> .env
+      #     cat .env
+      # - name: Build and push
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     push: true
+      #     tags: sirh/c2s:semblance
