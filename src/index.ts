@@ -27,13 +27,17 @@ declare module '@sapphire/framework' {
 }
 
 import { isProduction } from '#constants/index';
-import { ApplicationCommandRegistries, RegisterBehavior, SapphireClient } from '@sapphire/framework';
+import { WebhookLogger } from '#structures/WebhookLogger';
+import { ApplicationCommandRegistries, LogLevel, RegisterBehavior, SapphireClient } from '@sapphire/framework';
 import type { InteractionReplyOptions, MessageOptions, ReplyMessageOptions, Interaction } from 'discord.js';
 import { type Awaitable, Intents, type Message, Options } from 'discord.js';
 
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
 
 const client = new SapphireClient({
+  logger: {
+    instance: new WebhookLogger(isProduction ? LogLevel.Info : LogLevel.Debug),
+  },
   preventFailedToFetchLogForGuilds: process.env.TEMP_GUILD_IDS.split(','),
   allowedMentions: { parse: [] },
   caseInsensitiveCommands: true,

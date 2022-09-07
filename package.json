@@ -6,6 +6,7 @@
   "author": "SirH",
   "type": "module",
   "dependencies": {
+    "@discordjs/rest": "^1.1.0",
     "@prisma/client": "^4.2.1",
     "@sapphire/framework": "^3.0.1-next.80c671e.0",
     "@top-gg/sdk": "^3.1.3",
