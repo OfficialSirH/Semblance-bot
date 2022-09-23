@@ -74,20 +74,20 @@ export default class Info extends Command {
       .setFooter({ text: 'The all powerful Semblance has spoken!' });
 
     if (client.shard)
-      embed.addField(
-        `${metabit} This Shard (${builder.guild.shardId})`,
-        `**Guilds:** ${guilds}\n` + `**Users:** ${users}`,
-      );
+      embed.addFields({
+        name: `${metabit} This Shard (${builder.guild.shardId})`,
+        value: `**Guilds:** ${guilds}\n` + `**Users:** ${users}`,
+      });
 
-    embed.addField(
-      `${mutagen} Links`,
-      [
+    embed.addFields({
+      name: `${mutagen} Links`,
+      value: [
         `- [Semblance Invite](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=274878295040&scope=bot+applications.commands)`,
         '- [Semblance Support/Main](https://discord.gg/XFMaTn6taf)',
         '- [Cell to Singularity](https://discord.gg/celltosingularity)',
       ].join('\n'),
-      true,
-    );
+      inline: true,
+    });
     return { embeds: [embed] };
   }
 
