@@ -27,10 +27,7 @@ export class WebhookLogger extends Logger {
         : {
             body: { content: `\`\`\`diff\n${content}\`\`\`` },
           };
-    // console.log('THE LENGTH OF THE CONTENT IS: ' + content.length);
-    // const options: Parameters<REST['post']>[1] = {
-    //   files: [{ name: 'log.txt', data: Buffer.from(content) }],
-    // };
+
     this.rest.post(
       Routes.webhook(process.env[`${environment}_LOG_ID`], process.env[`${environment}_LOG_TOKEN`]),
       options,
