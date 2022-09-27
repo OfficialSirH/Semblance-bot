@@ -1,19 +1,17 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor, Subcategories } from '#constants/index';
-import { currentLogo, singularity } from '#config';
+import { type Message, MessageEmbed } from 'discord.js';
+import { attachments, emojis, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class Singularity extends Command {
   public override name = 'singularity';
   public override description = 'detailed guide about singularity and speedrunning';
-  public override fullCategory = [Categories.game, Subcategories.main];
+  public override fullCategory = [Category.game, Subcategory.main];
 
   public override sharedRun() {
     const embed = new MessageEmbed()
-      .setTitle(`${singularity}Singularity`)
+      .setTitle(`${emojis.singularity}Singularity`)
       .setColor(randomColor)
-      .setThumbnail(currentLogo.name)
+      .setThumbnail(attachments.currentLogo.name)
       .setDescription(
         [
           "**What is the Singularity?**\nSo you've reached the singularity upgrade and the simulation crashed for some reason? well let me just tell you that the simulation didn't actually crash; I just wanted to prank you and restart all your work ***mwuahahahaha***... but seriously, it's a new journey from here out now. You can gain metabits (prestige currency), which will boost your earnings the more you collect.",
@@ -44,7 +42,7 @@ export default class Singularity extends Command {
         ].join('\n\n'),
       )
       .setFooter({ text: 'Thanks to Jojoseis#0001 for making the Singularity Speedrun Guide' });
-    return { embeds: [embed], files: [currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo] };
   }
 
   public override async messageRun(message: Message) {

@@ -1,13 +1,11 @@
-import { type Message, GuildMember, type User, type CommandInteraction } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
-import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
-import { Command } from '@sapphire/framework';
+import { MessageEmbed, type Message, GuildMember, type User, type CommandInteraction } from 'discord.js';
+import { Category, randomColor } from '#constants/index';
+import { type ApplicationCommandRegistry, type Args, Command } from '@sapphire/framework';
 
 export default class Profile extends Command {
   public override name = 'profile';
   public override description = 'Get the profile of a user.';
-  public override fullCategory = [Categories.utility];
+  public override fullCategory = [Category.utility];
 
   public override async messageRun(message: Message, args: Args) {
     const userResolve = await args.pickResult('user');

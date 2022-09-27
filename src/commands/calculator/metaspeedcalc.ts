@@ -1,4 +1,4 @@
-import { bigToName, Categories, randomColor } from '#constants/index';
+import { bigToName, Category, randomColor } from '#constants/index';
 import { type CommandInteraction, MessageEmbed } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { clamp } from '#lib/utils/math';
@@ -6,7 +6,7 @@ import { clamp } from '#lib/utils/math';
 export default class MetaspeedCalc extends Command {
   public override name = 'metaspeedcalc';
   public override description = 'Provides the production multiplier for the specified amount of metabits.';
-  public override fullCategory = [Categories.calculator];
+  public override fullCategory = [Category.calculator];
 
   public override chatInputRun(interaction: CommandInteraction<'cached'>) {
     const options = interaction.options,

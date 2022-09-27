@@ -1,13 +1,11 @@
-import type { Message } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
-import { archieDance } from '#config';
+import { type Message, MessageEmbed } from 'discord.js';
+import { attachments, Category } from '#constants/index';
 import { Command } from '@sapphire/framework';
-import { Categories } from '#constants/index';
 
 export default class ArchieDance extends Command {
   public override name = 'archiedance';
   public override description = 'View epic videos of Archie dancing.';
-  public override fullCategory = [Categories.fun];
+  public override fullCategory = [Category.fun];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const embed = new MessageEmbed()
@@ -22,7 +20,7 @@ export default class ArchieDance extends Command {
       )
       .setURL('https://drive.google.com/file/d/1twLIqvEG-wwZJFmhtSERWBM5KoJ3zmkg/view?usp=sharing');
 
-    return { embeds: [embed], files: [archieDance] };
+    return { embeds: [embed], files: [attachments.archieDance] };
   }
 
   public override async messageRun(message: Message) {

@@ -1,9 +1,10 @@
-import type { InteractionReplyOptions, InteractionUpdateOptions } from 'discord.js';
 import {
   MessageActionRow,
   type ButtonInteraction,
   type MessageComponentInteraction,
   type SelectMenuInteraction,
+  type InteractionReplyOptions,
+  type InteractionUpdateOptions,
 } from 'discord.js';
 import { disableAllComponents } from '#constants/index';
 import { backButton, closeButton, componentInteractionDefaultParser } from '#constants/components';

@@ -1,8 +1,6 @@
-import type { TextChannel } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
-import { MessageEmbed, User } from 'discord.js';
-import { sirhGuildId } from '#config';
-import { randomColor } from '#constants/index';
+import { type TextChannel, MessageEmbed, User } from 'discord.js';
+import { randomColor, GuildId } from '#constants/index';
 import type { FastifyReply } from 'fastify';
 import type { DBLRequest } from '#lib/interfaces/discordBotList';
 import type { DiscordsRequest } from '#lib/interfaces/discords';
@@ -21,7 +19,7 @@ export class VoteHandler {
 
   get voteChannel() {
     return this.client.guilds.cache
-      .get(sirhGuildId)
+      .get(GuildId.sirhStuff)
       .channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
   }
 

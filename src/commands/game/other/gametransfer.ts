@@ -1,7 +1,5 @@
-﻿import { Categories, gameTransferPages, randomColor, Subcategories } from '#constants/index';
-import { currentLogo } from '#config';
-import { MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
-import type { Message } from 'discord.js';
+﻿import { attachments, Category, gameTransferPages, randomColor, Subcategory } from '#constants/index';
+import { type Message, MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
 import { Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
 
@@ -9,7 +7,7 @@ export default class GameTransfer extends Command {
   public override name = 'gametransfer';
   public override description =
     'See a step-by-step guide to transfering your game progress into the cloud and onto another device.';
-  public override fullCategory = [Categories.game, Subcategories.other];
+  public override fullCategory = [Category.game, Subcategory.other];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
@@ -17,7 +15,7 @@ export default class GameTransfer extends Command {
       .setTitle('Game Transfer')
       .setColor(randomColor)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
-      .setThumbnail(currentLogo.name)
+      .setThumbnail(attachments.currentLogo.name)
       .setImage(gameTransferPages[0])
       .setDescription('Step 1:');
     const component = new MessageActionRow().addComponents(
@@ -38,7 +36,7 @@ export default class GameTransfer extends Command {
     );
     return {
       embeds: [embed],
-      files: [currentLogo],
+      files: [attachments.currentLogo],
       components: [component],
     };
   }

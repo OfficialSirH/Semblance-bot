@@ -1,4 +1,4 @@
-import type { Client, Message, PartialMessage, Snowflake, TextChannel } from 'discord.js';
+import type { Client } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 import { clamp } from '#lib/utils/math';
 import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndDogAPI';
@@ -15,104 +15,6 @@ export const gameTransferPages = [
   'https://i.imgur.com/6qTz2Li.png',
   'https://i.imgur.com/YNBHSw9.png',
 ];
-
-// bug functions and constants - correctReportList and CHANNELS
-
-export const correctReportList = async function (
-  client: SapphireClient,
-  message: Message | PartialMessage,
-  messageId: Snowflake,
-) {
-  const deletedReport = await client.db.report.findFirst({ where: { messageId } });
-  if (!deletedReport) return;
-  const reportList = await client.db.report.findMany({});
-  const bugIdList = reportList.filter(r => r.bugId > deletedReport.bugId);
-
-  bugIdList.forEach(async report => {
-    const channel = message.guild.channels.cache.get(report.channelId) as TextChannel;
-    const msg = await channel.messages.fetch(report.messageId).catch(() => null);
-
-    if (!msg) return console.error("couldn't find message for report id", report.bugId);
-
-    const author = msg.embeds[0].author;
-    await msg.edit({
-      embeds: [
-        msg.embeds[0]
-          .setAuthor({
-            name: `${author.name.slice(0, author.name.indexOf('\n'))}\nBug Id: #${report.bugId - 1}`,
-            iconURL: author.iconURL,
-          })
-          .setFooter({ text: `#${report.bugId - 1}` }),
-      ],
-    });
-  });
-
-  const updatedReports = await client.db.report.updateMany({
-    where: {
-      bugId: {
-        gt: deletedReport.bugId,
-      },
-    },
-    data: {
-      bugId: {
-        decrement: 1,
-      },
-    },
-  });
-
-  console.log(`All ${updatedReports.count} reports have successfully been reorganized!`);
-};
-
-export const bugChannels = {
-  queue: '798933535255298078' as Snowflake,
-  approved: '798933965539901440' as Snowflake,
-  imageStorage: '794054989860700179' as Snowflake,
-};
-
-// RPS functions and constants
-
-export const countdownGIF = 'https://cdn.discordapp.com/emojis/679872091922759760.gif?v=1';
-
-export function choiceToOutcome(choice: string, opponentChoice: string) {
-  if (choice == 'rock') {
-    if (opponentChoice == 'paper') return false;
-    if (opponentChoice == 'scissors') return true;
-    if (opponentChoice == 'lizard') return true;
-    if (opponentChoice == 'spock') return false;
-    if (opponentChoice == 'rock') return 'tie';
-  }
-  if (choice == 'paper') {
-    if (opponentChoice == 'paper') return 'tie';
-    if (opponentChoice == 'scissors') return false;
-    if (opponentChoice == 'rock') return true;
-    if (opponentChoice == 'lizard') return false;
-    if (opponentChoice == 'spock') return true;
-  }
-  if (choice == 'scissors') {
-    if (opponentChoice == 'paper') return true;
-    if (opponentChoice == 'scissors') return 'tie';
-    if (opponentChoice == 'rock') return false;
-    if (opponentChoice == 'lizard') return true;
-    if (opponentChoice == 'spock') return false;
-  }
-  if (choice == 'lizard') {
-    if (opponentChoice == 'paper') return true;
-    if (opponentChoice == 'scissors') return false;
-    if (opponentChoice == 'rock') return false;
-    if (opponentChoice == 'lizard') return 'tie';
-    if (opponentChoice == 'spock') return true;
-  }
-  if (choice == 'spock') {
-    if (opponentChoice == 'paper') return false;
-    if (opponentChoice == 'scissors') return true;
-    if (opponentChoice == 'rock') return true;
-    if (opponentChoice == 'lizard') return false;
-    if (opponentChoice == 'spock') return 'tie';
-  }
-  return null;
-}
-
-export const randomChoice = () => ['rock', 'paper', 'scissors', 'lizard', 'spock'][Math.floor(Math.random() * 5)];
 
 // Serverlist function - Guild Book
 

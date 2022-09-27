@@ -1,6 +1,5 @@
-import { MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
+import { type Message, MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
+import { Category, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { currentPrice } from '#constants/commands';
 import { buildCustomId } from '#constants/components';
@@ -8,7 +7,7 @@ import { buildCustomId } from '#constants/components';
 export default class Game extends Command {
   public override name = 'game';
   public override description = 'An idle-game within Semblance';
-  public override fullCategory = [Categories.fun];
+  public override fullCategory = [Category.fun];
 
   public override async sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;

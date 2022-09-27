@@ -1,13 +1,11 @@
-import type { Guild, Message } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
-import { Categories, getPermissionLevel, randomColor } from '#constants/index';
-import type { Args } from '@sapphire/framework';
-import { Command } from '@sapphire/framework';
+import { type Guild, type Message, MessageEmbed } from 'discord.js';
+import { Category, getPermissionLevel, randomColor } from '#constants/index';
+import { type Args, Command } from '@sapphire/framework';
 
 export default class ServerInfo extends Command {
   public override name = 'serverinfo';
   public override description = 'Provides info on the current server';
-  public override fullCategory = [Categories.utility];
+  public override fullCategory = [Category.utility];
 
   public override async messageRun(message: Message, args: Args) {
     let guild: Guild;
@@ -53,7 +51,7 @@ export default class ServerInfo extends Command {
       .addFields(
         { name: 'Owner', value: owner.toString(), inline: true },
         {
-          name: 'Channel Categories',
+          name: 'Channel Category',
           value: categoryChannel.toString(),
           inline: true,
         },

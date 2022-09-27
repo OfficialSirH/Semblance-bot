@@ -1,15 +1,13 @@
 import type { SapphireClient } from '@sapphire/framework';
-import { type InteractionReplyOptions, MessageEmbed } from 'discord.js';
-import type { TextChannel, GuildMember } from 'discord.js';
-import { sirhId, adityaId, c2sGuildId, darwinium } from '#config';
-import { formattedDate } from '#constants/index';
+import { type InteractionReplyOptions, type TextChannel, type GuildMember, MessageEmbed } from 'discord.js';
+import { formattedDate, UserId, GuildId, emojis } from '#constants/index';
 import { scheduleJob } from 'node-schedule';
 import type { BoosterReward, Reminder, UserReminder } from '@prisma/client';
 
 //j BoosterRewards - handle finished booster rewards
 export const handleBoosterReward = async (client: SapphireClient, boosterReward: BoosterReward) => {
   const member: GuildMember = await client.guilds.cache
-    .get(c2sGuildId)
+    .get(GuildId.cellToSingularity)
     .members.fetch(boosterReward.userId)
     .catch(() => null);
   if (!member ?? !member.roles.cache.has(boosterRole))
@@ -19,8 +17,8 @@ export const handleBoosterReward = async (client: SapphireClient, boosterReward:
 
   if (darwiniumCodes.length == 0) {
     await boosterChannel(client).send({
-      content: `<@${sirhId}> <@${adityaId}> No booster codes left! ${member.user.tag} needs a code`,
-      allowedMentions: { users: [sirhId, adityaId] },
+      content: `<@${UserId.sirh}> <@${UserId.aditya}> No booster codes left! ${member.user.tag} needs a code`,
+      allowedMentions: { users: [UserId.sirh, UserId.aditya] },
     });
 
     return client.db.boosterReward.update({
@@ -39,7 +37,7 @@ export const handleBoosterReward = async (client: SapphireClient, boosterReward:
           .setTitle('Booster reward')
           .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
           .setDescription(
-            `Thank you for boosting Cell to Singularity for a month! As a reward, here's 120 ${darwinium}!\nCode: ||${darwiniumCode.code}||`,
+            `Thank you for boosting Cell to Singularity for a month! As a reward, here's 120 ${emojis.darwinium}!\nCode: ||${darwiniumCode.code}||`,
           ),
       ],
     })
@@ -88,7 +86,7 @@ export const createBoosterRewards = async (
 
   if (!newBoosterReward)
     return {
-      content: `the automated rewarder failed at creating the scheduled reward, try again. If it continues to fail, DM <@${sirhId}>.`,
+      content: `the automated rewarder failed at creating the scheduled reward, try again. If it continues to fail, DM <@${UserId.sirh}>.`,
       ephemeral: true,
     };
 

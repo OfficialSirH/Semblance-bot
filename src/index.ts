@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { install as sourceMapInstall } from 'source-map-support';
 sourceMapInstall();
-await import('#config');
+await import('#constants/index');
 
 import prisma from '@prisma/client';
 declare module 'discord.js' {
@@ -27,14 +27,25 @@ declare module '@sapphire/framework' {
 }
 
 import { isProduction } from '#constants/index';
-import { ApplicationCommandRegistries, RegisterBehavior, SapphireClient } from '@sapphire/framework';
-import type { InteractionReplyOptions, MessageOptions, ReplyMessageOptions, Interaction } from 'discord.js';
-import { type Awaitable, Intents, type Message, Options } from 'discord.js';
+import { WebhookLogger } from '#structures/WebhookLogger';
+import { ApplicationCommandRegistries, LogLevel, RegisterBehavior, SapphireClient } from '@sapphire/framework';
+import {
+  type InteractionReplyOptions,
+  type MessageOptions,
+  type ReplyMessageOptions,
+  type Interaction,
+  type Awaitable,
+  Intents,
+  type Message,
+  Options,
+} from 'discord.js';
 
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
 
 const client = new SapphireClient({
-  preventFailedToFetchLogForGuilds: process.env.TEMP_GUILD_IDS.split(','),
+  logger: {
+    instance: new WebhookLogger(isProduction ? LogLevel.Info : LogLevel.Debug),
+  },
   allowedMentions: { parse: [] },
   caseInsensitiveCommands: true,
   loadMessageCommandListeners: true,
@@ -65,7 +76,7 @@ app.get('/', (_req, res) => {
 
 await client.login(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
 const address = await app.listen({ port: 8079, host: '0.0.0.0' });
-console.log(`Bot listening on port ${address}`);
+client.logger.info(`Bot listening on port ${address}`);
 
 import { checkTweet } from './twitter/checkTweet.js';
 import { TwitterInitialization } from '#structures/TwitterInitialization';

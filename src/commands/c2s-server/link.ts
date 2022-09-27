@@ -1,8 +1,6 @@
-import { c2sGuildId, sirhId } from '#config';
-import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
-import { Command } from '@sapphire/framework';
+import { Category, GuildId, UserId } from '#constants/index';
+import { Command, type ApplicationCommandRegistry, type Args } from '@sapphire/framework';
 import type { CommandInteraction, Message } from 'discord.js';
-import { Categories } from '#constants/index';
 import { DiscordLinkAPI } from '#structures/DiscordLinkAPI';
 import { createHmac } from 'crypto';
 
@@ -12,7 +10,7 @@ export default class Link extends Command {
       ...options,
       name: 'link',
       description: 'Link C2S data with your Discord Id.',
-      fullCategory: [Categories.dm],
+      fullCategory: [Category.dm],
     });
   }
 
@@ -41,7 +39,7 @@ export default class Link extends Command {
     const dataAlreadyExists = await interaction.client.db.userData.findUnique({ where: { token } });
     if (dataAlreadyExists)
       return interaction.reply({
-        content: `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${sirhId}>).`,
+        content: `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${UserId.sirh}>).`,
         ephemeral: true,
       });
 
@@ -52,7 +50,7 @@ export default class Link extends Command {
         create: { discord_id: user.id, token },
       })
       .then(async () => {
-        console.log(`${user.tag}(${user.id}) successfully linked their C2S data.`);
+        this.container.logger.info(`${user.tag}(${user.id}) successfully linked their C2S data.`);
         await interaction.reply({
           content: 'The link was successful, now you can use the Discord button in-game to upload your progress.',
           ephemeral: true,
@@ -68,7 +66,7 @@ export default class Link extends Command {
 
   public override async messageRun(message: Message, args: Args) {
     const isMember = !!(await message.client.guilds.cache
-      .get(c2sGuildId)
+      .get(GuildId.cellToSingularity)
       .members.fetch(message.author.id)
       .catch(() => null));
     if (!isMember)
@@ -108,7 +106,7 @@ export default class Link extends Command {
     const dataAlreadyExists = await message.client.db.userData.findUnique({ where: { token } });
     if (dataAlreadyExists)
       return message.channel.send(
-        `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${sirhId}>).`,
+        `The provided data seems to already exist, which means this data is already linked to a discord account, if you feel this is false, please DM the owner(<@!${UserId.sirh}>).`,
       );
 
     await message.client.db.userData
@@ -118,7 +116,7 @@ export default class Link extends Command {
         create: { discord_id: message.author.id, token },
       })
       .then(async () => {
-        console.log(`${message.author.tag}(${message.author.id}) successfully linked their C2S data.`);
+        this.container.logger.info(`${message.author.tag}(${message.author.id}) successfully linked their C2S data.`);
         if (message.channel.type != 'DM') {
           await message.channel.send(
             `Successfully linked your C2S data, ${message.author.tag}, but please remember to use this link command in DMs next time, having to delete your message every time is such a hassle.`,
@@ -165,7 +163,7 @@ export default class Link extends Command {
         ],
       },
       {
-        guildIds: [c2sGuildId],
+        guildIds: [GuildId.cellToSingularity],
         idHints: ['973689073623498803'],
       },
     );

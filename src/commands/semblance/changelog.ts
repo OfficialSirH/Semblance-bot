@@ -1,12 +1,11 @@
-﻿import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
+﻿import { type Message, MessageEmbed } from 'discord.js';
+import { Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class Changelog extends Command {
   public override name = 'changelog';
   public override description = 'Provides the latest changes to Semblance.';
-  public override fullCategory = [Categories.semblance];
+  public override fullCategory = [Category.semblance];
 
   public override async sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;

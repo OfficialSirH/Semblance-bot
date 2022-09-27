@@ -1,5 +1,4 @@
-import { c2sGuildId } from '#config';
-import { Categories } from '#constants/index';
+import { Category, GuildId } from '#constants/index';
 import { boosterRole, createBoosterRewards } from '#constants/models';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import type { CommandInteraction } from 'discord.js';
@@ -10,7 +9,7 @@ export default class StartBoosterRewards extends Command {
       ...options,
       name: 'startboosterrewards',
       description: 'Start retrieving booster rewards after you boost the server.',
-      fullCategory: [Categories.c2sServer],
+      fullCategory: [Category.c2sServer],
     });
   }
 
@@ -28,7 +27,7 @@ export default class StartBoosterRewards extends Command {
         description: this.description,
       },
       {
-        guildIds: [c2sGuildId],
+        guildIds: [GuildId.cellToSingularity],
         idHints: ['995106586865434676'],
       },
     );

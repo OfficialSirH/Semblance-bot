@@ -1,13 +1,12 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
+import { type Message, MessageEmbed } from 'discord.js';
+import { Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import { LeaderboardUtilities } from '#structures/LeaderboardUtilities';
 
 export default class VoteLeaderboard extends Command {
   public override name = 'voteleaderboard';
   public override description = 'Gets the top 20 users who voted for the bot.';
-  public override fullCategory = [Categories.semblance];
+  public override fullCategory = [Category.semblance];
 
   public override async sharedRun() {
     let leaderboard = await LeaderboardUtilities.topTwenty(this.container.client, 'vote');

@@ -1,5 +1,4 @@
-import type { Dispatcher } from 'undici';
-import { Headers, request } from 'undici';
+import { type Dispatcher, Headers, request } from 'undici';
 import { ApiError } from '#structures/ApiError';
 import type { HttpMethod } from 'undici/types/dispatcher';
 

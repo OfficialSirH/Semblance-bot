@@ -1,10 +1,7 @@
-import { type ContextMenuInteraction, MessageEmbed, MessageAttachment } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
-import type { Message } from 'discord.js';
-import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
-import { Command } from '@sapphire/framework';
+import { type Message, type ContextMenuInteraction, MessageEmbed, MessageAttachment } from 'discord.js';
+import { GuildId, Category, randomColor } from '#constants/index';
+import { type ApplicationCommandRegistry, type Args, Command } from '@sapphire/framework';
 import { inspect } from 'util';
-import { c2sGuildId, sirhGuildId } from '#config';
 
 export default class Eval extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -12,7 +9,7 @@ export default class Eval extends Command {
       ...options,
       name: 'eval',
       description: 'Evaluate some code.',
-      fullCategory: [Categories.developer],
+      fullCategory: [Category.developer],
       preconditions: ['OwnerOnly'],
     });
   }
@@ -22,7 +19,7 @@ export default class Eval extends Command {
     const { client } = builder;
     const embed = new MessageEmbed()
       .setColor(randomColor)
-      .addField('📥 Input', `\`\`\`js\n${content.substring(0, 1015)}\`\`\``)
+      .addFields({ name: '📥 Input', value: `\`\`\`js\n${content.substring(0, 1015)}\`\`\`` })
       .setFooter({ text: 'Feed me code!' });
     try {
       let evaled = eval(`(async () => { ${content} })().catch(e => { return "Error: " + e })`);
@@ -33,10 +30,12 @@ export default class Eval extends Command {
         if (evaled.length > 1015) {
           const evalOutputFile = new MessageAttachment(Buffer.from(`${evaled}`), 'evalOutput.js');
           data.files = [evalOutputFile];
-          embed.addField('📤 Output', 'Output is in file preview above').setTitle('✅ Evaluation Completed');
+          embed
+            .addFields({ name: '📤 Output', value: 'Output is in file preview above' })
+            .setTitle('✅ Evaluation Completed');
         } else
           embed
-            .addField('📤 Output', `\`\`\`js\n${evaled.substring(0, 1015)}\`\`\``)
+            .addFields({ name: '📤 Output', value: `\`\`\`js\n${evaled.substring(0, 1015)}\`\`\`` })
             .setTitle('✅ Evaluation Completed');
         data.embeds = [embed];
         await builder.reply(data);
@@ -46,7 +45,7 @@ export default class Eval extends Command {
         // eslint-disable-next-line no-ex-assign
         e = e.replace(/`/g, '`' + String.fromCharCode(8203)).replace(/@/g, '@' + String.fromCharCode(8203));
       embed
-        .addField('📤 Output', `\`\`\`fix\n${e.toString().substring(0, 1014)}\`\`\``)
+        .addFields({ name: '📤 Output', value: `\`\`\`fix\n${e.toString().substring(0, 1014)}\`\`\`` })
         .setTitle('❌ Evaluation Failed');
       await builder.reply({ embeds: [embed] });
     }
@@ -78,7 +77,7 @@ export default class Eval extends Command {
         defaultPermission: false,
       },
       {
-        guildIds: [c2sGuildId, sirhGuildId],
+        guildIds: [GuildId.cellToSingularity],
         idHints: ['973689160412069938', '973689161179607111'],
       },
     );

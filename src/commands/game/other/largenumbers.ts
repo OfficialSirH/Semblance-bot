@@ -1,20 +1,18 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { currentLogo } from '#config';
-import { Categories, randomColor, Subcategories } from '#constants/index';
+import { type Message, MessageEmbed } from 'discord.js';
+import { attachments, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class LargeNumbers extends Command {
   public override name = 'largenumbers';
   public override description = 'List of all the named large numbers in the game.';
-  public override fullCategory = [Categories.game, Subcategories.other];
+  public override fullCategory = [Category.game, Subcategory.other];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const embed = new MessageEmbed()
       .setTitle('Large Numbers')
       .setColor(randomColor)
-      .setThumbnail(currentLogo.name)
+      .setThumbnail(attachments.currentLogo.name)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setDescription(
         [
@@ -33,7 +31,7 @@ export default class LargeNumbers extends Command {
           ', for more details, click [here](http://www.thealmightyguru.com/Pointless/BigNumbers.html)',
       )
       .setFooter({ text: 'Large Numbers go brrrr...' });
-    return { embeds: [embed], files: [currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo] };
   }
 
   public override async messageRun(message: Message) {

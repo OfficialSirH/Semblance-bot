@@ -1,6 +1,5 @@
-import { MessageEmbed } from 'discord.js';
-import type { CommandInteraction, AutocompleteInteraction } from 'discord.js';
-import { randomColor, formattedDate, Categories } from '#constants/index';
+import { type CommandInteraction, type AutocompleteInteraction, MessageEmbed } from 'discord.js';
+import { randomColor, formattedDate, Category } from '#constants/index';
 import type { Reminder, UserReminder } from '@prisma/client';
 import { handleReminder } from '#constants/models';
 import { scheduleJob } from 'node-schedule';
@@ -13,7 +12,7 @@ const MILLISECONDS_TO_MINUTES = 1000 * 60;
 export default class RemindMe extends Command {
   public override name = 'remindme';
   public override description = 'create reminders for yourself';
-  public override fullCategory = [Categories.utility];
+  public override fullCategory = [Category.utility];
 
   public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const action = interaction.options.getSubcommand();

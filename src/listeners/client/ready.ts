@@ -14,7 +14,7 @@ export default class Ready extends Listener<typeof Events.ClientReady> {
   }
 
   public override async run(client: SapphireClient) {
-    console.log(`Logged in as ${client.user.tag}!`);
+    client.logger.info(`Logged in as ${client.user.tag}!`);
 
     const totalMembers = client.guilds.cache
       .map(g => g.memberCount)

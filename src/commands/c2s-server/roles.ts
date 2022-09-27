@@ -1,8 +1,6 @@
-import { MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { currentLogo, c2sGuildId } from '#config';
+import { type Message, MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
+import { c2sRoles, c2sRolesInformation, Category, attachments, GuildId } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import { c2sRoles, c2sRolesInformation, Categories } from '#constants/index';
 import { buildCustomId } from '#constants/components';
 
 export default class Roles extends Command {
@@ -11,19 +9,19 @@ export default class Roles extends Command {
       ...options,
       name: 'roles',
       description: 'see the list of available roles for the c2s server',
-      fullCategory: [Categories.c2sServer],
+      fullCategory: [Category.c2sServer],
       preconditions: ['C2SOnly'],
     });
   }
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const member = builder.member;
-    const guildRoles = builder.client.guilds.cache.get(c2sGuildId).roles.cache;
+    const guildRoles = builder.client.guilds.cache.get(GuildId.cellToSingularity).roles.cache;
 
     const embed = new MessageEmbed()
         .setTitle('C2S Roles')
         .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
-        .setThumbnail(currentLogo.name)
+        .setThumbnail(attachments.currentLogo.name)
         .setDescription(
           [
             [
@@ -63,7 +61,7 @@ export default class Roles extends Command {
       components = [
         new MessageActionRow().addComponents(
           new MessageButton()
-            .setDisabled(builder.guild.id != c2sGuildId)
+            .setDisabled(builder.guild.id != GuildId.cellToSingularity)
             .setCustomId(
               buildCustomId({
                 command: this.name,
@@ -76,7 +74,7 @@ export default class Roles extends Command {
             .setStyle(hasServerEvents ? 'DANGER' : 'SUCCESS'),
         ),
       ];
-    return { embeds: [embed], files: [currentLogo], components };
+    return { embeds: [embed], files: [attachments.currentLogo], components };
   }
 
   public override async messageRun(message: Message) {
@@ -94,7 +92,7 @@ export default class Roles extends Command {
         description: this.description,
       },
       {
-        guildIds: [c2sGuildId],
+        guildIds: [GuildId.cellToSingularity],
         idHints: ['973689074395271248'],
       },
     );

@@ -1,9 +1,7 @@
-import { currentLogo, earlyBeyondTesters, roadMap } from '#config';
-import { randomColor } from '#constants/index';
+import { randomColor, attachments, earlyBeyondTesters } from '#constants/index';
 import { backButton, buildCustomId, componentInteractionDefaultParser } from '#constants/components';
-import { MessageActionRow, MessageButton } from 'discord.js';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
-import { type ButtonInteraction, MessageEmbed } from 'discord.js';
+import { type ButtonInteraction, MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Roadmap extends InteractionHandler {
@@ -85,8 +83,8 @@ function roadmap(interaction: ButtonInteraction) {
     .setTitle('Road Map')
     .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
-    .setThumbnail(currentLogo.name)
-    .setImage(roadMap.name);
+    .setThumbnail(attachments.currentLogo.name)
+    .setImage(attachments.roadMap.name);
   const components = [
     new MessageActionRow().addComponents(
       new MessageButton()
@@ -111,5 +109,5 @@ function roadmap(interaction: ButtonInteraction) {
         .setLabel('Early Beyond Sneak Peeks'),
     ),
   ];
-  return { embeds: [embed], files: [currentLogo, roadMap], components };
+  return { embeds: [embed], files: [attachments.currentLogo, attachments.roadMap], components };
 }

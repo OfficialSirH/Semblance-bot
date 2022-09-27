@@ -50,6 +50,7 @@
                 "endOfLine": "lf",
                 "arrowParens": "avoid"
             }
-        ]
+        ],
+        "no-duplicate-imports": "error"
     }
 }

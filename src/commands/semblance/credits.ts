@@ -1,13 +1,12 @@
-import { MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
+import { type Message, MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
+import { Category, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
 
 export default class Credits extends Command {
   public override name = 'credits';
   public override description = 'Lists everyone that has helped with the project of Semblance, including myself(SirH).';
-  public override fullCategory = [Categories.semblance];
+  public override fullCategory = [Category.semblance];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;

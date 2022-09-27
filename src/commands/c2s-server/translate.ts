@@ -1,6 +1,5 @@
-import { c2sGuildId } from '#config';
+import { Category, GuildId } from '#constants/index';
 import { fetchDeepL } from '#constants/commands';
-import { Categories } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import type { ContextMenuInteraction } from 'discord.js';
 
@@ -10,7 +9,7 @@ export default class Translate extends Command {
       ...options,
       name: 'translate',
       description: 'Translates a message to English.',
-      fullCategory: [Categories.c2sServer],
+      fullCategory: [Category.c2sServer],
       preconditions: ['ModOnly', 'C2SOnly'],
     });
   }
@@ -35,7 +34,7 @@ export default class Translate extends Command {
         defaultPermission: false,
       },
       {
-        guildIds: [c2sGuildId],
+        guildIds: [GuildId.cellToSingularity],
         idHints: ['973689076484034630'],
       },
     );

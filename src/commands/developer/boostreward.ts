@@ -1,7 +1,6 @@
 import { type CommandInteraction, MessageAttachment, type User } from 'discord.js';
-import { Categories, formattedDate, isUserInGuild } from '#constants/index';
+import { GuildId, Category, formattedDate, isUserInGuild } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import { c2sGuildId } from '#config';
 
 export default class BoostReward extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -9,7 +8,7 @@ export default class BoostReward extends Command {
       ...options,
       name: 'boostreward',
       description: 'interact with booster rewards for users',
-      fullCategory: [Categories.developer],
+      fullCategory: [Category.developer],
       preconditions: ['OwnerOnly'],
     });
   }
@@ -110,7 +109,7 @@ export default class BoostReward extends Command {
         ],
       },
       {
-        guildIds: [c2sGuildId],
+        guildIds: [GuildId.cellToSingularity],
         idHints: ['973689159548035123'],
       },
     );

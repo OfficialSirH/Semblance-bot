@@ -1,7 +1,6 @@
 import type { CustomIdData, ParsedCustomIdData } from '#lib/interfaces/Semblance';
 import { MessageActionRow, type ButtonInteraction, MessageEmbed, MessageButton } from 'discord.js';
-import { guildBookPage, randomColor } from '#constants/index';
-import { serversPerPage } from '#constants/commands';
+import { guildBookPage, serversPerPage, randomColor } from '#constants/index';
 import { componentInteractionDefaultParser, buildCustomId } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 
