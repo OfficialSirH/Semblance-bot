@@ -46,7 +46,6 @@ const client = new SapphireClient({
   logger: {
     instance: new WebhookLogger(isProduction ? LogLevel.Info : LogLevel.Debug),
   },
-  preventFailedToFetchLogForGuilds: process.env.TEMP_GUILD_IDS.split(','),
   allowedMentions: { parse: [] },
   caseInsensitiveCommands: true,
   loadMessageCommandListeners: true,

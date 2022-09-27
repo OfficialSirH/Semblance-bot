@@ -1,5 +1,5 @@
 import { isProduction } from '#constants/index';
-import { type LogLevel, Logger } from '@sapphire/framework';
+import { LogLevel, Logger } from '@sapphire/framework';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/rest/v10';
 export class WebhookLogger extends Logger {
@@ -17,6 +17,8 @@ export class WebhookLogger extends Logger {
     if (typeof method === 'string') console[method](content);
 
     const environment = isProduction ? 'PROD' : 'DEV';
+    const webhookLogType = level >= LogLevel.Warn ? `${environment}_ERR_LOG` : `${environment}_LOG`;
+
     if (content.length == 0) content.concat('Somehow got empty content');
     const options: Parameters<REST['post']>[1] =
       content.length > 1998
@@ -28,7 +30,7 @@ export class WebhookLogger extends Logger {
           };
 
     this.rest.post(
-      Routes.webhook(process.env[`${environment}_LOG_ID`], process.env[`${environment}_LOG_TOKEN`]),
+      Routes.webhook(process.env[`${webhookLogType}_ID`], process.env[`${webhookLogType}_TOKEN`]),
       options,
     );
   }

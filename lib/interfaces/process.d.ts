@@ -28,8 +28,6 @@ declare module 'process' {
         readonly PROD_LOG_TOKEN: string;
         readonly DEV_LOG_ID: string;
         readonly DEV_LOG_TOKEN: string;
-
-        readonly TEMP_GUILD_IDS: string;
       }
     }
   }
