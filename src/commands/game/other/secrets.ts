@@ -1,12 +1,12 @@
-import { type Message, MessageEmbed } from 'discord.js';
+import { type CommandInteraction, type Message, MessageEmbed } from 'discord.js';
 import { Category, randomColor, Subcategory } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
-export default class Secret extends Command {
-  public override name = 'secret';
-  public override description = 'secret';
+export default class Secrets extends Command {
+  public override name = 'secrets';
+  public override description = 'secrets';
   public override fullCategory = [Category.game, Subcategory.other];
-  public override aliases = ['secrets'];
+  public override aliases = ['secret'];
 
   public override sharedRun() {
     const embed = new MessageEmbed()
@@ -32,9 +32,20 @@ export default class Secret extends Command {
     return { embeds: [embed], ephemeral: true };
   }
 
+  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+    return interaction.reply(this.sharedRun());
+  }
+
   public override async messageRun(message: Message) {
     await message.author
       .send(this.sharedRun())
       .catch(() => message.reply("I can't DM you! You're probably blocking DMs."));
+  }
+
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+    });
   }
 }
