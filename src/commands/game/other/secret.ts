@@ -1,12 +1,11 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor, Subcategories } from '#constants/index';
+import { type Message, MessageEmbed } from 'discord.js';
+import { Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class Secret extends Command {
   public override name = 'secret';
   public override description = 'secret';
-  public override fullCategory = [Categories.game, Subcategories.other];
+  public override fullCategory = [Category.game, Subcategory.other];
   public override aliases = ['secrets'];
 
   public override sharedRun() {

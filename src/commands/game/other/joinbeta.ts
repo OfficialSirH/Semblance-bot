@@ -1,13 +1,11 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor, Subcategories } from '#constants/index';
-import { currentLogo } from '#config';
+import { type Message, MessageEmbed } from 'discord.js';
+import { Category, randomColor, Subcategory, attachments } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class JoinBeta extends Command {
   public override name = 'joinbeta';
   public override description = 'Info on how to become a beta tester';
-  public override fullCategory = [Categories.game, Subcategories.other];
+  public override fullCategory = [Category.game, Subcategory.other];
 
   public override async sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
@@ -15,11 +13,11 @@ export default class JoinBeta extends Command {
     const embed = new MessageEmbed()
       .setTitle('Steps to join beta')
       .setColor(randomColor)
-      .setThumbnail(currentLogo.name)
+      .setThumbnail(attachments.currentLogo.name)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setFooter({ text: `Called by ${user.tag}` })
       .setDescription(infoHandler.value);
-    return { embeds: [embed], files: [currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo] };
   }
 
   public override async messageRun(message: Message) {

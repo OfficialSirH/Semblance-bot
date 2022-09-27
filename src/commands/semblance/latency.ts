@@ -1,12 +1,11 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { randomColor, msToTime, Categories } from '#constants/index';
+import { type Message, MessageEmbed } from 'discord.js';
+import { randomColor, msToTime, Category } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class Latency extends Command {
   public override name = 'latency';
   public override description = 'Gets the latency of the bot.';
-  public override fullCategory = [Categories.semblance];
+  public override fullCategory = [Category.semblance];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;

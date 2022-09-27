@@ -1,12 +1,7 @@
-import type { CommandInteraction } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
-import { Constants } from 'discord.js';
+import { type CommandInteraction, MessageEmbed, Constants } from 'discord.js';
 import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
-import { bigToName, Categories, msToTime } from '#constants/index';
-import { c2sGuildId, sirhGuildId } from '#config';
-import type { ApiResponseError } from 'twitter-api-v2';
-import { TweetStream } from 'twitter-api-v2';
-import { TwitterApi } from 'twitter-api-v2';
+import { GuildId, bigToName, Category, msToTime } from '#constants/index';
+import { type ApiResponseError, TweetStream, TwitterApi } from 'twitter-api-v2';
 import { TwitterInitialization } from '#structures/TwitterInitialization';
 import { DiscordLinkAPI } from '#structures/DiscordLinkAPI';
 
@@ -16,7 +11,7 @@ export default class Manage extends Command {
       ...options,
       name: 'manage',
       description: 'Manage the bot.',
-      fullCategory: [Categories.developer],
+      fullCategory: [Category.developer],
       preconditions: ['OwnerOnly'],
     });
   }
@@ -124,7 +119,7 @@ export default class Manage extends Command {
         ],
       },
       {
-        guildIds: [c2sGuildId, sirhGuildId],
+        guildIds: [GuildId.cellToSingularity],
         idHints: ['998060368616226917', '998060369564155965'],
       },
     );

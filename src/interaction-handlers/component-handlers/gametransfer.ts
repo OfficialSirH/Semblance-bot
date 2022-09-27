@@ -1,6 +1,6 @@
 import { type ButtonInteraction, MessageEmbed } from 'discord.js';
 import { gameTransferPages } from '#constants/commands';
-import { currentLogo } from '#config';
+import { attachments } from '#constants/index';
 import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
@@ -32,10 +32,11 @@ export default class GameTransfer extends InteractionHandler {
     else if (currentPage == 1) description = '\nCreate an account and login into it';
     else if (currentPage == 2) description = '\nClick on the Transfer Save Data button after logging into your account';
     else if (currentPage == 3) description = '\nUpload your progress from your current device';
-    else if (currentPage == 4) description = '\nDownload your progress onto the other device you wish to put your progress on';
+    else if (currentPage == 4)
+      description = '\nDownload your progress onto the other device you wish to put your progress on';
 
     embed
-      .setThumbnail(currentLogo.name)
+      .setThumbnail(attachments.currentLogo.name)
       .setImage(gameTransferPages[currentPage])
       .setDescription(`Step ${currentPage + 1}:${description}`);
     await interaction.update({ embeds: [embed] });

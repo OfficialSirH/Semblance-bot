@@ -1,10 +1,7 @@
-import { type ContextMenuInteraction, MessageEmbed, MessageAttachment } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
-import type { Message } from 'discord.js';
-import type { ApplicationCommandRegistry, Args } from '@sapphire/framework';
-import { Command } from '@sapphire/framework';
+import { type Message, type ContextMenuInteraction, MessageEmbed, MessageAttachment } from 'discord.js';
+import { GuildId, Category, randomColor } from '#constants/index';
+import { type ApplicationCommandRegistry, type Args, Command } from '@sapphire/framework';
 import { inspect } from 'util';
-import { c2sGuildId, sirhGuildId } from '#config';
 
 export default class Eval extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -12,7 +9,7 @@ export default class Eval extends Command {
       ...options,
       name: 'eval',
       description: 'Evaluate some code.',
-      fullCategory: [Categories.developer],
+      fullCategory: [Category.developer],
       preconditions: ['OwnerOnly'],
     });
   }
@@ -80,7 +77,7 @@ export default class Eval extends Command {
         defaultPermission: false,
       },
       {
-        guildIds: [c2sGuildId, sirhGuildId],
+        guildIds: [GuildId.cellToSingularity],
         idHints: ['973689160412069938', '973689161179607111'],
       },
     );

@@ -1,10 +1,13 @@
-import { Categories } from '#constants/index';
+import { GuildId, Category } from '#constants/index';
 import { buildCustomId } from '#constants/components';
-import type { ApplicationCommandRegistry } from '@sapphire/framework';
-import { Command } from '@sapphire/framework';
-import type { CommandInteraction, TextBasedChannel } from 'discord.js';
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
-import { c2sGuildId } from '#config';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import {
+  type CommandInteraction,
+  type TextBasedChannel,
+  MessageActionRow,
+  MessageButton,
+  MessageEmbed,
+} from 'discord.js';
 
 export default class Suggest extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -12,7 +15,7 @@ export default class Suggest extends Command {
       ...options,
       name: 'suggest',
       description: 'Submit suggestions for Cell to Singularity or the server.',
-      fullCategory: [Categories.c2sServer],
+      fullCategory: [Category.c2sServer],
       preconditions: ['C2SOnly'],
     });
   }
@@ -89,7 +92,7 @@ export default class Suggest extends Command {
         ],
       },
       {
-        guildIds: [c2sGuildId],
+        guildIds: [GuildId.cellToSingularity],
         idHints: ['973689075758432266'],
       },
     );

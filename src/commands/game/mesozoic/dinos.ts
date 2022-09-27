@@ -1,19 +1,17 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor, Subcategories } from '#constants/index';
-import { currentLogo, trexSkull } from '#config';
+import { type Message, MessageEmbed } from 'discord.js';
+import { attachments, emojis, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class Dinos extends Command {
   public override name = 'dinos';
   public override description = 'Info on the Mesozoic Valley';
-  public override fullCategory = [Categories.game, Subcategories.mesozoic];
+  public override fullCategory = [Category.game, Subcategory.mesozoic];
 
   public override sharedRun() {
     const embed = new MessageEmbed()
-      .setTitle(`${trexSkull} Mesozoic Valley`)
+      .setTitle(`${emojis.trexSkull} Mesozoic Valley`)
       .setColor(randomColor)
-      .setThumbnail(currentLogo.name)
+      .setThumbnail(attachments.currentLogo.name)
       .setDescription(
         [
           'The Mesozoic Valley is a separate simulation that consists of dinosaurs, which provides insight for Semblance on what the demise of the human species could be',
@@ -24,7 +22,7 @@ export default class Dinos extends Command {
           ].join(' '),
         ].join('\n\n'),
       );
-    return { embeds: [embed], files: [currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo] };
   }
 
   public override async messageRun(message: Message) {

@@ -1,12 +1,11 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
+import { type Message, MessageEmbed } from 'discord.js';
+import { Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class ItemHelp extends Command {
   public override name = 'itemhelp';
   public override description = 'Get help with the item calculator commands';
-  public override fullCategory = [Categories.help];
+  public override fullCategory = [Category.help];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const client = builder.client;

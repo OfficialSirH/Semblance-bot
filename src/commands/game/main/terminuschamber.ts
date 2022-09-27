@@ -1,13 +1,11 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor, Subcategories } from '#constants/index';
-import { currentLogo, terminusChamber } from '#config';
+import { type Message, MessageEmbed } from 'discord.js';
+import { attachments, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class TerminusChamber extends Command {
   public override name = 'terminuschamber';
   public override description = 'Details on how to obtain each node within the Terminus Chamber';
-  public override fullCategory = [Categories.game, Subcategories.main];
+  public override fullCategory = [Category.game, Subcategory.main];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
@@ -15,8 +13,8 @@ export default class TerminusChamber extends Command {
       .setTitle('Terminus Chamber')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)
-      .setThumbnail(currentLogo.name)
-      .setImage(terminusChamber.name)
+      .setThumbnail(attachments.currentLogo.name)
+      .setImage(attachments.terminusChamber.name)
       .setDescription(
         [
           '**Yellow Cube** - ||Explore the Mesozoic Valley||',
@@ -31,7 +29,7 @@ export default class TerminusChamber extends Command {
       );
     return {
       embeds: [embed],
-      files: [currentLogo, terminusChamber],
+      files: [attachments.currentLogo, attachments.terminusChamber],
     };
   }
 

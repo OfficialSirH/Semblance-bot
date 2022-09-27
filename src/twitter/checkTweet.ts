@@ -1,5 +1,4 @@
-import { c2sGuildId } from '#config';
-import { isProduction } from '#constants/index';
+import { isProduction, GuildId } from '#constants/index';
 import { TwitterInitialization } from '#structures/TwitterInitialization';
 import type { SapphireClient } from '@sapphire/framework';
 import type { TextBasedChannel } from 'discord.js';
@@ -41,7 +40,7 @@ export const checkTweet = async (client: SapphireClient) => {
     current_id = new_id;
 
     const c2sTwitterChannel = client.guilds.cache
-      .get(c2sGuildId)
+      .get(GuildId.cellToSingularity)
       .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannel;
 
     const msg = await c2sTwitterChannel.send(

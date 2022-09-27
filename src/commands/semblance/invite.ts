@@ -1,12 +1,11 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message, CommandInteraction } from 'discord.js';
+import { type Message, type CommandInteraction, MessageEmbed } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import { Categories, randomColor } from '#constants/index';
+import { Category, randomColor } from '#constants/index';
 
 export default class Invite extends Command {
   public override name = 'invite';
   public override description = 'Gets an invite link for the bot and support server.';
-  public override fullCategory = [Categories.semblance];
+  public override fullCategory = [Category.semblance];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;

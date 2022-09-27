@@ -1,13 +1,11 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor, Subcategories } from '#constants/index';
-import { currentLogo } from '#config';
+import { type Message, MessageEmbed } from 'discord.js';
+import { Category, randomColor, Subcategory, attachments } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class Mesoguide extends Command {
   public override name = 'mesoguide';
   public override description = 'Mesozoic Valley Guide';
-  public override fullCategory = [Categories.game, Subcategories.mesozoic];
+  public override fullCategory = [Category.game, Subcategory.mesozoic];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
@@ -15,7 +13,7 @@ export default class Mesoguide extends Command {
       .setTitle('**Mesozoic Valley Guide**')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)
-      .setThumbnail(currentLogo.name)
+      .setThumbnail(attachments.currentLogo.name)
       .setDescription(
         'This guide is mainly aimed at helping people with their first run through the Mesozoic Valley.\n' +
           'For later runs, up to prestige 10 you should start saving up lots of mutagen to make getting the last achievements much easier. ' +
@@ -89,7 +87,7 @@ export default class Mesoguide extends Command {
         },
       )
       .setFooter({ text: 'Thanks to Jojoseis#0001 for making this guide! :D' });
-    return { embeds: [embed], files: [currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo] };
   }
 
   public override async messageRun(message: Message) {

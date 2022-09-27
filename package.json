@@ -44,9 +44,6 @@
     "#routes/*": [
       "./dist/src/routes/*.js"
     ],
-    "#config": [
-      "./dist/config.js"
-    ],
     "#itemList": [
       "./dist/lib/utils/itemList.js"
     ]

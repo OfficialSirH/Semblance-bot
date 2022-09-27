@@ -1,12 +1,11 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
+import { type Message, MessageEmbed } from 'discord.js';
+import { Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class MiscHelp extends Command {
   public override name = 'mischelp';
   public override description = 'List all miscelaneous commands';
-  public override fullCategory = [Categories.help];
+  public override fullCategory = [Category.help];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const client = builder.client;
@@ -14,15 +13,15 @@ export default class MiscHelp extends Command {
 
     const funCommands = client.stores
       .get('commands')
-      .filter(c => c.category === Categories.fun)
+      .filter(c => c.category === Category.fun)
       .map(c => `**${client.user}${c.name}**`);
     const utilityCommands = client.stores
       .get('commands')
-      .filter(c => c.category === Categories.utility)
+      .filter(c => c.category === Category.utility)
       .map(c => `**${client.user}${c.name}**`);
     const semblanceCommands = client.stores
       .get('commands')
-      .filter(c => c.category === Categories.semblance)
+      .filter(c => c.category === Category.semblance)
       .map(c => `**${client.user}${c.name}**`);
 
     const embed = new MessageEmbed()

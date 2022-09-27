@@ -1,5 +1,4 @@
-import { currentLogo, darwinium } from '#config';
-import { Categories, randomColor } from '#constants/index';
+import { Category, randomColor, attachments, emojis } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import { MessageEmbed, type Message } from 'discord.js';
 
@@ -9,7 +8,7 @@ export default class Limericks extends Command {
       ...options,
       name: 'limericks',
       description: 'details on the limericks contest',
-      fullCategory: [Categories.c2sServer],
+      fullCategory: [Category.c2sServer],
       preconditions: ['C2SOnly'],
     });
   }
@@ -19,29 +18,29 @@ export default class Limericks extends Command {
     const embed = new MessageEmbed()
       .setTitle('Limericks Contest winners')
       .setColor(randomColor)
-      .setThumbnail(currentLogo.name)
+      .setThumbnail(attachments.currentLogo.name)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setDescription(
         [
-          `**1st Place(2000 ${darwinium}):** Jean_Xontric -`,
+          `**1st Place(2000 ${emojis.darwinium}):** Jean_Xontric -`,
           'Before the dinosaur ran out of luck,',
           'he lectured a four-legged, furry duck: ',
           '"We could rule as best mates,',
           'hatched from amniote traits, ',
           'yet like all other mammals - you suck!"\n',
-          `**2nd Place(1000 ${darwinium}):** SampeDrako -`,
+          `**2nd Place(1000 ${emojis.darwinium}):** SampeDrako -`,
           'Tengo un murci\u00E9lago',
           'Dale ajo y acaba ciego',
           'Un trago de sangre',
           'y se pone alegre',
           'Nuestro amigo noct\u00EDvago\n',
-          `**3rd Place(500 ${darwinium}):** Daenerys -`,
+          `**3rd Place(500 ${emojis.darwinium}):** Daenerys -`,
           'Quite tall stands the mighty elephant',
           "What's more, it's also intelligent",
           'Enjoys a banana',
           'In the dry savannah',
           "This beast's huge trunk sure is elegant\n",
-          `**Honorable Mention(200 ${darwinium}):** Theorian -`,
+          `**Honorable Mention(200 ${emojis.darwinium}):** Theorian -`,
           'From stars we come and to stars we go',
           'The entropy of life can never slow',
           'With great peculiarity',
@@ -50,7 +49,7 @@ export default class Limericks extends Command {
         ].join('\n'),
       )
       .setFooter({ text: 'Let the hunger gam-- I mean Limericks Contest- begin!' });
-    return { embeds: [embed], files: [currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo] };
   }
 
   public override async messageRun(message: Message) {

@@ -1,13 +1,12 @@
 import { type CommandInteraction, MessageActionRow, MessageButton, MessageEmbed, type Message } from 'discord.js';
-import { Categories, randomColor, Subcategories } from '#constants/index';
+import { Category, randomColor, Subcategory, attachments } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import { currentLogo, roadMap } from '#config';
 import { buildCustomId } from '#constants/components';
 
 export default class Roadmap extends Command {
   public override name = 'roadmap';
   public override description = 'details on the C2S Roadmap';
-  public override fullCategory = [Categories.game, Subcategories.other];
+  public override fullCategory = [Category.game, Subcategory.other];
 
   public async chatInputRun(interaction: CommandInteraction<'cached'>) {
     await interaction.reply(this.sharedRun(interaction));
@@ -18,8 +17,8 @@ export default class Roadmap extends Command {
     const embed = new MessageEmbed()
       .setTitle('Road Map')
       .setColor(randomColor)
-      .setThumbnail(currentLogo.name)
-      .setImage(roadMap.name);
+      .setThumbnail(attachments.currentLogo.name)
+      .setImage(attachments.roadMap.name);
     const components = [
       new MessageActionRow().addComponents(
         new MessageButton()
@@ -44,7 +43,7 @@ export default class Roadmap extends Command {
           .setLabel('Early Beyond Sneak Peeks'),
       ),
     ];
-    return { embeds: [embed], files: [currentLogo, roadMap], components };
+    return { embeds: [embed], files: [attachments.currentLogo, attachments.roadMap], components };
   }
 
   public registerApplicationCommands(registry: ApplicationCommandRegistry) {

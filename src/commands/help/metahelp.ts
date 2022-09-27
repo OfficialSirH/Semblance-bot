@@ -1,11 +1,10 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
+import { type Message, MessageEmbed } from 'discord.js';
+import { Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 export default class MetaHelp extends Command {
   public override name = 'metahelp';
   public override description = 'help for metabit calculators';
-  public override fullCategory = [Categories.help];
+  public override fullCategory = [Category.help];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const client = builder.client;

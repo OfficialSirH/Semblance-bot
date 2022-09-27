@@ -1,9 +1,6 @@
-import { type CommandInteraction, MessageEmbed, MessageAttachment, Util } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
-import type { ApplicationCommandRegistry } from '@sapphire/framework';
-import { Command } from '@sapphire/framework';
-import { c2sGuildId, sirhGuildId } from '#config';
-import { Constants } from 'discord.js';
+import { Constants, type CommandInteraction, MessageEmbed, MessageAttachment, Util } from 'discord.js';
+import { GuildId, Category, randomColor } from '#constants/index';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
 export default class Edit extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -11,7 +8,7 @@ export default class Edit extends Command {
       ...options,
       name: 'info-editor',
       description: 'edit information on commands that has ever-changing information',
-      fullCategory: [Categories.developer],
+      fullCategory: [Category.developer],
       preconditions: ['OwnerOnly'],
     });
   }
@@ -193,7 +190,7 @@ export default class Edit extends Command {
         ],
       },
       {
-        guildIds: [c2sGuildId, sirhGuildId],
+        guildIds: [GuildId.cellToSingularity],
         idHints: ['974139651801636924', '974139652959244308'],
       },
     );

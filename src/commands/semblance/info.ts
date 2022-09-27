@@ -1,14 +1,12 @@
-import { MessageEmbed, version } from 'discord.js';
-import type { Message } from 'discord.js';
-import { randomColor, msToTime, Categories } from '#constants/index';
-import { singularity, entropy, metabit, mutagen, idea } from '#config';
+import { type Message, MessageEmbed, version } from 'discord.js';
+import { randomColor, msToTime, Category, emojis } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import { release } from 'os';
 
 export default class Info extends Command {
   public override name = 'info';
   public override description = 'Provides information about Semblance.';
-  public override fullCategory = [Categories.semblance];
+  public override fullCategory = [Category.semblance];
 
   public override async sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
@@ -42,7 +40,7 @@ export default class Info extends Command {
       .setThumbnail(client.user.displayAvatarURL())
       .addFields(
         {
-          name: `${singularity} Host`,
+          name: `${emojis.singularity} Host`,
           value: [
             `**OS:** \`Ubuntu ${release()}\``,
             `**Library:** \`discord.js${version}\``,
@@ -52,7 +50,7 @@ export default class Info extends Command {
         },
 
         {
-          name: `${entropy} Stats`,
+          name: `${emojis.entropy} Stats`,
           value: [
             `**Guilds:** \`${guilds}\``,
             `**Members:** \`${totalMembers}\``,
@@ -62,7 +60,7 @@ export default class Info extends Command {
         },
 
         {
-          name: `${idea} Runtime`,
+          name: `${emojis.idea} Runtime`,
           value: [
             `**Bot Response:** \`${responseTime} ms\``,
             `**API Response:** \`${client.ws.ping} ms\``,
@@ -75,12 +73,12 @@ export default class Info extends Command {
 
     if (client.shard)
       embed.addFields({
-        name: `${metabit} This Shard (${builder.guild.shardId})`,
+        name: `${emojis.metabit} This Shard (${builder.guild.shardId})`,
         value: `**Guilds:** ${guilds}\n` + `**Users:** ${users}`,
       });
 
     embed.addFields({
-      name: `${mutagen} Links`,
+      name: `${emojis.mutagen} Links`,
       value: [
         `- [Semblance Invite](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=274878295040&scope=bot+applications.commands)`,
         '- [Semblance Support/Main](https://discord.gg/XFMaTn6taf)',

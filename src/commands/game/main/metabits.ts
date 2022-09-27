@@ -1,12 +1,11 @@
-import type { Message } from 'discord.js';
-import { MessageEmbed, MessageAttachment } from 'discord.js';
+import { type Message, MessageEmbed, MessageAttachment } from 'discord.js';
 import { Command } from '@sapphire/framework';
-import { Categories, randomColor, Subcategories } from '#constants/index';
+import { Category, randomColor, Subcategory } from '#constants/index';
 
 export default class Metabits extends Command {
   public override name = 'metabits';
   public override description = 'A detailed explanation of how to obtain Metabits faster';
-  public override fullCategory = [Categories.game, Subcategories.main];
+  public override fullCategory = [Category.game, Subcategory.main];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;

@@ -1,7 +1,15 @@
-﻿import type { Category, Subcategory } from '#lib/interfaces/Semblance';
-import type { GuildMember, MessageActionRow, MessageComponentInteraction, Snowflake, User, Guild } from 'discord.js';
-import { Permissions } from 'discord.js';
+﻿import {
+  MessageAttachment,
+  Permissions,
+  type GuildMember,
+  type MessageActionRow,
+  type MessageComponentInteraction,
+  type Snowflake,
+  type User,
+  type Guild,
+} from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
+import * as fs from 'fs/promises';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 
@@ -27,9 +35,8 @@ const swap = (list: [Snowflake, number][], leftIndex: number, rightIndex: number
   return list;
 };
 const partition = (list: [Snowflake, number][], left: number, right: number) => {
-  // eslint-disable-next-line prefer-const
-  let pivot = list[Math.floor((right + left) / 2)][1],
-    i = left,
+  const pivot = list[Math.floor((right + left) / 2)][1];
+  let i = left,
     j = right;
   while (i <= j) {
     while (list[i][1] > pivot) {
@@ -46,12 +53,80 @@ const partition = (list: [Snowflake, number][], left: number, right: number) => 
   }
   return i;
 };
+
+export const attachments = await (async () => {
+  const files = await fs.readdir('./src/images/');
+  const finalAttachments = {} as Record<
+    | 'currentLogo'
+    | 'sharks'
+    | 'roadMap'
+    | 'terminusChamber'
+    | 'simStatsLocation'
+    | 'geodeLevelComparison'
+    | 'prestige'
+    | 'prestigeList'
+    | 'archieDance'
+    | 'nanobots'
+    | 'currency'
+    | 'mementoMori',
+    MessageAttachment
+  >;
+  for (const file of files)
+    if (file.endsWith('.png') || file.endsWith('.mp4')) {
+      const attachment = new MessageAttachment(`./src/images/${file}`, `attachment://${file}`),
+        attachmentName = file.substring(0, file.indexOf('.'));
+      finalAttachments[attachmentName] = attachment;
+    }
+  return finalAttachments;
+})();
+
+export enum UserId {
+  sirh = '780995336293711875',
+  // organizer
+  aditya = '506458497718812674',
+  // artist
+  cabiie = '342004536753520651',
+  bloodex = '297007456461258752',
+  // contributors
+  offpringles = '299174026411114497',
+  jojoseis = '325373529967296513',
+  sampedrako = '651370672911679498',
+  hardik = '552102291616956416',
+}
+
+export enum GuildId {
+  cellToSingularity = '488478892873744385',
+  computerLunch = '796153726586454077',
+  sirhStuff = '794054988224659490',
+}
+
+// Early Private Beta Testers of the Beyond
+export const earlyBeyondTesters = [
+  '658351740470689801', // 'Maxence#6028',
+  UserId.sampedrako, // 'SampeDrako#1063',
+  UserId.aditya, // 'aditya20.0#1610',
+  UserId.sirh, // 'SirH#7157',
+  '463767995790000130', // 'iMTV ?!#9864',
+  '579379819888902165', // 'elias la glaçe#6248',
+  '511988453353717762', // 'JonesyyBoyy#8247',
+  '201211739684077568', // 'xKeepSiLenT#3275',
+  UserId.hardik, // 'Hardik Chavada#0844',
+  '557915359705956375', // "C's Stuff#0421",
+  '293382712276942850', // 'BlackHole-Chan#0273',
+  '374266494235705344', // 'The Purple One#9049',
+  '401451350023602197', // 'Ektrom#8320',
+  '397847807974834186', // '✨ℭ𝕣𝕪𝕤𝕥𝕒𝕝 𝔊𝕝𝕚𝕟𝕥 ✨#0164',
+  '388433470881529857', // 'g4genn#4529',
+  '263156930879553537', // 'xXTacocubesXx#6012',
+];
+
 export const subcategoryList = (client: SapphireClient, category: Category, subcategory: Subcategory) =>
   client.stores
     .get('commands')
     .filter(c => c.category == category && c.subCategory == subcategory)
     .map(c => `**\`${client.user}${c.name}\`**`)
     .join(', ');
+
 export const emojis = {
   tick: '✅',
   cross: '❌',
@@ -74,25 +149,7 @@ export const emojis = {
   energy: '<:energy:808445587803471922>',
   sentience: '<:sentience:808445599078809670>',
 };
-export const addableEmojis = [
-  '<:entropy:742748357163745413>',
-  '<:idea:775808337303437353>',
-  '<:darwinium:742748359781122169>',
-  '<:metabit:789526514524880906>',
-  '<:mutagen:742748361852977184>',
-  '<:fossil:742748364625543239>',
-  '<:Dino_Gold:667471422334959619>',
-  '<:Dino_Bronze:667471174766428160>',
-  '<:Dino_Silver:667471406950514688>',
-  '<:trex_skull:657015647359860767>',
-  '<:singularity:789526513812504617>',
-  '<:NanobotUp:764149893937102858>',
-  '<:NanobotDown:764149995032412180>',
-  '<:darkMatter:808445570078867496>',
-  '<:stardust:808445612013518868>',
-  '<:energy:808445587803471922>',
-  '<:sentience:808445599078809670>',
-];
+
 export const emojiSnowflakes = {
   entropy: '742748357163745413',
   idea: '775808337303437353',
@@ -112,20 +169,17 @@ export const emojiSnowflakes = {
   energy: '808445587803471922',
   sentience: '808445599078809670',
 };
-export const messageLinkRegex =
-  /https?:\/\/(?:canary\.|ptb\.)?discord(?:app)?\.com\/channels\/(?<guildId>@me|\d{17,19})?\/(?<channelId>\d{17,20})\/(?<messageId>\d{17,20})/g;
-export const attachmentLinkRegex =
-  /https?:\/\/(?:cdn\.)?discord(?:app)?\.com\/attachments\/\d{17,19}\/\d{17,20}\/(?<name>\w*\W*)(?:\.png|\.jpg|\.jpeg|\.webp|\.gif)/i;
+
 export const customIdRegex =
   /(?<!.){command:'[a-z]{3,20}',action:'([a-z]|\d){1,20}(-([a-z]|\d){1,20})?',id:'\d{17,20}'(,page:\d{1,3})?}(?!.)/;
+
 export const properCustomIdRegex =
   /(?<!.){"command":"[a-z]{3,20}","action":"([a-z]|\d){1,20}(-([a-z]|\d){1,20})?","id":"\d{17,20}"(,"page":\d{1,3})?}(?!.)/;
+
 export const onlyUnique = (value: unknown, index: number, self: unknown[]) => self.indexOf(value) == index;
-export const parseArgs = (_arguments: string) =>
-  (_arguments.match(/"[^"]+"|[^ ]+/g) ?? []).map(argument =>
-    argument.startsWith('"') && argument.endsWith('"') ? argument.slice(1).slice(0, -1) : argument,
-  );
+
 export const formattedDate = (ms: number) => `<t:${Math.floor(ms / 1000)}:F>`;
+
 export const msToTime = (ms: number) => {
   const days = Math.floor(ms / 86400000); // 24*60*60*1000
   const daysms = ms % 86400000; // 24*60*60*1000
@@ -143,24 +197,27 @@ export const msToTime = (ms: number) => {
 
   return str;
 };
-export const Categories: Record<Category, Category> = {
-  fun: 'fun',
-  game: 'game',
-  utility: 'utility',
-  calculator: 'calculator',
-  c2sServer: 'c2sServer',
-  developer: 'developer',
-  dm: 'dm',
-  secret: 'secret',
-  help: 'help',
-  semblance: 'semblance',
-};
-export const Subcategories: Record<Subcategory, Subcategory> = {
-  main: 'main',
-  mesozoic: 'mesozoic',
-  beyond: 'beyond',
-  other: 'other',
-};
+
+export enum Category {
+  fun = 'fun',
+  game = 'game',
+  utility = 'utility',
+  calculator = 'calculator',
+  c2sServer = 'c2sServer',
+  developer = 'developer',
+  dm = 'dm',
+  secret = 'secret',
+  help = 'help',
+  semblance = 'semblance',
+}
+
+export enum Subcategory {
+  main = 'main',
+  mesozoic = 'mesozoic',
+  beyond = 'beyond',
+  other = 'other',
+}
+
 export const roles = {
   admin: Permissions.FLAGS.ADMINISTRATOR,
   exec: Permissions.FLAGS.MANAGE_GUILD,
@@ -170,8 +227,14 @@ export const roles = {
   helper: Permissions.FLAGS.MANAGE_MESSAGES,
   duty: Permissions.FLAGS.MUTE_MEMBERS,
 };
-export const c2sRolesInformation: Record<keyof typeof c2sRoles, object> = {
+
+export const c2sRolesInformation: typeof c2sRoles = {
   server: {
+    dev: 'Cell to Singularity Developer',
+    eventOrganizer: 'Event Organizer',
+    monthlyContestWinner: 'Monthly Contest Winner',
+    serverBooster: 'Server Booster',
+    muted: 'Muted',
     councilOverseer:
       'The overseers of the Cell to Singularity server, they manage everything that goes on in the Discord community and aim to make more improvements.',
     martianCouncil: "The moderators of the Cell to Singularity server, they're tasked for moderating the server.",
@@ -180,28 +243,29 @@ export const c2sRolesInformation: Record<keyof typeof c2sRoles, object> = {
     serverEvents: 'receive pings for events happening on the server.',
     feliforms: 'participated on the feliforms team during the Feliforms vs. Caniforms event.',
     caniforms: 'participated on the caniforms team during the Feliforms vs. Caniforms event.',
-  } as typeof c2sRoles.server,
+  },
   simulation: {
     finderOfSemblancesSecrets: 'found all the secrets in the game.',
     sharkCollector: 'collected all the sharks in the game.',
     sonicSpeedsterOfSimulations: 'reached singularity withn 2 minutes.',
     simulationSpeedster: 'reached singularity within 5 minutes.',
     betaTester: 'is/was beta tester of a private beta.',
-  } as typeof c2sRoles.simulation,
+  },
   metabit: {
     realityLegend: 'achieved 100 trillion metabits',
     realityExpert: 'achieved 1 trillion metabits',
     realityExplorer: 'achieved 1 billion metabits',
-  } as typeof c2sRoles.metabit,
+  },
   mesozoic: {
     paleontologistLegend: 'reached prestige 10',
     progressivePaleontologist: 'reached prestige 1',
     paleontologist: 'reached rank 26',
-  } as typeof c2sRoles.mesozoic,
+  },
   beyond: {
     planetaryExplorer: 'reached rank 15',
-  } as typeof c2sRoles.beyond,
+  },
 };
+
 export const c2sRoles = {
   server: {
     dev: '493796775132528640',
@@ -238,36 +302,10 @@ export const c2sRoles = {
     planetaryExplorer: '922176303153696768',
   },
 };
-export const cellChannels = [
-  '488478893586645004', // cells-chat
-  '496430259114082304', // share-your-prestige
-  '511658545280712726', // suggestions
-  '545344551095894028', // beta
-  '694901423732686878', // cells-art
-  '506940509441490947', // general
-  '567042187443961858', // memes
-  '751513380413505618', // semblance
-  '706852533393686581', // bot-room
-  '807324470615605308', // international
-  '573912366509457411', // español
-  '547455179302109186', // polski
-  '547452339179487249', // pyccкий
-  '547456263546601523', // deutsch
-  '547523244371214336', // français
-  '575377407750438912', // português
-  '658077773138493464', // türkçe
-];
-export const sirhChannels = [
-  '794054989529874493', // general
-  '794054989529874494', // memes
-  '794054989529874495', // suggestions
-  '794054989529874496', // bug-reports
-  '794054989529874497', // bot-room
-  '794054989529874500', // voice-chat
-];
+
 export const getPermissionLevel = function (member: GuildMember) {
   try {
-    if ('506458497718812674' === member.user.id || member.user.id == '780995336293711875') return 7;
+    if (UserId.aditya === member.user.id || UserId.sirh === member.user.id) return 7;
     // Aditya, SirH //RIP SirH OG: "279080959612026880" === member.user.id // SirH#4297
     if (member.permissions.has(roles.admin)) return 6; // admin
     if (member.permissions.has(roles.exec)) return 5; // exec
@@ -312,12 +350,14 @@ export const disableAllComponents = (interaction: MessageComponentInteraction) =
     components: interaction.message.components as MessageActionRow[],
   });
 };
-export const isUserInGuild = (user: User, guild: Guild) => {
-  return guild.members
-    .fetch(user.id)
-    .then(() => true)
-    .catch(() => false);
+export const isUserInGuild = async (user: User, guild: Guild) => {
+  try {
+    await guild.members.fetch(user.id);
+    return true;
+  } catch {
+    return false;
+  }
 };
 // Command related functions and constants
-export { gameTransferPages, correctReportList, bugChannels, serversPerPage, guildBookPage } from '#constants/commands';
-export { bigToName } from '#constants/largeNumberConversion';
+export * from '#constants/commands';
+export * from '#constants/largeNumberConversion';

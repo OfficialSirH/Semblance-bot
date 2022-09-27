@@ -1,7 +1,5 @@
-import type { ButtonInteraction } from 'discord.js';
-import { Collection, MessageActionRow, MessageButton } from 'discord.js';
-import { c2sRoles } from '#constants/index';
-import { c2sGuildId, currentLogo } from '#config';
+import { type ButtonInteraction, Collection, MessageActionRow, MessageButton } from 'discord.js';
+import { c2sRoles, GuildId, attachments } from '#constants/index';
 import { componentInteractionDefaultParser, buildCustomId } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
@@ -37,7 +35,7 @@ export default class Roles extends InteractionHandler {
       components = [
         new MessageActionRow().addComponents(
           new MessageButton()
-            .setDisabled(guild.id != c2sGuildId)
+            .setDisabled(guild.id != GuildId.cellToSingularity)
             .setCustomId(
               buildCustomId({
                 command: 'roles',
@@ -65,7 +63,7 @@ export default class Roles extends InteractionHandler {
         ephemeral: true,
       });
     }
-    const embed = interaction.message.embeds[0].setThumbnail(currentLogo.name);
+    const embed = interaction.message.embeds[0].setThumbnail(attachments.currentLogo.name);
     await interaction.message.edit({ embeds: [embed], components });
   }
 }

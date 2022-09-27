@@ -1,6 +1,5 @@
 import { isProduction } from '#constants/index';
-import type { LogLevel } from '@sapphire/framework';
-import { Logger } from '@sapphire/framework';
+import { type LogLevel, Logger } from '@sapphire/framework';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/rest/v10';
 export class WebhookLogger extends Logger {

@@ -1,13 +1,11 @@
-import { MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor, Subcategories } from '#constants/index';
-import { currentLogo, nanobots } from '#config';
+import { type Message, MessageEmbed } from 'discord.js';
+import { attachments, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class Nanobots extends Command {
   public override name = 'nanobots';
   public override description = 'Provides details on nanobots and whatever else about those cute critters';
-  public override fullCategory = [Categories.game, Subcategories.main];
+  public override fullCategory = [Category.game, Subcategory.main];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
@@ -15,8 +13,8 @@ export default class Nanobots extends Command {
       .setTitle('Nanobots')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)
-      .setThumbnail(currentLogo.name)
-      .setImage(nanobots.name)
+      .setThumbnail(attachments.currentLogo.name)
+      .setImage(attachments.nanobots.name)
       .setDescription(
         [
           'Nanobots are little dudes that can help with either auto-upgrading or clicking. These little dudes are obtainable through rebooting and spending metabits for them, which you can buy up to 12(First Image).',
@@ -28,7 +26,7 @@ export default class Nanobots extends Command {
       .setFooter({
         text: 'Thanks to SampeDrako for creating this beautifully better designed image representing nanobots!',
       });
-    return { embeds: [embed], files: [currentLogo, nanobots] };
+    return { embeds: [embed], files: [attachments.currentLogo, attachments.nanobots] };
   }
 
   public override async messageRun(message: Message) {

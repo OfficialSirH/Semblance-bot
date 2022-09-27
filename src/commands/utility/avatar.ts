@@ -1,12 +1,11 @@
-import type { CommandInteraction, Message, User } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
+import { type CommandInteraction, type Message, type User, MessageEmbed } from 'discord.js';
+import { Category, randomColor } from '#constants/index';
 import { type Args, Command, type ApplicationCommandRegistry } from '@sapphire/framework';
 
 export default class Avatar extends Command {
   public override name = 'avatar';
   public override description = 'Get the avatar of a user.';
-  public override fullCategory = [Categories.utility];
+  public override fullCategory = [Category.utility];
 
   public async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const user = interaction.options.getUser('user')

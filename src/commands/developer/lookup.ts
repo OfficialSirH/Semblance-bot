@@ -2,7 +2,7 @@
 import type { CommandInteraction, EmbedField, Snowflake, TextChannel, User } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import type { APIInvite, ChannelType, APIUser } from 'discord-api-types/v10';
-import { Categories, onlyUnique, randomColor } from '#constants/index';
+import { Category, onlyUnique, randomColor } from '#constants/index';
 import { request } from 'undici';
 
 export default class Lookup extends Command {
@@ -11,7 +11,7 @@ export default class Lookup extends Command {
       ...options,
       name: 'lookup',
       description: 'Lookup something unknown, like an Id or an invite, and hopefully get the meaning behind it!',
-      fullCategory: [Categories.developer],
+      fullCategory: [Category.developer],
       preconditions: ['OwnerOnly'],
     });
   }
@@ -140,7 +140,7 @@ export default class Lookup extends Command {
           return interaction.reply(`✅ This Id is a user Id of ${user.username}#${user.discriminator} (${user.id}).`);
       }
     } catch (e) {
-      console.log(e);
+      this.container.logger.error(e);
     }
 
     // invite lookup

@@ -1,11 +1,11 @@
-import { bigToName, Categories, randomColor } from '#constants/index';
+import { bigToName, Category, randomColor } from '#constants/index';
 import { type CommandInteraction, MessageEmbed } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
 export default class MetaCalc extends Command {
   public override name = 'metacalc';
   public override description = 'calculate the amount of metabits produced by entropy and ideas';
-  public override fullCategory = [Categories.calculator];
+  public override fullCategory = [Category.calculator];
 
   public async metaCalc(
     interaction: CommandInteraction<'cached'>,

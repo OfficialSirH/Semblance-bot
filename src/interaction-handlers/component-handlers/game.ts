@@ -1,5 +1,10 @@
-import type { ButtonInteraction, MessageComponentInteraction } from 'discord.js';
-import { MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import {
+  type ButtonInteraction,
+  type MessageComponentInteraction,
+  MessageActionRow,
+  MessageButton,
+  MessageEmbed,
+} from 'discord.js';
 import { randomColor } from '#constants/index';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { currentPrice } from '#constants/commands';

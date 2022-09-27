@@ -1,4 +1,4 @@
-import { bigToName, Categories, randomColor } from '#constants/index';
+import { bigToName, Category, randomColor } from '#constants/index';
 import { type AutocompleteInteraction, type CommandInteraction, MessageEmbed } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { itemList } from '#itemList';
@@ -6,7 +6,7 @@ import { itemList } from '#itemList';
 export default class ItemCalc extends Command {
   public override name = 'itemcalc';
   public override description = 'calculate prices for items in-game';
-  public override fullCategory = [Categories.calculator];
+  public override fullCategory = [Category.calculator];
 
   public async itemCalc(
     interaction: CommandInteraction<'cached'>,

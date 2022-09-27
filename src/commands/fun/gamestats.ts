@@ -1,12 +1,12 @@
 import { type CommandInteraction, MessageEmbed } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
+import { Category, randomColor } from '#constants/index';
 import { currentPrice } from '#constants/commands';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
 export default class Gamestats extends Command {
   public override name = 'gamestats';
   public override description = "Displays a user's game stats for Semblance Idle-Game.";
-  public override fullCategory = [Categories.fun];
+  public override fullCategory = [Category.fun];
 
   public async chatInputRun(interaction: CommandInteraction<'cached'>) {
     let user = interaction.options.getUser('user');

@@ -1,4 +1,5 @@
 import {
+  type Message,
   MessageActionRow,
   MessageButton,
   MessageEmbed,
@@ -6,21 +7,20 @@ import {
   MessageSelectMenu,
   type AutocompleteInteraction,
 } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor } from '#constants/index';
+import { Category, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
 
 export default class Help extends Command {
   public override name = 'help';
   public override description = 'Lists all available commands.';
-  public override fullCategory = [Categories.help];
+  public override fullCategory = [Category.help];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const c2sServerCommands = builder.client.stores
       .get('commands')
-      .filter(c => c.category === Categories.c2sServer)
+      .filter(c => c.category === Category.c2sServer)
       .map(c => `**${builder.client.user}${c.name}**`);
     const embed = new MessageEmbed()
       .setTitle('Semblance Command List')

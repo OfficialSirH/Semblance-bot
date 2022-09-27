@@ -1,20 +1,20 @@
 import { type Message, MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
-import { Categories, randomColor, Subcategories, subcategoryList } from '#constants/index';
+import { Category, randomColor, Subcategory, subcategoryList } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
 
 export default class C2sHelp extends Command {
   public override name = 'c2shelp';
   public override description = 'List of all Cell to Singularity related commands';
-  public override fullCategory = [Categories.help];
+  public override fullCategory = [Category.help];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const client = builder.client;
     const user = 'user' in builder ? builder.user : builder.author;
 
-    const mainCommands = subcategoryList(client, Categories.game, Subcategories.main);
-    const mesozoicCommands = subcategoryList(client, Categories.game, Subcategories.mesozoic);
-    const otherCommands = subcategoryList(client, Categories.game, Subcategories.other);
+    const mainCommands = subcategoryList(client, Category.game, Subcategory.main);
+    const mesozoicCommands = subcategoryList(client, Category.game, Subcategory.mesozoic);
+    const otherCommands = subcategoryList(client, Category.game, Subcategory.other);
     const components = [
       new MessageActionRow().addComponents(
         new MessageButton()

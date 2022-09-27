@@ -1,14 +1,12 @@
-import { type CommandInteraction, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
-import type { Message } from 'discord.js';
-import { Categories, randomColor, Subcategories } from '#constants/index';
-import { currentLogo } from '#config';
+import { type Message, type CommandInteraction, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import { Category, randomColor, Subcategory, attachments } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
 
 export default class Codes extends Command {
   public override name = 'codes';
   public override description = 'get all of the ingame codes';
-  public override fullCategory = [Categories.game, Subcategories.other];
+  public override fullCategory = [Category.game, Subcategory.other];
 
   public async chatInputRun(interaction: CommandInteraction<'cached'>) {
     await interaction.reply(await this.sharedRun(interaction));
@@ -21,7 +19,7 @@ export default class Codes extends Command {
       .setTitle('Darwinium Codes')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)
-      .setThumbnail(currentLogo.name)
+      .setThumbnail(attachments.currentLogo.name)
       .setDescription(codeHandler.value)
       .setFooter({ text: codeHandler.footer });
     const component = new MessageActionRow().addComponents(
@@ -38,7 +36,7 @@ export default class Codes extends Command {
     );
     return {
       embeds: [embed],
-      files: [currentLogo],
+      files: [attachments.currentLogo],
       components: [component],
     };
   }

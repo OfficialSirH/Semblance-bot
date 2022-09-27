@@ -33,16 +33,3 @@ export type ParsedCustomIdData<T extends string = string, NewData extends Custom
 > & {
   action: T;
 };
-
-export type Category =
-  | 'fun'
-  | 'game'
-  | 'dm'
-  | 'utility'
-  | 'calculator'
-  | 'c2sServer'
-  | 'developer'
-  | 'secret'
-  | 'help'
-  | 'semblance';
-export type Subcategory = 'main' | 'mesozoic' | 'beyond' | 'other';

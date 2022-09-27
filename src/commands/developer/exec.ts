@@ -1,10 +1,7 @@
-import { c2sGuildId, sirhGuildId } from '#config';
-import { Categories } from '#constants/index';
-import type { ApplicationCommandRegistry } from '@sapphire/framework';
-import { Command } from '@sapphire/framework';
+import { Category, GuildId } from '#constants/index';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { exec } from 'child_process';
-import type { CommandInteraction } from 'discord.js';
-import { MessageEmbed } from 'discord.js';
+import { type CommandInteraction, MessageEmbed } from 'discord.js';
 
 export default class Exec extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -12,7 +9,7 @@ export default class Exec extends Command {
       ...options,
       name: 'exec',
       description: 'Executes a command in the terminal.',
-      fullCategory: [Categories.developer],
+      fullCategory: [Category.developer],
       preconditions: ['OwnerOnly'],
     });
   }
@@ -44,7 +41,7 @@ export default class Exec extends Command {
         ],
       },
       {
-        guildIds: [c2sGuildId, sirhGuildId],
+        guildIds: [GuildId.cellToSingularity],
         idHints: ['973689162035257444', '997700143593824350'],
       },
     );

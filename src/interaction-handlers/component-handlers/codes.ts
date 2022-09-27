@@ -1,5 +1,5 @@
 import { MessageActionRow, MessageButton, type ButtonInteraction, MessageEmbed } from 'discord.js';
-import { currentLogo } from '#config';
+import { attachments } from '#constants/index';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 import { buildCustomId, componentInteractionDefaultParser } from '#constants/components';
@@ -55,7 +55,7 @@ export default class Codes extends InteractionHandler {
         );
     }
 
-    embed.setThumbnail(currentLogo.name);
+    embed.setThumbnail(attachments.currentLogo.name);
     await interaction.update({ embeds: [embed], components: [component] });
   }
 }
