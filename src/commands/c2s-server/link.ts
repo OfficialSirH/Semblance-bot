@@ -15,11 +15,14 @@ export default class Link extends Command {
   }
 
   public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
-    const playerEmail = interaction.options.getString('playeremail', true);
+    const playerId = interaction.options.getString('playerid');
+    const playerEmail = interaction.options.getString('playeremail');
     const playerToken = interaction.options.getString('playertoken', true);
-    const isEmail = interaction.options.getBoolean('isemail');
 
-    if (isEmail) {
+    if (playerId && playerEmail)
+      return interaction.reply({ content: 'Please only provide either playerId or playerEmail.', ephemeral: true });
+
+    if (playerEmail) {
       const discordLinkClient = new DiscordLinkAPI(Buffer.from(playerEmail + ':' + playerToken).toString('base64'));
 
       await interaction.deferReply({ ephemeral: true });
@@ -33,9 +36,12 @@ export default class Link extends Command {
 
       return interaction.editReply(msg);
     }
+
+    if (!playerId) return interaction.reply({ content: 'Please provide a player id.', ephemeral: true });
+
     const { user } = interaction;
 
-    const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerEmail).update(playerToken).digest('hex');
+    const token = createHmac('sha1', process.env.USERDATA_AUTH).update(playerId).update(playerToken).digest('hex');
     const dataAlreadyExists = await interaction.client.db.userData.findUnique({ where: { token } });
     if (dataAlreadyExists)
       return interaction.reply({
@@ -143,21 +149,21 @@ export default class Link extends Command {
         description: this.description,
         options: [
           {
-            name: 'playeremail',
-            type: 'STRING',
-            description: 'The email bound to your Game Transfer account.',
-            required: true,
-          },
-          {
             name: 'playertoken',
             type: 'STRING',
             description: 'The player token bound to your Game Transfer account.',
             required: true,
           },
           {
-            name: 'isemail',
-            type: 'BOOLEAN',
-            description: 'indicates if the playeremail option is an email or a player id.',
+            name: 'playerid',
+            type: 'STRING',
+            description: 'Your player id.',
+            required: false,
+          },
+          {
+            name: 'playeremail',
+            type: 'STRING',
+            description: 'The email bound to your Game Transfer account.',
             required: false,
           },
         ],
