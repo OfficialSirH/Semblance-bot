@@ -63,7 +63,7 @@
   "keywords": [],
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^18.7.19",
+    "@types/node": "^18.8.1",
     "@types/node-schedule": "^2.1.0",
     "@types/source-map-support": "^0.5.6",
     "@types/ws": "^8.5.3",
