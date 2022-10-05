@@ -18,7 +18,7 @@ declare module '@sapphire/framework' {
      */
     sharedRun?<T extends Command['SharedBuilder']>(
       builder: T,
-    ): Awaitable<string | (T extends Message ? MessageOptions | ReplyMessageOptions : InteractionReplyOptions)>;
+    ): Awaitable<string | (T extends Message ? MessageCreateOptions | MessageReplyOptions : InteractionReplyOptions)>;
   }
 
   interface Command {
@@ -31,13 +31,14 @@ import { WebhookLogger } from '#structures/WebhookLogger';
 import { ApplicationCommandRegistries, LogLevel, RegisterBehavior, SapphireClient } from '@sapphire/framework';
 import {
   type InteractionReplyOptions,
-  type MessageOptions,
-  type ReplyMessageOptions,
+  type MessageCreateOptions,
+  type MessageReplyOptions,
   type Interaction,
   type Awaitable,
-  Intents,
   type Message,
   Options,
+  Partials,
+  IntentsBitField,
 } from 'discord.js';
 
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
@@ -58,11 +59,10 @@ const client = new SapphireClient({
     GuildMemberManager: 10,
     UserManager: 10,
   }),
-  partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE'],
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
+  partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message],
+  intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.DirectMessages],
 });
 client.db = new prisma.PrismaClient();
-
 // fastify routing
 import fastify from 'fastify';
 const app = fastify();

@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed } from 'discord.js';
+import { type Message, EmbedBuilder } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -24,7 +24,7 @@ export default class MiscHelp extends Command {
       .filter(c => c.category === Category.semblance)
       .map(c => `**${client.user}${c.name}**`);
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Miscellaneous Commands')
       .setThumbnail(client.user.displayAvatarURL())
       .setColor(randomColor)

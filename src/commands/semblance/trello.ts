@@ -1,4 +1,4 @@
-import { MessageEmbed, type Message } from 'discord.js';
+import { EmbedBuilder, type Message } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -8,7 +8,7 @@ export default class Trello extends Command {
   public override fullCategory = [Category.semblance];
 
   public override sharedRun() {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setDescription("[Semblance's Trello board](https://trello.com/b/Zhrs5AaN/semblance-project)")
       .setColor(randomColor);
     return { embeds: [embed] };

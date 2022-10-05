@@ -1,4 +1,12 @@
-import { MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  type ChatInputCommandInteraction,
+  EmbedBuilder,
+  ApplicationCommandOptionType,
+  ButtonStyle,
+  type MessageActionRowComponentBuilder,
+} from 'discord.js';
 import type { sizeType } from '#lib/interfaces/catAndDogAPI';
 import { fetchCatOrDog } from '#constants/commands';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
@@ -8,7 +16,7 @@ export default class Imagegen extends Command {
   public override name = 'imagegen';
   public override description = 'Generates a random image of either a cat or dog.';
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     if (!interaction.options.getSubcommand()) return;
     const wantsCat = interaction.options.getSubcommand() === 'cat';
 
@@ -32,18 +40,18 @@ export default class Imagegen extends Command {
       image_url = image.url,
       breed = image.breeds[0];
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle(`Here's a ${breed.name}!`)
       .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)
       .setImage(image_url);
 
     const components = [
-      new MessageActionRow().addComponents(
-        new MessageButton()
+      new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+        new ButtonBuilder()
           .setLabel('Refresh')
           .setEmoji('🔄')
-          .setStyle('SECONDARY')
+          .setStyle(ButtonStyle.Secondary)
           .setCustomId(
             buildCustomId({
               command: 'imagegen',
@@ -61,24 +69,21 @@ export default class Imagegen extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
-        name: this.name,
-        description: this.description,
-        options: [
-          {
-            name: 'cat',
-            description: 'Generates a random cat image.',
-            type: 'SUB_COMMAND',
-          },
-          {
-            name: 'dog',
-            description: 'Generates a random dog image.',
-            type: 'SUB_COMMAND',
-          },
-        ],
-      },
-      { idHints: ['973689165281652736'] },
-    );
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+      options: [
+        {
+          name: 'cat',
+          description: 'Generates a random cat image.',
+          type: ApplicationCommandOptionType.Subcommand,
+        },
+        {
+          name: 'dog',
+          description: 'Generates a random dog image.',
+          type: ApplicationCommandOptionType.Subcommand,
+        },
+      ],
+    });
   }
 }

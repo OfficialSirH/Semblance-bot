@@ -1,6 +1,13 @@
 import { buildCustomId, componentInteractionDefaultParser, filterAction } from '#constants/components';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
-import { type ButtonInteraction, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import {
+  type ButtonInteraction,
+  ActionRowBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+  type MessageActionRowComponentBuilder,
+  ButtonStyle,
+} from 'discord.js';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Credits extends InteractionHandler {
@@ -20,9 +27,9 @@ export default class Credits extends InteractionHandler {
     interaction: ButtonInteraction,
     data: ParsedCustomIdData<'credits' | 'thanks' | 'semblance' | 'semblance-beta' | 'semblance-revisioned'>,
   ) {
-    const embed = new MessageEmbed();
+    const embed = new EmbedBuilder();
     const creditComponents = [
-      new MessageButton()
+      new ButtonBuilder()
         .setCustomId(
           buildCustomId({
             command: this.name,
@@ -31,8 +38,8 @@ export default class Credits extends InteractionHandler {
           }),
         )
         .setLabel('Credits')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
         .setCustomId(
           buildCustomId({
             command: this.name,
@@ -41,8 +48,8 @@ export default class Credits extends InteractionHandler {
           }),
         )
         .setLabel('Special Thanks')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
         .setCustomId(
           buildCustomId({
             command: this.name,
@@ -51,8 +58,8 @@ export default class Credits extends InteractionHandler {
           }),
         )
         .setLabel('Preview Semblance Art')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
         .setCustomId(
           buildCustomId({
             command: this.name,
@@ -61,8 +68,8 @@ export default class Credits extends InteractionHandler {
           }),
         )
         .setLabel('Preview Semblance Beta Art')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
         .setCustomId(
           buildCustomId({
             command: this.name,
@@ -71,7 +78,7 @@ export default class Credits extends InteractionHandler {
           }),
         )
         .setLabel('Preview Semblance Revisioned Art')
-        .setStyle('PRIMARY'),
+        .setStyle(ButtonStyle.Primary),
     ];
 
     switch (data.action) {
@@ -128,7 +135,10 @@ export default class Credits extends InteractionHandler {
         return;
     }
 
-    const component = filterAction([new MessageActionRow().addComponents(...creditComponents)], data.action);
-    await interaction.update({ embeds: [embed], components: component });
+    const components = filterAction(
+      [new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(...creditComponents)],
+      data.action,
+    );
+    await interaction.update({ embeds: [embed], components });
   }
 }

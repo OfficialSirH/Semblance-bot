@@ -1,4 +1,12 @@
-import { type Message, MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
+import {
+  type Message,
+  ActionRowBuilder,
+  ButtonBuilder,
+  type ChatInputCommandInteraction,
+  EmbedBuilder,
+  type MessageActionRowComponentBuilder,
+  ButtonStyle,
+} from 'discord.js';
 import { c2sRoles, c2sRolesInformation, Category, attachments, GuildId } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
@@ -18,7 +26,7 @@ export default class Roles extends Command {
     const member = builder.member;
     const guildRoles = builder.client.guilds.cache.get(GuildId.cellToSingularity).roles.cache;
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
         .setTitle('C2S Roles')
         .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
         .setThumbnail(attachments.currentLogo.name)
@@ -59,8 +67,8 @@ export default class Roles extends Command {
         .setFooter({ text: '*Epic* roles.' }),
       hasServerEvents = member.roles.cache.has(c2sRoles.server.serverEvents),
       components = [
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
             .setDisabled(builder.guild.id != GuildId.cellToSingularity)
             .setCustomId(
               buildCustomId({
@@ -71,7 +79,7 @@ export default class Roles extends Command {
             )
             .setEmoji(hasServerEvents ? '❌' : '✅')
             .setLabel(hasServerEvents ? 'Remove Server Events Role' : 'Add Server Events Role')
-            .setStyle(hasServerEvents ? 'DANGER' : 'SUCCESS'),
+            .setStyle(hasServerEvents ? ButtonStyle.Danger : ButtonStyle.Success),
         ),
       ];
     return { embeds: [embed], files: [attachments.currentLogo], components };
@@ -81,7 +89,7 @@ export default class Roles extends Command {
     await message.reply(this.sharedRun(message));
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     await interaction.reply(this.sharedRun(interaction));
   }
 
@@ -93,7 +101,6 @@ export default class Roles extends Command {
       },
       {
         guildIds: [GuildId.cellToSingularity],
-        idHints: ['973689074395271248'],
       },
     );
   }

@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed } from 'discord.js';
+import { type Message, EmbedBuilder } from 'discord.js';
 import { attachments, emojis, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -8,7 +8,7 @@ export default class Dinos extends Command {
   public override fullCategory = [Category.game, Subcategory.mesozoic];
 
   public override sharedRun() {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle(`${emojis.trexSkull} Mesozoic Valley`)
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)

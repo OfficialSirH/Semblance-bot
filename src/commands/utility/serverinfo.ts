@@ -1,4 +1,4 @@
-import { type Guild, type Message, MessageEmbed } from 'discord.js';
+import { type Guild, type Message, EmbedBuilder, ChannelType } from 'discord.js';
 import { Category, getPermissionLevel, randomColor } from '#constants/index';
 import { type Args, Command } from '@sapphire/framework';
 
@@ -21,13 +21,13 @@ export default class ServerInfo extends Command {
       voiceChannel = 0,
       categoryChannel = 0;
     guild.channels.cache.forEach(channel => {
-      if (channel.type == 'GUILD_TEXT') {
+      if (channel.type == ChannelType.GuildText) {
         textChannel++;
       }
-      if (channel.type == 'GUILD_VOICE') {
+      if (channel.type == ChannelType.GuildVoice) {
         voiceChannel++;
       }
-      if (channel.type == 'GUILD_CATEGORY') {
+      if (channel.type == ChannelType.GuildCategory) {
         categoryChannel++;
       }
     });
@@ -45,7 +45,7 @@ export default class ServerInfo extends Command {
     const canRoleListWork = roleList.length > 1024 ? '*Too many roles*' : roleList;
     const fetchedGuild = await guild.fetch();
     const owner = await guild.members.fetch(guild.ownerId);
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setAuthor({ name: guild.name, iconURL: guild.iconURL() })
       .setColor(randomColor)
       .addFields(

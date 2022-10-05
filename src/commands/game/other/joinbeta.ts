@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed } from 'discord.js';
+import { type Message, EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -10,7 +10,7 @@ export default class JoinBeta extends Command {
   public override async sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const infoHandler = await builder.client.db.information.findUnique({ where: { type: 'joinbeta' } });
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Steps to join beta')
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)

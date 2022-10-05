@@ -1,6 +1,6 @@
 import { getPermissionLevel } from '#constants/index';
 import { Precondition } from '@sapphire/framework';
-import type { CommandInteraction, ContextMenuInteraction, Message } from 'discord.js';
+import type { ChatInputCommandInteraction, ContextMenuCommandInteraction, Message } from 'discord.js';
 
 export class ModOnly extends Precondition {
   public override messageRun(message: Message) {
@@ -9,13 +9,13 @@ export class ModOnly extends Precondition {
       : this.error({ message: 'Only the moderators can use this command!' });
   }
 
-  public override chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     return getPermissionLevel(interaction.member) > 0
       ? this.ok()
       : this.error({ message: 'Only the moderators can use this command!' });
   }
 
-  public override contextMenuRun(interaction: ContextMenuInteraction<'cached'>) {
+  public override contextMenuRun(interaction: ContextMenuCommandInteraction<'cached'>) {
     return getPermissionLevel(interaction.member) > 0
       ? this.ok()
       : this.error({ message: 'Only the moderators can use this command!' });

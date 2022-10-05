@@ -1,7 +1,16 @@
-import { getPermissionLevel } from '#constants/index';
-import { componentInteractionDefaultParser } from '#constants/components';
+import { disableAllComponents, getPermissionLevel } from '#constants/index';
+import { buildCustomId, componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
-import { type ButtonInteraction, type TextBasedChannel, type MessageActionRow, MessageEmbed } from 'discord.js';
+import {
+  type MessageActionRowComponentBuilder,
+  type ModalSubmitInteraction,
+  type ButtonInteraction,
+  type TextBasedChannel,
+  ActionRowBuilder,
+  EmbedBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} from 'discord.js';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Suggest extends InteractionHandler {
@@ -9,7 +18,7 @@ export default class Suggest extends InteractionHandler {
     super(context, {
       ...options,
       name: 'suggest',
-      interactionHandlerType: InteractionHandlerTypes.Button,
+      interactionHandlerType: InteractionHandlerTypes.MessageComponent,
     });
   }
 
@@ -17,21 +26,80 @@ export default class Suggest extends InteractionHandler {
     return componentInteractionDefaultParser(this, interaction, { allowOthers: true });
   }
 
+  public async submitSuggestion(interaction: ModalSubmitInteraction) {
+    const suggestion = interaction.fields.getTextInputValue('suggestion');
+
+    const embed = new EmbedBuilder()
+        .setAuthor({
+          name: interaction.user.tag,
+          iconURL: interaction.user.displayAvatarURL(),
+        })
+        .setDescription(suggestion),
+      component = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+        new ButtonBuilder()
+          .setLabel('Accept')
+          .setStyle(ButtonStyle.Success)
+          .setEmoji('✅')
+          .setCustomId(
+            buildCustomId({
+              command: this.name,
+              action: 'accept',
+              id: interaction.user.id,
+            }),
+          ),
+        new ButtonBuilder()
+          .setLabel('Deny')
+          .setStyle(ButtonStyle.Danger)
+          .setEmoji('❌')
+          .setCustomId(
+            buildCustomId({
+              command: this.name,
+              action: 'deny',
+              id: interaction.user.id,
+            }),
+          ),
+        new ButtonBuilder()
+          .setLabel('Silent Deny')
+          .setStyle(ButtonStyle.Danger)
+          .setEmoji('❌')
+          .setCustomId(
+            buildCustomId({
+              command: this.name,
+              action: 'silent-deny',
+              id: interaction.user.id,
+            }),
+          ),
+      );
+
+    (interaction.guild.channels.cache.find(c => c.name == 'suggestion-review') as TextBasedChannel).send({
+      embeds: [embed],
+      components: [component],
+    });
+
+    await interaction.reply({
+      content:
+        'Your suggestion was recorded successfully! The moderators will first review your suggestion before allowing it onto the suggestions channel. ' +
+        "You'll receive a DM when your suggestion is either accepted or denied so make sure to have your DMs opened.",
+      ephemeral: true,
+    });
+  }
+
   public override async run(
-    interaction: ButtonInteraction<'cached'>,
+    interaction: ButtonInteraction<'cached'> | ModalSubmitInteraction<'cached'>,
     data: ParsedCustomIdData<'accept' | 'deny' | 'silent-deny'>,
   ) {
+    if (interaction.isModalSubmit()) return this.submitSuggestion(interaction);
+
     if (getPermissionLevel(interaction.member) == 0)
       return interaction.reply("You don't have permission to use this button!");
     if (!['accept', 'deny', 'silent-deny'].includes(data.action))
       return interaction.reply("Something ain't working right");
 
-    (interaction.message.components as MessageActionRow[]).forEach(component =>
-      component.components.forEach(c => c.setDisabled(true)),
-    );
+    await disableAllComponents(interaction);
+
     await interaction.update({
       content: `${data.action != 'accept' ? 'denied' : 'accepted'} by ${interaction.user}`,
-      components: interaction.message.components as MessageActionRow[],
+      components: interaction.message.components,
     });
 
     if (data.action == 'silent-deny') return;
@@ -45,7 +113,7 @@ export default class Suggest extends InteractionHandler {
       );
       return (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannel).send({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
             .setDescription(interaction.message.embeds[0].description),
         ],

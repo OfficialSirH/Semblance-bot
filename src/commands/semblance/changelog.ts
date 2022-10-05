@@ -1,4 +1,4 @@
-﻿import { type Message, MessageEmbed } from 'discord.js';
+﻿import { type Message, EmbedBuilder } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -10,7 +10,7 @@ export default class Changelog extends Command {
   public override async sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const changelogHandler = await builder.client.db.information.findUnique({ where: { type: 'changelog' } });
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Changelog')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)

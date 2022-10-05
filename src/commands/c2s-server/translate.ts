@@ -1,7 +1,7 @@
 import { Category, GuildId } from '#constants/index';
 import { fetchDeepL } from '#constants/commands';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import type { ContextMenuInteraction } from 'discord.js';
+import { ApplicationCommandType, type ContextMenuCommandInteraction, PermissionFlagsBits } from 'discord.js';
 
 export default class Translate extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -14,7 +14,7 @@ export default class Translate extends Command {
     });
   }
 
-  public override async contextMenuRun(interaction: ContextMenuInteraction<'cached'>) {
+  public override async contextMenuRun(interaction: ContextMenuCommandInteraction<'cached'>) {
     const message = interaction.options.getMessage('message');
     if (!message) return interaction.reply('Invalid message.');
 
@@ -30,12 +30,11 @@ export default class Translate extends Command {
     registry.registerContextMenuCommand(
       {
         name: this.name,
-        type: 'MESSAGE',
-        defaultPermission: false,
+        type: ApplicationCommandType.Message,
+        default_member_permissions: PermissionFlagsBits.ManageMessages.toString(),
       },
       {
         guildIds: [GuildId.cellToSingularity],
-        idHints: ['973689076484034630'],
       },
     );
   }

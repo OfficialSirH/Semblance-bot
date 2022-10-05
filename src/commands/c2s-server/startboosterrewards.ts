@@ -1,7 +1,7 @@
 import { Category, GuildId } from '#constants/index';
 import { boosterRole, createBoosterRewards } from '#constants/models';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import type { CommandInteraction } from 'discord.js';
+import type { ChatInputCommandInteraction } from 'discord.js';
 
 export default class StartBoosterRewards extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -13,7 +13,7 @@ export default class StartBoosterRewards extends Command {
     });
   }
 
-  public async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     if (!interaction.member.roles.cache.has(boosterRole))
       return interaction.reply({ content: 'You need to have the booster role to use this command.', ephemeral: true });
 
@@ -28,7 +28,6 @@ export default class StartBoosterRewards extends Command {
       },
       {
         guildIds: [GuildId.cellToSingularity],
-        idHints: ['995106586865434676'],
       },
     );
   }

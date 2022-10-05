@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed } from 'discord.js';
+import { type Message, EmbedBuilder } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 export default class MetaHelp extends Command {
@@ -10,7 +10,7 @@ export default class MetaHelp extends Command {
     const client = builder.client;
     const user = 'user' in builder ? builder.user : builder.author;
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Metabit Calculator Help')
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())

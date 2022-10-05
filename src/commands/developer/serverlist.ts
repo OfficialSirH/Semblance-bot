@@ -1,4 +1,11 @@
-import { type Message, MessageActionRow, MessageButton, MessageEmbed } from 'discord.js';
+import {
+  type Message,
+  ActionRowBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+  type MessageActionRowComponentBuilder,
+  ButtonStyle,
+} from 'discord.js';
 import { randomColor, guildBookPage, Category } from '#constants/index';
 import { type Args, Command } from '@sapphire/framework';
 import { serversPerPage } from '#constants/commands';
@@ -23,10 +30,10 @@ export default class ServerList extends Command {
     const numOfPages = Math.ceil(message.client.guilds.cache.size / serversPerPage);
 
     const components = [
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
             .setLabel('First Page')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setDisabled(chosenPage === 1)
             .setCustomId(
               buildCustomId({
@@ -36,9 +43,9 @@ export default class ServerList extends Command {
                 page: chosenPage,
               }),
             ),
-          new MessageButton()
+          new ButtonBuilder()
             .setLabel('Left')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setEmoji('⬅')
             .setDisabled(chosenPage === 1)
             .setCustomId(
@@ -49,9 +56,9 @@ export default class ServerList extends Command {
                 page: chosenPage,
               }),
             ),
-          new MessageButton()
+          new ButtonBuilder()
             .setLabel('Right')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setEmoji('➡')
             .setDisabled(chosenPage === numOfPages)
             .setCustomId(
@@ -62,9 +69,9 @@ export default class ServerList extends Command {
                 page: chosenPage,
               }),
             ),
-          new MessageButton()
+          new ButtonBuilder()
             .setLabel('Last Page')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setDisabled(chosenPage === numOfPages)
             .setCustomId(
               buildCustomId({
@@ -76,7 +83,7 @@ export default class ServerList extends Command {
             ),
         ),
       ],
-      embed = new MessageEmbed()
+      embed = new EmbedBuilder()
         .setTitle(`Server List [${message.client.guilds.cache.size}] - Page ${chosenPage}`)
         .setColor(randomColor)
         .setThumbnail(message.client.user.displayAvatarURL())

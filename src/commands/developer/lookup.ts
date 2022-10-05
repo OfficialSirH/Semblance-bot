@@ -1,7 +1,15 @@
 ﻿import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
-import type { CommandInteraction, EmbedField, Snowflake, TextChannel, User } from 'discord.js';
+import {
+  type EmbedField,
+  type Snowflake,
+  type TextChannel,
+  type User,
+  ApplicationCommandOptionType,
+  type ChatInputCommandInteraction,
+  ChannelType,
+} from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import type { APIInvite, ChannelType, APIUser } from 'discord-api-types/v10';
+import type { APIInvite, APIUser } from 'discord-api-types/v10';
 import { Category, onlyUnique, randomColor } from '#constants/index';
 import { request } from 'undici';
 
@@ -25,18 +33,16 @@ export default class Lookup extends Command {
           {
             name: 'unknown_item',
             description: 'The item you want to lookup.',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             required: true,
           },
         ],
       },
-      {
-        idHints: ['995453942341308466'],
-      },
+      {},
     );
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const unknownItem = interaction.options.getString('unknown_item');
     if (!unknownItem) return interaction.reply('Please provide a valid ID or invite!');
 
@@ -225,7 +231,7 @@ export default class Lookup extends Command {
 
     // message lookup
     const channels = interaction.guild.channels.cache
-      .filter(ch => ['GUILDNEWS', 'GUILDTEXT'].includes(ch.type))
+      .filter(ch => [ChannelType.GuildAnnouncement, ChannelType.GuildText].includes(ch.type))
       .map(c => c) as TextChannel[];
     for (const ch of channels)
       try {
