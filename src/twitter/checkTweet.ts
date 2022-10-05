@@ -29,15 +29,14 @@ export const checkTweet = async (client: SapphireClient) => {
     return;
   }
 
-  if (!isProduction) {
-    console.log(JSON.stringify(tweets));
-    return;
-  }
-
   const new_id = tweets.data.data.at(0).id;
 
   if (new_id !== current_id && new_id !== null) {
     current_id = new_id;
+    if (!isProduction) {
+      console.log('new tweet id: ' + new_id);
+      return;
+    }
 
     const c2sTwitterChannel = client.guilds.cache
       .get(GuildId.cellToSingularity)
