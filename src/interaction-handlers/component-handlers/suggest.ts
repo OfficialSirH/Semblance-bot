@@ -18,7 +18,7 @@ export default class Suggest extends InteractionHandler {
     super(context, {
       ...options,
       name: 'suggest',
-      interactionHandlerType: InteractionHandlerTypes.MessageComponent,
+      interactionHandlerType: InteractionHandlerTypes.ModalSubmit,
     });
   }
 
