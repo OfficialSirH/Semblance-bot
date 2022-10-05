@@ -1,4 +1,12 @@
-import { type Message, MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
+import {
+  type Message,
+  ActionRowBuilder,
+  ButtonBuilder,
+  type ChatInputCommandInteraction,
+  EmbedBuilder,
+  ButtonStyle,
+  type MessageActionRowComponentBuilder,
+} from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
@@ -10,7 +18,7 @@ export default class Credits extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Credits')
       .setColor(randomColor)
       .addFields(
@@ -36,23 +44,23 @@ export default class Credits extends Command {
           ].join('\n'),
         },
       );
-    const component = new MessageActionRow().addComponents(
-      new MessageButton()
+    const component = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+      new ButtonBuilder()
         .setCustomId(buildCustomId({ command: 'credits', action: 'thanks', id: user.id }))
         .setLabel('Special Thanks')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
         .setCustomId(buildCustomId({ command: 'credits', action: 'semblance', id: user.id }))
         .setLabel('Preview Semblance Art')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
         .setCustomId(buildCustomId({ command: 'credits', action: 'semblance-beta', id: user.id }))
         .setLabel('Preview Semblance Beta Art')
-        .setStyle('PRIMARY'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
         .setCustomId(buildCustomId({ command: 'credits', action: 'semblance-revisioned', id: user.id }))
         .setLabel('Preview Semblance Revisioned Art')
-        .setStyle('PRIMARY'),
+        .setStyle(ButtonStyle.Primary),
     );
 
     return { embeds: [embed], components: [component] };
@@ -62,17 +70,14 @@ export default class Credits extends Command {
     await message.reply(this.sharedRun(message));
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     await interaction.reply(this.sharedRun(interaction));
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
-        name: this.name,
-        description: this.description,
-      },
-      { idHints: ['973689166791606283'] },
-    );
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+    });
   }
 }

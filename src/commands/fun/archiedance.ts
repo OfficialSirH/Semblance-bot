@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed } from 'discord.js';
+import { type Message, EmbedBuilder } from 'discord.js';
 import { attachments, Category } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -8,7 +8,7 @@ export default class ArchieDance extends Command {
   public override fullCategory = [Category.fun];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Dancing Archie/Jotaru')
       .setAuthor({
         name: builder.member.user.tag,

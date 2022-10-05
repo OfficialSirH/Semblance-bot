@@ -1,4 +1,4 @@
-import { type CommandInteraction, MessageEmbed, Constants } from 'discord.js';
+import { type ChatInputCommandInteraction, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
 import { GuildId, bigToName, Category, msToTime } from '#constants/index';
 import { type ApiResponseError, TweetStream, TwitterApi } from 'twitter-api-v2';
@@ -16,7 +16,7 @@ export default class Manage extends Command {
     });
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const subcommandGroup = interaction.options.getSubcommandGroup();
     const subcommand = interaction.options.getSubcommand();
 
@@ -52,17 +52,17 @@ export default class Manage extends Command {
           {
             name: 'discord-link',
             description: 'Manage linked C2S accounts',
-            type: 'SUB_COMMAND_GROUP',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
               {
                 name: 'get',
                 description: 'Get a linked C2S account',
-                type: 'SUB_COMMAND',
+                type: ApplicationCommandOptionType.Subcommand,
                 options: [
                   {
                     name: 'discord-id',
                     description: 'The Discord ID of the user',
-                    type: 'USER',
+                    type: ApplicationCommandOptionType.User,
                     required: true,
                   },
                 ],
@@ -70,24 +70,24 @@ export default class Manage extends Command {
               {
                 name: 'create',
                 description: 'Create a linked C2S account',
-                type: 'SUB_COMMAND',
+                type: ApplicationCommandOptionType.Subcommand,
                 options: [
                   {
                     name: 'discord-id',
                     description: 'The Discord ID of the user',
-                    type: 'USER',
+                    type: ApplicationCommandOptionType.User,
                     required: true,
                   },
                   {
                     name: 'playeremail',
                     description: 'The email bound to your Game Transfer account.',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     required: true,
                   },
                   {
                     name: 'playertoken',
                     description: 'The token bound to your Game Transfer account.',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     required: true,
                   },
                 ],
@@ -97,22 +97,22 @@ export default class Manage extends Command {
           {
             name: 'twitter',
             description: 'Manage Twitter',
-            type: 'SUB_COMMAND_GROUP',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
               {
                 name: 'handler-status',
                 description: 'Check if the Twitter handler is running',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
               },
               {
                 name: 'reload-handler',
                 description: 'Reload the Twitter handler',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
               },
               {
                 name: 'test-fetch',
                 description: 'Test if the Twitter API is functional',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
               },
             ],
           },
@@ -120,19 +120,18 @@ export default class Manage extends Command {
       },
       {
         guildIds: [GuildId.cellToSingularity],
-        idHints: ['998060368616226917', '998060369564155965'],
       },
     );
   }
 
-  public async discordLinkGet(interaction: CommandInteraction<'cached'>) {
+  public async discordLinkGet(interaction: ChatInputCommandInteraction<'cached'>) {
     const user = interaction.options.getUser('discord-id');
     const linkedAccount = await this.container.client.db.userData.findUnique({ where: { discord_id: user.id } });
 
     if (!linkedAccount)
       return interaction.reply({ content: `No linked account found for ${user.tag}`, ephemeral: true });
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle(`Linked account for ${user.tag}(${user.id})`)
       .setDescription(
         `Beta Tester: ${linkedAccount.beta_tester ? 'yes' : 'no'}\nSimulation Resets ${
@@ -149,7 +148,7 @@ export default class Manage extends Command {
     return interaction.reply({ embeds: [embed], ephemeral: true });
   }
 
-  public async discordLinkCreate(interaction: CommandInteraction<'cached'>) {
+  public async discordLinkCreate(interaction: ChatInputCommandInteraction<'cached'>) {
     const user = interaction.options.getUser('discord-id');
     const playerEmail = interaction.options.getString('playeremail');
     const playerToken = interaction.options.getString('playertoken');
@@ -168,13 +167,13 @@ export default class Manage extends Command {
     return interaction.reply({ content, ephemeral: true });
   }
 
-  public async handlerStatus(interaction: CommandInteraction<'cached'>) {
+  public async handlerStatus(interaction: ChatInputCommandInteraction<'cached'>) {
     return interaction.reply(
       `Twitter Handler status: ${TwitterInitialization.stream instanceof TweetStream ? 'online' : 'offline'}`,
     );
   }
 
-  public async reloadHandler(interaction: CommandInteraction<'cached'>) {
+  public async reloadHandler(interaction: ChatInputCommandInteraction<'cached'>) {
     await interaction.reply('Reloading Twitter handler, this may take a while...');
 
     const startTime = Date.now();
@@ -197,7 +196,7 @@ export default class Manage extends Command {
     );
   }
 
-  public async testFetch(interaction: CommandInteraction<'cached'>) {
+  public async testFetch(interaction: ChatInputCommandInteraction<'cached'>) {
     const twClient = new TwitterApi(JSON.parse(process.env.twitter).bearer_token);
 
     const computerLunch = await twClient.v2

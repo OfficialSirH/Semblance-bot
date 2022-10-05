@@ -1,5 +1,5 @@
 import type { SapphireClient } from '@sapphire/framework';
-import { type TextChannel, MessageEmbed, User } from 'discord.js';
+import { type TextChannel, User, EmbedBuilder } from 'discord.js';
 import { randomColor, GuildId } from '#constants/index';
 import type { FastifyReply } from 'fastify';
 import type { DBLRequest } from '#lib/interfaces/discordBotList';
@@ -37,7 +37,8 @@ export class VoteHandler {
           "\nAs a voting bonus *and* being the weekend, you have earned ***12*** hours of idle profit for Semblance's Idle Game!";
       else description += "\nAs a voting bonus, you have earned **6** hours of idle profit for Semblance's Idle Game!";
     }
-    const embed = new MessageEmbed().setColor(randomColor).setDescription(description);
+
+    const embed = new EmbedBuilder().setColor(randomColor).setDescription(description);
     if (user instanceof User)
       embed
         .setAuthor({ name: `${user.tag}`, iconURL: user.displayAvatarURL() })

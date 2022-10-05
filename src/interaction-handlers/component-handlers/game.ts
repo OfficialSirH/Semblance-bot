@@ -1,9 +1,11 @@
 import {
   type ButtonInteraction,
   type MessageComponentInteraction,
-  MessageActionRow,
-  MessageButton,
-  MessageEmbed,
+  ActionRowBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+  type MessageActionRowComponentBuilder,
+  ButtonStyle,
 } from 'discord.js';
 import { randomColor } from '#constants/index';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
@@ -39,12 +41,12 @@ export default class GameHandler extends InteractionHandler {
   ) {
     const id = interaction.user.id;
     const game = await interaction.client.db.game.findUnique({ where: { player: id } });
-    let cost: number, components: MessageActionRow[];
+    let cost: number, components: ActionRowBuilder<MessageActionRowComponentBuilder>[];
     if (game) cost = await currentPrice(interaction.client, game);
 
     const mainComponents = [
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
             .setCustomId(
               buildCustomId({
                 command: this.name,
@@ -52,10 +54,10 @@ export default class GameHandler extends InteractionHandler {
                 id,
               }),
             )
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('❔')
             .setLabel('About'),
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId(
               buildCustomId({
                 command: this.name,
@@ -64,10 +66,10 @@ export default class GameHandler extends InteractionHandler {
               }),
             )
             .setDisabled(!game)
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('💵')
             .setLabel('Collect'),
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId(
               buildCustomId({
                 command: this.name,
@@ -76,10 +78,10 @@ export default class GameHandler extends InteractionHandler {
               }),
             )
             .setDisabled(!game || game.money < cost)
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('⬆')
             .setLabel('Upgrade'),
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId(
               buildCustomId({
                 command: this.name,
@@ -87,10 +89,10 @@ export default class GameHandler extends InteractionHandler {
                 id,
               }),
             )
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('🏅')
             .setLabel('Leaderboard'),
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId(
               buildCustomId({
                 command: this.name,
@@ -98,14 +100,14 @@ export default class GameHandler extends InteractionHandler {
                 id,
               }),
             )
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('💰')
             .setLabel('Voting Sites'),
         ),
       ],
       endComponents = [
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
             .setCustomId(
               buildCustomId({
                 command: this.name,
@@ -114,10 +116,10 @@ export default class GameHandler extends InteractionHandler {
               }),
             )
             .setDisabled(!game)
-            .setStyle('PRIMARY')
+            .setStyle(ButtonStyle.Primary)
             .setEmoji('🔢')
             .setLabel('Stats'),
-          new MessageButton()
+          new ButtonBuilder()
             .setCustomId(
               buildCustomId({
                 command: this.name,
@@ -127,8 +129,8 @@ export default class GameHandler extends InteractionHandler {
             )
             .setEmoji(game ? '⛔' : '🌎')
             .setLabel(game ? 'Reset Progress' : 'Create new game')
-            .setStyle(game ? 'DANGER' : 'SUCCESS'),
-          new MessageButton()
+            .setStyle(game ? ButtonStyle.Danger : ButtonStyle.Success),
+          new ButtonBuilder()
             .setCustomId(
               buildCustomId({
                 command: this.name,
@@ -138,7 +140,7 @@ export default class GameHandler extends InteractionHandler {
             )
             .setEmoji('🚫')
             .setLabel('Close')
-            .setStyle('SECONDARY'),
+            .setStyle(ButtonStyle.Secondary),
         ),
       ];
     if (['about', 'collect', 'upgrade', 'leaderboard', 'vote'].includes(data.action)) components = endComponents;
@@ -179,8 +181,8 @@ export default class GameHandler extends InteractionHandler {
 async function askConfirmation(interaction: MessageComponentInteraction, name: string) {
   const { user } = interaction;
   const components = [
-    new MessageActionRow().addComponents(
-      new MessageButton()
+    new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+      new ButtonBuilder()
         .setCustomId(
           buildCustomId({
             command: name,
@@ -190,8 +192,8 @@ async function askConfirmation(interaction: MessageComponentInteraction, name: s
         )
         .setEmoji('🚫')
         .setLabel('Yes')
-        .setStyle('DANGER'),
-      new MessageButton()
+        .setStyle(ButtonStyle.Danger),
+      new ButtonBuilder()
         .setCustomId(
           buildCustomId({
             command: name,
@@ -200,7 +202,7 @@ async function askConfirmation(interaction: MessageComponentInteraction, name: s
           }),
         )
         .setLabel('No')
-        .setStyle('SECONDARY'),
+        .setStyle(ButtonStyle.Secondary),
     ),
   ];
   await interaction.update({
@@ -210,7 +212,10 @@ async function askConfirmation(interaction: MessageComponentInteraction, name: s
   });
 }
 
-async function create(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function create(
+  interaction: MessageComponentInteraction,
+  components: ActionRowBuilder<MessageActionRowComponentBuilder>[],
+) {
   const { user } = interaction;
   const percent = (Math.round(Math.random() * 25) + 25) / 100 + 1;
   const startingProfits = Math.random() * 0.05 + 0.05;
@@ -235,7 +240,7 @@ async function create(interaction: MessageComponentInteraction, components: Mess
     },
   });
 
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle('Game Created')
     .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
@@ -250,9 +255,12 @@ async function create(interaction: MessageComponentInteraction, components: Mess
   await interaction.update({ embeds: [embed], components });
 }
 
-async function about(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function about(
+  interaction: MessageComponentInteraction,
+  components: ActionRowBuilder<MessageActionRowComponentBuilder>[],
+) {
   const { user } = interaction;
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle("What's Semblance's Idle-Game about?")
     .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
@@ -267,7 +275,10 @@ async function about(interaction: MessageComponentInteraction, components: Messa
   await interaction.update({ embeds: [embed], components });
 }
 
-async function collect(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function collect(
+  interaction: MessageComponentInteraction,
+  components: ActionRowBuilder<MessageActionRowComponentBuilder>[],
+) {
   const { user } = interaction;
   let collectionHandler = await interaction.client.db.game.findUnique({ where: { player: user.id } });
   const collected = collectionHandler.profitRate * ((Date.now() - collectionHandler.lastCollected.valueOf()) / 1000);
@@ -283,7 +294,7 @@ async function collect(interaction: MessageComponentInteraction, components: Mes
     },
   });
 
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle('Balance')
     .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
@@ -295,7 +306,10 @@ async function collect(interaction: MessageComponentInteraction, components: Mes
   await interaction.update({ embeds: [embed], components });
 }
 
-async function upgrade(interaction: ButtonInteraction, components: MessageActionRow[]) {
+async function upgrade(
+  interaction: ButtonInteraction,
+  components: ActionRowBuilder<MessageActionRowComponentBuilder>[],
+) {
   await interaction.deferUpdate();
   const { user } = interaction;
   const message =
@@ -309,7 +323,7 @@ async function upgrade(interaction: ButtonInteraction, components: MessageAction
   if (upgradeHandler.money < costSubtraction)
     return message.edit({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setTitle('Not Enough Random-Bucks')
           .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
           .setColor(randomColor)
@@ -344,7 +358,7 @@ async function upgrade(interaction: ButtonInteraction, components: MessageAction
     });
   }
 
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle('Upgrade Stats')
     .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
@@ -361,11 +375,14 @@ async function upgrade(interaction: ButtonInteraction, components: MessageAction
   await message.edit({ embeds: [embed], components });
 }
 
-async function leaderboard(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function leaderboard(
+  interaction: MessageComponentInteraction,
+  components: ActionRowBuilder<MessageActionRowComponentBuilder>[],
+) {
   const { user } = interaction;
   let leaderboard = await LeaderboardUtilities.topTwenty(interaction.client, 'game');
   if (!leaderboard) leaderboard = 'There is currently no one who has upgraded their income.';
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle("Semblance's idle-game leaderboard")
     .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)
@@ -374,9 +391,12 @@ async function leaderboard(interaction: MessageComponentInteraction, components:
   await interaction.update({ embeds: [embed], components });
 }
 
-async function votes(interaction: MessageComponentInteraction, components: MessageActionRow[]) {
+async function votes(
+  interaction: MessageComponentInteraction,
+  components: ActionRowBuilder<MessageActionRowComponentBuilder>[],
+) {
   const { client } = interaction,
-    embed = new MessageEmbed()
+    embed = new EmbedBuilder()
       .setTitle('Vote')
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())
@@ -396,9 +416,13 @@ async function votes(interaction: MessageComponentInteraction, components: Messa
   return interaction.update({ embeds: [embed], components });
 }
 
-async function stats(interaction: ButtonInteraction, components: MessageActionRow[], game: Game) {
+async function stats(
+  interaction: ButtonInteraction,
+  components: ActionRowBuilder<MessageActionRowComponentBuilder>[],
+  game: Game,
+) {
   const { user } = interaction;
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle("Welcome back to Semblance's Idle-Game!")
     .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
     .setColor(randomColor)

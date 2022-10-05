@@ -1,4 +1,4 @@
-import { MessageEmbed, type Message } from 'discord.js';
+import { EmbedBuilder, type Message } from 'discord.js';
 import { attachments, Category, emojis, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -8,7 +8,7 @@ export default class Trex extends Command {
   public override fullCategory = [Category.game, Subcategory.mesozoic];
 
   public override sharedRun() {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle(`${emojis.trexBadge}Tyrannosaurus Rex`)
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)

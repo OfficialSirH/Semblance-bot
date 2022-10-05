@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed } from 'discord.js';
+import { type Message, EmbedBuilder } from 'discord.js';
 import { attachments, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -9,7 +9,7 @@ export default class Beta extends Command {
 
   public override async sharedRun() {
     const infoHandler = await this.container.client.db.information.findUnique({ where: { type: 'beta' } });
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Beta')
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)

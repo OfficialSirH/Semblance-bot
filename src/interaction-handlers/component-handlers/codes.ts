@@ -1,4 +1,11 @@
-import { MessageActionRow, MessageButton, type ButtonInteraction, MessageEmbed } from 'discord.js';
+import {
+  type MessageActionRowComponentBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  type ButtonInteraction,
+  EmbedBuilder,
+  ButtonStyle,
+} from 'discord.js';
 import { attachments } from '#constants/index';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
@@ -19,15 +26,14 @@ export default class Codes extends InteractionHandler {
 
   public override async run(interaction: ButtonInteraction, data: ParsedCustomIdData<'expired' | 'valid'>) {
     const codeHandler = await interaction.client.db.information.findUnique({ where: { type: 'codes' } });
-    let embed = interaction.message.embeds[0] as MessageEmbed;
-    if (!('setDescription' in embed)) embed = new MessageEmbed(embed);
-    let component: MessageActionRow;
+    const embed = new EmbedBuilder(interaction.message.embeds[0]);
+    let component: ActionRowBuilder<MessageActionRowComponentBuilder>;
 
     switch (data.action) {
       case 'expired':
         embed.setDescription(codeHandler.expired);
-        component = new MessageActionRow().addComponents(
-          new MessageButton()
+        component = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
             .setCustomId(
               buildCustomId({
                 command: this.name,
@@ -36,13 +42,13 @@ export default class Codes extends InteractionHandler {
               }),
             )
             .setLabel('View Valid Codes')
-            .setStyle('PRIMARY'),
+            .setStyle(ButtonStyle.Primary),
         );
         break;
       case 'valid':
         embed.setDescription(codeHandler.value);
-        component = new MessageActionRow().addComponents(
-          new MessageButton()
+        component = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
             .setCustomId(
               buildCustomId({
                 command: 'codes',
@@ -51,7 +57,7 @@ export default class Codes extends InteractionHandler {
               }),
             )
             .setLabel('View Expired Codes')
-            .setStyle('PRIMARY'),
+            .setStyle(ButtonStyle.Primary),
         );
     }
 

@@ -1,11 +1,14 @@
 import {
   type Message,
-  MessageActionRow,
-  MessageButton,
-  MessageEmbed,
-  type CommandInteraction,
-  MessageSelectMenu,
+  ActionRowBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+  type ChatInputCommandInteraction,
+  SelectMenuBuilder,
   type AutocompleteInteraction,
+  ApplicationCommandOptionType,
+  ButtonStyle,
+  type MessageActionRowComponentBuilder,
 } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
@@ -22,7 +25,7 @@ export default class Help extends Command {
       .get('commands')
       .filter(c => c.category === Category.c2sServer)
       .map(c => `**${builder.client.user}${c.name}**`);
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Semblance Command List')
       .setColor(randomColor)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
@@ -43,8 +46,8 @@ export default class Help extends Command {
         },
       );
     const components = [
-      new MessageActionRow().addComponents(
-        new MessageButton()
+      new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+        new ButtonBuilder()
           .setCustomId(
             buildCustomId({
               command: 'help',
@@ -53,8 +56,8 @@ export default class Help extends Command {
             }),
           )
           .setLabel('Cell to Singularity Help')
-          .setStyle('PRIMARY'),
-        new MessageButton()
+          .setStyle(ButtonStyle.Primary),
+        new ButtonBuilder()
           .setCustomId(
             buildCustomId({
               command: 'help',
@@ -63,8 +66,8 @@ export default class Help extends Command {
             }),
           )
           .setLabel('Miscellaneous Help')
-          .setStyle('PRIMARY'),
-        new MessageButton()
+          .setStyle(ButtonStyle.Primary),
+        new ButtonBuilder()
           .setCustomId(
             buildCustomId({
               command: 'help',
@@ -74,7 +77,7 @@ export default class Help extends Command {
           )
           .setLabel('Close')
           .setEmoji('🚫')
-          .setStyle('SECONDARY'),
+          .setStyle(ButtonStyle.Secondary),
       ),
     ];
 
@@ -93,7 +96,7 @@ export default class Help extends Command {
     await message.reply(this.sharedRun(message));
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const query = interaction.options.getString('query');
     if (!query) return interaction.reply(this.sharedRun(interaction));
 
@@ -104,8 +107,8 @@ export default class Help extends Command {
       const components = possibleQueries.reduce((acc, cur, i) => {
         const index = Math.floor(i / 25);
         if (!acc[index])
-          acc[index] = new MessageActionRow().addComponents(
-            new MessageSelectMenu()
+          acc[index] = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+            new SelectMenuBuilder()
               .setCustomId(
                 buildCustomId({
                   command: 'help',
@@ -115,12 +118,12 @@ export default class Help extends Command {
               )
               .setPlaceholder('Select a query'),
           );
-        (acc[index].components[0] as MessageSelectMenu).addOptions({ label: cur, value: cur });
+        (acc[index].components[0] as SelectMenuBuilder).addOptions({ label: cur, value: cur });
         return acc;
-      }, [] as MessageActionRow[]);
+      }, [] as ActionRowBuilder<MessageActionRowComponentBuilder>[]);
       return interaction.reply({
         embeds: [
-          new MessageEmbed()
+          new EmbedBuilder()
             .setTitle('Help')
             .setDescription(
               "Due to an invalid query, here's a provided list from Semblance's help command in the dropdowns below.",
@@ -134,7 +137,7 @@ export default class Help extends Command {
   }
 
   public override autocompleteRun(interaction: AutocompleteInteraction<'cached'>) {
-    const query = interaction.options.getFocused() as string;
+    const query = interaction.options.getFocused();
 
     const queriedInfoStartsWith = interaction.client.stores
       .get('commands')
@@ -153,20 +156,17 @@ export default class Help extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
-        name: this.name,
-        description: this.description,
-        options: [
-          {
-            name: 'query',
-            description: 'The query to search for.',
-            type: 'STRING',
-            autocomplete: true,
-          },
-        ],
-      },
-      { idHints: ['973689166124703764'] },
-    );
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+      options: [
+        {
+          name: 'query',
+          description: 'The query to search for.',
+          type: ApplicationCommandOptionType.String,
+          autocomplete: true,
+        },
+      ],
+    });
   }
 }

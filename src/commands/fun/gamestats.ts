@@ -1,4 +1,4 @@
-import { type CommandInteraction, MessageEmbed } from 'discord.js';
+import { type ChatInputCommandInteraction, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { currentPrice } from '#constants/commands';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
@@ -8,7 +8,7 @@ export default class Gamestats extends Command {
   public override description = "Displays a user's game stats for Semblance Idle-Game.";
   public override fullCategory = [Category.fun];
 
-  public async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     let user = interaction.options.getUser('user');
     if (!user) user = interaction.user;
 
@@ -22,7 +22,7 @@ export default class Gamestats extends Command {
         ephemeral: true,
       });
     const nxtUpgrade = await currentPrice(interaction.client, statsHandler);
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle(`${user.username}'s gamestats`)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)
@@ -42,19 +42,16 @@ export default class Gamestats extends Command {
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
-        name: this.name,
-        description: this.description,
-        options: [
-          {
-            name: 'user',
-            description: 'The user to display stats for.',
-            type: 'USER',
-          },
-        ],
-      },
-      { idHints: ['973689164094660689'] },
-    );
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+      options: [
+        {
+          name: 'user',
+          description: 'The user to display stats for.',
+          type: ApplicationCommandOptionType.User,
+        },
+      ],
+    });
   }
 }

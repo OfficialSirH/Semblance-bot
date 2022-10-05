@@ -1,5 +1,5 @@
 import type { sizeType } from '#lib/interfaces/catAndDogAPI';
-import { type ButtonInteraction, MessageEmbed } from 'discord.js';
+import { type ButtonInteraction, EmbedBuilder } from 'discord.js';
 import { fetchCatOrDog } from '#constants/commands';
 import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
@@ -36,7 +36,7 @@ export default class ImageGen extends InteractionHandler {
       image_url = image.url,
       breed = image.breeds[0];
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle(`Here's a ${breed.name}!`)
       .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)

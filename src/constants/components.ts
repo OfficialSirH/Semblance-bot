@@ -1,35 +1,44 @@
 import type { InteractionHandler } from '@sapphire/framework';
-import { type MessageActionRow, type MessageComponentInteraction, MessageButton } from 'discord.js';
+import {
+  type APIButtonComponentWithCustomId,
+  type APISelectMenuComponent,
+  type MessageActionRowComponentBuilder,
+  type ActionRowBuilder,
+  type MessageComponentInteraction,
+  ButtonBuilder,
+  ButtonStyle,
+} from 'discord.js';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
 
-export const filterAction = (components: MessageActionRow[], action: string) =>
-  components.map(
-    c =>
-      ({
-        ...c,
-        components: c.components.filter(c => JSON.parse(c.customId).action != action),
-      } as MessageActionRow),
+export const filterAction = (
+  components: ActionRowBuilder<MessageActionRowComponentBuilder>[],
+  action: string,
+): ActionRowBuilder<MessageActionRowComponentBuilder>[] =>
+  components.map(row =>
+    row.setComponents(
+      row.components.filter(
+        c => JSON.parse((c.data as APIButtonComponentWithCustomId | APISelectMenuComponent).custom_id).action != action,
+      ),
+    ),
   );
 
 export const disableComponentsByLabel = (
-  components: MessageActionRow[],
+  components: ActionRowBuilder<MessageActionRowComponentBuilder>[],
   labels: string[],
   { enableInstead = false, oppositeOfLabel = false }: { enableInstead?: boolean; oppositeOfLabel?: boolean },
-) =>
-  components.map(
-    c =>
-      ({
-        ...c,
-        components: c.components.map(c => {
-          if (!('label' in c)) return c;
-          if (oppositeOfLabel) {
-            if (!labels.includes(c.label)) return c.setDisabled(!enableInstead);
-            return c;
-          }
-          if (labels.includes(c.label)) return c.setDisabled(!enableInstead);
+): ActionRowBuilder<MessageActionRowComponentBuilder>[] =>
+  components.map(row =>
+    row.setComponents(
+      row.components.map(c => {
+        if (!('label' in c.data)) return c;
+        if (oppositeOfLabel) {
+          if (!labels.includes(c.data.label)) return c.setDisabled(!enableInstead);
           return c;
-        }),
-      } as MessageActionRow),
+        }
+        if (labels.includes(c.data.label)) return c.setDisabled(!enableInstead);
+        return c;
+      }),
+    ),
   );
 
 /**
@@ -68,7 +77,10 @@ export const componentInteractionDefaultParser = async <T extends CustomIdData =
 
   if (data.command != handler.name) return handler.none();
   if (!allowOthers && data.id != interaction.user.id) {
-    await interaction.reply({ content: 'You did not call this command', ephemeral: true });
+    await interaction.reply({
+      content: "this button originates from a message that wasn't triggered by you.",
+      ephemeral: true,
+    });
     return handler.none();
   }
 
@@ -83,18 +95,18 @@ export const componentInteractionDefaultParser = async <T extends CustomIdData =
 };
 
 export const backButton = (command: string, userId: string, whereToGo: string) =>
-  new MessageButton()
+  new ButtonBuilder()
     .setCustomId(buildCustomId({ command, id: userId, action: whereToGo }))
     .setLabel('Back')
     .setEmoji('⬅️')
-    .setStyle('SECONDARY');
+    .setStyle(ButtonStyle.Secondary);
 
 export const closeButton = (command: string, userId: string) =>
-  new MessageButton()
+  new ButtonBuilder()
     .setCustomId(buildCustomId({ command, id: userId, action: 'close' }))
     .setLabel('Close')
     .setEmoji('🚫')
-    .setStyle('SECONDARY');
+    .setStyle(ButtonStyle.Secondary);
 
 export const defaultEmojiToUsableEmoji = (emoji: string) => ({ name: emoji });
 

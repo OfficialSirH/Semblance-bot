@@ -1,4 +1,4 @@
-import { type CommandInteraction, type Message, MessageEmbed } from 'discord.js';
+import { type ChatInputCommandInteraction, type Message, EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
@@ -9,7 +9,7 @@ export default class Secrets extends Command {
   public override aliases = ['secret'];
 
   public override sharedRun() {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Secret Achievements')
       .setColor(randomColor)
       .setDescription(
@@ -32,7 +32,7 @@ export default class Secrets extends Command {
     return { embeds: [embed], ephemeral: true };
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     return interaction.reply(this.sharedRun());
   }
 

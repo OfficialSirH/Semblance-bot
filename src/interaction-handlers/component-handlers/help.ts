@@ -1,10 +1,12 @@
 import {
-  MessageActionRow,
+  type ActionRowData,
+  type MessageActionRowComponentData,
+  ActionRowBuilder,
   type ButtonInteraction,
-  type MessageComponentInteraction,
   type SelectMenuInteraction,
   type InteractionReplyOptions,
   type InteractionUpdateOptions,
+  type MessageActionRowComponentBuilder,
 } from 'discord.js';
 import { disableAllComponents } from '#constants/index';
 import { backButton, closeButton, componentInteractionDefaultParser } from '#constants/components';
@@ -16,23 +18,22 @@ export default class Help extends InteractionHandler {
     super(context, {
       ...options,
       name: 'help',
-      interactionHandlerType: InteractionHandlerTypes.Button,
+      interactionHandlerType: InteractionHandlerTypes.MessageComponent,
     });
   }
 
-  public override parse(interaction: MessageComponentInteraction) {
+  public override parse(interaction: ButtonInteraction<'cached'> | SelectMenuInteraction<'cached'>) {
     return componentInteractionDefaultParser(this, interaction);
   }
 
   public override async run(
-    interaction: MessageComponentInteraction<'cached'>,
+    interaction: ButtonInteraction<'cached'> | SelectMenuInteraction<'cached'>,
     data: ParsedCustomIdData<
       'c2shelp' | 'mischelp' | 'metabits' | 'mesoguide' | 'largenumbers' | 'metahelp' | 'itemhelp' | 'help' | 'close'
     >,
   ) {
     if (interaction.isButton()) return this.buttonRun(interaction, data);
     if (interaction.isSelectMenu()) return this.selectMenuRun(interaction);
-    return interaction.reply({ content: 'Invalid interaction.', ephemeral: true });
   }
 
   public async selectMenuRun(interaction: SelectMenuInteraction<'cached'>) {
@@ -55,7 +56,7 @@ export default class Help extends InteractionHandler {
     >,
   ) {
     const client = interaction.client;
-    const components = [new MessageActionRow()];
+    const components = [new ActionRowBuilder<MessageActionRowComponentBuilder>()];
     if (data.action != 'help')
       components
         .at(0)
@@ -98,7 +99,10 @@ export default class Help extends InteractionHandler {
         return interaction.reply({ content: 'Invalid action.', ephemeral: true });
     }
     if (typeof options != 'string') {
-      if (options.components) options.components.at(0).components.concat(components.at(0).components);
+      if (options.components)
+        (options.components.at(0) as ActionRowData<MessageActionRowComponentData>).components.concat(
+          components.at(0).components,
+        );
       else options.components = components;
       options.files = [];
     }

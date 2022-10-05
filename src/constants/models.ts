@@ -1,5 +1,5 @@
 import type { SapphireClient } from '@sapphire/framework';
-import { type InteractionReplyOptions, type TextChannel, type GuildMember, MessageEmbed } from 'discord.js';
+import { type InteractionReplyOptions, type TextChannel, type GuildMember, EmbedBuilder } from 'discord.js';
 import { formattedDate, UserId, GuildId, emojis } from '#constants/index';
 import { scheduleJob } from 'node-schedule';
 import type { BoosterReward, Reminder, UserReminder } from '@prisma/client';
@@ -33,7 +33,7 @@ export const handleBoosterReward = async (client: SapphireClient, boosterReward:
   await member.user
     .send({
       embeds: [
-        new MessageEmbed()
+        new EmbedBuilder()
           .setTitle('Booster reward')
           .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
           .setDescription(

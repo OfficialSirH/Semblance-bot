@@ -1,12 +1,13 @@
 ﻿import {
-  MessageAttachment,
-  Permissions,
+  type ActionRow,
+  type MessageActionRowComponent,
+  AttachmentBuilder,
   type GuildMember,
-  type MessageActionRow,
   type MessageComponentInteraction,
   type Snowflake,
   type User,
   type Guild,
+  PermissionFlagsBits,
 } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 import * as fs from 'fs/promises';
@@ -69,11 +70,11 @@ export const attachments = await (async () => {
     | 'nanobots'
     | 'currency'
     | 'mementoMori',
-    MessageAttachment
+    AttachmentBuilder
   >;
   for (const file of files)
     if (file.endsWith('.png') || file.endsWith('.mp4')) {
-      const attachment = new MessageAttachment(`./src/images/${file}`, `attachment://${file}`),
+      const attachment = new AttachmentBuilder(`./src/images/${file}`, { name: `${file}` }),
         attachmentName = file.substring(0, file.indexOf('.'));
       finalAttachments[attachmentName] = attachment;
     }
@@ -219,13 +220,13 @@ export enum Subcategory {
 }
 
 export const roles = {
-  admin: Permissions.FLAGS.ADMINISTRATOR,
-  exec: Permissions.FLAGS.MANAGE_GUILD,
-  srmod: Permissions.FLAGS.MENTION_EVERYONE,
-  mod: Permissions.FLAGS.MANAGE_CHANNELS,
-  jrmod: Permissions.FLAGS.MANAGE_ROLES,
-  helper: Permissions.FLAGS.MANAGE_MESSAGES,
-  duty: Permissions.FLAGS.MUTE_MEMBERS,
+  admin: PermissionFlagsBits.Administrator,
+  exec: PermissionFlagsBits.ManageGuild,
+  srmod: PermissionFlagsBits.MentionEveryone,
+  mod: PermissionFlagsBits.ManageChannels,
+  jrmod: PermissionFlagsBits.ManageRoles,
+  helper: PermissionFlagsBits.ManageMessages,
+  duty: PermissionFlagsBits.MuteMembers,
 };
 
 export const c2sRolesInformation: typeof c2sRoles = {
@@ -342,14 +343,17 @@ class RandomColor {
 }
 export const randomColor = RandomColor.randomColor;
 
-export const disableAllComponents = (interaction: MessageComponentInteraction) => {
-  (interaction.message.components as MessageActionRow[]).forEach(component =>
-    component.components.forEach(comp => comp.setDisabled(true)),
-  );
-  return interaction.channel.messages.edit(interaction.message.id, {
-    components: interaction.message.components as MessageActionRow[],
+export const disableAllComponents = (interaction: MessageComponentInteraction) =>
+  interaction.message.edit({
+    components: interaction.message.components.map(
+      component =>
+        ({
+          ...component,
+          components: component.components.map(comp => ({ ...comp, disabled: true })),
+        } as ActionRow<MessageActionRowComponent>),
+    ),
   });
-};
+
 export const isUserInGuild = async (user: User, guild: Guild) => {
   try {
     await guild.members.fetch(user.id);

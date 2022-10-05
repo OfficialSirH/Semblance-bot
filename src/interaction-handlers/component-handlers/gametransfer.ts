@@ -1,4 +1,4 @@
-import { type ButtonInteraction, MessageEmbed } from 'discord.js';
+import { type ButtonInteraction, EmbedBuilder } from 'discord.js';
 import { gameTransferPages } from '#constants/commands';
 import { attachments } from '#constants/index';
 import { componentInteractionDefaultParser } from '#constants/components';
@@ -19,10 +19,8 @@ export default class GameTransfer extends InteractionHandler {
   }
 
   public override async run(interaction: ButtonInteraction, data: ParsedCustomIdData<'right' | 'left'>) {
-    let embed = interaction.message.embeds[0] as MessageEmbed;
-    if (!('setDescription' in embed)) embed = new MessageEmbed(embed);
-
-    let currentPage = gameTransferPages.indexOf(embed.image.url);
+    const embed = new EmbedBuilder(interaction.message.embeds[0]);
+    let currentPage = gameTransferPages.indexOf(embed.data.image.url);
 
     if (data.action == 'right') currentPage = currentPage == 4 ? 0 : ++currentPage;
     else if (data.action == 'left') currentPage = currentPage == 0 ? 4 : --currentPage;

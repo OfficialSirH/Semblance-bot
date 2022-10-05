@@ -1,6 +1,6 @@
 import { Category, GuildId, UserId } from '#constants/index';
 import { Command, type ApplicationCommandRegistry, type Args } from '@sapphire/framework';
-import type { CommandInteraction, Message } from 'discord.js';
+import { type ChatInputCommandInteraction, type Message, ChannelType, ApplicationCommandOptionType } from 'discord.js';
 import { DiscordLinkAPI } from '#structures/DiscordLinkAPI';
 import { createHmac } from 'crypto';
 
@@ -14,7 +14,7 @@ export default class Link extends Command {
     });
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const playerId = interaction.options.getString('playerid');
     const playerEmail = interaction.options.getString('playeremail');
     const playerToken = interaction.options.getString('playertoken', true);
@@ -89,7 +89,7 @@ export default class Link extends Command {
     if (isEmailPick.isErr) isEmail = false;
     else isEmail = isEmailPick.unwrap();
 
-    if (message.channel.type != 'DM') await message.delete();
+    if (message.channel.type != ChannelType.DM) await message.delete();
 
     if (isEmail) {
       const discordLinkClient = new DiscordLinkAPI(
@@ -123,7 +123,7 @@ export default class Link extends Command {
       })
       .then(async () => {
         this.container.logger.info(`${message.author.tag}(${message.author.id}) successfully linked their C2S data.`);
-        if (message.channel.type != 'DM') {
+        if (message.channel.type != ChannelType.DM) {
           await message.channel.send(
             `Successfully linked your C2S data, ${message.author.tag}, but please remember to use this link command in DMs next time, having to delete your message every time is such a hassle.`,
           );
@@ -133,13 +133,13 @@ export default class Link extends Command {
             'The link was successful, now you can use the Discord button in-game to upload your progress.',
           );
       })
-      .catch(() =>
+      .catch(() => {
         message.channel.send(
           "An error occured, either you provided incorrect input or something randomly didn't want to work.",
-        ),
-      );
+        );
+      });
 
-    if (message.channel.type != 'DM') await message.delete().catch(() => null);
+    if (message.channel.type != ChannelType.DM) await message.delete().catch(() => null);
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
@@ -150,19 +150,19 @@ export default class Link extends Command {
         options: [
           {
             name: 'playertoken',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: 'The player token bound to your Game Transfer account.',
             required: true,
           },
           {
             name: 'playerid',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: 'Your player id.',
             required: false,
           },
           {
             name: 'playeremail',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             description: 'The email bound to your Game Transfer account.',
             required: false,
           },
@@ -170,7 +170,6 @@ export default class Link extends Command {
       },
       {
         guildIds: [GuildId.cellToSingularity],
-        idHints: ['973689073623498803'],
       },
     );
   }
