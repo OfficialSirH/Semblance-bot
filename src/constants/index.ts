@@ -178,6 +178,12 @@ export const properCustomIdRegex =
 
 export const onlyUnique = (value: unknown, index: number, self: unknown[]) => self.indexOf(value) == index;
 
+export const isDstObserved = (date: Date) => {
+  const dstStart = new Date(date.getFullYear(), 2, 14, 2, 0, 0, 0);
+  const dstEnd = new Date(date.getFullYear(), 10, 7, 2, 0, 0, 0);
+  return date.getTime() > dstStart.getTime() && date.getTime() < dstEnd.getTime();
+};
+
 export const formattedDate = (ms: number) => `<t:${Math.floor(ms / 1000)}:F>`;
 
 export const msToTime = (ms: number) => {

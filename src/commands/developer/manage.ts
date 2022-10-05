@@ -1,9 +1,10 @@
-import { type CommandInteraction, MessageEmbed, Constants } from 'discord.js';
+import { type AutocompleteInteraction, type CommandInteraction, MessageEmbed, Constants } from 'discord.js';
 import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
-import { GuildId, bigToName, Category, msToTime } from '#constants/index';
+import { GuildId, bigToName, Category, msToTime, isDstObserved } from '#constants/index';
 import { type ApiResponseError, TweetStream, TwitterApi } from 'twitter-api-v2';
 import { TwitterInitialization } from '#structures/TwitterInitialization';
 import { DiscordLinkAPI } from '#structures/DiscordLinkAPI';
+import { type Events, gameEvents } from '#lib/utils/events';
 
 export default class Manage extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -19,6 +20,17 @@ export default class Manage extends Command {
   public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
     const subcommandGroup = interaction.options.getSubcommandGroup();
     const subcommand = interaction.options.getSubcommand();
+
+    if (subcommandGroup == 'game-event') {
+      switch (subcommand) {
+        case 'create':
+          return this.createGameEvent(interaction);
+        case 'edit':
+          return this.editGameEvent(interaction);
+        default:
+          return interaction.reply('Invalid subcommand');
+      }
+    }
 
     if (subcommandGroup === 'discord-link')
       switch (subcommand) {
@@ -43,12 +55,97 @@ export default class Manage extends Command {
       }
   }
 
+  public override async autocompleteRun(interaction: AutocompleteInteraction<'cached'>) {
+    let inputtedAmount: string | number = interaction.options.getFocused();
+    inputtedAmount = parseInt(inputtedAmount as string);
+    if (!inputtedAmount || inputtedAmount < 1) inputtedAmount = 1;
+
+    const dateChoices = Array(12)
+      .fill(0)
+      .map((_, i) => {
+        const date = new Date();
+        date.setUTCDate(inputtedAmount as number);
+        date.setUTCMonth(new Date().getMonth() + i);
+        date.setUTCHours(isDstObserved(date) ? 16 : 17, 0, 0, 0);
+        return {
+          name: date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+          value: date.getTime().toString(),
+        };
+      });
+
+    await interaction.respond(dateChoices);
+  }
+
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
     registry.registerChatInputCommand(
       {
         name: this.name,
         description: this.description,
         options: [
+          {
+            name: 'game-event',
+            description: 'Manage game events',
+            type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            options: [
+              {
+                name: 'create',
+                description: 'Create a game event',
+                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                options: [
+                  {
+                    name: 'name',
+                    description: 'The name of the game event',
+                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    choices: Object.keys(gameEvents).map(key => ({
+                      name: key,
+                      value: key,
+                    })),
+                    required: true,
+                  },
+                  {
+                    name: 'start',
+                    description: 'The day of the month the game event starts',
+                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    autocomplete: true,
+                    required: true,
+                  },
+                  {
+                    name: 'end',
+                    description: 'The day of the month the game event ends',
+                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    autocomplete: true,
+                    required: true,
+                  },
+                ],
+              },
+              {
+                name: 'edit',
+                description: 'Edit a game event',
+                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                options: [
+                  {
+                    name: 'name',
+                    description: 'The name of the game event',
+                    autocomplete: true,
+                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    required: true,
+                  },
+                  {
+                    name: 'start',
+                    description: 'The day of the month the game event starts',
+                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    autocomplete: true,
+                  },
+                  {
+                    name: 'end',
+                    description: 'The day of the month the game event ends',
+                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    autocomplete: true,
+                  },
+                ],
+              },
+            ],
+          },
           {
             name: 'discord-link',
             description: 'Manage linked C2S accounts',
@@ -215,5 +312,62 @@ export default class Manage extends Command {
         tweets.data.data.at(0).id
       }?s=21`,
     );
+  }
+
+  public async createGameEvent(interaction: CommandInteraction<'cached'>) {
+    const name = interaction.options.getString('name', true);
+
+    if (!gameEvents[name]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
+
+    const event = gameEvents[name as Events];
+    const start = Number(interaction.options.getString('start', true));
+    const end = Number(interaction.options.getString('end', true));
+
+    try {
+      await interaction.guild.scheduledEvents.create({
+        name: `The ${name} Exploration!`,
+        scheduledStartTime: new Date(start),
+        scheduledEndTime: new Date(end),
+        image: event.image.attachment as Buffer,
+        description: event.description(start, end),
+        privacyLevel: 'GUILD_ONLY',
+        entityType: 'EXTERNAL',
+        entityMetadata: {
+          location: 'Cell to Singularity',
+        },
+      });
+      await interaction.reply(`Successfully created ${name} event!`);
+    } catch (e) {
+      this.container.logger.error(`creating event failed: ${e}`);
+      await interaction
+        .reply({ content: `creating event failed: ${e}`, ephemeral: true })
+        .catch(err => this.container.logger.error(`error reply for failed event creation failed: ${err}`));
+    }
+  }
+
+  public async editGameEvent(interaction: CommandInteraction<'cached'>) {
+    const name = interaction.options.getString('name', true);
+
+    if (!gameEvents[name]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
+
+    const event = gameEvents[name as Events];
+    const start = Number(interaction.options.getString('start', true));
+    const end = Number(interaction.options.getString('end', true));
+
+    try {
+      const scheduledEvent = (await interaction.guild.scheduledEvents.fetch()).find(e => e.name.includes(name));
+
+      await scheduledEvent.edit({
+        scheduledStartTime: new Date(start),
+        scheduledEndTime: new Date(end),
+        description: event.description(start, end),
+      });
+      await interaction.reply(`Successfully edited ${name} event!`);
+    } catch (e) {
+      this.container.logger.error(`creating event failed: ${e}`);
+      await interaction
+        .reply({ content: `creating event failed: ${e}`, ephemeral: true })
+        .catch(err => this.container.logger.error(`error reply for failed event creation failed: ${err}`));
+    }
   }
 }
