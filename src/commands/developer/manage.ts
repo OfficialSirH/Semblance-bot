@@ -1,4 +1,11 @@
-import { type AutocompleteInteraction, type ChatInputCommandInteraction, EmbedBuilder, ApplicationCommandOptionType, Constants } from 'discord.js';
+import {
+  type AutocompleteInteraction,
+  type ChatInputCommandInteraction,
+  EmbedBuilder,
+  ApplicationCommandOptionType,
+  GuildScheduledEventPrivacyLevel,
+  GuildScheduledEventEntityType,
+} from 'discord.js';
 import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
 import { GuildId, bigToName, Category, msToTime, isDstObserved } from '#constants/index';
 import { type ApiResponseError, TweetStream, TwitterApi } from 'twitter-api-v2';
@@ -85,17 +92,17 @@ export default class Manage extends Command {
           {
             name: 'game-event',
             description: 'Manage game events',
-            type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
               {
                 name: 'create',
                 description: 'Create a game event',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
                 options: [
                   {
                     name: 'name',
                     description: 'The name of the game event',
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     choices: Object.keys(gameEvents).map(key => ({
                       name: key,
                       value: key,
@@ -105,14 +112,14 @@ export default class Manage extends Command {
                   {
                     name: 'start',
                     description: 'The day of the month the game event starts',
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                     required: true,
                   },
                   {
                     name: 'end',
                     description: 'The day of the month the game event ends',
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                     required: true,
                   },
@@ -121,25 +128,25 @@ export default class Manage extends Command {
               {
                 name: 'edit',
                 description: 'Edit a game event',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
                 options: [
                   {
                     name: 'name',
                     description: 'The name of the game event',
                     autocomplete: true,
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     required: true,
                   },
                   {
                     name: 'start',
                     description: 'The day of the month the game event starts',
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                   },
                   {
                     name: 'end',
                     description: 'The day of the month the game event ends',
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                   },
                 ],
@@ -329,8 +336,8 @@ export default class Manage extends Command {
         scheduledEndTime: new Date(end),
         image: event.image.attachment as Buffer,
         description: event.description(start, end),
-        privacyLevel: 'GUILD_ONLY',
-        entityType: 'EXTERNAL',
+        privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
+        entityType: GuildScheduledEventEntityType.External,
         entityMetadata: {
           location: 'Cell to Singularity',
         },
