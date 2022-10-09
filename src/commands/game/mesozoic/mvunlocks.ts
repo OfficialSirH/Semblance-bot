@@ -30,7 +30,7 @@ export default class Mvunlocks extends Command {
             .map(t => `**${t}**`)
             .join('\n'),
       );
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public override async messageRun(message: Message) {

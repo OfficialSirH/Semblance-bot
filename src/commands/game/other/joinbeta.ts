@@ -17,7 +17,7 @@ export default class JoinBeta extends Command {
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setFooter({ text: `Called by ${user.tag}` })
       .setDescription(infoHandler.value);
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public override async messageRun(message: Message) {

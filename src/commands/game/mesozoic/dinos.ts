@@ -22,7 +22,7 @@ export default class Dinos extends Command {
           ].join(' '),
         ].join('\n\n'),
       );
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public override async messageRun(message: Message) {

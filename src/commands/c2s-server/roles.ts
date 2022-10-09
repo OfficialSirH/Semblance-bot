@@ -82,7 +82,7 @@ export default class Roles extends Command {
             .setStyle(hasServerEvents ? ButtonStyle.Danger : ButtonStyle.Success),
         ),
       ];
-    return { embeds: [embed], files: [attachments.currentLogo], components };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment], components };
   }
 
   public override async messageRun(message: Message) {

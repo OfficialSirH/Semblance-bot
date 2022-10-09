@@ -14,7 +14,7 @@ export default class Update extends Command {
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)
       .setDescription(infoHandler.value);
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public override async messageRun(message: Message) {

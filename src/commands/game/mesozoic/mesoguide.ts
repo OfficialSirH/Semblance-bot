@@ -87,7 +87,7 @@ export default class Mesoguide extends Command {
         },
       )
       .setFooter({ text: 'Thanks to Jojoseis#0001 for making this guide! :D' });
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public override async messageRun(message: Message) {

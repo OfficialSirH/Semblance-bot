@@ -43,7 +43,7 @@ export default class GameTransfer extends Command {
     );
     return {
       embeds: [embed],
-      files: [attachments.currentLogo],
+      files: [attachments.currentLogo.attachment],
       components: [component],
     };
   }

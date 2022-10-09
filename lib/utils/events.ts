@@ -10,7 +10,7 @@ export const eventAttachments = await (async () => {
   >;
   for (const file of files)
     if (file.endsWith('.png')) {
-      const attachment = new AttachmentBuilder(`./src/images/events/${file}`, { name: `${file}` }),
+      const attachment = new AttachmentBuilder(`./src/images/events/${file}`, { name: `attachment://${file}` }),
         attachmentName = file.substring(0, file.indexOf('.'));
       finalAttachments[attachmentName as Events] = attachment;
     }

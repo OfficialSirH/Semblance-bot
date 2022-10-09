@@ -74,7 +74,7 @@ export const attachments = await (async () => {
   >;
   for (const file of files)
     if (file.endsWith('.png') || file.endsWith('.mp4')) {
-      const attachment = new AttachmentBuilder(`./src/images/${file}`, { name: `${file}` }),
+      const attachment = new AttachmentBuilder(`./src/images/${file}`, { name: `attachment://${file}` }),
         attachmentName = file.substring(0, file.indexOf('.'));
       finalAttachments[attachmentName] = attachment;
     }

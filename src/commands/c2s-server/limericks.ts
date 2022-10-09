@@ -49,7 +49,7 @@ export default class Limericks extends Command {
         ].join('\n'),
       )
       .setFooter({ text: 'Let the hunger gam-- I mean Limericks Contest- begin!' });
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public override async messageRun(message: Message) {

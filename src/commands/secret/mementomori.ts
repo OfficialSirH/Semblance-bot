@@ -14,7 +14,7 @@ export default class Mementomori extends Command {
       .setColor(randomColor)
       .setImage(attachments.mementoMori.name)
       .setDescription('[The Goodbye](https://www.youtube.com/watch?v=aDQ3nfBbPWM)');
-    return { embeds: [embed], files: [attachments.mementoMori], ephemeral: true };
+    return { embeds: [embed], files: [attachments.mementoMori.attachment], ephemeral: true };
   }
 
   public override async messageRun(message: Message) {

@@ -17,7 +17,7 @@ export default class Reboot extends Command {
           '**The importance of rebooting your simulation:** you gain metabits from your simulation, which in order to use them and unlock their potential you need to reboot your simulation. ' +
           'rebooting also offers a lot of speed boost and rewards',
       );
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public async messageRun(message: Message) {

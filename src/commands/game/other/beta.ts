@@ -15,7 +15,7 @@ export default class Beta extends Command {
       .setThumbnail(attachments.currentLogo.name)
       .setDescription(infoHandler.value)
       .setFooter({ text: 'New stuff do be epicc' });
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public async messageRun(message: Message) {
