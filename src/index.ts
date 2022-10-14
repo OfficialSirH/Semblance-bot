@@ -19,6 +19,12 @@ declare module '@sapphire/framework' {
     sharedRun?<T extends Command['SharedBuilder']>(
       builder: T,
     ): Awaitable<string | (T extends Message ? MessageCreateOptions | MessageReplyOptions : InteractionReplyOptions)>;
+
+    /**
+     * allows for running through a submitted modal
+     * @param interaction The interaction that triggered the command.
+     */
+    modalRun?(interaction: ModalSubmitInteraction): Awaitable<void>;
   }
 
   interface Command {
@@ -39,6 +45,7 @@ import {
   Options,
   Partials,
   IntentsBitField,
+  type ModalSubmitInteraction,
 } from 'discord.js';
 
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);

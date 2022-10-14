@@ -1,4 +1,6 @@
 ﻿import {
+  type ApplicationCommand,
+  type ChatInputCommandInteraction,
   type ActionRow,
   type MessageActionRowComponent,
   AttachmentBuilder,
@@ -13,6 +15,21 @@ import type { SapphireClient } from '@sapphire/framework';
 import * as fs from 'fs/promises';
 
 export const isProduction = process.env.NODE_ENV === 'production';
+
+export const applicationCommandToMention = (
+  interaction: ChatInputCommandInteraction | ApplicationCommand | { client: SapphireClient; commandName: string },
+  subcommand?: string,
+) => {
+  if (!('id' in interaction)) {
+    const command = interaction.client.application.commands.cache.find(c => c.name === interaction.commandName);
+    if (!command) return '</nonexisting command:fakeid>';
+    return `</${command.name}${subcommand ? ` ${subcommand}` : ''}:${command.id}>`;
+  }
+
+  return `</${'commandName' in interaction ? interaction.commandName : interaction.name}${
+    subcommand ? ` ${subcommand}` : ''
+  }:${interaction.id}>`;
+};
 
 export const quickSort = (list: [Snowflake, number][], left: number, right: number) => {
   let index: number;
@@ -125,7 +142,7 @@ export const subcategoryList = (client: SapphireClient, category: Category, subc
   client.stores
     .get('commands')
     .filter(c => c.category == category && c.subCategory == subcategory)
-    .map(c => `**\`${client.user}${c.name}\`**`)
+    .map(c => `**\`${c.name}\`**`)
     .join(', ');
 
 export const emojis = {

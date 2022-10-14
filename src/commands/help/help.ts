@@ -10,7 +10,7 @@ import {
   ButtonStyle,
   type MessageActionRowComponentBuilder,
 } from 'discord.js';
-import { Category, randomColor } from '#constants/index';
+import { applicationCommandToMention, Category, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
 
@@ -24,12 +24,18 @@ export default class Help extends Command {
     const c2sServerCommands = builder.client.stores
       .get('commands')
       .filter(c => c.category === Category.c2sServer)
-      .map(c => `**${builder.client.user}${c.name}**`);
+      .map(c => `**${c.name}**`);
     const embed = new EmbedBuilder()
       .setTitle('Semblance Command List')
       .setColor(randomColor)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setThumbnail(builder.client.user.displayAvatarURL())
+      .setDescription(
+        `All of the available commands below can be found through the ${applicationCommandToMention({
+          client: builder.client,
+          commandName: 'help',
+        })} command via the \`query\` option.`,
+      )
       .addFields(
         {
           name: '**-> Cell to Singularity Server Commands**',
@@ -86,7 +92,7 @@ export default class Help extends Command {
       content:
         'user' in builder
           ? null
-          : `side note: There's a slash command variant of this command (</${command.name}:${command.id}>) that is recommended to be used and message commands may be removed later.`,
+          : `side note: </${command.name}:${command.id}> is recommended to be used instead of its message-command variant as the message-command variant *will* be removed in the future.`,
       embeds: [embed],
       components,
     };

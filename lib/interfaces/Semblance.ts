@@ -1,17 +1,7 @@
 import type { Snowflake } from 'discord.js';
 
-type NonNestedDirectories = 'commands' | 'images' | 'infoBuilders';
-type ApplicationCommandsDirectories =
-  | 'autocompleteHandlers'
-  | 'componentHandlers'
-  | 'contextMenuHandlers'
-  | 'slashCommands';
-type EventsDirectories = 'client' | 'twitter';
-type FinishedPath =
-  | NonNestedDirectories
-  | `applicationCommands/${ApplicationCommandsDirectories}`
-  | `events/${EventsDirectories}`;
-export type ReadDirString = `./dist/src/${FinishedPath}`;
+type NonNestedDirectories = 'commands' | 'images';
+export type ReadDirString = `./dist/src/${NonNestedDirectories}`;
 
 declare module 'fs' {
   type readdir = (path: ReadDirString) => Promise<string[]>;

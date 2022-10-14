@@ -1,16 +1,7 @@
 import { disableAllComponents, getPermissionLevel } from '#constants/index';
-import { buildCustomId, componentInteractionDefaultParser } from '#constants/components';
+import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
-import {
-  type MessageActionRowComponentBuilder,
-  type ModalSubmitInteraction,
-  type ButtonInteraction,
-  type TextBasedChannel,
-  ActionRowBuilder,
-  EmbedBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-} from 'discord.js';
+import { type ButtonInteraction, type TextBasedChannel, EmbedBuilder } from 'discord.js';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Suggest extends InteractionHandler {
@@ -18,7 +9,7 @@ export default class Suggest extends InteractionHandler {
     super(context, {
       ...options,
       name: 'suggest',
-      interactionHandlerType: InteractionHandlerTypes.ModalSubmit,
+      interactionHandlerType: InteractionHandlerTypes.Button,
     });
   }
 
@@ -26,70 +17,10 @@ export default class Suggest extends InteractionHandler {
     return componentInteractionDefaultParser(this, interaction, { allowOthers: true });
   }
 
-  public async submitSuggestion(interaction: ModalSubmitInteraction) {
-    const suggestion = interaction.fields.getTextInputValue('suggestion');
-
-    const embed = new EmbedBuilder()
-        .setAuthor({
-          name: interaction.user.tag,
-          iconURL: interaction.user.displayAvatarURL(),
-        })
-        .setDescription(suggestion),
-      component = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
-        new ButtonBuilder()
-          .setLabel('Accept')
-          .setStyle(ButtonStyle.Success)
-          .setEmoji('✅')
-          .setCustomId(
-            buildCustomId({
-              command: this.name,
-              action: 'accept',
-              id: interaction.user.id,
-            }),
-          ),
-        new ButtonBuilder()
-          .setLabel('Deny')
-          .setStyle(ButtonStyle.Danger)
-          .setEmoji('❌')
-          .setCustomId(
-            buildCustomId({
-              command: this.name,
-              action: 'deny',
-              id: interaction.user.id,
-            }),
-          ),
-        new ButtonBuilder()
-          .setLabel('Silent Deny')
-          .setStyle(ButtonStyle.Danger)
-          .setEmoji('❌')
-          .setCustomId(
-            buildCustomId({
-              command: this.name,
-              action: 'silent-deny',
-              id: interaction.user.id,
-            }),
-          ),
-      );
-
-    (interaction.guild.channels.cache.find(c => c.name == 'suggestion-review') as TextBasedChannel).send({
-      embeds: [embed],
-      components: [component],
-    });
-
-    await interaction.reply({
-      content:
-        'Your suggestion was recorded successfully! The moderators will first review your suggestion before allowing it onto the suggestions channel. ' +
-        "You'll receive a DM when your suggestion is either accepted or denied so make sure to have your DMs opened.",
-      ephemeral: true,
-    });
-  }
-
   public override async run(
-    interaction: ButtonInteraction<'cached'> | ModalSubmitInteraction<'cached'>,
+    interaction: ButtonInteraction<'cached'>,
     data: ParsedCustomIdData<'accept' | 'deny' | 'silent-deny'>,
   ) {
-    if (interaction.isModalSubmit()) return this.submitSuggestion(interaction);
-
     if (getPermissionLevel(interaction.member) == 0)
       return interaction.reply("You don't have permission to use this button!");
     if (!['accept', 'deny', 'silent-deny'].includes(data.action))

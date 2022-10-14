@@ -45,13 +45,6 @@ model Reminder {
   reminders Json[]
 }
 
-model Report {
-  bugId     Int    @id @default(autoincrement())
-  userId    String
-  messageId String
-  channelId String
-}
-
 model UserData {
   token                            String   @id
   discord_id                       String   @unique
