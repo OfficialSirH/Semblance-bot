@@ -369,10 +369,7 @@ async function upgrade(
       )} Random-Bucks.\n\nYour current profit is ${upgradeHandler.profitRate.toFixed(3)} Random-Bucks/sec.`,
     )
     .setFooter({
-      text: `Upgrades will raise your rank in the leaderboard within ${applicationCommandToMention({
-        client: interaction.client,
-        commandName: 'game',
-      })}.`,
+      text: 'Upgrades will raise your rank in the leaderboard within /game.',
     });
   await message.edit({ embeds: [embed], components });
 }

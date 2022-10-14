@@ -44,7 +44,7 @@ export class VoteHandler {
         .setAuthor({ name: `${user.tag}`, iconURL: user.displayAvatarURL() })
         .setThumbnail(user.displayAvatarURL())
         .setFooter({ text: `${user.tag} has voted.` });
-    else embed.setAuthor({ name: `<@${user}>` }).setFooter({ text: `<@${user}> has voted.` });
+    else embed.setAuthor({ name: `<@${user}>` }).setFooter({ text: `user of id ${user} has voted.` });
 
     return this.voteChannel.send({ embeds: [embed] });
   }

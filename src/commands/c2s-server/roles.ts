@@ -64,7 +64,7 @@ export default class Roles extends Command {
             ].join('\n'),
           ].join('\n\n'),
         )
-        .setFooter({ text: '*Epic* roles.' }),
+        .setFooter({ text: 'Epic roles.' }),
       hasServerEvents = member.roles.cache.has(c2sRoles.server.serverEvents),
       components = [
         new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
