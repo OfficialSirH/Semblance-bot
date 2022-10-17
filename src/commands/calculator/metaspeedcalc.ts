@@ -10,9 +10,9 @@ export default class MetaspeedCalc extends Command {
 
   public override chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const options = interaction.options,
-      metabits = options.getNumber('metabits'),
-      dinoRanks = options.getInteger('mv_ranks') ? clamp(options.getInteger('mv_ranks'), 0, 550) : 0,
-      simSpeed = options.getInteger('speed_upgrades') ? clamp(options.getInteger('speed_upgrades'), 0, 2105) : 0;
+      metabits = options.getNumber('metabits', true),
+      dinoRanks = options.getInteger('mv_ranks') ? clamp(options.getInteger('mv_ranks') || 0, 0, 550) : 0,
+      simSpeed = options.getInteger('speed_upgrades') ? clamp(options.getInteger('speed_upgrades') || 0, 0, 2105) : 0;
     if (!metabits && dinoRanks == 0 && simSpeed == 0) return;
 
     let num = 1.0;

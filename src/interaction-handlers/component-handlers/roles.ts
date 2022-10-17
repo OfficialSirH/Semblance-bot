@@ -22,7 +22,7 @@ export default class Roles extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction) {
+  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
@@ -71,7 +71,7 @@ export default class Roles extends InteractionHandler {
         ephemeral: true,
       });
     }
-    const embed = new EmbedBuilder(interaction.message.embeds[0]).setThumbnail(attachments.currentLogo.name);
+    const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data).setThumbnail(attachments.currentLogo.name);
     await interaction.message.edit({ embeds: [embed], components });
   }
 }

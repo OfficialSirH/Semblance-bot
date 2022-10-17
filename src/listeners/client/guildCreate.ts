@@ -42,7 +42,7 @@ export default class GuildCreate extends Listener<typeof Events.GuildCreate> {
 
     dbotsApi.postStats({
       guildCount: client.guilds.cache.size,
-      shardCount: client.options.shardCount,
+      shardCount: client.options.shardCount || 0,
     });
 
     discordsApi.postStats(client.guilds.cache.size);

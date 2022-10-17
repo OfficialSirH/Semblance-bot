@@ -9,6 +9,7 @@ export default class Update extends Command {
 
   public override async sharedRun() {
     const infoHandler = await this.container.client.db.information.findUnique({ where: { type: 'update' } });
+    if (!infoHandler) return 'No update info found.';
     const embed = new EmbedBuilder()
       .setTitle('Steam and Mobile Updates')
       .setColor(randomColor)

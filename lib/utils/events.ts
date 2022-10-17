@@ -12,7 +12,7 @@ export const eventAttachments = await (async () => {
     if (file.endsWith('.png')) {
       const attachment = new AttachmentBuilder(`./src/images/events/${file}`, { name: `attachment://${file}` }),
         attachmentName = file.substring(0, file.indexOf('.'));
-      finalAttachments[attachmentName as Events] = attachment;
+      finalAttachments[attachmentName as keyof typeof finalAttachments] = attachment;
     }
   return finalAttachments;
 })();

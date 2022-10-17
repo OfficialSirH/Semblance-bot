@@ -16,7 +16,7 @@ export default class Roadmap extends InteractionHandler {
     super(context, { interactionHandlerType: InteractionHandlerTypes.Button });
   }
 
-  public override async parse(interaction: ButtonInteraction) {
+  public override async parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 

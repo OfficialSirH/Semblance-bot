@@ -47,7 +47,7 @@ export const getUser = async (search: string | Snowflake, guild: Guild) => {
     try {
       return await guild.client.users.fetch(search as Snowflake);
     } catch (e) {
-      return null;
+      return undefined;
     }
 };
 

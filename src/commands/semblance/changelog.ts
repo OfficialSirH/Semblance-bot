@@ -10,6 +10,7 @@ export default class Changelog extends Command {
   public override async sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const changelogHandler = await builder.client.db.information.findUnique({ where: { type: 'changelog' } });
+    if (!changelogHandler) return 'No changelog found.';
     const embed = new EmbedBuilder()
       .setTitle('Changelog')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })

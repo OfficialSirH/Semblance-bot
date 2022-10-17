@@ -66,13 +66,13 @@ export default class MetaCalc extends Command {
     const chosenCalculator = interaction.options.getSubcommand();
 
     if (chosenCalculator === 'obtainable_metabits') {
-      const entropy = interaction.options.getString('entropy');
-      const ideas = interaction.options.getString('ideas');
+      const entropy = interaction.options.getString('entropy', true);
+      const ideas = interaction.options.getString('ideas', true);
       return this.metaCalc(interaction, { entropy, ideas });
     }
 
     if (chosenCalculator === 'required_accumulation') {
-      const metabits = interaction.options.getNumber('metabits');
+      const metabits = interaction.options.getNumber('metabits', true);
       return this.metaCalcRev(interaction, metabits);
     }
   }

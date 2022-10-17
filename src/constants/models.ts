@@ -1,16 +1,16 @@
 import type { SapphireClient } from '@sapphire/framework';
-import { type InteractionReplyOptions, type TextChannel, type GuildMember, EmbedBuilder } from 'discord.js';
+import { type InteractionReplyOptions, type TextChannel, EmbedBuilder } from 'discord.js';
 import { formattedDate, UserId, GuildId, emojis } from '#constants/index';
 import { scheduleJob } from 'node-schedule';
-import type { BoosterReward, Reminder, UserReminder } from '@prisma/client';
+import type { BoosterCodes, BoosterReward, Reminder, UserReminder } from '@prisma/client';
 
 //j BoosterRewards - handle finished booster rewards
 export const handleBoosterReward = async (client: SapphireClient, boosterReward: BoosterReward) => {
-  const member: GuildMember = await client.guilds.cache
+  const member = await client.guilds.cache
     .get(GuildId.cellToSingularity)
-    .members.fetch(boosterReward.userId)
+    ?.members.fetch(boosterReward.userId)
     .catch(() => null);
-  if (!member ?? !member.roles.cache.has(boosterRole))
+  if (!member || !member.roles.cache.has(boosterRole))
     return client.db.boosterReward.delete({ where: { userId: boosterReward.userId } });
 
   const darwiniumCodes = await client.db.boosterCodes.findMany({});
@@ -28,7 +28,7 @@ export const handleBoosterReward = async (client: SapphireClient, boosterReward:
   }
 
   const ogCodeLength = darwiniumCodes.length,
-    darwiniumCode = darwiniumCodes.shift();
+    darwiniumCode = darwiniumCodes.shift() as BoosterCodes;
 
   await member.user
     .send({

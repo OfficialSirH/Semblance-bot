@@ -73,7 +73,7 @@ export default class Link extends Command {
   public override async messageRun(message: Message, args: Args) {
     const isMember = !!(await message.client.guilds.cache
       .get(GuildId.cellToSingularity)
-      .members.fetch(message.author.id)
+      ?.members.fetch(message.author.id)
       .catch(() => null));
     if (!isMember)
       return message.channel.send(
@@ -81,12 +81,12 @@ export default class Link extends Command {
       );
 
     const playerEmail = await args.pickResult('string');
-    if (playerEmail.isErr) return message.reply('You need to provide a player email.');
+    if (playerEmail.isErr()) return message.reply('You need to provide a player email.');
     const playerToken = await args.pickResult('string');
-    if (playerToken.isErr) return message.reply('You need to provide a player token.');
+    if (playerToken.isErr()) return message.reply('You need to provide a player token.');
     const isEmailPick = await args.pickResult('boolean');
     let isEmail: boolean;
-    if (isEmailPick.isErr) isEmail = false;
+    if (isEmailPick.isErr()) isEmail = false;
     else isEmail = isEmailPick.unwrap();
 
     if (message.channel.type != ChannelType.DM) await message.delete();

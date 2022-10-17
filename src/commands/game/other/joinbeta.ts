@@ -10,6 +10,7 @@ export default class JoinBeta extends Command {
   public override async sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const infoHandler = await builder.client.db.information.findUnique({ where: { type: 'joinbeta' } });
+    if (!infoHandler) return 'No join beta info found.';
     const embed = new EmbedBuilder()
       .setTitle('Steps to join beta')
       .setColor(randomColor)

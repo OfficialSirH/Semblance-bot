@@ -4,7 +4,7 @@
       "target": "ESNext",
       "moduleResolution": "node",
       "importsNotUsedAsValues": "error",
-      "strict": false,
+      "strict": true,
       "declaration": false,
       "removeComments": false,
       "alwaysStrict": true,

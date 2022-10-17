@@ -229,7 +229,7 @@ export default class Manage extends Command {
   }
 
   public async discordLinkGet(interaction: ChatInputCommandInteraction<'cached'>) {
-    const user = interaction.options.getUser('discord-id');
+    const user = interaction.options.getUser('discord-id', true);
     const linkedAccount = await this.container.client.db.userData.findUnique({ where: { discord_id: user.id } });
 
     if (!linkedAccount)
@@ -253,7 +253,7 @@ export default class Manage extends Command {
   }
 
   public async discordLinkCreate(interaction: ChatInputCommandInteraction<'cached'>) {
-    const user = interaction.options.getUser('discord-id');
+    const user = interaction.options.getUser('discord-id', true);
     const playerEmail = interaction.options.getString('playeremail');
     const playerToken = interaction.options.getString('playertoken');
 
@@ -290,10 +290,10 @@ export default class Manage extends Command {
     const endTime = Date.now();
 
     if (reloadCall.success)
-      return interaction.channel.send(
+      return interaction.channel?.send(
         `Successfully reloaded the Twitter handler!\nTime taken: ${msToTime(endTime - startTime)}`,
       );
-    return interaction.channel.send(
+    return interaction.channel?.send(
       `Failed to reload the Twitter handler!\nTime taken: ${msToTime(endTime - startTime)}\nreason: ${
         reloadCall.message
       }`,
@@ -307,15 +307,17 @@ export default class Manage extends Command {
       .userByUsername('ComputerLunch')
       .catch((e: ApiResponseError) => e.data.detail);
     if (typeof computerLunch === 'string') return interaction.reply(computerLunch);
+    else if (!computerLunch) return interaction.reply('No user returned');
 
     const tweets = await twClient.v2
       .userTimeline(computerLunch.data.id, { exclude: 'replies', max_results: 5 })
       .catch((e: ApiResponseError) => e.data.detail);
     if (typeof tweets === 'string') return interaction.reply(tweets);
+    else if (!tweets) return interaction.reply('No tweets returned');
 
     return interaction.reply(
       `Here's **ComputerLunch's** most recent Tweet!\nhttps://twitter.com/ComputerLunch/status/${
-        tweets.data.data.at(0).id
+        tweets.data.data.at(0)?.id
       }?s=21`,
     );
   }
@@ -323,7 +325,7 @@ export default class Manage extends Command {
   public async createGameEvent(interaction: ChatInputCommandInteraction<'cached'>) {
     const name = interaction.options.getString('name', true);
 
-    if (!gameEvents[name]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
+    if (!gameEvents[name as Events]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
 
     const event = gameEvents[name as Events];
     const start = Number(interaction.options.getString('start', true));
@@ -354,7 +356,7 @@ export default class Manage extends Command {
   public async editGameEvent(interaction: ChatInputCommandInteraction<'cached'>) {
     const name = interaction.options.getString('name', true);
 
-    if (!gameEvents[name]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
+    if (!gameEvents[name as Events]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
 
     const event = gameEvents[name as Events];
     const start = Number(interaction.options.getString('start', true));
@@ -362,6 +364,8 @@ export default class Manage extends Command {
 
     try {
       const scheduledEvent = (await interaction.guild.scheduledEvents.fetch()).find(e => e.name.includes(name));
+
+      if (!scheduledEvent) return interaction.reply({ content: 'No event found', ephemeral: true });
 
       await scheduledEvent.edit({
         scheduledStartTime: new Date(start),

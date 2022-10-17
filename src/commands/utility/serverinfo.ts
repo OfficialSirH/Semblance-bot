@@ -8,14 +8,16 @@ export default class ServerInfo extends Command {
   public override fullCategory = [Category.utility];
 
   public override async messageRun(message: Message, args: Args) {
-    let guild: Guild;
+    let guild: Guild | null;
     if (getPermissionLevel(message.member) == 7) {
       const guildId = await args.pickResult('string');
       guild =
-        guildId.isOk && message.client.guilds.cache.has(guildId.unwrap())
-          ? message.client.guilds.cache.get(guildId.unwrap())
+        guildId.isOk() && message.client.guilds.cache.has(guildId.unwrap())
+          ? (message.client.guilds.cache.get(guildId.unwrap()) as Guild)
           : message.guild;
     } else guild = message.guild;
+
+    if (!guild) return message.channel.send('Guild not found');
 
     let textChannel = 0,
       voiceChannel = 0,
@@ -46,7 +48,7 @@ export default class ServerInfo extends Command {
     const fetchedGuild = await guild.fetch();
     const owner = await guild.members.fetch(guild.ownerId);
     const embed = new EmbedBuilder()
-      .setAuthor({ name: guild.name, iconURL: guild.iconURL() })
+      .setAuthor({ name: guild.name, iconURL: guild.iconURL() as string })
       .setColor(randomColor)
       .addFields(
         { name: 'Owner', value: owner.toString(), inline: true },
@@ -59,7 +61,7 @@ export default class ServerInfo extends Command {
         { name: 'Voice Channels', value: voiceChannel.toString(), inline: true },
         {
           name: 'Members',
-          value: fetchedGuild.approximateMemberCount.toString(),
+          value: fetchedGuild.approximateMemberCount?.toString() as string,
           inline: true,
         },
         { name: 'Roles', value: roleCount.toString(), inline: true },

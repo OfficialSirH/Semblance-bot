@@ -20,7 +20,7 @@ export class VoteHandler {
   get voteChannel() {
     return this.client.guilds.cache
       .get(GuildId.sirhStuff)
-      .channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
+      ?.channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
   }
 
   public async sendVotedEmbed(
@@ -59,9 +59,17 @@ export class VoteHandler {
       });
     }
 
-    let userId: string;
+    let userId: string | null = null;
     if ('user' in vote && typeof vote.user == 'string') userId = vote.user;
     else if (!('user' in vote)) userId = vote.id;
+
+    if (!userId) {
+      this.client.logger.error('VoteHandler', `No user id found in ${this.votingSite} vote.`);
+      return reply.code(200).send({
+        success: false,
+        message: 'No user id found',
+      });
+    }
 
     const user = await this.client.users.fetch(userId, { cache: false });
 
@@ -73,6 +81,8 @@ export class VoteHandler {
       },
       where: { player: user.id },
     });
+
+    if (!playerProfit) return reply.code(200).send({ success: true });
 
     const playerData = await this.client.db.game
       .update({
@@ -89,7 +99,7 @@ export class VoteHandler {
         return;
       });
 
-    this.sendVotedEmbed(user ?? user.id, `Thanks for voting for Semblance on ${this.votingSite}!! :D`, {
+    this.sendVotedEmbed(user.id, `Thanks for voting for Semblance on ${this.votingSite}!! :D`, {
       hasGame: !!playerData,
       weekendBonus: 'isWeekend' in vote ? vote.isWeekend : false,
     });

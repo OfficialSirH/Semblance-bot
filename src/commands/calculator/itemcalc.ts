@@ -8,6 +8,7 @@ import {
 } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { itemList } from '#itemList';
+import type { ItemList } from '#lib/interfaces/ItemList';
 
 export default class ItemCalc extends Command {
   public override name = 'itemcalc';
@@ -36,10 +37,11 @@ export default class ItemCalc extends Command {
         ephemeral: true,
       });
 
-    let itemCost: number, itemCostType: string;
+    let itemCost = 0,
+      itemCostType = 'unknown currency';
     for (const key of Object.keys(itemList))
-      if (itemList[key][options.item]) {
-        itemCost = itemList[key][options.item].price;
+      if (itemList[key as keyof ItemList][options.item]) {
+        itemCost = itemList[key as keyof ItemList][options.item].price;
         itemCostType = key;
       }
 
@@ -82,10 +84,11 @@ export default class ItemCalc extends Command {
 
     const currentAmount = parseFloat(options.currentAmount);
 
-    let itemCost: number, itemCostType: string;
+    let itemCost = 0,
+      itemCostType = 'unknown currency';
     for (const key of Object.keys(itemList))
-      if (itemList[key][options.item]) {
-        itemCost = itemList[key][options.item].price;
+      if (itemList[key as keyof ItemList][options.item]) {
+        itemCost = itemList[key as keyof ItemList][options.item].price;
         itemCostType = key;
       }
 
@@ -116,15 +119,15 @@ export default class ItemCalc extends Command {
   public override chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const chosenCalculator = interaction.options.getSubcommand();
     if (chosenCalculator === 'required_resources') {
-      const item = interaction.options.getString('item');
-      const levelGains = interaction.options.getNumber('level_gains');
-      const currentLevel = interaction.options.getNumber('current_level');
+      const item = interaction.options.getString('item', true);
+      const levelGains = interaction.options.getNumber('level_gains', true);
+      const currentLevel = interaction.options.getNumber('current_level') || 0;
       return this.itemCalc(interaction, { item, levelGains, currentLevel });
     }
     if (chosenCalculator === 'obtainable_levels') {
-      const item = interaction.options.getString('item');
-      const currentAmount = interaction.options.getString('current_amount');
-      const currentLevel = interaction.options.getNumber('current_level');
+      const item = interaction.options.getString('item', true);
+      const currentAmount = interaction.options.getString('current_amount', true);
+      const currentLevel = interaction.options.getNumber('current_level') || 0;
       return this.itemCalcRev(interaction, { item, currentAmount, currentLevel });
     }
   }
@@ -133,7 +136,7 @@ export default class ItemCalc extends Command {
     const inputtedItem = interaction.options.getFocused() as string;
 
     const fullList = Object.keys(itemList).reduce<Array<string>>(
-      (acc, currency) => acc.concat(Object.keys(itemList[currency])),
+      (acc, currency) => acc.concat(Object.keys(itemList[currency as keyof ItemList])),
       [],
     );
 

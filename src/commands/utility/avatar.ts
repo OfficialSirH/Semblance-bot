@@ -15,7 +15,7 @@ export default class Avatar extends Command {
 
   public async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const user = interaction.options.getUser('user')
-        ? await this.container.client.users.fetch(interaction.options.getUser('user').id)
+        ? await this.container.client.users.fetch(interaction.options.getUser('user', true).id)
         : interaction.member.user,
       author = interaction.member.user,
       embed = new EmbedBuilder()
@@ -30,7 +30,7 @@ export default class Avatar extends Command {
     const userArg = await args.pickResult('user');
     let user: User;
 
-    if (userArg.isErr) user = message.author;
+    if (userArg.isErr()) user = message.author;
     else user = userArg.unwrap();
 
     const embed = new EmbedBuilder()

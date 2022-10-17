@@ -19,7 +19,7 @@ export default class Credits extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction) {
+  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 

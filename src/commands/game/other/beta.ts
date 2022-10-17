@@ -9,6 +9,7 @@ export default class Beta extends Command {
 
   public override async sharedRun() {
     const infoHandler = await this.container.client.db.information.findUnique({ where: { type: 'beta' } });
+    if (!infoHandler) return 'No beta info found.';
     const embed = new EmbedBuilder()
       .setTitle('Beta')
       .setColor(randomColor)

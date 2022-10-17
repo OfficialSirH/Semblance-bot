@@ -34,7 +34,7 @@ export default class BoostReward extends Command {
         const user = interaction.options.getUser('user');
         if (!user || !(await isUserInGuild(user, interaction.guild)))
           return interaction.reply({ content: 'invalid user', ephemeral: true });
-        const days = interaction.options.getInteger('days');
+        const days = interaction.options.getInteger('days', true);
         return editBooster(interaction, { user, days });
       }
       case 'remove': {

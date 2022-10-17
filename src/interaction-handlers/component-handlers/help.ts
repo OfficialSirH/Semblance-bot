@@ -22,7 +22,9 @@ export default class Help extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction<'cached'> | SelectMenuInteraction<'cached'>) {
+  public override parse(
+    interaction: ButtonInteraction<'cached'> | SelectMenuInteraction<'cached'>,
+  ): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
@@ -44,6 +46,7 @@ export default class Help extends InteractionHandler {
     if (!interaction.client.stores.get('commands').has(query))
       return interaction.reply({ content: 'Invalid query.', ephemeral: true });
 
+    // @ts-expect-error - I already checked if the command exists just above, but TS doesn't know that
     const info = await interaction.client.stores.get('commands').get(query).sharedRun(interaction);
 
     return interaction.reply(info);
@@ -60,48 +63,59 @@ export default class Help extends InteractionHandler {
     if (data.action != 'help')
       components
         .at(0)
-        .components.push(backButton('help', interaction.user.id, 'help'), closeButton('help', interaction.user.id));
-    else components.at(0).components.push(closeButton('help', interaction.user.id));
+        ?.components.push(backButton('help', interaction.user.id, 'help'), closeButton('help', interaction.user.id));
+    else components.at(0)?.components.push(closeButton('help', interaction.user.id));
 
-    let options: string | InteractionReplyOptions;
+    let options: string | InteractionReplyOptions | undefined;
     switch (data.action) {
       // Main Help Page
       case 'c2shelp':
-        options = await client.stores.get('commands').get('c2shelp').sharedRun(interaction);
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await client.stores.get('commands').get('c2shelp')?.sharedRun(interaction);
         break;
       case 'mischelp':
-        options = await client.stores.get('commands').get('mischelp').sharedRun(interaction);
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await client.stores.get('commands').get('mischelp')?.sharedRun(interaction);
         break;
       // Cell to Singularity Help Page
       case 'metabits':
-        options = await client.stores.get('commands').get('metabits').sharedRun(interaction);
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await client.stores.get('commands').get('metabits')?.sharedRun(interaction);
         break;
       case 'mesoguide':
-        options = await client.stores.get('commands').get('mesoguide').sharedRun(interaction);
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await client.stores.get('commands').get('mesoguide')?.sharedRun(interaction);
         break;
       // Calculator Help Page
       case 'largenumbers':
-        options = await client.stores.get('commands').get('largenumbers').sharedRun(interaction);
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await client.stores.get('commands').get('largenumbers')?.sharedRun(interaction);
         break;
       case 'metahelp':
-        options = await client.stores.get('commands').get('metahelp').sharedRun(interaction);
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await client.stores.get('commands').get('metahelp')?.sharedRun(interaction);
         break;
       case 'itemhelp':
-        options = await client.stores.get('commands').get('itemhelp').sharedRun(interaction);
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await client.stores.get('commands').get('itemhelp')?.sharedRun(interaction);
         break;
       // Back and Close Actions
       case 'help':
-        options = await client.stores.get('commands').get('help').sharedRun(interaction);
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await client.stores.get('commands').get('help')?.sharedRun(interaction);
         break;
       case 'close':
-        return interaction.channel.messages.delete(interaction.message.id);
+        return interaction.channel?.messages.delete(interaction.message.id);
       default:
         return interaction.reply({ content: 'Invalid action.', ephemeral: true });
     }
+
+    if (!options) return interaction.reply({ content: 'Invalid action.', ephemeral: true });
+
     if (typeof options != 'string') {
       if (options.components)
         (options.components.at(0) as ActionRowData<MessageActionRowComponentData>).components.concat(
-          components.at(0).components,
+          (components.at(0) as ActionRowBuilder<MessageActionRowComponentBuilder>).components,
         );
       else options.components = components;
       options.files = [];

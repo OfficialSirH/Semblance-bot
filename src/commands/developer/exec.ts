@@ -22,7 +22,7 @@ export default class Exec extends Command {
   public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     await interaction.deferReply();
     const embed = new EmbedBuilder();
-    exec(interaction.options.getString('input'), (error, stdout, stderr) => {
+    exec(interaction.options.getString('input', true), (error, stdout, stderr) => {
       if (error) embed.setDescription(`\`\`\`js\n${error}\`\`\``);
       if (stderr) embed.setDescription(`\`\`\`js\n${stderr}\`\`\``);
       else embed.setDescription(`\`\`\`ansi\n${stdout}\`\`\``);

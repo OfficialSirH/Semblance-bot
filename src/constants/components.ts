@@ -32,10 +32,10 @@ export const disableComponentsByLabel = (
       row.components.map(c => {
         if (!('label' in c.data)) return c;
         if (oppositeOfLabel) {
-          if (!labels.includes(c.data.label)) return c.setDisabled(!enableInstead);
+          if (!labels.includes(c.data.label || '')) return c.setDisabled(!enableInstead);
           return c;
         }
-        if (labels.includes(c.data.label)) return c.setDisabled(!enableInstead);
+        if (labels.includes(c.data.label || '')) return c.setDisabled(!enableInstead);
         return c;
       }),
     ),
@@ -71,9 +71,10 @@ export const componentInteractionDefaultParser = async <T extends CustomIdData =
   const data: T = JSON.parse(interaction.customId);
   if (typeof data.action != 'string' || typeof data.command != 'string' || typeof data.id != 'string')
     return handler.none();
-  for (const prop of Object.keys(extraProps)) {
-    if (typeof data[prop] != extraProps[prop]) return handler.none();
-  }
+  if (extraProps)
+    for (const prop of Object.keys(extraProps)) {
+      if (typeof data[prop as keyof CustomIdData] != extraProps[prop as keyof typeof extraProps]) return handler.none();
+    }
 
   if (data.command != handler.name) return handler.none();
   if (!allowOthers && data.id != interaction.user.id) {
@@ -88,9 +89,10 @@ export const componentInteractionDefaultParser = async <T extends CustomIdData =
     action: data.action,
     id: data.id,
   };
-  for (const prop of Object.keys(extraProps)) {
-    finalizedData[prop] = data[prop];
-  }
+  if (extraProps)
+    for (const prop of Object.keys(extraProps)) {
+      finalizedData[prop as keyof typeof finalizedData] = data[prop as keyof CustomIdData];
+    }
   return handler.some(finalizedData);
 };
 

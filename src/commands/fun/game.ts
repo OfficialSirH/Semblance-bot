@@ -23,7 +23,7 @@ export default class Game extends Command {
 
     const statsHandler = await client.db.game.findUnique({ where: { player: user.id } }),
       embed = new EmbedBuilder();
-    let cost: number;
+    let cost = Infinity;
     if (!statsHandler)
       embed
         .setTitle("Semblance's Idle-Game")
@@ -133,8 +133,8 @@ export default class Game extends Command {
     return {
       content:
         'user' in builder
-          ? null
-          : `note: It's recommended to use the slash command variant of this command (</${command.name}:${command.id}>) as normal commands may be removed from Semblance later.`,
+          ? undefined
+          : `note: It's recommended to use the slash command variant of this command (</${command?.name}:${command?.id}>) as normal commands may be removed from Semblance later.`,
       embeds: [embed],
       components,
     };

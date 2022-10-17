@@ -29,7 +29,7 @@ export default class GameHandler extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction) {
+  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
@@ -41,7 +41,8 @@ export default class GameHandler extends InteractionHandler {
   ) {
     const id = interaction.user.id;
     const game = await interaction.client.db.game.findUnique({ where: { player: id } });
-    let cost: number, components: ActionRowBuilder<MessageActionRowComponentBuilder>[];
+    let cost = Infinity,
+      components: ActionRowBuilder<MessageActionRowComponentBuilder>[];
     if (game) cost = await currentPrice(interaction.client, game);
 
     const mainComponents = [
@@ -170,10 +171,11 @@ export default class GameHandler extends InteractionHandler {
         votes(interaction, components);
         break;
       case 'stats':
+        if (!game) return interaction.reply({ content: 'You do not have a game yet.', ephemeral: true });
         stats(interaction, components, game);
         break;
       case 'close':
-        interaction.channel.messages.delete(interaction.message.id);
+        interaction.channel?.messages.delete(interaction.message.id);
     }
   }
 }
@@ -284,6 +286,7 @@ async function collect(
 ) {
   const { user } = interaction;
   let collectionHandler = await interaction.client.db.game.findUnique({ where: { player: user.id } });
+  if (!collectionHandler) return interaction.reply({ content: 'You do not have a game yet.', ephemeral: true });
   const collected = collectionHandler.profitRate * ((Date.now() - collectionHandler.lastCollected.valueOf()) / 1000);
 
   collectionHandler = await interaction.client.db.game.update({
@@ -317,6 +320,7 @@ async function upgrade(
   const { user, message } = interaction;
 
   let upgradeHandler = await interaction.client.db.game.findUnique({ where: { player: user.id } });
+  if (!upgradeHandler) return interaction.reply({ content: 'You do not have a game yet.', ephemeral: true });
   const previousLevel = upgradeHandler.level;
   let costSubtraction = await currentPrice(interaction.client, upgradeHandler);
   if (upgradeHandler.money < costSubtraction)

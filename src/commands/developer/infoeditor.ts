@@ -25,12 +25,12 @@ export default class InfoEditor extends Command {
       const subCommand = interaction.options.getSubcommand();
 
       if (subCommand == 'add') {
-        const codes = interaction.options.getString('codes').replaceAll(' ', '').split(',');
+        const codes = interaction.options.getString('codes', true).replaceAll(' ', '').split(',');
         return this.addBoosterCode(interaction, codes);
       }
 
       if (subCommand == 'remove') {
-        const codes = interaction.options.getString('codes').replaceAll(' ', '').split(',');
+        const codes = interaction.options.getString('codes', true).replaceAll(' ', '').split(',');
         return this.removeBoosterCode(interaction, codes);
       }
 
@@ -42,7 +42,7 @@ export default class InfoEditor extends Command {
     const subject = async () => {
       const subject = await this.container.client.db.information.findUnique({
         where: {
-          type: interaction.options.getString('subject'),
+          type: interaction.options.getString('subject', true),
         },
       });
       return subject ? subject : interaction.reply('Invalid subject.');
@@ -90,7 +90,7 @@ export default class InfoEditor extends Command {
     const embed = new EmbedBuilder()
       .setTitle(subjectValue.type)
       .setColor(randomColor)
-      .setThumbnail(this.container.client.user.displayAvatarURL())
+      .setThumbnail(this.container.client.user?.displayAvatarURL() as string)
       .setDescription('The following JSON for the info is in the file attached');
 
     const file = new AttachmentBuilder(Buffer.from(JSON.stringify(subjectValue)), {

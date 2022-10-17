@@ -24,7 +24,14 @@ export default class Roles extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const member = builder.member;
-    const guildRoles = builder.client.guilds.cache.get(GuildId.cellToSingularity).roles.cache;
+    if (!member) {
+      return 'An issue occurred while trying to get your roles.';
+    }
+    const guildRoles = builder.client.guilds.cache.get(GuildId.cellToSingularity)?.roles.cache;
+
+    if (!guildRoles) {
+      return 'An issue occurred while trying to get the roles.';
+    }
 
     const embed = new EmbedBuilder()
         .setTitle('C2S Roles')
@@ -35,31 +42,46 @@ export default class Roles extends Command {
             [
               '**Server Roles**\n',
               ...Object.keys(c2sRolesInformation.server).map(
-                role => `${guildRoles.get(c2sRoles.server[role]).name}: ${c2sRolesInformation.server[role]}`,
+                role =>
+                  `${guildRoles.get(c2sRoles.server[role as keyof typeof c2sRoles['server']])?.name}: ${
+                    c2sRolesInformation.server[role as keyof typeof c2sRoles['server']]
+                  }`,
               ),
             ].join('\n'),
             [
               '**Simulation Roles**\n',
               ...Object.keys(c2sRolesInformation.simulation).map(
-                role => `${guildRoles.get(c2sRoles.simulation[role]).name}: ${c2sRolesInformation.simulation[role]}`,
+                role =>
+                  `${guildRoles.get(c2sRoles.simulation[role as keyof typeof c2sRoles['simulation']])?.name}: ${
+                    c2sRolesInformation.simulation[role as keyof typeof c2sRoles['simulation']]
+                  }`,
               ),
             ].join('\n'),
             [
               '**Metabit Roles**\n',
               ...Object.keys(c2sRolesInformation.metabit).map(
-                role => `${guildRoles.get(c2sRoles.metabit[role]).name}: ${c2sRolesInformation.metabit[role]}`,
+                role =>
+                  `${guildRoles.get(c2sRoles.metabit[role as keyof typeof c2sRoles['metabit']])?.name}: ${
+                    c2sRolesInformation.metabit[role as keyof typeof c2sRoles['metabit']]
+                  }`,
               ),
             ].join('\n'),
             [
               '**Mesozoic Valley Roles**\n',
               ...Object.keys(c2sRolesInformation.mesozoic).map(
-                role => `${guildRoles.get(c2sRoles.mesozoic[role]).name}: ${c2sRolesInformation.mesozoic[role]}`,
+                role =>
+                  `${guildRoles.get(c2sRoles.mesozoic[role as keyof typeof c2sRoles['mesozoic']])?.name}: ${
+                    c2sRolesInformation.mesozoic[role as keyof typeof c2sRoles['mesozoic']]
+                  }`,
               ),
             ].join('\n'),
             [
               '**Beyond Roles**\n',
               ...Object.keys(c2sRolesInformation.beyond).map(
-                role => `${guildRoles.get(c2sRoles.beyond[role]).name}: ${c2sRolesInformation.beyond[role]}`,
+                role =>
+                  `${guildRoles.get(c2sRoles.beyond[role as keyof typeof c2sRoles['beyond']])?.name}: ${
+                    c2sRolesInformation.beyond[role as keyof typeof c2sRoles['beyond']]
+                  }`,
               ),
             ].join('\n'),
           ].join('\n\n'),
@@ -69,7 +91,7 @@ export default class Roles extends Command {
       components = [
         new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
           new ButtonBuilder()
-            .setDisabled(builder.guild.id != GuildId.cellToSingularity)
+            .setDisabled(builder.guild?.id != GuildId.cellToSingularity)
             .setCustomId(
               buildCustomId({
                 command: this.name,

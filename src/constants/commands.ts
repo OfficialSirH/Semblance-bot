@@ -21,7 +21,7 @@ export const gameTransferPages = [
 export const serversPerPage = 50;
 
 export function guildBookPage(client: Client, chosenPage: number) {
-  const guildBook = {},
+  const guildBook: Record<string, Record<string, string>> = {},
     numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
 
   if (!chosenPage) chosenPage = 1;

@@ -165,8 +165,8 @@ export default class RemindMe extends Command {
 }
 
 async function create(interaction: ChatInputCommandInteraction<'cached'>) {
-  const timeAmount = interaction.options.getInteger('amount') * MILLISECONDS_TO_MINUTES,
-    reminder = interaction.options.getString('reminder'),
+  const timeAmount = interaction.options.getInteger('amount', true) * MILLISECONDS_TO_MINUTES,
+    reminder = interaction.options.getString('reminder', true),
     user = interaction.member.user;
 
   if (timeAmount > MAX_TIME)
@@ -176,7 +176,7 @@ async function create(interaction: ChatInputCommandInteraction<'cached'>) {
     });
 
   const currentReminderData = await interaction.client.db.reminder.findUnique({ where: { userId: user.id } });
-  if (currentReminderData?.reminders.length >= MAX_REMINDERS)
+  if (currentReminderData && currentReminderData?.reminders.length >= MAX_REMINDERS)
     return interaction.reply({
       content: `You cannot have more than ${MAX_REMINDERS} reminders at a time`,
       ephemeral: true,
@@ -203,7 +203,7 @@ async function create(interaction: ChatInputCommandInteraction<'cached'>) {
             message: reminder,
             time: Date.now() + timeAmount,
             reminderId: currentReminderData.reminders.length + 1,
-            channelId: interaction.channel.id,
+            channelId: interaction.channel?.id,
           },
         ]),
       },
@@ -225,7 +225,7 @@ async function create(interaction: ChatInputCommandInteraction<'cached'>) {
           message: reminder,
           time: Date.now() + timeAmount,
           reminderId: 1,
-          channelId: interaction.channel.id,
+          channelId: interaction.channel?.id,
         },
       ],
     },
@@ -251,9 +251,9 @@ async function edit(interaction: ChatInputCommandInteraction<'cached'>) {
       ephemeral: true,
     });
 
-  const reminderId = interaction.options.getInteger('reminderid'),
+  const reminderId = interaction.options.getInteger('reminderid', true),
     reminder = interaction.options.getString('reminder'),
-    amount = interaction.options.getInteger('amount') * MILLISECONDS_TO_MINUTES;
+    amount = interaction.options.getInteger('amount') || 0 * MILLISECONDS_TO_MINUTES;
 
   if (!reminder && !amount)
     return interaction.reply({
@@ -271,7 +271,7 @@ async function edit(interaction: ChatInputCommandInteraction<'cached'>) {
   updatedReminder.message = reminder ? reminder : currentReminderData.reminders[reminderId - 1].message;
   updatedReminder.time = amount ? new Date(Date.now() + amount) : currentReminderData.reminders[reminderId - 1].time;
   updatedReminder.reminderId = reminderId;
-  updatedReminder.channelId = currentReminderData.reminders.find(r => r.reminderId === reminderId).channelId;
+  updatedReminder.channelId = currentReminderData.reminders.find(r => r.reminderId === reminderId)?.channelId as string;
 
   const updatedReminderData = await interaction.client.db.reminder.update({
     where: { userId: user.id },
@@ -303,7 +303,7 @@ async function edit(interaction: ChatInputCommandInteraction<'cached'>) {
 
 async function deleteReminder(interaction: ChatInputCommandInteraction<'cached'>) {
   const user = interaction.member.user,
-    reminderId = interaction.options.getInteger('reminderid'),
+    reminderId = interaction.options.getInteger('reminderid', true),
     currentReminderData = (await interaction.client.db.reminder.findUnique({
       where: { userId: user.id },
     })) as unknown as Reminder;
@@ -319,7 +319,9 @@ async function deleteReminder(interaction: ChatInputCommandInteraction<'cached'>
       ephemeral: true,
     });
 
-  const deletedReminder = currentReminderData.reminders.find(reminder => reminder.reminderId == reminderId);
+  const deletedReminder = currentReminderData.reminders.find(
+    reminder => reminder.reminderId == reminderId,
+  ) as UserReminder;
   if (currentReminderData.reminders.length == 1)
     await interaction.client.db.reminder.delete({ where: { userId: user.id } });
   else

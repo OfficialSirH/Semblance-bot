@@ -21,7 +21,7 @@ export const applicationCommandToMention = (
   subcommand?: string,
 ) => {
   if (!('id' in interaction)) {
-    const command = interaction.client.application.commands.cache.find(c => c.name === interaction.commandName);
+    const command = interaction.client.application?.commands.cache.find(c => c.name === interaction.commandName);
     if (!command) return '</nonexisting command:fakeid>';
     return `</${command.name}${subcommand ? ` ${subcommand}` : ''}:${command.id}>`;
   }
@@ -93,7 +93,7 @@ export const attachments = await (async () => {
     if (file.endsWith('.png') || file.endsWith('.mp4')) {
       const attachment = new AttachmentBuilder(`./src/images/${file}`, { name: `attachment://${file}` }),
         attachmentName = file.substring(0, file.indexOf('.'));
-      finalAttachments[attachmentName] = attachment;
+      finalAttachments[attachmentName as keyof typeof finalAttachments] = attachment;
     }
   return finalAttachments;
 })();
@@ -327,7 +327,8 @@ export const c2sRoles = {
   },
 };
 
-export const getPermissionLevel = function (member: GuildMember) {
+export const getPermissionLevel = function (member: GuildMember | null) {
+  if (!member) return 0;
   try {
     if (UserId.aditya === member.user.id || UserId.sirh === member.user.id) return 7;
     // Aditya, SirH //RIP SirH OG: "279080959612026880" === member.user.id // SirH#4297

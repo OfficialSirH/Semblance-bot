@@ -24,7 +24,7 @@ export default class ServerList extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction) {
+  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser<ServerListCustomIdData>(this, interaction, {
       extraProps: {
         page: 'number',

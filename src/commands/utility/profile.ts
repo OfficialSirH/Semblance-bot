@@ -16,23 +16,26 @@ export default class Profile extends Command {
 
   public override async messageRun(message: Message, args: Args) {
     const userResolve = await args.pickResult('user');
-    let user: User, member: GuildMember;
-    if (userResolve.isErr) member = message.member;
+    let user: User | null = null,
+      member: GuildMember | null;
+    if (userResolve.isErr()) member = message.member;
     else {
       user = userResolve.unwrap();
       member =
         user instanceof GuildMember
           ? user
-          : await message.guild.members.fetch({ user: user.id, cache: false }).catch(() => null);
+          : ((await message.guild?.members
+              .fetch({ user: user.id, cache: false })
+              .catch(() => null)) as GuildMember | null);
     }
 
-    if (member) return message.reply(guildProfileEmbed(message, member));
-    return message.reply(userProfileEmbed(message, user));
+    if (member) return message.reply(guildProfileEmbed(member));
+    return message.reply(userProfileEmbed(message, user as User));
   }
 
   public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const user = interaction.options.getUser('user');
-    let member: GuildMember;
+    let member: GuildMember | null;
     if (!user) member = interaction.member;
     else
       member =
@@ -40,8 +43,8 @@ export default class Profile extends Command {
           ? user
           : await interaction.guild.members.fetch({ user: user.id, cache: false }).catch(() => null);
 
-    if (member) return interaction.reply(guildProfileEmbed(interaction, member));
-    return interaction.reply(userProfileEmbed(interaction, user));
+    if (member) return interaction.reply(guildProfileEmbed(member));
+    return interaction.reply(userProfileEmbed(interaction, user as User));
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
@@ -59,11 +62,11 @@ export default class Profile extends Command {
   }
 }
 
-function guildProfileEmbed(builder: Command['SharedBuilder'], member: GuildMember) {
+function guildProfileEmbed(member: GuildMember) {
   let accountCreated = `${member.user.createdAt}`;
   accountCreated = `${accountCreated.substring(0, 16)}(${daysAgo(member.user.createdAt)})`;
   let accountJoined = `${member.joinedAt}`;
-  accountJoined = `${accountJoined.substring(0, 16)}(${daysAgo(member.joinedAt)})`;
+  accountJoined = `${accountJoined.substring(0, 16)}(${member.joinedAt ? daysAgo(member.joinedAt) : 'N/A'})`;
   const embed = new EmbedBuilder()
     .setTitle('Guild User Profile')
     .setDescription(`User data for ${member}:`)

@@ -11,8 +11,8 @@ export default class ArchieDance extends Command {
     const embed = new EmbedBuilder()
       .setTitle('Dancing Archie/Jotaru')
       .setAuthor({
-        name: builder.member.user.tag,
-        iconURL: builder.member.user.displayAvatarURL(),
+        name: builder.member?.user.tag as string,
+        iconURL: builder.member?.user.displayAvatarURL(),
       })
       .setDescription(
         'Click the link above for the epic 3 minute video with Archie and Jotaru dancing, which I made as suggested by McScrungledorf#6020. ' +

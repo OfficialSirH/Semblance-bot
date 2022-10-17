@@ -14,7 +14,7 @@ export default class VoteLeaderboard extends Command {
       leaderboard = "No one has voted for Semblance :( (or the leaderboard just isn't working properly at the moment)";
     const embed = new EmbedBuilder()
       .setTitle('Voting Leaderboard')
-      .setThumbnail(this.container.client.user.displayAvatarURL())
+      .setThumbnail(this.container.client.user?.displayAvatarURL() as string)
       .setColor(randomColor)
       .setDescription(leaderboard)
       .setFooter({ text: 'Vote for Semblance on the listed sites in the vote command' });

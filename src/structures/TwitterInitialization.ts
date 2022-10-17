@@ -70,7 +70,7 @@ export class TwitterInitialization {
       return { success: true, message: 'successfully set the stream' };
     };
 
-    let finalResult: { success: boolean; message: string | null };
+    let finalResult: { success: boolean; message: string | null } = { success: false, message: null };
 
     while (
       !(await initStream().then(result => {

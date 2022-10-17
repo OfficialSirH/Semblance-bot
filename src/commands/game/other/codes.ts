@@ -23,13 +23,14 @@ export default class Codes extends Command {
   public override async sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
     const codeHandler = await this.container.client.db.information.findUnique({ where: { type: 'codes' } });
+    if (!codeHandler) return 'No codes found.';
     const embed = new EmbedBuilder()
       .setTitle('Darwinium Codes')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)
       .setDescription(codeHandler.value)
-      .setFooter({ text: codeHandler.footer });
+      .setFooter({ text: codeHandler.footer as string });
     const component = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId(

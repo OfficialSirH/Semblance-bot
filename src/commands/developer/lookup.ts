@@ -70,7 +70,7 @@ export default class Lookup extends Command {
               for (const name in values)
                 fields.push({
                   name,
-                  value: (typeof values[name] != 'string' ? values[name].toString() : <string>values[name]) || 'N/A',
+                  value: (typeof values[name] != 'string' ? values[name]?.toString() : <string>values[name]) || 'N/A',
                   inline: true,
                 });
             };
@@ -81,14 +81,14 @@ export default class Lookup extends Command {
 
           const listsWithDescriptions = lists.filter(l => Object.keys(l).find(k => k.toLowerCase().includes('short')));
           const descriptions = listsWithDescriptions
-            .map(l => l[Object.keys(l).find(k => k.toLowerCase().includes('short'))])
-            .sort((a, b) => b.length - a.length);
+            .map(l => l[Object.keys(l).find(k => k.toLowerCase().includes('short')) as keyof typeof l])
+            .sort((a, b) => (b?.length || 0) - (a?.length || 0));
           if (descriptions[0]) add({ Description: descriptions[0] });
 
           const prefixes = lists
             .filter(l => l.prefix)
             .map(l => l.prefix)
-            .sort((a, b) => b.length - a.length);
+            .sort((a, b) => (b?.length || 0) - (a?.length || 0));
           add({ Prefix: prefixes[0] ? `\`${prefixes[0]}\`` : 'Unknown' });
 
           if (botblock.server_count) add({ 'Server Count': botblock.server_count });
@@ -99,18 +99,18 @@ export default class Lookup extends Command {
             }[Invite without permissions](https://discordapp.com/oauth2/authorize?client_id=${botblock.id}&scope=bot)`,
           });
 
-          if (lists.find(l => l.library)) add({ Library: lists.find(l => l.library).library });
+          if (lists.find(l => l.library)) add({ Library: lists.find(l => l.library)?.library });
 
-          const websites = {};
+          const websites: Record<string, number> = {};
           for (const website of lists.filter(l => l.website).map(l => l.website))
-            if (!websites[website]) websites[website] = 1;
-            else websites[website] += 1;
+            if (!websites[website || '']) websites[website || ''] = 1;
+            else websites[website || ''] += 1;
           const websiteKeys = Object.keys(websites).sort((a, b) => websites[b] - websites[a]);
           if (websiteKeys[0]) add({ Website: websiteKeys[0] });
 
           const allTags = lists
             .filter(l => l.tags)
-            .map(l => l.tags.filter(t => typeof t == 'string').join(','))
+            .map(l => l.tags?.filter(t => typeof t == 'string').join(','))
             .join(',')
             .split(',');
           if (allTags.length) {
@@ -122,7 +122,7 @@ export default class Lookup extends Command {
             botblock.owners
               .filter(o => !o.includes('#'))
               .filter(onlyUnique)
-              .map(u => getUser(u, interaction.guild)),
+              .map(u => getUser(u, interaction.guild) as Promise<User>),
           );
           owners = owners.filter(o => o).map(o => `${o.username}#${o.discriminator} (${o.id})`);
           if (owners.length > 1) add({ Owners: owners.join('\n') });
@@ -137,7 +137,7 @@ export default class Lookup extends Command {
                   ? {
                       url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png?size=2048`,
                     }
-                  : null,
+                  : undefined,
                 color: randomColor,
               },
             ],
@@ -162,16 +162,18 @@ export default class Lookup extends Command {
             for (const name in values)
               fields.push({
                 name,
-                value: (typeof values[name] != 'string' ? values[name].toString() : <string>values[name]) || 'N/A',
+                value: (typeof values[name] != 'string' ? values[name]?.toString() : <string>values[name]) || 'N/A',
                 inline,
               });
           };
 
         add({
-          Guild: `${invite.guild.name} (${invite.guild.id})`,
-          Channel: `${invite.channel.name} (${
-            invite.channel.type && (invite.channel.type as ChannelType.GuildText) !== 0 ? `${invite.channel.type}/` : ''
-          }${invite.channel.id})`,
+          Guild: `${invite.guild?.name} (${invite.guild?.id})`,
+          Channel: `${invite.channel?.name} (${
+            invite.channel?.type && (invite.channel.type as ChannelType.GuildText) !== 0
+              ? `${invite.channel.type}/`
+              : ''
+          }${invite.channel?.id})`,
           Members: `${invite.approximate_presence_count} online, ${invite.approximate_member_count} total`,
         });
 
@@ -181,12 +183,12 @@ export default class Lookup extends Command {
               invite.inviter.id
             })`,
           });
-        if (invite.guild.vanity_url_code)
+        if (invite.guild?.vanity_url_code)
           add({
             'Original Vanity URL': `https://discord.gg/${invite.guild.vanity_url_code}`,
           });
-        if (invite.guild.description) add({ Description: invite.guild.description });
-        if (invite.guild.verification_level)
+        if (invite.guild?.description) add({ Description: invite.guild.description });
+        if (invite.guild?.verification_level)
           add({
             'Verification Level': [
               'None',
@@ -196,7 +198,7 @@ export default class Lookup extends Command {
               'Verified phone number',
             ][invite.guild.verification_level],
           });
-        if (invite.guild.features.length) add({ Features: invite.guild.features.join(', ') }, true);
+        if (invite.guild?.features.length) add({ Features: invite.guild.features.join(', ') }, true);
 
         return interaction.reply({
           content: '✅ This Id is a Discord invite.',
@@ -205,12 +207,12 @@ export default class Lookup extends Command {
               title: 'Invite Lookup',
               description: `Information from the invite \`${invite.code}\``,
               fields,
-              image: invite.guild.banner
+              image: invite.guild?.banner
                 ? {
                     url: `https://cdn.discordapp.com/banners/${invite.guild.id}/${invite.guild.banner}.jpg?size=4096`,
                   }
                 : undefined,
-              thumbnail: invite.guild.icon
+              thumbnail: invite.guild?.icon
                 ? {
                     url: `https://cdn.discordapp.com/icons/${invite.guild.id}/${invite.guild.icon}.jpg?size=4096`,
                   }

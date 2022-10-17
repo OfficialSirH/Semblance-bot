@@ -13,7 +13,7 @@ export class WebhookLogger extends Logger {
   write(level: LogLevel, ...values: unknown[]) {
     if (!this.has(level)) return;
     const method = Logger.levels.get(level);
-    const content = [`[${method.toUpperCase()}]`, ...values].join(' ');
+    const content = [`[${method?.toUpperCase()}]`, ...values].join(' ');
     if (typeof method === 'string') console[method](content);
 
     const environment = isProduction ? 'PROD' : 'DEV';
@@ -30,7 +30,7 @@ export class WebhookLogger extends Logger {
           };
 
     this.rest.post(
-      Routes.webhook(process.env[`${webhookLogType}_ID`], process.env[`${webhookLogType}_TOKEN`]),
+      Routes.webhook(process.env[`${webhookLogType}_ID`] as string, process.env[`${webhookLogType}_TOKEN`]),
       options,
     );
   }

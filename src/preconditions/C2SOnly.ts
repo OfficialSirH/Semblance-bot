@@ -2,8 +2,8 @@ import { GuildId } from '#constants/index';
 import { Precondition } from '@sapphire/framework';
 import type { ChatInputCommandInteraction, ContextMenuCommandInteraction, Message } from 'discord.js';
 
-export class OwnerOnly extends Precondition {
-  public override messageRun(message: Message) {
+export class C2SOnly extends Precondition {
+  public override messageRun(message: Message<true>) {
     return message.guild.id == GuildId.cellToSingularity ? this.ok() : this.error();
   }
 

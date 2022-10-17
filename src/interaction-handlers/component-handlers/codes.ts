@@ -20,13 +20,14 @@ export default class Codes extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction) {
+  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
   public override async run(interaction: ButtonInteraction, data: ParsedCustomIdData<'expired' | 'valid'>) {
     const codeHandler = await interaction.client.db.information.findUnique({ where: { type: 'codes' } });
-    const embed = new EmbedBuilder(interaction.message.embeds[0]);
+    if (!codeHandler) return interaction.reply({ content: 'codes object is missing', ephemeral: true });
+    const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data);
     let component: ActionRowBuilder<MessageActionRowComponentBuilder>;
 
     switch (data.action) {

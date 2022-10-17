@@ -91,8 +91,8 @@ export default class Help extends Command {
     return {
       content:
         'user' in builder
-          ? null
-          : `side note: </${command.name}:${command.id}> is recommended to be used instead of its message-command variant as the message-command variant *will* be removed in the future.`,
+          ? undefined
+          : `side note: </${command?.name}:${command?.id}> is recommended to be used instead of its message-command variant as the message-command variant *will* be removed in the future.`,
       embeds: [embed],
       components,
     };
@@ -138,8 +138,10 @@ export default class Help extends Command {
         components,
       });
     }
-    const info = await commands.get(query).sharedRun(interaction);
-    await interaction.reply(info);
+
+    // @ts-expect-error - more stupid unnecessary type errors
+    const info = await commands.get(query)?.sharedRun(interaction);
+    await interaction.reply(info as string);
   }
 
   public override autocompleteRun(interaction: AutocompleteInteraction<'cached'>) {

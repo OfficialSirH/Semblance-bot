@@ -73,7 +73,7 @@ export default class Info extends Command {
 
     if (client.shard)
       embed.addFields({
-        name: `${emojis.metabit} This Shard (${builder.guild.shardId})`,
+        name: `${emojis.metabit} This Shard (${builder.guild?.shardId})`,
         value: `**Guilds:** ${guilds}\n` + `**Users:** ${users}`,
       });
 

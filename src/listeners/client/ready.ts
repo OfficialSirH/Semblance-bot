@@ -15,14 +15,14 @@ export default class Ready extends Listener<typeof Events.ClientReady> {
   }
 
   public override async run(client: SapphireClient) {
-    client.logger.info(`Logged in as ${client.user.tag}!`);
+    client.logger.info(`Logged in as ${client.user?.tag}!`);
 
     const totalMembers = client.guilds.cache
       .map(g => g.memberCount)
       .filter(g => g)
       .reduce((total, cur) => (total += cur), 0);
     const activity = `help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
-    client.user.setActivity(activity, { type: ActivityType.Watching });
+    client.user?.setActivity(activity, { type: ActivityType.Watching });
 
     if (isProduction) {
       /* Reminder scheduling */

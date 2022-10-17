@@ -33,7 +33,10 @@ export default class Eval extends Command {
       Promise.resolve(evaled).then(async result => {
         evaled = result;
         if (typeof evaled != 'string') evaled = inspect(evaled);
-        const data = { embeds: null, files: [] };
+        const data: { embeds: EmbedBuilder[] | undefined; files: AttachmentBuilder[] } = {
+          embeds: undefined,
+          files: [],
+        };
         if (evaled.length > 1015) {
           const evalOutputFile = new AttachmentBuilder(Buffer.from(`${evaled}`), { name: 'evalOutput.js' });
           data.files = [evalOutputFile];
@@ -52,7 +55,7 @@ export default class Eval extends Command {
         // eslint-disable-next-line no-ex-assign
         e = e.replace(/`/g, '`' + String.fromCharCode(8203)).replace(/@/g, '@' + String.fromCharCode(8203));
       embed
-        .addFields({ name: '📤 Output', value: `\`\`\`fix\n${e.toString().substring(0, 1014)}\`\`\`` })
+        .addFields({ name: '📤 Output', value: `\`\`\`fix\n${(e as object).toString().substring(0, 1014)}\`\`\`` })
         .setTitle('❌ Evaluation Failed');
       await builder.reply({ embeds: [embed] });
     }
