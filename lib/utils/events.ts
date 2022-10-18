@@ -24,21 +24,19 @@ export const gameEvents: Record<Events, GameEvent> = {
         start,
       )} until ${formattedDate(end)}! 🚀 ✨ 
 
-      Get another oppurtunity to build the James Webb Space Telescope and to claim 3 total badges!`,
+Get another oppurtunity to build the James Webb Space Telescope and to claim 3 total badges!`,
     image: eventAttachments.JamesWebb,
   },
   'Fungus Among Us': {
     description: (start: number, end: number) =>
       `The fungus are back among us in the return of the Fungus Among Us Exploration. 🍄🙌
-      From ${formattedDate(start)} until ${formattedDate(
-        end,
-      )}, get another chance to collect all three fungi badges! 🏆✨`,
+From ${formattedDate(start)} until ${formattedDate(end)}, get another chance to collect all three fungi badges! 🏆✨`,
     image: eventAttachments.FungusAmongUs,
   },
   Philosophy: {
     description: (start: number, end: number) =>
       `Test your philosophical knowledge in The Big Questions Exploration. 🧠 ✨ 
-      Open your mind and have all your questions answered from ${formattedDate(start)} until ${formattedDate(
+Open your mind and have all your questions answered from ${formattedDate(start)} until ${formattedDate(
         end,
       )}, Dont forget to collect all three badges as well! 🤖`,
     image: eventAttachments.Philosophy,
@@ -46,7 +44,7 @@ export const gameEvents: Record<Events, GameEvent> = {
   Extinction: {
     description: (start: number, end: number) =>
       `Dive headfirst into the dangers of extinction in this exploration... Life After Apocalypse! 🌋 💥 🌱 
-      Play from ${formattedDate(start)} until ${formattedDate(
+Play from ${formattedDate(start)} until ${formattedDate(
         end,
       )}, and explore the five biggest mass extinctions of the past (+1 of the present)! `,
     image: eventAttachments.Extinction,
