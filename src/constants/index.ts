@@ -142,7 +142,7 @@ export const subcategoryList = (client: SapphireClient, category: Category, subc
   client.stores
     .get('commands')
     .filter(c => c.category == category && c.subCategory == subcategory)
-    .map(c => `**\`${c.name}\`**`)
+    .map(c => `**${c.name}**`)
     .join(', ');
 
 export const emojis = {

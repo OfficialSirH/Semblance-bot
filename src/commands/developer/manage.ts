@@ -238,7 +238,7 @@ export default class Manage extends Command {
     const embed = new EmbedBuilder()
       .setTitle(`Linked account for ${user.tag}(${user.id})`)
       .setDescription(
-        `Beta Tester: ${linkedAccount.beta_tester ? 'yes' : 'no'}\nSimulation Resets ${
+        `Beta Tester: ${linkedAccount.beta_tester ? 'yes' : 'no'}\nSimulation Resets: ${
           linkedAccount.prestige_rank
         }\nMesozoic Valley Rank: ${linkedAccount.dino_rank}\nBeyond Rank: ${
           linkedAccount.beyond_rank

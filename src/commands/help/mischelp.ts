@@ -47,7 +47,7 @@ export default class MiscHelp extends Command {
           inline: true,
         },
         {
-          name: '**=> Semblance-related Commands**',
+          name: '**-> Semblance-related Commands**',
           value: semblanceCommands.join(', '),
           inline: true,
         },

@@ -1,7 +1,7 @@
 import { isProduction, GuildId } from '#constants/index';
 import { TwitterInitialization } from '#structures/TwitterInitialization';
 import type { SapphireClient } from '@sapphire/framework';
-import type { TextBasedChannel } from 'discord.js';
+import type { NewsChannel } from 'discord.js';
 import { type ApiResponseError, TwitterApi } from 'twitter-api-v2';
 let current_id: string | null = null;
 const screen_name = 'ComputerLunch';
@@ -34,7 +34,7 @@ export const checkTweet = async (client: SapphireClient) => {
     return;
   }
 
-  const new_id = tweets.data.data.at(0)?.id;
+  const new_id = tweets.data.data?.at(0)?.id;
 
   if (new_id !== current_id && new_id !== null) {
     current_id = new_id as string;
@@ -45,7 +45,7 @@ export const checkTweet = async (client: SapphireClient) => {
 
     const c2sTwitterChannel = client.guilds.cache
       .get(GuildId.cellToSingularity)
-      ?.channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannel;
+      ?.channels.cache.find(c => c.name == 'cells-tweets') as NewsChannel;
 
     const msg = await c2sTwitterChannel.send(
       `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${current_id}?s=21`,
