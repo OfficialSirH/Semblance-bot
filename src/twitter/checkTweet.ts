@@ -36,7 +36,7 @@ export const checkTweet = async (client: SapphireClient) => {
 
   const new_id = tweets.data.data?.at(0)?.id;
 
-  if (new_id !== current_id && new_id !== null) {
+  if (new_id !== current_id && new_id) {
     current_id = new_id as string;
     if (!isProduction) {
       console.log('new tweet id: ' + new_id);
