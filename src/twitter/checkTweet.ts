@@ -14,7 +14,7 @@ const userId = '618235960'; // ComputerLunch's id
  */
 export const checkTweet = async (client: SapphireClient) => {
   if (TwitterInitialization.online) {
-    clearInterval(TwitterInitialization.fallbackHandlerInterval as number);
+    clearInterval(TwitterInitialization.fallbackHandlerInterval as NodeJS.Timer);
     TwitterInitialization.fallbackHandlerInterval = null;
     return;
   }
