@@ -5,7 +5,7 @@ import type { SapphireClient } from '@sapphire/framework';
 
 export class TwitterInitialization {
   static online = false;
-  static fallbackHandlerInterval: number | null = null;
+  static fallbackHandlerInterval: NodeJS.Timer | null = null;
   static twitterClient: TwitterApi;
   static stream: TweetStream;
 

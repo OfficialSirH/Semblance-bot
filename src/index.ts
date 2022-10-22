@@ -89,7 +89,8 @@ import { checkTweet } from './twitter/checkTweet.js';
 import { TwitterInitialization } from '#structures/TwitterInitialization';
 // Check for Tweet from ComputerLunch
 const twitterAvailabilityTimer = setTimeout(() => {
-  if (!TwitterInitialization.online) TwitterInitialization.fallbackHandlerInterval = setInterval(checkTweet, 2_000);
+  if (!TwitterInitialization.online)
+    TwitterInitialization.fallbackHandlerInterval = setInterval(() => checkTweet(client), 2_000);
 }, 300_000);
 await TwitterInitialization.initialize(client);
 clearTimeout(twitterAvailabilityTimer);
