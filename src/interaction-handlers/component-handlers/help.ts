@@ -64,7 +64,6 @@ export default class Help extends InteractionHandler {
       components
         .at(0)
         ?.components.push(backButton('help', interaction.user.id, 'help'), closeButton('help', interaction.user.id));
-    else components.at(0)?.components.push(closeButton('help', interaction.user.id));
 
     let options: string | InteractionReplyOptions | undefined;
     switch (data.action) {
@@ -111,11 +110,10 @@ export default class Help extends InteractionHandler {
     }
 
     if (!options) return interaction.reply({ content: 'Invalid action.', ephemeral: true });
-
     if (typeof options != 'string') {
       if (options.components)
-        (options.components.at(0) as ActionRowData<MessageActionRowComponentData>).components.concat(
-          (components.at(0) as ActionRowBuilder<MessageActionRowComponentBuilder>).components,
+        (options.components?.at(0) as ActionRowData<MessageActionRowComponentData>).components.push(
+          ...(components.at(0) as ActionRowBuilder<MessageActionRowComponentBuilder>).components,
         );
       else options.components = components;
       options.files = [];

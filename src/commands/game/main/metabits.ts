@@ -9,7 +9,9 @@ export default class Metabits extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const metabitAttachmentBuilder = new AttachmentBuilder('./src/images/emojis/Metabit.png', { name: 'Metabit.png' }),
+    const metabitAttachmentBuilder = new AttachmentBuilder('./src/images/emojis/Metabit.png', {
+        name: 'attachment://Metabit.png',
+      }),
       embed = new EmbedBuilder()
         .setTitle('Ways to earn Metabits faster')
         .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })

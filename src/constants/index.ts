@@ -1,8 +1,6 @@
 ﻿import {
   type ApplicationCommand,
   type ChatInputCommandInteraction,
-  type ActionRow,
-  type MessageActionRowComponent,
   AttachmentBuilder,
   type GuildMember,
   type MessageComponentInteraction,
@@ -10,6 +8,9 @@
   type User,
   type Guild,
   PermissionFlagsBits,
+  ComponentType,
+  ButtonBuilder,
+  SelectMenuBuilder,
 } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 import * as fs from 'fs/promises';
@@ -369,13 +370,18 @@ export const randomColor = RandomColor.randomColor;
 
 export const disableAllComponents = (interaction: MessageComponentInteraction) =>
   interaction.message.edit({
-    components: interaction.message.components.map(
-      component =>
-        ({
-          ...component,
-          components: component.components.map(comp => ({ ...comp, disabled: true })),
-        } as ActionRow<MessageActionRowComponent>),
-    ),
+    components: interaction.message.components.map(component => {
+      Reflect.set(
+        component,
+        'components',
+        component.components.map(comp =>
+          comp.type == ComponentType.Button
+            ? new ButtonBuilder(comp.data).setDisabled(true)
+            : new SelectMenuBuilder(comp.data).setDisabled(true),
+        ),
+      );
+      return component;
+    }),
   });
 
 export const isUserInGuild = async (user: User, guild: Guild) => {
