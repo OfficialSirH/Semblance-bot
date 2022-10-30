@@ -1,4 +1,4 @@
-import { type Guild, type Message, MessageEmbed } from 'discord.js';
+import { type Guild, type Message, EmbedBuilder, ChannelType } from 'discord.js';
 import { Category, getPermissionLevel, randomColor } from '#constants/index';
 import { type Args, Command } from '@sapphire/framework';
 
@@ -8,26 +8,28 @@ export default class ServerInfo extends Command {
   public override fullCategory = [Category.utility];
 
   public override async messageRun(message: Message, args: Args) {
-    let guild: Guild;
+    let guild: Guild | null;
     if (getPermissionLevel(message.member) == 7) {
       const guildId = await args.pickResult('string');
       guild =
-        guildId.isOk && message.client.guilds.cache.has(guildId.unwrap())
-          ? message.client.guilds.cache.get(guildId.unwrap())
+        guildId.isOk() && message.client.guilds.cache.has(guildId.unwrap())
+          ? (message.client.guilds.cache.get(guildId.unwrap()) as Guild)
           : message.guild;
     } else guild = message.guild;
+
+    if (!guild) return message.channel.send('Guild not found');
 
     let textChannel = 0,
       voiceChannel = 0,
       categoryChannel = 0;
     guild.channels.cache.forEach(channel => {
-      if (channel.type == 'GUILD_TEXT') {
+      if (channel.type == ChannelType.GuildText) {
         textChannel++;
       }
-      if (channel.type == 'GUILD_VOICE') {
+      if (channel.type == ChannelType.GuildVoice) {
         voiceChannel++;
       }
-      if (channel.type == 'GUILD_CATEGORY') {
+      if (channel.type == ChannelType.GuildCategory) {
         categoryChannel++;
       }
     });
@@ -45,8 +47,8 @@ export default class ServerInfo extends Command {
     const canRoleListWork = roleList.length > 1024 ? '*Too many roles*' : roleList;
     const fetchedGuild = await guild.fetch();
     const owner = await guild.members.fetch(guild.ownerId);
-    const embed = new MessageEmbed()
-      .setAuthor({ name: guild.name, iconURL: guild.iconURL() })
+    const embed = new EmbedBuilder()
+      .setAuthor({ name: guild.name, iconURL: guild.iconURL() as string })
       .setColor(randomColor)
       .addFields(
         { name: 'Owner', value: owner.toString(), inline: true },
@@ -59,7 +61,7 @@ export default class ServerInfo extends Command {
         { name: 'Voice Channels', value: voiceChannel.toString(), inline: true },
         {
           name: 'Members',
-          value: fetchedGuild.approximateMemberCount.toString(),
+          value: fetchedGuild.approximateMemberCount?.toString() as string,
           inline: true,
         },
         { name: 'Roles', value: roleCount.toString(), inline: true },

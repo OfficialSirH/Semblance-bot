@@ -1,6 +1,6 @@
 import { Category, randomColor, attachments, emojis } from '#constants/index';
 import { Command } from '@sapphire/framework';
-import { MessageEmbed, type Message } from 'discord.js';
+import { EmbedBuilder, type Message } from 'discord.js';
 
 export default class Limericks extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -15,7 +15,7 @@ export default class Limericks extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Limericks Contest winners')
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)
@@ -49,7 +49,7 @@ export default class Limericks extends Command {
         ].join('\n'),
       )
       .setFooter({ text: 'Let the hunger gam-- I mean Limericks Contest- begin!' });
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public override async messageRun(message: Message) {

@@ -1,4 +1,11 @@
-import { type Message, type ContextMenuInteraction, MessageEmbed, MessageAttachment } from 'discord.js';
+import {
+  type Message,
+  type ContextMenuCommandInteraction,
+  EmbedBuilder,
+  AttachmentBuilder,
+  ApplicationCommandType,
+  PermissionFlagsBits,
+} from 'discord.js';
 import { GuildId, Category, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, type Args, Command } from '@sapphire/framework';
 import { inspect } from 'util';
@@ -14,10 +21,10 @@ export default class Eval extends Command {
     });
   }
 
-  public async evalSharedRun(builder: Message | ContextMenuInteraction, content: string) {
+  public async evalSharedRun(builder: Message | ContextMenuCommandInteraction, content: string) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { client } = builder;
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setColor(randomColor)
       .addFields({ name: '📥 Input', value: `\`\`\`js\n${content.substring(0, 1015)}\`\`\`` })
       .setFooter({ text: 'Feed me code!' });
@@ -26,9 +33,12 @@ export default class Eval extends Command {
       Promise.resolve(evaled).then(async result => {
         evaled = result;
         if (typeof evaled != 'string') evaled = inspect(evaled);
-        const data = { embeds: null, files: [] };
+        const data: { embeds: EmbedBuilder[] | undefined; files: AttachmentBuilder[] } = {
+          embeds: undefined,
+          files: [],
+        };
         if (evaled.length > 1015) {
-          const evalOutputFile = new MessageAttachment(Buffer.from(`${evaled}`), 'evalOutput.js');
+          const evalOutputFile = new AttachmentBuilder(Buffer.from(`${evaled}`), { name: 'evalOutput.js' });
           data.files = [evalOutputFile];
           embed
             .addFields({ name: '📤 Output', value: 'Output is in file preview above' })
@@ -45,7 +55,7 @@ export default class Eval extends Command {
         // eslint-disable-next-line no-ex-assign
         e = e.replace(/`/g, '`' + String.fromCharCode(8203)).replace(/@/g, '@' + String.fromCharCode(8203));
       embed
-        .addFields({ name: '📤 Output', value: `\`\`\`fix\n${e.toString().substring(0, 1014)}\`\`\`` })
+        .addFields({ name: '📤 Output', value: `\`\`\`fix\n${(e as object).toString().substring(0, 1014)}\`\`\`` })
         .setTitle('❌ Evaluation Failed');
       await builder.reply({ embeds: [embed] });
     }
@@ -59,7 +69,7 @@ export default class Eval extends Command {
     await this.evalSharedRun(message, content.unwrap());
   }
 
-  public override async contextMenuRun(interaction: ContextMenuInteraction<'cached'>) {
+  public override async contextMenuRun(interaction: ContextMenuCommandInteraction<'cached'>) {
     const message = interaction.options.getMessage('message');
     if (!message) return interaction.reply({ content: 'Could not find message.', ephemeral: true });
     const content =
@@ -73,12 +83,11 @@ export default class Eval extends Command {
     registry.registerContextMenuCommand(
       {
         name: this.name,
-        type: 'MESSAGE',
-        defaultPermission: false,
+        type: ApplicationCommandType.Message,
+        default_member_permissions: PermissionFlagsBits.Administrator.toString(),
       },
       {
         guildIds: [GuildId.cellToSingularity],
-        idHints: ['973689160412069938', '973689161179607111'],
       },
     );
   }

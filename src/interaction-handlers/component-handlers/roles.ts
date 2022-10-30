@@ -1,4 +1,12 @@
-import { type ButtonInteraction, Collection, MessageActionRow, MessageButton } from 'discord.js';
+import {
+  type MessageActionRowComponentBuilder,
+  type ButtonInteraction,
+  Collection,
+  ActionRowBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+  ButtonStyle,
+} from 'discord.js';
 import { c2sRoles, GuildId, attachments } from '#constants/index';
 import { componentInteractionDefaultParser, buildCustomId } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
@@ -14,7 +22,7 @@ export default class Roles extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction) {
+  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
@@ -33,8 +41,8 @@ export default class Roles extends InteractionHandler {
 
     const isAddingRole = data.action == 'add-events',
       components = [
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
             .setDisabled(guild.id != GuildId.cellToSingularity)
             .setCustomId(
               buildCustomId({
@@ -45,7 +53,7 @@ export default class Roles extends InteractionHandler {
             )
             .setEmoji(isAddingRole ? '❌' : '✅')
             .setLabel(isAddingRole ? 'Remove Server Events Role' : 'Add Server Events Role')
-            .setStyle(isAddingRole ? 'DANGER' : 'SUCCESS'),
+            .setStyle(isAddingRole ? ButtonStyle.Danger : ButtonStyle.Success),
         ),
       ];
 
@@ -63,7 +71,7 @@ export default class Roles extends InteractionHandler {
         ephemeral: true,
       });
     }
-    const embed = interaction.message.embeds[0].setThumbnail(attachments.currentLogo.name);
+    const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data).setThumbnail(attachments.currentLogo.name);
     await interaction.message.edit({ embeds: [embed], components });
   }
 }

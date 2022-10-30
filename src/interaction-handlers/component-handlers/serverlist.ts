@@ -1,5 +1,12 @@
 import type { CustomIdData, ParsedCustomIdData } from '#lib/interfaces/Semblance';
-import { MessageActionRow, type ButtonInteraction, MessageEmbed, MessageButton } from 'discord.js';
+import {
+  type MessageActionRowComponentBuilder,
+  ActionRowBuilder,
+  type ButtonInteraction,
+  EmbedBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} from 'discord.js';
 import { guildBookPage, serversPerPage, randomColor } from '#constants/index';
 import { componentInteractionDefaultParser, buildCustomId } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
@@ -17,7 +24,7 @@ export default class ServerList extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction) {
+  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser<ServerListCustomIdData>(this, interaction, {
       extraProps: {
         page: 'number',
@@ -41,10 +48,10 @@ export default class ServerList extends InteractionHandler {
     const { chosenPage, pageDetails } = guildBookPage(client, page);
 
     const components = [
-        new MessageActionRow().addComponents(
-          new MessageButton()
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
             .setLabel('First Page')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setDisabled(chosenPage === 1)
             .setCustomId(
               buildCustomId({
@@ -54,9 +61,9 @@ export default class ServerList extends InteractionHandler {
                 page,
               }),
             ),
-          new MessageButton()
+          new ButtonBuilder()
             .setLabel('Left')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setEmoji('⬅')
             .setDisabled(chosenPage === 1)
             .setCustomId(
@@ -67,9 +74,9 @@ export default class ServerList extends InteractionHandler {
                 page,
               }),
             ),
-          new MessageButton()
+          new ButtonBuilder()
             .setLabel('Right')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setEmoji('➡')
             .setDisabled(chosenPage === numOfPages)
             .setCustomId(
@@ -80,9 +87,9 @@ export default class ServerList extends InteractionHandler {
                 page,
               }),
             ),
-          new MessageButton()
+          new ButtonBuilder()
             .setLabel('Last Page')
-            .setStyle('SECONDARY')
+            .setStyle(ButtonStyle.Secondary)
             .setDisabled(chosenPage === numOfPages)
             .setCustomId(
               buildCustomId({
@@ -94,7 +101,7 @@ export default class ServerList extends InteractionHandler {
             ),
         ),
       ],
-      embed = new MessageEmbed()
+      embed = new EmbedBuilder()
         .setTitle(`Server List [${client.guilds.cache.size}] - Page ${chosenPage}`)
         .setColor(randomColor)
         .setThumbnail(client.user.displayAvatarURL())

@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed } from 'discord.js';
+import { type Message, EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -9,7 +9,7 @@ export default class Music extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Music')
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)
@@ -20,7 +20,7 @@ export default class Music extends Command {
           '[Spotify Link](https://open.spotify.com/playlist/6XcJkgtRFpKwoxKleKIOOp?si=uR4gzciYQtKiXGPwY47v6w)',
         ].join('\n'),
       );
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public async messageRun(message: Message) {

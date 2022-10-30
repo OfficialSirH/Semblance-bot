@@ -1,18 +1,18 @@
 import fs from 'fs/promises';
-import { MessageAttachment } from 'discord.js';
+import { AttachmentBuilder } from 'discord.js';
 import { formattedDate } from '#constants/index';
 
 export const eventAttachments = await (async () => {
   const files = await fs.readdir('./src/images/events/');
   const finalAttachments = {} as Record<
     Exclude<Events, 'James Webb' | 'Fungus Among Us' | '?'> | 'JamesWebb' | 'FungusAmongUs' | 'QuestionMark',
-    MessageAttachment
+    AttachmentBuilder
   >;
   for (const file of files)
     if (file.endsWith('.png')) {
-      const attachment = new MessageAttachment(`./src/images/events/${file}`, `attachment://${file}`),
+      const attachment = new AttachmentBuilder(`./src/images/events/${file}`, { name: `attachment://${file}` }),
         attachmentName = file.substring(0, file.indexOf('.'));
-      finalAttachments[attachmentName as Events] = attachment;
+      finalAttachments[attachmentName as keyof typeof finalAttachments] = attachment;
     }
   return finalAttachments;
 })();
@@ -24,21 +24,19 @@ export const gameEvents: Record<Events, GameEvent> = {
         start,
       )} until ${formattedDate(end)}! 🚀 ✨ 
 
-      Get another oppurtunity to build the James Webb Space Telescope and to claim 3 total badges!`,
+Get another oppurtunity to build the James Webb Space Telescope and to claim 3 total badges!`,
     image: eventAttachments.JamesWebb,
   },
   'Fungus Among Us': {
     description: (start: number, end: number) =>
       `The fungus are back among us in the return of the Fungus Among Us Exploration. 🍄🙌
-      From ${formattedDate(start)} until ${formattedDate(
-        end,
-      )}, get another chance to collect all three fungi badges! 🏆✨`,
+From ${formattedDate(start)} until ${formattedDate(end)}, get another chance to collect all three fungi badges! 🏆✨`,
     image: eventAttachments.FungusAmongUs,
   },
   Philosophy: {
     description: (start: number, end: number) =>
       `Test your philosophical knowledge in The Big Questions Exploration. 🧠 ✨ 
-      Open your mind and have all your questions answered from ${formattedDate(start)} until ${formattedDate(
+Open your mind and have all your questions answered from ${formattedDate(start)} until ${formattedDate(
         end,
       )}, Dont forget to collect all three badges as well! 🤖`,
     image: eventAttachments.Philosophy,
@@ -46,7 +44,7 @@ export const gameEvents: Record<Events, GameEvent> = {
   Extinction: {
     description: (start: number, end: number) =>
       `Dive headfirst into the dangers of extinction in this exploration... Life After Apocalypse! 🌋 💥 🌱 
-      Play from ${formattedDate(start)} until ${formattedDate(
+Play from ${formattedDate(start)} until ${formattedDate(
         end,
       )}, and explore the five biggest mass extinctions of the past (+1 of the present)! `,
     image: eventAttachments.Extinction,
@@ -66,5 +64,5 @@ export type Events = 'James Webb' | 'Fungus Among Us' | 'Philosophy' | 'Extincti
 
 export interface GameEvent {
   description: (start: number, end: number) => string;
-  image: MessageAttachment;
+  image: AttachmentBuilder;
 }

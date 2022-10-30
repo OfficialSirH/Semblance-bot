@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed, MessageAttachment } from 'discord.js';
+import { type Message, EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import { Command } from '@sapphire/framework';
 import { Category, randomColor, Subcategory } from '#constants/index';
 
@@ -9,12 +9,14 @@ export default class Metabits extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const metabitAttachment = new MessageAttachment('./src/images/emojis/Metabit.png', 'attachment://Metabit.png'),
-      embed = new MessageEmbed()
+    const metabitAttachmentBuilder = new AttachmentBuilder('./src/images/emojis/Metabit.png', {
+        name: 'attachment://Metabit.png',
+      }),
+      embed = new EmbedBuilder()
         .setTitle('Ways to earn Metabits faster')
         .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
         .setColor(randomColor)
-        .setThumbnail(metabitAttachment.name)
+        .setThumbnail(metabitAttachmentBuilder.name)
         .setDescription(
           [
             [
@@ -46,7 +48,7 @@ export default class Metabits extends Command {
             "If you'd like to see the effects all of these have on overall production speed, use the slash command, `/metaspeedcalc`, to play around with the values!",
           ].join('\n\n'),
         );
-    return { embeds: [embed], files: [metabitAttachment] };
+    return { embeds: [embed], files: [metabitAttachmentBuilder] };
   }
 
   public override async messageRun(message: Message) {

@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed } from 'discord.js';
+import { type Message, EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -10,7 +10,7 @@ export default class Mvunlocks extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Reptiles and Birds')
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setThumbnail(attachments.currentLogo.name)
@@ -30,7 +30,7 @@ export default class Mvunlocks extends Command {
             .map(t => `**${t}**`)
             .join('\n'),
       );
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public override async messageRun(message: Message) {

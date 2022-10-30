@@ -1,4 +1,11 @@
-import { MessageEmbed, type Message, GuildMember, type User, type CommandInteraction } from 'discord.js';
+import {
+  EmbedBuilder,
+  type Message,
+  GuildMember,
+  type User,
+  type ChatInputCommandInteraction,
+  ApplicationCommandOptionType,
+} from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, type Args, Command } from '@sapphire/framework';
 
@@ -9,23 +16,26 @@ export default class Profile extends Command {
 
   public override async messageRun(message: Message, args: Args) {
     const userResolve = await args.pickResult('user');
-    let user: User, member: GuildMember;
-    if (userResolve.isErr) member = message.member;
+    let user: User | null = null,
+      member: GuildMember | null;
+    if (userResolve.isErr()) member = message.member;
     else {
       user = userResolve.unwrap();
       member =
         user instanceof GuildMember
           ? user
-          : await message.guild.members.fetch({ user: user.id, cache: false }).catch(() => null);
+          : ((await message.guild?.members
+              .fetch({ user: user.id, cache: false })
+              .catch(() => null)) as GuildMember | null);
     }
 
-    if (member) return message.reply(guildProfileEmbed(message, member));
-    return message.reply(userProfileEmbed(message, user));
+    if (member) return message.reply(guildProfileEmbed(member));
+    return message.reply(userProfileEmbed(message, user as User));
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const user = interaction.options.getUser('user');
-    let member: GuildMember;
+    let member: GuildMember | null;
     if (!user) member = interaction.member;
     else
       member =
@@ -33,34 +43,31 @@ export default class Profile extends Command {
           ? user
           : await interaction.guild.members.fetch({ user: user.id, cache: false }).catch(() => null);
 
-    if (member) return interaction.reply(guildProfileEmbed(interaction, member));
-    return interaction.reply(userProfileEmbed(interaction, user));
+    if (member) return interaction.reply(guildProfileEmbed(member));
+    return interaction.reply(userProfileEmbed(interaction, user as User));
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
-        name: this.name,
-        description: this.description,
-        options: [
-          {
-            name: 'user',
-            description: 'The user to get the profile of.',
-            type: 'USER',
-          },
-        ],
-      },
-      { idHints: ['973689251386523689'] },
-    );
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+      options: [
+        {
+          name: 'user',
+          description: 'The user to get the profile of.',
+          type: ApplicationCommandOptionType.User,
+        },
+      ],
+    });
   }
 }
 
-function guildProfileEmbed(builder: Command['SharedBuilder'], member: GuildMember) {
+function guildProfileEmbed(member: GuildMember) {
   let accountCreated = `${member.user.createdAt}`;
   accountCreated = `${accountCreated.substring(0, 16)}(${daysAgo(member.user.createdAt)})`;
   let accountJoined = `${member.joinedAt}`;
-  accountJoined = `${accountJoined.substring(0, 16)}(${daysAgo(member.joinedAt)})`;
-  const embed = new MessageEmbed()
+  accountJoined = `${accountJoined.substring(0, 16)}(${member.joinedAt ? daysAgo(member.joinedAt) : 'N/A'})`;
+  const embed = new EmbedBuilder()
     .setTitle('Guild User Profile')
     .setDescription(`User data for ${member}:`)
     .setColor(randomColor)
@@ -84,7 +91,7 @@ function guildProfileEmbed(builder: Command['SharedBuilder'], member: GuildMembe
 function userProfileEmbed(builder: Command['SharedBuilder'], user: User) {
   const cmdCaller = 'user' in builder ? builder.user : builder.author;
   const accountCreated = `${cmdCaller.createdAt.toString().substring(0, 16)}(${daysAgo(user.createdTimestamp)})`;
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle('User Profile')
     .setDescription(`User data for ${user}:`)
     .setColor(randomColor)

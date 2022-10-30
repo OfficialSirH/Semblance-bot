@@ -1,7 +1,12 @@
 import { Category, GuildId } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { exec } from 'child_process';
-import { type CommandInteraction, MessageEmbed } from 'discord.js';
+import {
+  type ChatInputCommandInteraction,
+  EmbedBuilder,
+  ApplicationCommandOptionType,
+  PermissionFlagsBits,
+} from 'discord.js';
 
 export default class Exec extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -14,14 +19,14 @@ export default class Exec extends Command {
     });
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     await interaction.deferReply();
-    const embeds = [new MessageEmbed()];
-    exec(interaction.options.getString('input'), (error, stdout, stderr) => {
-      if (error) embeds[0].setDescription(`\`\`\`js\n${error}\`\`\``);
-      if (stderr) embeds[0].setDescription(`\`\`\`js\n${stderr}\`\`\``);
-      else embeds[0].setDescription(`\`\`\`ansi\n${stdout}\`\`\``);
-      return interaction.editReply({ embeds });
+    const embed = new EmbedBuilder();
+    exec(interaction.options.getString('input', true), (error, stdout, stderr) => {
+      if (error) embed.setDescription(`\`\`\`js\n${error}\`\`\``);
+      if (stderr) embed.setDescription(`\`\`\`js\n${stderr}\`\`\``);
+      else embed.setDescription(`\`\`\`ansi\n${stdout}\`\`\``);
+      return interaction.editReply({ embeds: [embed] });
     });
   }
 
@@ -30,19 +35,18 @@ export default class Exec extends Command {
       {
         name: this.name,
         description: this.description,
-        defaultPermission: false,
+        default_member_permissions: PermissionFlagsBits.Administrator.toString(),
         options: [
           {
             name: 'input',
             description: 'The command to execute.',
-            type: 'STRING',
+            type: ApplicationCommandOptionType.String,
             required: true,
           },
         ],
       },
       {
         guildIds: [GuildId.cellToSingularity],
-        idHints: ['973689162035257444', '997700143593824350'],
       },
     );
   }

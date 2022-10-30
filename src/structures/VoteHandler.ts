@@ -1,5 +1,5 @@
 import type { SapphireClient } from '@sapphire/framework';
-import { type TextChannel, MessageEmbed, User } from 'discord.js';
+import { type TextChannel, User, EmbedBuilder } from 'discord.js';
 import { randomColor, GuildId } from '#constants/index';
 import type { FastifyReply } from 'fastify';
 import type { DBLRequest } from '#lib/interfaces/discordBotList';
@@ -20,7 +20,7 @@ export class VoteHandler {
   get voteChannel() {
     return this.client.guilds.cache
       .get(GuildId.sirhStuff)
-      .channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
+      ?.channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
   }
 
   public async sendVotedEmbed(
@@ -37,13 +37,14 @@ export class VoteHandler {
           "\nAs a voting bonus *and* being the weekend, you have earned ***12*** hours of idle profit for Semblance's Idle Game!";
       else description += "\nAs a voting bonus, you have earned **6** hours of idle profit for Semblance's Idle Game!";
     }
-    const embed = new MessageEmbed().setColor(randomColor).setDescription(description);
+
+    const embed = new EmbedBuilder().setColor(randomColor).setDescription(description);
     if (user instanceof User)
       embed
         .setAuthor({ name: `${user.tag}`, iconURL: user.displayAvatarURL() })
         .setThumbnail(user.displayAvatarURL())
         .setFooter({ text: `${user.tag} has voted.` });
-    else embed.setAuthor({ name: `<@${user}>` }).setFooter({ text: `<@${user}> has voted.` });
+    else embed.setAuthor({ name: `<@${user}>` }).setFooter({ text: `user of id ${user} has voted.` });
 
     return this.voteChannel.send({ embeds: [embed] });
   }
@@ -58,9 +59,17 @@ export class VoteHandler {
       });
     }
 
-    let userId: string;
+    let userId: string | null = null;
     if ('user' in vote && typeof vote.user == 'string') userId = vote.user;
     else if (!('user' in vote)) userId = vote.id;
+
+    if (!userId) {
+      this.client.logger.error('VoteHandler', `No user id found in ${this.votingSite} vote.`);
+      return reply.code(200).send({
+        success: false,
+        message: 'No user id found',
+      });
+    }
 
     const user = await this.client.users.fetch(userId, { cache: false });
 
@@ -72,6 +81,8 @@ export class VoteHandler {
       },
       where: { player: user.id },
     });
+
+    if (!playerProfit) return reply.code(200).send({ success: true });
 
     const playerData = await this.client.db.game
       .update({
@@ -88,7 +99,7 @@ export class VoteHandler {
         return;
       });
 
-    this.sendVotedEmbed(user ?? user.id, `Thanks for voting for Semblance on ${this.votingSite}!! :D`, {
+    this.sendVotedEmbed(user.id, `Thanks for voting for Semblance on ${this.votingSite}!! :D`, {
       hasGame: !!playerData,
       weekendBonus: 'isWeekend' in vote ? vote.isWeekend : false,
     });

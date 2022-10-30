@@ -2,11 +2,16 @@ import { GuildId, Category } from '#constants/index';
 import { buildCustomId } from '#constants/components';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import {
-  type CommandInteraction,
+  type ModalSubmitInteraction,
+  type MessageActionRowComponentBuilder,
   type TextBasedChannel,
-  MessageActionRow,
-  MessageButton,
-  MessageEmbed,
+  type ChatInputCommandInteraction,
+  TextInputBuilder,
+  ModalBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
 } from 'discord.js';
 
 export default class Suggest extends Command {
@@ -20,18 +25,19 @@ export default class Suggest extends Command {
     });
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
-    const suggestion = interaction.options.getString('suggestion');
+  public async modalRun(interaction: ModalSubmitInteraction<'cached'>) {
+    const suggestion = interaction.fields.getTextInputValue('suggestion');
 
-    if (!suggestion) return interaction.reply('Please provide a suggestion.');
-
-    const embed = new MessageEmbed()
-        .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+    const embed = new EmbedBuilder()
+        .setAuthor({
+          name: interaction.user.tag,
+          iconURL: interaction.user.displayAvatarURL(),
+        })
         .setDescription(suggestion),
-      component = new MessageActionRow().addComponents(
-        new MessageButton()
+      component = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+        new ButtonBuilder()
           .setLabel('Accept')
-          .setStyle('SUCCESS')
+          .setStyle(ButtonStyle.Success)
           .setEmoji('✅')
           .setCustomId(
             buildCustomId({
@@ -40,9 +46,9 @@ export default class Suggest extends Command {
               id: interaction.user.id,
             }),
           ),
-        new MessageButton()
+        new ButtonBuilder()
           .setLabel('Deny')
-          .setStyle('DANGER')
+          .setStyle(ButtonStyle.Danger)
           .setEmoji('❌')
           .setCustomId(
             buildCustomId({
@@ -51,9 +57,9 @@ export default class Suggest extends Command {
               id: interaction.user.id,
             }),
           ),
-        new MessageButton()
+        new ButtonBuilder()
           .setLabel('Silent Deny')
-          .setStyle('DANGER')
+          .setStyle(ButtonStyle.Danger)
           .setEmoji('❌')
           .setCustomId(
             buildCustomId({
@@ -77,23 +83,40 @@ export default class Suggest extends Command {
     });
   }
 
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+    const modal = new ModalBuilder()
+      .setTitle('Suggestion')
+      .setCustomId(
+        buildCustomId({
+          command: this.name,
+          action: 'submit',
+          id: interaction.user.id,
+        }),
+      )
+      .setComponents(
+        new ActionRowBuilder<TextInputBuilder>().addComponents(
+          new TextInputBuilder()
+            .setCustomId('suggestion')
+            .setLabel('Suggestion')
+            .setStyle(2)
+            .setPlaceholder('Enter your suggestion here.')
+            .setMinLength(50)
+            .setMaxLength(4000)
+            .setRequired(true),
+        ),
+      );
+
+    await interaction.showModal(modal);
+  }
+
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
     registry.registerChatInputCommand(
       {
         name: this.name,
         description: this.description,
-        options: [
-          {
-            name: 'suggestion',
-            description: 'The suggestion to submit.',
-            type: 'STRING',
-            required: true,
-          },
-        ],
       },
       {
         guildIds: [GuildId.cellToSingularity],
-        idHints: ['973689075758432266'],
       },
     );
   }

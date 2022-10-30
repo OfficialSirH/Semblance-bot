@@ -6,7 +6,7 @@ import type { TweetV2SingleStreamResult } from 'twitter-api-v2';
 export const filteredTweetCreate = async (client: SapphireClient, tweet: TweetV2SingleStreamResult) => {
   const c2sTwitterChannel = client.guilds.cache
     .get(GuildId.cellToSingularity)
-    .channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannel;
+    ?.channels.cache.find(c => c.name == 'cells-tweets') as TextBasedChannel;
 
   const content = `Hey! **ComputerLunch** just posted a new Tweet!\nhttps://twitter.com/ComputerLunch/status/${tweet.data.id}?s=21`;
 

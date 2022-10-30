@@ -1,4 +1,4 @@
-import { type ButtonInteraction, MessageEmbed } from 'discord.js';
+import { type ButtonInteraction, EmbedBuilder } from 'discord.js';
 import { gameTransferPages } from '#constants/commands';
 import { attachments } from '#constants/index';
 import { componentInteractionDefaultParser } from '#constants/components';
@@ -14,20 +14,18 @@ export default class GameTransfer extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction) {
+  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
   public override async run(interaction: ButtonInteraction, data: ParsedCustomIdData<'right' | 'left'>) {
-    let embed = interaction.message.embeds[0] as MessageEmbed;
-    if (!('setDescription' in embed)) embed = new MessageEmbed(embed);
-
-    let currentPage = gameTransferPages.indexOf(embed.image.url);
+    const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data);
+    let currentPage = gameTransferPages.indexOf(embed.data.image ? embed.data.image.url : '');
 
     if (data.action == 'right') currentPage = currentPage == 4 ? 0 : ++currentPage;
     else if (data.action == 'left') currentPage = currentPage == 0 ? 4 : --currentPage;
 
-    let description: string;
+    let description: string | null = null;
     if (currentPage == 0) description = '\nClick on the Game transfer button in the menu';
     else if (currentPage == 1) description = '\nCreate an account and login into it';
     else if (currentPage == 2) description = '\nClick on the Transfer Save Data button after logging into your account';

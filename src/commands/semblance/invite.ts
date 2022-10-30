@@ -1,4 +1,4 @@
-import { type Message, type CommandInteraction, MessageEmbed } from 'discord.js';
+import { type Message, type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { Category, randomColor } from '#constants/index';
 
@@ -9,7 +9,7 @@ export default class Invite extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Bot Invite')
       .setColor(randomColor)
       .setThumbnail(builder.client.user.displayAvatarURL())
@@ -26,17 +26,14 @@ export default class Invite extends Command {
     await message.reply(this.sharedRun(message));
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     await interaction.reply(this.sharedRun(interaction));
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
-        name: this.name,
-        description: this.description,
-      },
-      { idHints: ['973689249767497859'] },
-    );
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+    });
   }
 }

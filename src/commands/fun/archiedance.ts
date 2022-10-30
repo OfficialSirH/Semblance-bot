@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed } from 'discord.js';
+import { type Message, EmbedBuilder } from 'discord.js';
 import { attachments, Category } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -8,11 +8,11 @@ export default class ArchieDance extends Command {
   public override fullCategory = [Category.fun];
 
   public override sharedRun(builder: Command['SharedBuilder']) {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Dancing Archie/Jotaru')
       .setAuthor({
-        name: builder.member.user.tag,
-        iconURL: builder.member.user.displayAvatarURL(),
+        name: builder.member?.user.tag as string,
+        iconURL: builder.member?.user.displayAvatarURL(),
       })
       .setDescription(
         'Click the link above for the epic 3 minute video with Archie and Jotaru dancing, which I made as suggested by McScrungledorf#6020. ' +
@@ -20,7 +20,7 @@ export default class ArchieDance extends Command {
       )
       .setURL('https://drive.google.com/file/d/1twLIqvEG-wwZJFmhtSERWBM5KoJ3zmkg/view?usp=sharing');
 
-    return { embeds: [embed], files: [attachments.archieDance] };
+    return { embeds: [embed], files: [attachments.archieDance.attachment] };
   }
 
   public override async messageRun(message: Message) {

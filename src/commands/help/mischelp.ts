@@ -1,5 +1,5 @@
-import { type Message, MessageEmbed } from 'discord.js';
-import { Category, randomColor } from '#constants/index';
+import { type Message, EmbedBuilder } from 'discord.js';
+import { applicationCommandToMention, Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
 export default class MiscHelp extends Command {
@@ -14,21 +14,27 @@ export default class MiscHelp extends Command {
     const funCommands = client.stores
       .get('commands')
       .filter(c => c.category === Category.fun)
-      .map(c => `**${client.user}${c.name}**`);
+      .map(c => `**${c.name}**`);
     const utilityCommands = client.stores
       .get('commands')
       .filter(c => c.category === Category.utility)
-      .map(c => `**${client.user}${c.name}**`);
+      .map(c => `**${c.name}**`);
     const semblanceCommands = client.stores
       .get('commands')
       .filter(c => c.category === Category.semblance)
-      .map(c => `**${client.user}${c.name}**`);
+      .map(c => `**${c.name}**`);
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Miscellaneous Commands')
       .setThumbnail(client.user.displayAvatarURL())
       .setColor(randomColor)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setDescription(
+        `All of the available commands below can be found through the ${applicationCommandToMention({
+          client: builder.client,
+          commandName: 'help',
+        })} command via the \`query\` option.`,
+      )
       .addFields(
         {
           name: '**-> Fun Commands**',
@@ -41,7 +47,7 @@ export default class MiscHelp extends Command {
           inline: true,
         },
         {
-          name: '**=> Semblance-related Commands**',
+          name: '**-> Semblance-related Commands**',
           value: semblanceCommands.join(', '),
           inline: true,
         },

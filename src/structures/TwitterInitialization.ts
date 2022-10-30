@@ -5,7 +5,7 @@ import type { SapphireClient } from '@sapphire/framework';
 
 export class TwitterInitialization {
   static online = false;
-  static fallbackHandlerInterval: number | null = null;
+  static fallbackHandlerInterval: NodeJS.Timer | null = null;
   static twitterClient: TwitterApi;
   static stream: TweetStream;
 
@@ -70,7 +70,7 @@ export class TwitterInitialization {
       return { success: true, message: 'successfully set the stream' };
     };
 
-    let finalResult: { success: boolean; message: string | null };
+    let finalResult: { success: boolean; message: string | null } = { success: false, message: null };
 
     while (
       !(await initStream().then(result => {

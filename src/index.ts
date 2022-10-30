@@ -18,7 +18,13 @@ declare module '@sapphire/framework' {
      */
     sharedRun?<T extends Command['SharedBuilder']>(
       builder: T,
-    ): Awaitable<string | (T extends Message ? MessageOptions | ReplyMessageOptions : InteractionReplyOptions)>;
+    ): Awaitable<string | (T extends Message ? MessageCreateOptions | MessageReplyOptions : InteractionReplyOptions)>;
+
+    /**
+     * allows for running through a submitted modal
+     * @param interaction The interaction that triggered the command.
+     */
+    modalRun?(interaction: ModalSubmitInteraction): Awaitable<void>;
   }
 
   interface Command {
@@ -31,13 +37,15 @@ import { WebhookLogger } from '#structures/WebhookLogger';
 import { ApplicationCommandRegistries, LogLevel, RegisterBehavior, SapphireClient } from '@sapphire/framework';
 import {
   type InteractionReplyOptions,
-  type MessageOptions,
-  type ReplyMessageOptions,
+  type MessageCreateOptions,
+  type MessageReplyOptions,
   type Interaction,
   type Awaitable,
-  Intents,
   type Message,
   Options,
+  Partials,
+  IntentsBitField,
+  type ModalSubmitInteraction,
 } from 'discord.js';
 
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
@@ -58,11 +66,10 @@ const client = new SapphireClient({
     GuildMemberManager: 10,
     UserManager: 10,
   }),
-  partials: ['USER', 'CHANNEL', 'GUILD_MEMBER', 'MESSAGE'],
-  intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES],
+  partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message],
+  intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.DirectMessages],
 });
 client.db = new prisma.PrismaClient();
-
 // fastify routing
 import fastify from 'fastify';
 const app = fastify();
@@ -82,7 +89,8 @@ import { checkTweet } from './twitter/checkTweet.js';
 import { TwitterInitialization } from '#structures/TwitterInitialization';
 // Check for Tweet from ComputerLunch
 const twitterAvailabilityTimer = setTimeout(() => {
-  if (!TwitterInitialization.online) TwitterInitialization.fallbackHandlerInterval = setInterval(checkTweet, 2_000);
+  if (!TwitterInitialization.online)
+    TwitterInitialization.fallbackHandlerInterval = setInterval(() => checkTweet(client), 2_000);
 }, 300_000);
 await TwitterInitialization.initialize(client);
 clearTimeout(twitterAvailabilityTimer);

@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed } from 'discord.js';
+import { type Message, EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -9,12 +9,13 @@ export default class Update extends Command {
 
   public override async sharedRun() {
     const infoHandler = await this.container.client.db.information.findUnique({ where: { type: 'update' } });
-    const embed = new MessageEmbed()
+    if (!infoHandler) return 'No update info found.';
+    const embed = new EmbedBuilder()
       .setTitle('Steam and Mobile Updates')
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)
       .setDescription(infoHandler.value);
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public override async messageRun(message: Message) {

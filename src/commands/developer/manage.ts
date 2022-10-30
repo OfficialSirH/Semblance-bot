@@ -1,4 +1,11 @@
-import { type AutocompleteInteraction, type CommandInteraction, MessageEmbed, Constants } from 'discord.js';
+import {
+  type AutocompleteInteraction,
+  type ChatInputCommandInteraction,
+  EmbedBuilder,
+  ApplicationCommandOptionType,
+  GuildScheduledEventPrivacyLevel,
+  GuildScheduledEventEntityType,
+} from 'discord.js';
 import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
 import { GuildId, bigToName, Category, msToTime, isDstObserved } from '#constants/index';
 import { type ApiResponseError, TweetStream, TwitterApi } from 'twitter-api-v2';
@@ -17,7 +24,7 @@ export default class Manage extends Command {
     });
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const subcommandGroup = interaction.options.getSubcommandGroup();
     const subcommand = interaction.options.getSubcommand();
 
@@ -85,17 +92,17 @@ export default class Manage extends Command {
           {
             name: 'game-event',
             description: 'Manage game events',
-            type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
               {
                 name: 'create',
                 description: 'Create a game event',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
                 options: [
                   {
                     name: 'name',
                     description: 'The name of the game event',
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     choices: Object.keys(gameEvents).map(key => ({
                       name: key,
                       value: key,
@@ -105,14 +112,14 @@ export default class Manage extends Command {
                   {
                     name: 'start',
                     description: 'The day of the month the game event starts',
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                     required: true,
                   },
                   {
                     name: 'end',
                     description: 'The day of the month the game event ends',
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                     required: true,
                   },
@@ -121,25 +128,25 @@ export default class Manage extends Command {
               {
                 name: 'edit',
                 description: 'Edit a game event',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
                 options: [
                   {
                     name: 'name',
                     description: 'The name of the game event',
                     autocomplete: true,
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     required: true,
                   },
                   {
                     name: 'start',
                     description: 'The day of the month the game event starts',
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                   },
                   {
                     name: 'end',
                     description: 'The day of the month the game event ends',
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                   },
                 ],
@@ -149,17 +156,17 @@ export default class Manage extends Command {
           {
             name: 'discord-link',
             description: 'Manage linked C2S accounts',
-            type: 'SUB_COMMAND_GROUP',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
               {
                 name: 'get',
                 description: 'Get a linked C2S account',
-                type: 'SUB_COMMAND',
+                type: ApplicationCommandOptionType.Subcommand,
                 options: [
                   {
                     name: 'discord-id',
                     description: 'The Discord ID of the user',
-                    type: 'USER',
+                    type: ApplicationCommandOptionType.User,
                     required: true,
                   },
                 ],
@@ -167,24 +174,24 @@ export default class Manage extends Command {
               {
                 name: 'create',
                 description: 'Create a linked C2S account',
-                type: 'SUB_COMMAND',
+                type: ApplicationCommandOptionType.Subcommand,
                 options: [
                   {
                     name: 'discord-id',
                     description: 'The Discord ID of the user',
-                    type: 'USER',
+                    type: ApplicationCommandOptionType.User,
                     required: true,
                   },
                   {
                     name: 'playeremail',
                     description: 'The email bound to your Game Transfer account.',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     required: true,
                   },
                   {
                     name: 'playertoken',
                     description: 'The token bound to your Game Transfer account.',
-                    type: 'STRING',
+                    type: ApplicationCommandOptionType.String,
                     required: true,
                   },
                 ],
@@ -194,22 +201,22 @@ export default class Manage extends Command {
           {
             name: 'twitter',
             description: 'Manage Twitter',
-            type: 'SUB_COMMAND_GROUP',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
               {
                 name: 'handler-status',
                 description: 'Check if the Twitter handler is running',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
               },
               {
                 name: 'reload-handler',
                 description: 'Reload the Twitter handler',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
               },
               {
                 name: 'test-fetch',
                 description: 'Test if the Twitter API is functional',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
               },
             ],
           },
@@ -217,22 +224,21 @@ export default class Manage extends Command {
       },
       {
         guildIds: [GuildId.cellToSingularity],
-        idHints: ['998060368616226917', '998060369564155965'],
       },
     );
   }
 
-  public async discordLinkGet(interaction: CommandInteraction<'cached'>) {
-    const user = interaction.options.getUser('discord-id');
+  public async discordLinkGet(interaction: ChatInputCommandInteraction<'cached'>) {
+    const user = interaction.options.getUser('discord-id', true);
     const linkedAccount = await this.container.client.db.userData.findUnique({ where: { discord_id: user.id } });
 
     if (!linkedAccount)
       return interaction.reply({ content: `No linked account found for ${user.tag}`, ephemeral: true });
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle(`Linked account for ${user.tag}(${user.id})`)
       .setDescription(
-        `Beta Tester: ${linkedAccount.beta_tester ? 'yes' : 'no'}\nSimulation Resets ${
+        `Beta Tester: ${linkedAccount.beta_tester ? 'yes' : 'no'}\nSimulation Resets: ${
           linkedAccount.prestige_rank
         }\nMesozoic Valley Rank: ${linkedAccount.dino_rank}\nBeyond Rank: ${
           linkedAccount.beyond_rank
@@ -246,8 +252,8 @@ export default class Manage extends Command {
     return interaction.reply({ embeds: [embed], ephemeral: true });
   }
 
-  public async discordLinkCreate(interaction: CommandInteraction<'cached'>) {
-    const user = interaction.options.getUser('discord-id');
+  public async discordLinkCreate(interaction: ChatInputCommandInteraction<'cached'>) {
+    const user = interaction.options.getUser('discord-id', true);
     const playerEmail = interaction.options.getString('playeremail');
     const playerToken = interaction.options.getString('playertoken');
 
@@ -265,13 +271,13 @@ export default class Manage extends Command {
     return interaction.reply({ content, ephemeral: true });
   }
 
-  public async handlerStatus(interaction: CommandInteraction<'cached'>) {
+  public async handlerStatus(interaction: ChatInputCommandInteraction<'cached'>) {
     return interaction.reply(
       `Twitter Handler status: ${TwitterInitialization.stream instanceof TweetStream ? 'online' : 'offline'}`,
     );
   }
 
-  public async reloadHandler(interaction: CommandInteraction<'cached'>) {
+  public async reloadHandler(interaction: ChatInputCommandInteraction<'cached'>) {
     await interaction.reply('Reloading Twitter handler, this may take a while...');
 
     const startTime = Date.now();
@@ -284,40 +290,42 @@ export default class Manage extends Command {
     const endTime = Date.now();
 
     if (reloadCall.success)
-      return interaction.channel.send(
+      return interaction.channel?.send(
         `Successfully reloaded the Twitter handler!\nTime taken: ${msToTime(endTime - startTime)}`,
       );
-    return interaction.channel.send(
+    return interaction.channel?.send(
       `Failed to reload the Twitter handler!\nTime taken: ${msToTime(endTime - startTime)}\nreason: ${
         reloadCall.message
       }`,
     );
   }
 
-  public async testFetch(interaction: CommandInteraction<'cached'>) {
+  public async testFetch(interaction: ChatInputCommandInteraction<'cached'>) {
     const twClient = new TwitterApi(JSON.parse(process.env.twitter).bearer_token);
 
     const computerLunch = await twClient.v2
       .userByUsername('ComputerLunch')
       .catch((e: ApiResponseError) => e.data.detail);
     if (typeof computerLunch === 'string') return interaction.reply(computerLunch);
+    else if (!computerLunch) return interaction.reply('No user returned');
 
     const tweets = await twClient.v2
       .userTimeline(computerLunch.data.id, { exclude: 'replies', max_results: 5 })
       .catch((e: ApiResponseError) => e.data.detail);
     if (typeof tweets === 'string') return interaction.reply(tweets);
+    else if (!tweets) return interaction.reply('No tweets returned');
 
     return interaction.reply(
       `Here's **ComputerLunch's** most recent Tweet!\nhttps://twitter.com/ComputerLunch/status/${
-        tweets.data.data.at(0).id
+        tweets.data.data.at(0)?.id
       }?s=21`,
     );
   }
 
-  public async createGameEvent(interaction: CommandInteraction<'cached'>) {
+  public async createGameEvent(interaction: ChatInputCommandInteraction<'cached'>) {
     const name = interaction.options.getString('name', true);
 
-    if (!gameEvents[name]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
+    if (!gameEvents[name as Events]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
 
     const event = gameEvents[name as Events];
     const start = Number(interaction.options.getString('start', true));
@@ -330,8 +338,8 @@ export default class Manage extends Command {
         scheduledEndTime: new Date(end),
         image: event.image.attachment as Buffer,
         description: event.description(start, end),
-        privacyLevel: 'GUILD_ONLY',
-        entityType: 'EXTERNAL',
+        privacyLevel: GuildScheduledEventPrivacyLevel.GuildOnly,
+        entityType: GuildScheduledEventEntityType.External,
         entityMetadata: {
           location: 'Cell to Singularity',
         },
@@ -345,10 +353,10 @@ export default class Manage extends Command {
     }
   }
 
-  public async editGameEvent(interaction: CommandInteraction<'cached'>) {
+  public async editGameEvent(interaction: ChatInputCommandInteraction<'cached'>) {
     const name = interaction.options.getString('name', true);
 
-    if (!gameEvents[name]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
+    if (!gameEvents[name as Events]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
 
     const event = gameEvents[name as Events];
     const start = Number(interaction.options.getString('start', true));
@@ -356,6 +364,8 @@ export default class Manage extends Command {
 
     try {
       const scheduledEvent = (await interaction.guild.scheduledEvents.fetch()).find(e => e.name.includes(name));
+
+      if (!scheduledEvent) return interaction.reply({ content: 'No event found', ephemeral: true });
 
       await scheduledEvent.edit({
         scheduledStartTime: new Date(start),

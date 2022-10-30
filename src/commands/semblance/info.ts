@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed, version } from 'discord.js';
+import { type Message, EmbedBuilder, version } from 'discord.js';
 import { randomColor, msToTime, Category, emojis } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import { release } from 'os';
@@ -33,7 +33,7 @@ export default class Info extends Command {
       shardCount = 0;
     }
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle(`Bot Information - ${client.user.tag}`)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
       .setColor(randomColor)
@@ -73,7 +73,7 @@ export default class Info extends Command {
 
     if (client.shard)
       embed.addFields({
-        name: `${emojis.metabit} This Shard (${builder.guild.shardId})`,
+        name: `${emojis.metabit} This Shard (${builder.guild?.shardId})`,
         value: `**Guilds:** ${guilds}\n` + `**Users:** ${users}`,
       });
 

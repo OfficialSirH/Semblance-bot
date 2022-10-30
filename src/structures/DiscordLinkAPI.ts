@@ -26,6 +26,7 @@ export class DiscordLinkAPI {
     return request(`${this.baseUrl}`, {
       method: 'POST',
       headers: {
+        'content-type': 'application/json',
         Authorization: 'Basic ' + this.basicAuth,
         'X-Distribution-Channel': linkableData.data?.beta_tester ? 'Beta' : 'Stable',
         'X-Semblance-Exclusive': process.env.USERDATA_AUTH,

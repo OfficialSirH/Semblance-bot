@@ -1,22 +1,25 @@
-import { type Message, MessageEmbed } from 'discord.js';
-import { Category, randomColor, Subcategory } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { type ChatInputCommandInteraction, type Message, EmbedBuilder } from 'discord.js';
+import { applicationCommandToMention, Category, randomColor, Subcategory } from '#constants/index';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
-export default class Secret extends Command {
-  public override name = 'secret';
-  public override description = 'secret';
+export default class Secrets extends Command {
+  public override name = 'secrets';
+  public override description = 'secrets';
   public override fullCategory = [Category.game, Subcategory.other];
-  public override aliases = ['secrets'];
+  public override aliases = ['secret'];
 
   public override sharedRun() {
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Secret Achievements')
       .setColor(randomColor)
       .setDescription(
         [
           '1. Make an ape dab by tapping on it numerous times.',
           '2. Make an archosaur, named Archie, dance by tapping the archosaur with a tuxedo/suit.',
-          `3. Unlock all sharks, *check ${this.container.client.user}sharks*.`,
+          `3. Unlock all sharks, *check ${applicationCommandToMention({
+            client: this.container.client,
+            commandName: 'help',
+          })} and input 'sharks' into the option*.`,
           '**Secrets in the land garden:**',
           '4. Click the paradise bird, an all brown bird with a blue face.',
           '5. While your game camera is still focused on the paradise bird, wait till the bird flies near a small island with the darwin bust statue and click the island.',
@@ -32,9 +35,20 @@ export default class Secret extends Command {
     return { embeds: [embed], ephemeral: true };
   }
 
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+    return interaction.reply(this.sharedRun());
+  }
+
   public override async messageRun(message: Message) {
     await message.author
       .send(this.sharedRun())
       .catch(() => message.reply("I can't DM you! You're probably blocking DMs."));
+  }
+
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+    });
   }
 }

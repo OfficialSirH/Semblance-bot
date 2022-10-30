@@ -1,4 +1,12 @@
-import { type Message, MessageActionRow, MessageButton, type CommandInteraction, MessageEmbed } from 'discord.js';
+import {
+  type Message,
+  ActionRowBuilder,
+  ButtonBuilder,
+  type ChatInputCommandInteraction,
+  EmbedBuilder,
+  type MessageActionRowComponentBuilder,
+  ButtonStyle,
+} from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { currentPrice } from '#constants/commands';
@@ -14,8 +22,8 @@ export default class Game extends Command {
     const client = builder.client;
 
     const statsHandler = await client.db.game.findUnique({ where: { player: user.id } }),
-      embed = new MessageEmbed();
-    let cost: number;
+      embed = new EmbedBuilder();
+    let cost = Infinity;
     if (!statsHandler)
       embed
         .setTitle("Semblance's Idle-Game")
@@ -60,8 +68,8 @@ export default class Game extends Command {
         (cost = await currentPrice(client, statsHandler));
 
     const components = [
-      new MessageActionRow().addComponents(
-        new MessageButton()
+      new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+        new ButtonBuilder()
           .setCustomId(
             buildCustomId({
               command: 'game',
@@ -69,10 +77,10 @@ export default class Game extends Command {
               id: user.id,
             }),
           )
-          .setStyle('PRIMARY')
+          .setStyle(ButtonStyle.Primary)
           .setEmoji('❔')
           .setLabel('About'),
-        new MessageButton()
+        new ButtonBuilder()
           .setCustomId(
             buildCustomId({
               command: 'game',
@@ -81,10 +89,10 @@ export default class Game extends Command {
             }),
           )
           .setDisabled(!statsHandler)
-          .setStyle('PRIMARY')
+          .setStyle(ButtonStyle.Primary)
           .setEmoji('💵')
           .setLabel('Collect'),
-        new MessageButton()
+        new ButtonBuilder()
           .setCustomId(
             buildCustomId({
               command: 'game',
@@ -93,10 +101,10 @@ export default class Game extends Command {
             }),
           )
           .setDisabled(!statsHandler || statsHandler.money < cost)
-          .setStyle('PRIMARY')
+          .setStyle(ButtonStyle.Primary)
           .setEmoji('⬆')
           .setLabel('Upgrade'),
-        new MessageButton()
+        new ButtonBuilder()
           .setCustomId(
             buildCustomId({
               command: 'game',
@@ -104,10 +112,10 @@ export default class Game extends Command {
               id: user.id,
             }),
           )
-          .setStyle('PRIMARY')
+          .setStyle(ButtonStyle.Primary)
           .setEmoji('🏅')
           .setLabel('Leaderboard'),
-        new MessageButton()
+        new ButtonBuilder()
           .setCustomId(
             buildCustomId({
               command: 'game',
@@ -115,7 +123,7 @@ export default class Game extends Command {
               id: user.id,
             }),
           )
-          .setStyle('PRIMARY')
+          .setStyle(ButtonStyle.Primary)
           .setEmoji('💰')
           .setLabel('Voting Sites'),
       ),
@@ -125,8 +133,8 @@ export default class Game extends Command {
     return {
       content:
         'user' in builder
-          ? null
-          : `note: It's recommended to use the slash command variant of this command (</${command.name}:${command.id}>) as normal commands may be removed from Semblance later.`,
+          ? undefined
+          : `note: It's recommended to use the slash command variant of this command (</${command?.name}:${command?.id}>) as normal commands may be removed from Semblance later.`,
       embeds: [embed],
       components,
     };
@@ -136,17 +144,14 @@ export default class Game extends Command {
     await message.reply(await this.sharedRun(message));
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     await interaction.reply(await this.sharedRun(interaction));
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
-        name: this.name,
-        description: this.description,
-      },
-      { idHints: ['973689163054448641'] },
-    );
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+    });
   }
 }

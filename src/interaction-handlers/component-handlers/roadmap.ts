@@ -1,7 +1,14 @@
 import { randomColor, attachments, earlyBeyondTesters } from '#constants/index';
 import { backButton, buildCustomId, componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
-import { type ButtonInteraction, MessageEmbed, MessageActionRow, MessageButton } from 'discord.js';
+import {
+  type MessageActionRowComponentBuilder,
+  type ButtonInteraction,
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} from 'discord.js';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Roadmap extends InteractionHandler {
@@ -9,7 +16,7 @@ export default class Roadmap extends InteractionHandler {
     super(context, { interactionHandlerType: InteractionHandlerTypes.Button });
   }
 
-  public override async parse(interaction: ButtonInteraction) {
+  public override async parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
@@ -35,7 +42,7 @@ export default class Roadmap extends InteractionHandler {
 }
 
 function earlyBeyond(interaction: ButtonInteraction, name: string) {
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle('Beyond Clips')
     .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
@@ -57,13 +64,17 @@ function earlyBeyond(interaction: ButtonInteraction, name: string) {
     );
   return {
     embeds: [embed],
-    components: [new MessageActionRow().addComponents(backButton(name, interaction.user.id, 'roadmap'))],
+    components: [
+      new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+        backButton(name, interaction.user.id, 'roadmap'),
+      ),
+    ],
     files: [],
   };
 }
 
 function testerCredits(interaction: ButtonInteraction, name: string) {
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle('Credits to our Early Private Beta Testers!')
     .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
@@ -73,21 +84,25 @@ function testerCredits(interaction: ButtonInteraction, name: string) {
     });
   return {
     embeds: [embed],
-    components: [new MessageActionRow().addComponents(backButton(name, interaction.user.id, 'roadmap'))],
+    components: [
+      new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+        backButton(name, interaction.user.id, 'roadmap'),
+      ),
+    ],
     files: [],
   };
 }
 
 function roadmap(interaction: ButtonInteraction) {
-  const embed = new MessageEmbed()
+  const embed = new EmbedBuilder()
     .setTitle('Road Map')
     .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
     .setColor(randomColor)
     .setThumbnail(attachments.currentLogo.name)
     .setImage(attachments.roadMap.name);
   const components = [
-    new MessageActionRow().addComponents(
-      new MessageButton()
+    new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+      new ButtonBuilder()
         .setCustomId(
           buildCustomId({
             command: 'roadmap',
@@ -95,9 +110,9 @@ function roadmap(interaction: ButtonInteraction) {
             id: interaction.user.id,
           }),
         )
-        .setStyle('PRIMARY')
+        .setStyle(ButtonStyle.Primary)
         .setLabel('Early Beyond Testers'),
-      new MessageButton()
+      new ButtonBuilder()
         .setCustomId(
           buildCustomId({
             command: 'roadmap',
@@ -105,7 +120,7 @@ function roadmap(interaction: ButtonInteraction) {
             id: interaction.user.id,
           }),
         )
-        .setStyle('PRIMARY')
+        .setStyle(ButtonStyle.Primary)
         .setLabel('Early Beyond Sneak Peeks'),
     ),
   ];

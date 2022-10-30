@@ -1,4 +1,4 @@
-import { type Message, MessageEmbed } from 'discord.js';
+import { type Message, EmbedBuilder } from 'discord.js';
 import { attachments, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -9,7 +9,7 @@ export default class LargeNumbers extends Command {
 
   public override sharedRun(builder: Command['SharedBuilder']) {
     const user = 'user' in builder ? builder.user : builder.author;
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Large Numbers')
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)
@@ -31,7 +31,7 @@ export default class LargeNumbers extends Command {
           ', for more details, click [here](http://www.thealmightyguru.com/Pointless/BigNumbers.html)',
       )
       .setFooter({ text: 'Large Numbers go brrrr...' });
-    return { embeds: [embed], files: [attachments.currentLogo] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
   }
 
   public override async messageRun(message: Message) {

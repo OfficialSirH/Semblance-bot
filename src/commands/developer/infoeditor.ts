@@ -1,8 +1,15 @@
-import { Constants, type CommandInteraction, MessageEmbed, MessageAttachment, Util } from 'discord.js';
+import {
+  type ChatInputCommandInteraction,
+  EmbedBuilder,
+  AttachmentBuilder,
+  escapeCodeBlock,
+  ApplicationCommandOptionType,
+  PermissionFlagsBits,
+} from 'discord.js';
 import { GuildId, Category, randomColor } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
-export default class Edit extends Command {
+export default class InfoEditor extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
     super(context, {
       ...options,
@@ -13,17 +20,17 @@ export default class Edit extends Command {
     });
   }
 
-  public override async chatInputRun(interaction: CommandInteraction<'cached'>) {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     if (interaction.options.getSubcommandGroup(false) == 'boostercodes') {
       const subCommand = interaction.options.getSubcommand();
 
       if (subCommand == 'add') {
-        const codes = interaction.options.getString('codes').replaceAll(' ', '').split(',');
+        const codes = interaction.options.getString('codes', true).replaceAll(' ', '').split(',');
         return this.addBoosterCode(interaction, codes);
       }
 
       if (subCommand == 'remove') {
-        const codes = interaction.options.getString('codes').replaceAll(' ', '').split(',');
+        const codes = interaction.options.getString('codes', true).replaceAll(' ', '').split(',');
         return this.removeBoosterCode(interaction, codes);
       }
 
@@ -35,7 +42,7 @@ export default class Edit extends Command {
     const subject = async () => {
       const subject = await this.container.client.db.information.findUnique({
         where: {
-          type: interaction.options.getString('subject'),
+          type: interaction.options.getString('subject', true),
         },
       });
       return subject ? subject : interaction.reply('Invalid subject.');
@@ -43,12 +50,12 @@ export default class Edit extends Command {
 
     if (interaction.options.getSubcommand() == 'edit') {
       const subjectValue = await subject();
-      if (!subjectValue) return;
+      if (!('type' in subjectValue)) return;
 
-      const embed = new MessageEmbed()
+      const embed = new EmbedBuilder()
         .setTitle(`Editing ${subjectValue.type}`)
         .setDescription(
-          `**Original values:**\`\`\`\n${Util.escapeCodeBlock(
+          `**Original values:**\`\`\`\n${escapeCodeBlock(
             `Primary value: ${subjectValue.value}\nFooter: ${subjectValue.footer}\nExpired: ${subjectValue.expired}`,
           )}\`\`\``,
         );
@@ -68,8 +75,8 @@ export default class Edit extends Command {
       if (!updatedSubject) return interaction.reply('Could not update information.');
 
       embed.setDescription(
-        embed.description +
-          `\n\n**Updated values:**\`\`\`\n${Util.escapeCodeBlock(
+        embed.data.description +
+          `\n\n**Updated values:**\`\`\`\n${escapeCodeBlock(
             `Primary value: ${updatedSubject.value}\nFooter: ${updatedSubject.footer}\nExpired: ${updatedSubject.expired}`,
           )}\`\`\``,
       );
@@ -78,15 +85,17 @@ export default class Edit extends Command {
     }
 
     const subjectValue = await subject();
-    if (!subjectValue) return;
+    if (!('type' in subjectValue)) return;
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle(subjectValue.type)
       .setColor(randomColor)
-      .setThumbnail(this.container.client.user.displayAvatarURL())
+      .setThumbnail(this.container.client.user?.displayAvatarURL() as string)
       .setDescription('The following JSON for the info is in the file attached');
 
-    const file = new MessageAttachment(Buffer.from(JSON.stringify(subjectValue)), `${subjectValue.type}.json`);
+    const file = new AttachmentBuilder(Buffer.from(JSON.stringify(subjectValue)), {
+      name: `${subjectValue.type}.json`,
+    });
 
     return interaction.reply({ embeds: [embed], files: [file], ephemeral: true });
   }
@@ -104,65 +113,72 @@ export default class Edit extends Command {
       {
         name: this.name,
         description: this.description,
-        defaultPermission: false,
+        default_member_permissions: PermissionFlagsBits.Administrator.toString(),
         options: [
           {
-            name: 'edit',
-            description: 'take upon the edit action',
-            type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+            name: 'subjects',
+            description: 'manage subjects/information',
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
               {
-                name: 'subject',
-                description: 'the information to edit',
-                type: Constants.ApplicationCommandOptionTypes.STRING,
-                choices: infoSubjects,
-                required: true,
+                name: 'edit',
+                description: 'take upon the edit action',
+                type: ApplicationCommandOptionType.Subcommand,
+                options: [
+                  {
+                    name: 'subject',
+                    description: 'the information to edit',
+                    type: ApplicationCommandOptionType.String,
+                    choices: infoSubjects,
+                    required: true,
+                  },
+                  {
+                    name: 'value',
+                    description: 'the new value',
+                    type: ApplicationCommandOptionType.String,
+                  },
+                  {
+                    name: 'footer',
+                    description: 'the new footer',
+                    type: ApplicationCommandOptionType.String,
+                  },
+                  {
+                    name: 'expired',
+                    description: 'the new expired value',
+                    type: ApplicationCommandOptionType.String,
+                  },
+                ],
               },
               {
-                name: 'value',
-                description: 'the new value',
-                type: Constants.ApplicationCommandOptionTypes.STRING,
-              },
-              {
-                name: 'footer',
-                description: 'the new footer',
-                type: Constants.ApplicationCommandOptionTypes.STRING,
-              },
-              {
-                name: 'expired',
-                description: 'the new expired value',
-                type: Constants.ApplicationCommandOptionTypes.STRING,
-              },
-            ],
-          },
-          {
-            name: 'display',
-            description: 'take upon the display action',
-            type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
-            options: [
-              {
-                name: 'subject',
-                description: 'the information to display',
-                type: Constants.ApplicationCommandOptionTypes.STRING,
-                choices: infoSubjects,
-                required: true,
+                name: 'display',
+                description: 'take upon the display action',
+                type: ApplicationCommandOptionType.Subcommand,
+                options: [
+                  {
+                    name: 'subject',
+                    description: 'the information to display',
+                    type: ApplicationCommandOptionType.String,
+                    choices: infoSubjects,
+                    required: true,
+                  },
+                ],
               },
             ],
           },
           {
             name: 'boostercodes',
             description: 'interact with the booster codes',
-            type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND_GROUP,
+            type: ApplicationCommandOptionType.SubcommandGroup,
             options: [
               {
                 name: 'add',
                 description: 'add codes',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
                 options: [
                   {
                     name: 'codes',
                     description: 'the codes to add (comma separated)',
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     required: true,
                   },
                 ],
@@ -170,12 +186,12 @@ export default class Edit extends Command {
               {
                 name: 'remove',
                 description: 'remove codes',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
                 options: [
                   {
                     name: 'codes',
                     description: 'the codes to remove (comma separated)',
-                    type: Constants.ApplicationCommandOptionTypes.STRING,
+                    type: ApplicationCommandOptionType.String,
                     required: true,
                   },
                 ],
@@ -183,23 +199,22 @@ export default class Edit extends Command {
               {
                 name: 'list',
                 description: 'list codes',
-                type: Constants.ApplicationCommandOptionTypes.SUB_COMMAND,
+                type: ApplicationCommandOptionType.Subcommand,
               },
             ],
           },
         ],
       },
       {
-        guildIds: [GuildId.cellToSingularity],
-        idHints: ['974139651801636924', '974139652959244308'],
+        guildIds: [GuildId.cellToSingularity, GuildId.sirhStuff],
       },
     );
   }
 
-  private async listBoosterCodes(interaction: CommandInteraction<'cached'>) {
+  private async listBoosterCodes(interaction: ChatInputCommandInteraction<'cached'>) {
     const darwiniumCodes = await interaction.client.db.boosterCodes.findMany({});
     const list = darwiniumCodes.length > 0 ? darwiniumCodes.map(c => c.code).join(', ') : 'None';
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Booster Codes')
       .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setDescription(`number of codes: ${darwiniumCodes.length}\n\`\`\`\n${list}\`\`\``)
@@ -207,7 +222,7 @@ export default class Edit extends Command {
     interaction.reply({ embeds: [embed] });
   }
 
-  private async addBoosterCode(interaction: CommandInteraction<'cached'>, codes: string[]) {
+  private async addBoosterCode(interaction: ChatInputCommandInteraction<'cached'>, codes: string[]) {
     if (codes.length == 0) return interaction.reply('You need to give me a code to add.');
 
     const darwiniumCodes = await interaction.client.db.boosterCodes.findMany({});
@@ -220,7 +235,7 @@ export default class Edit extends Command {
     });
 
     const list = darwiniumCodes.map(c => c.code).concat(codes);
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Booster Codes')
       .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setDescription(
@@ -232,7 +247,7 @@ export default class Edit extends Command {
     interaction.reply({ embeds: [embed] });
   }
 
-  private async removeBoosterCode(interaction: CommandInteraction<'cached'>, codes: string[]) {
+  private async removeBoosterCode(interaction: ChatInputCommandInteraction<'cached'>, codes: string[]) {
     if (codes.length == 0) return interaction.reply('You need to give me a code to remove.');
 
     const darwiniumCodes = await interaction.client.db.boosterCodes.findMany({});
@@ -250,7 +265,7 @@ export default class Edit extends Command {
       },
     });
 
-    const embed = new MessageEmbed()
+    const embed = new EmbedBuilder()
       .setTitle('Booster Codes')
       .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setDescription(

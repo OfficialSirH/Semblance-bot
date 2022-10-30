@@ -1,4 +1,6 @@
+import type { CustomIdData } from '#lib/interfaces/Semblance';
 import { Events, Listener } from '@sapphire/framework';
+import type { Interaction } from 'discord.js';
 
 export default class InteractionCreate extends Listener<typeof Events.InteractionCreate> {
   public constructor(context: Listener.Context, options: Listener.Options) {
@@ -8,7 +10,10 @@ export default class InteractionCreate extends Listener<typeof Events.Interactio
     });
   }
 
-  public override async run() {
-    // TODO: implement modal interactions here until Sapphire implements modal handling
+  public override async run(interaction: Interaction) {
+    if (!interaction.isModalSubmit()) return;
+    const parsedCustomId: CustomIdData = JSON.parse(interaction.customId);
+    // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+    this.container.stores.get('commands').get(parsedCustomId.command)?.modalRun(interaction);
   }
 }
