@@ -51,7 +51,7 @@ export default class Roadmap extends Command {
           .setLabel('Early Beyond Sneak Peeks'),
       ),
     ];
-    return { embeds: [embed], files: [attachments.currentLogo, attachments.roadMap], components };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.roadMap.attachment], components };
   }
 
   public registerApplicationCommands(registry: ApplicationCommandRegistry) {

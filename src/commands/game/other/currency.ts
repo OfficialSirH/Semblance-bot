@@ -51,7 +51,7 @@ export default class Currency extends Command {
         },
       )
       .setFooter({ text: 'List of currencies used ingame' });
-    return { embeds: [embed], files: [attachments.currentLogo, attachments.currency] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.currency] };
   }
 
   public override async messageRun(message: Message) {

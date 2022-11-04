@@ -26,7 +26,7 @@ export default class Nanobots extends Command {
       .setFooter({
         text: 'Thanks to SampeDrako for creating this beautifully better designed image representing nanobots!',
       });
-    return { embeds: [embed], files: [attachments.currentLogo, attachments.nanobots] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.nanobots.attachment] };
   }
 
   public override async messageRun(message: Message) {

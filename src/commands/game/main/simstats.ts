@@ -18,7 +18,7 @@ export default class Simstats extends Command {
       );
     return {
       embeds: [embed],
-      files: [attachments.currentLogo, attachments.simStatsLocation],
+      files: [attachments.currentLogo.attachment, attachments.simStatsLocation.attachment],
     };
   }
 

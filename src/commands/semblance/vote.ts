@@ -19,8 +19,6 @@ export default class Vote extends Command {
           `[Top.gg](https://top.gg/bot/${client.user.id})`,
           '[Discordbotlist.com](https://discordbotlist.com/bots/semblance)',
           `[Discords.com](https://discords.com/bots/bot/${client.user.id})`,
-          '**Unrewardable voting sites**',
-          `[Botlist.space](https://botlist.space/bot/${client.user.id})`,
           '**Unvotable sites**',
           `[Discord.bots.gg](https://discord.bots.gg/bots/${client.user.id})`,
         ].join('\n'),
