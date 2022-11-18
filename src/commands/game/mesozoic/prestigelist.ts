@@ -16,7 +16,7 @@ export default class PrestigeList extends Command {
       .setThumbnail(attachments.currentLogo.name)
       .setImage(attachments.prestigeList.name)
       .setFooter({ text: 'Thanks to Hardik for this lovely list of Prestige :D' });
-    return { embeds: [embed], files: [attachments.currentLogo, attachments.prestigeList] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.prestigeList.attachment] };
   }
 
   public override async messageRun(message: Message) {

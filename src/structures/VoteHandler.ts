@@ -3,10 +3,9 @@ import { type TextChannel, User, EmbedBuilder } from 'discord.js';
 import { randomColor, GuildId } from '#constants/index';
 import type { FastifyReply } from 'fastify';
 import type { DBLRequest } from '#lib/interfaces/discordBotList';
-import type { DiscordsRequest } from '#lib/interfaces/discords';
 import type { TGGRequest } from '#lib/interfaces/topGG';
 
-type AvailableRequests = DBLRequest | DiscordsRequest | TGGRequest;
+type AvailableRequests = DBLRequest | TGGRequest;
 
 export class VoteHandler {
   readonly client: SapphireClient;

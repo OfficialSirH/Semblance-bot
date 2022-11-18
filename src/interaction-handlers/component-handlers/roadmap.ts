@@ -124,5 +124,5 @@ function roadmap(interaction: ButtonInteraction) {
         .setLabel('Early Beyond Sneak Peeks'),
     ),
   ];
-  return { embeds: [embed], files: [attachments.currentLogo, attachments.roadMap], components };
+  return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.roadMap.attachment], components };
 }

@@ -20,7 +20,7 @@ export default class Prestige extends Command {
           'Prestige also allows you to keep your Mutagen.',
       )
       .setFooter({ text: 'Prestige goes brrr...' });
-    return { embeds: [embed], files: [attachments.currentLogo, attachments.prestige] };
+    return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.prestige.attachment] };
   }
 
   public override async messageRun(message: Message) {

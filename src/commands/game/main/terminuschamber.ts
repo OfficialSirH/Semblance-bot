@@ -29,7 +29,7 @@ export default class TerminusChamber extends Command {
       );
     return {
       embeds: [embed],
-      files: [attachments.currentLogo, attachments.terminusChamber],
+      files: [attachments.currentLogo.attachment, attachments.terminusChamber.attachment],
     };
   }
 

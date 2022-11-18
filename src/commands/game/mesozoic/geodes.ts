@@ -21,7 +21,10 @@ export default class Geodes extends Command {
           "By the shown results within this image, it's highly recommended to get geodes at rank 50 for the greatest rewards for the same price as rank 4.",
       )
       .setFooter({ text: 'Diamond Geodes for da win!' });
-    return { embeds: [embed], files: [attachments.currentLogo, attachments.geodeLevelComparison] };
+    return {
+      embeds: [embed],
+      files: [attachments.currentLogo.attachment, attachments.geodeLevelComparison.attachment],
+    };
   }
 
   public override async messageRun(message: Message) {
