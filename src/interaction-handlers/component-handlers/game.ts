@@ -408,7 +408,6 @@ async function votes(
           '**Rewardable voting sites**',
           `[Top.gg](https://top.gg/bot/${client.user.id})`,
           '[Discordbotlist.com](https://discordbotlist.com/bots/semblance)',
-          `[Discords.com](https://discords.com/bots/bot/${client.user.id})`,
           '**Unvotable sites**',
           `[Discord.bots.gg](https://discord.bots.gg/bots/${client.user.id})`,
         ].join('\n'),
