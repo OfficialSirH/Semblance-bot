@@ -2,6 +2,12 @@ version: 2
 
 updates:
   - package-ecosystem: 'yarn'
-    directory: '/'
+    directory: '/bot'
+    schedule:
+      interval: 'weekly'
+
+updates:
+  - package-ecosystem: 'cargo'
+    directory: '/api'
     schedule:
       interval: 'weekly'
