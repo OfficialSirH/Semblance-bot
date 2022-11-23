@@ -39,7 +39,6 @@ import {
   type Awaitable,
   Options,
   Partials,
-  IntentsBitField,
   type ModalSubmitInteraction,
 } from 'discord.js';
 
@@ -58,9 +57,12 @@ const client = new SapphireClient({
     UserManager: 10,
   }),
   partials: [Partials.User, Partials.Channel, Partials.GuildMember],
-  intents: [IntentsBitField.Flags.DirectMessages],
+  intents: [],
 });
 client.db = new prisma.PrismaClient();
+// TODO: setup an http-only server for the bot to use
+client.rest.setToken(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
+
 // fastify routing
 import fastify from 'fastify';
 const app = fastify();
@@ -72,7 +74,6 @@ app.get('/', (_req, res) => {
   res.redirect('https://officialsirh.github.io/');
 });
 
-await client.login(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
 const address = await app.listen({ port: 8079, host: '0.0.0.0' });
 client.logger.info(`Bot listening on port ${address}`);
 
