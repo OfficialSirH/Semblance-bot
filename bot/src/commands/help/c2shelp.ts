@@ -1,5 +1,4 @@
 import {
-  type Message,
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
@@ -15,9 +14,8 @@ export default class C2sHelp extends Command {
   public override description = 'List of all Cell to Singularity related commands';
   public override fullCategory = [Category.help];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const client = builder.client;
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
+    const { client, user } = interaction;
 
     const mainCommands = subcategoryList(client, Category.game, Subcategory.main);
     const mesozoicCommands = subcategoryList(client, Category.game, Subcategory.mesozoic);
@@ -59,9 +57,5 @@ export default class C2sHelp extends Command {
       )
       .setFooter({ text: 'C2S for the win!' });
     return { embeds: [embed], components };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

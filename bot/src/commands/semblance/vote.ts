@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -7,8 +7,8 @@ export default class Vote extends Command {
   public override description = 'Lists websites where you can vote for Semblance.';
   public override fullCategory = [Category.semblance];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const { client } = builder;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
+    const { client } = interaction;
     const embed = new EmbedBuilder()
       .setTitle('Vote')
       .setColor(randomColor)
@@ -24,9 +24,5 @@ export default class Vote extends Command {
       ); // Old Semblance Id: 668688939888148480
 
     return { embeds: [embed] };
-  }
-
-  public async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

@@ -1,5 +1,4 @@
 import {
-  type Message,
   ActionRowBuilder,
   ButtonBuilder,
   type ChatInputCommandInteraction,
@@ -22,12 +21,12 @@ export default class Roles extends Command {
     });
   }
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const member = builder.member;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
+    const member = interaction.member;
     if (!member) {
       return 'An issue occurred while trying to get your roles.';
     }
-    const guildRoles = builder.client.guilds.cache.get(GuildId.cellToSingularity)?.roles.cache;
+    const guildRoles = interaction.client.guilds.cache.get(GuildId.cellToSingularity)?.roles.cache;
 
     if (!guildRoles) {
       return 'An issue occurred while trying to get the roles.';
@@ -91,7 +90,7 @@ export default class Roles extends Command {
       components = [
         new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
           new ButtonBuilder()
-            .setDisabled(builder.guild?.id != GuildId.cellToSingularity)
+            .setDisabled(interaction.guild.id != GuildId.cellToSingularity)
             .setCustomId(
               buildCustomId({
                 command: this.name,
@@ -105,10 +104,6 @@ export default class Roles extends Command {
         ),
       ];
     return { embeds: [embed], files: [attachments.currentLogo.attachment], components };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 
   public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {

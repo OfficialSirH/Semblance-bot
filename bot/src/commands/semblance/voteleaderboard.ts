@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import { LeaderboardUtilities } from '#structures/LeaderboardUtilities';
@@ -19,9 +19,5 @@ export default class VoteLeaderboard extends Command {
       .setDescription(leaderboard)
       .setFooter({ text: 'Vote for Semblance on the listed sites in the vote command' });
     return { embeds: [embed] };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(await this.sharedRun());
   }
 }

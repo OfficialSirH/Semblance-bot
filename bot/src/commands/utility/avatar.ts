@@ -1,12 +1,6 @@
-import {
-  type ChatInputCommandInteraction,
-  type Message,
-  type User,
-  EmbedBuilder,
-  ApplicationCommandOptionType,
-} from 'discord.js';
+import { type ChatInputCommandInteraction, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
-import { type Args, Command, type ApplicationCommandRegistry } from '@sapphire/framework';
+import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
 
 export default class Avatar extends Command {
   public override name = 'avatar';
@@ -24,21 +18,6 @@ export default class Avatar extends Command {
         .setColor(randomColor)
         .setImage(user.displayAvatarURL());
     return interaction.reply({ embeds: [embed] });
-  }
-
-  public async messageRun(message: Message, args: Args) {
-    const userArg = await args.pickResult('user');
-    let user: User;
-
-    if (userArg.isErr()) user = message.author;
-    else user = userArg.unwrap();
-
-    const embed = new EmbedBuilder()
-      .setTitle('Avatar')
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
-      .setColor(randomColor)
-      .setImage(user.displayAvatarURL());
-    message.channel.send({ embeds: [embed] });
   }
 
   public registerApplicationCommands(registry: ApplicationCommandRegistry) {

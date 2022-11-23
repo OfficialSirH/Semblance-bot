@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { applicationCommandToMention, Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -7,9 +7,8 @@ export default class ItemHelp extends Command {
   public override description = 'Get help with the item calculator commands';
   public override fullCategory = [Category.help];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const client = builder.client;
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
+    const { client } = interaction;
     const itemcalc = applicationCommandToMention(
       {
         client,
@@ -27,7 +26,7 @@ export default class ItemHelp extends Command {
 
     const embed = new EmbedBuilder()
       .setTitle('Item Calculator Help')
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())
       .setDescription(
@@ -47,9 +46,5 @@ export default class ItemHelp extends Command {
       .setFooter({ text: 'Item Calculator goes brrrr...' });
 
     return { embeds: [embed] };
-  }
-
-  public async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

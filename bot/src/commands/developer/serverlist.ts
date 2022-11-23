@@ -1,13 +1,14 @@
 import {
-  type Message,
+  type ChatInputCommandInteraction,
   ActionRowBuilder,
   ButtonBuilder,
   EmbedBuilder,
   type MessageActionRowComponentBuilder,
   ButtonStyle,
+  ApplicationCommandOptionType,
 } from 'discord.js';
-import { randomColor, guildBookPage, Category } from '#constants/index';
-import { type Args, Command } from '@sapphire/framework';
+import { randomColor, guildBookPage, Category, GuildId } from '#constants/index';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { serversPerPage } from '#constants/commands';
 import { buildCustomId } from '#constants/components';
 
@@ -22,12 +23,12 @@ export default class ServerList extends Command {
     });
   }
 
-  public override async messageRun(message: Message, args: Args) {
-    const resolvablePage = await args.pickResult('number');
-    const page = resolvablePage.isOk() ? resolvablePage.unwrap() : 1;
+  public override async chatInputRun(interaction: ChatInputCommandInteraction) {
+    const page = interaction.options.getInteger('page') || 1;
+    const { client, user } = interaction;
 
-    const { chosenPage, pageDetails } = guildBookPage(message.client, page);
-    const numOfPages = Math.ceil(message.client.guilds.cache.size / serversPerPage);
+    const { chosenPage, pageDetails } = guildBookPage(client, page);
+    const numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
 
     const components = [
         new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
@@ -39,7 +40,7 @@ export default class ServerList extends Command {
               buildCustomId({
                 command: this.name,
                 action: 'first',
-                id: message.author.id,
+                id: user.id,
                 page: chosenPage,
               }),
             ),
@@ -52,7 +53,7 @@ export default class ServerList extends Command {
               buildCustomId({
                 command: this.name,
                 action: 'left',
-                id: message.author.id,
+                id: user.id,
                 page: chosenPage,
               }),
             ),
@@ -65,7 +66,7 @@ export default class ServerList extends Command {
               buildCustomId({
                 command: this.name,
                 action: 'right',
-                id: message.author.id,
+                id: user.id,
                 page: chosenPage,
               }),
             ),
@@ -77,19 +78,39 @@ export default class ServerList extends Command {
               buildCustomId({
                 command: this.name,
                 action: 'last',
-                id: message.author.id,
+                id: user.id,
                 page: chosenPage,
               }),
             ),
         ),
       ],
       embed = new EmbedBuilder()
-        .setTitle(`Server List [${message.client.guilds.cache.size}] - Page ${chosenPage}`)
+        .setTitle(`Server List [${client.guilds.cache.size}] - Page ${chosenPage}`)
         .setColor(randomColor)
-        .setThumbnail(message.client.user.displayAvatarURL())
+        .setThumbnail(client.user.displayAvatarURL())
         .setDescription(pageDetails)
         .setFooter({ text: `Page ${chosenPage} out of ${numOfPages}` });
 
-    await message.reply({ embeds: [embed], components });
+    await interaction.reply({ embeds: [embed], components });
+  }
+
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand(
+      {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'page',
+            description: 'The page number to view.',
+            type: ApplicationCommandOptionType.Integer,
+            required: false,
+          },
+        ],
+      },
+      {
+        guildIds: [GuildId.sirhStuff],
+      },
+    );
   }
 }

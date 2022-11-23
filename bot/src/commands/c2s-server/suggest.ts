@@ -12,6 +12,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
+  TextInputStyle,
 } from 'discord.js';
 
 export default class Suggest extends Command {
@@ -98,9 +99,9 @@ export default class Suggest extends Command {
           new TextInputBuilder()
             .setCustomId('suggestion')
             .setLabel('Suggestion')
-            .setStyle(2)
+            .setStyle(TextInputStyle.Paragraph)
             .setPlaceholder('Enter your suggestion here.')
-            .setMinLength(50)
+            .setMinLength(100)
             .setMaxLength(4000)
             .setRequired(true),
         ),

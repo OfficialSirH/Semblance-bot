@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { attachments, emojis, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -23,9 +23,5 @@ export default class Dinos extends Command {
         ].join('\n\n'),
       );
     return { embeds: [embed], files: [attachments.currentLogo.attachment] };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun());
   }
 }

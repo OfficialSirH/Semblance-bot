@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { Command } from '@sapphire/framework';
 import { Category, Subcategory, attachments } from '#constants/index';
 
@@ -7,11 +7,10 @@ export default class Geodes extends Command {
   public override description = 'Get geode comparisons to show the best value.';
   public override fullCategory = [Category.game, Subcategory.mesozoic];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('Geodes Comparison')
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setThumbnail(attachments.currentLogo.name)
       .setImage(attachments.geodeLevelComparison.name)
       .setDescription(
@@ -25,9 +24,5 @@ export default class Geodes extends Command {
       embeds: [embed],
       files: [attachments.currentLogo.attachment, attachments.geodeLevelComparison.attachment],
     };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

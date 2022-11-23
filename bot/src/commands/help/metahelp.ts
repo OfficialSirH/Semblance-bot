@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { applicationCommandToMention, Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 export default class MetaHelp extends Command {
@@ -6,15 +6,14 @@ export default class MetaHelp extends Command {
   public override description = 'help for metabit calculators';
   public override fullCategory = [Category.help];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const client = builder.client;
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
+    const { client } = interaction;
 
     const embed = new EmbedBuilder()
       .setTitle('Metabit Calculator Help')
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setDescription(
         'The Metabit Calculator supports Scientific Notation, which means you can type numbers like 1E25. You can also input names for numbers like million all the way to vigintillion;' +
           ` Use ${applicationCommandToMention({
@@ -56,9 +55,5 @@ export default class MetaHelp extends Command {
       )
       .setFooter({ text: 'Metabit Calculator goes brrr.' });
     return { embeds: [embed] };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

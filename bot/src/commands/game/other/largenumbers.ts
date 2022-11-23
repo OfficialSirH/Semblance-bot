@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { attachments, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -7,13 +7,12 @@ export default class LargeNumbers extends Command {
   public override description = 'List of all the named large numbers in the game.';
   public override fullCategory = [Category.game, Subcategory.other];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('Large Numbers')
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setDescription(
         [
           'M(Million), B(Billion)',
@@ -32,9 +31,5 @@ export default class LargeNumbers extends Command {
       )
       .setFooter({ text: 'Large Numbers go brrrr...' });
     return { embeds: [embed], files: [attachments.currentLogo.attachment] };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

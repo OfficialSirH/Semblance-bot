@@ -1,4 +1,4 @@
-﻿import { type Message, EmbedBuilder } from 'discord.js';
+﻿import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments, emojis } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -7,11 +7,10 @@ export default class Currency extends Command {
   public override description = 'List all of the in-game currency.';
   public override fullCategory = [Category.game, Subcategory.other];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('Currency')
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)
       .addFields(
@@ -52,9 +51,5 @@ export default class Currency extends Command {
       )
       .setFooter({ text: 'List of currencies used ingame' });
     return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.currency] };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

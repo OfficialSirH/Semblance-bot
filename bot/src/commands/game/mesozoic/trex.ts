@@ -1,4 +1,4 @@
-import { EmbedBuilder, type Message } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { attachments, Category, emojis, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -16,9 +16,5 @@ export default class Trex extends Command {
         'The T-Rex, the rightful king of the Mesozoic Valley, can be unlocked at Rank 26 in the Mesozoic Valley, which will also earn you an achievement called, "Birth of a Tyrant".',
       );
     return { embeds: [embed], files: [attachments.currentLogo.attachment] };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun());
   }
 }

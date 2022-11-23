@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { attachments, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -20,9 +20,5 @@ export default class Simstats extends Command {
       embeds: [embed],
       files: [attachments.currentLogo.attachment, attachments.simStatsLocation.attachment],
     };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun());
   }
 }

@@ -16,9 +16,7 @@ declare module '@sapphire/framework' {
      * allows for building output for both messages and chat input interactions
      * @param builder The message that triggered the command.
      */
-    sharedRun?<T extends Command['SharedBuilder']>(
-      builder: T,
-    ): Awaitable<string | (T extends Message ? MessageCreateOptions | MessageReplyOptions : InteractionReplyOptions)>;
+    sharedRun?<T extends Command['SharedBuilder']>(interaction: T): Awaitable<string | InteractionReplyOptions>;
 
     /**
      * allows for running through a submitted modal
@@ -28,7 +26,7 @@ declare module '@sapphire/framework' {
   }
 
   interface Command {
-    SharedBuilder: Interaction<'cached'> | Message;
+    SharedBuilder: Interaction<'cached'>;
   }
 }
 
@@ -37,11 +35,8 @@ import { WebhookLogger } from '#structures/WebhookLogger';
 import { ApplicationCommandRegistries, LogLevel, RegisterBehavior, SapphireClient } from '@sapphire/framework';
 import {
   type InteractionReplyOptions,
-  type MessageCreateOptions,
-  type MessageReplyOptions,
   type Interaction,
   type Awaitable,
-  type Message,
   Options,
   Partials,
   IntentsBitField,
@@ -55,19 +50,15 @@ const client = new SapphireClient({
     instance: new WebhookLogger(isProduction ? LogLevel.Info : LogLevel.Debug),
   },
   allowedMentions: { parse: [] },
-  caseInsensitiveCommands: true,
-  loadMessageCommandListeners: true,
   defaultCooldown: {
     delay: 2_000,
   },
   makeCache: Options.cacheWithLimits({
-    ThreadManager: 10,
-    MessageManager: 10,
     GuildMemberManager: 10,
     UserManager: 10,
   }),
-  partials: [Partials.User, Partials.Channel, Partials.GuildMember, Partials.Message],
-  intents: [IntentsBitField.Flags.Guilds, IntentsBitField.Flags.GuildMessages, IntentsBitField.Flags.DirectMessages],
+  partials: [Partials.User, Partials.Channel, Partials.GuildMember],
+  intents: [IntentsBitField.Flags.DirectMessages],
 });
 client.db = new prisma.PrismaClient();
 // fastify routing

@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { applicationCommandToMention, Category, randomColor } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -7,9 +7,8 @@ export default class MiscHelp extends Command {
   public override description = 'List all miscelaneous commands';
   public override fullCategory = [Category.help];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const client = builder.client;
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
+    const { client } = interaction;
 
     const funCommands = client.stores
       .get('commands')
@@ -28,10 +27,10 @@ export default class MiscHelp extends Command {
       .setTitle('Miscellaneous Commands')
       .setThumbnail(client.user.displayAvatarURL())
       .setColor(randomColor)
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setDescription(
         `All of the available commands below can be found through the ${applicationCommandToMention({
-          client: builder.client,
+          client,
           commandName: 'help',
         })} command via the \`query\` option.`,
       )
@@ -53,9 +52,5 @@ export default class MiscHelp extends Command {
         },
       );
     return { embeds: [embed] };
-  }
-
-  public async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

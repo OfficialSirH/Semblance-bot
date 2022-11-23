@@ -1,19 +1,18 @@
-import { type Message, EmbedBuilder, version } from 'discord.js';
+import { EmbedBuilder, version } from 'discord.js';
 import { randomColor, msToTime, Category, emojis } from '#constants/index';
 import { Command } from '@sapphire/framework';
 import { release } from 'os';
 
 export default class Info extends Command {
-  public override name = 'info';
-  public override description = 'Provides information about Semblance.';
+  public override name = 'stats';
+  public override description = 'Provides statistics about Semblance.';
   public override fullCategory = [Category.semblance];
 
-  public override async sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
-    const { client } = builder;
+  public override async sharedRun(interaction: Command['SharedBuilder']) {
+    const { client } = interaction;
     const uptime = Date.now() - client.readyTimestamp;
     const duration = msToTime(uptime);
-    const responseTime = Date.now() - builder.createdTimestamp;
+    const responseTime = Date.now() - interaction.createdTimestamp;
     const totalMembers = client.guilds.cache.reduce((total, cur) => (total += cur.memberCount), 0);
     const usage = Math.round((process.memoryUsage().heapUsed / Math.pow(1024, 2)) * 100) / 100;
     const percentageUsed = Math.round((usage / 1000) * 10000) / 100;
@@ -35,7 +34,7 @@ export default class Info extends Command {
 
     const embed = new EmbedBuilder()
       .setTitle(`Bot Information - ${client.user.tag}`)
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())
       .addFields(
@@ -73,7 +72,7 @@ export default class Info extends Command {
 
     if (client.shard)
       embed.addFields({
-        name: `${emojis.metabit} This Shard (${builder.guild?.shardId})`,
+        name: `${emojis.metabit} This Shard (${interaction.guild?.shardId})`,
         value: `**Guilds:** ${guilds}\n` + `**Users:** ${users}`,
       });
 
@@ -87,9 +86,5 @@ export default class Info extends Command {
       inline: true,
     });
     return { embeds: [embed] };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(await this.sharedRun(message));
   }
 }

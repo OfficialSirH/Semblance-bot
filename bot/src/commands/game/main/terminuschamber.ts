@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { attachments, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -7,11 +7,10 @@ export default class TerminusChamber extends Command {
   public override description = 'Details on how to obtain each node within the Terminus Chamber';
   public override fullCategory = [Category.game, Subcategory.main];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('Terminus Chamber')
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)
       .setImage(attachments.terminusChamber.name)
@@ -31,9 +30,5 @@ export default class TerminusChamber extends Command {
       embeds: [embed],
       files: [attachments.currentLogo.attachment, attachments.terminusChamber.attachment],
     };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

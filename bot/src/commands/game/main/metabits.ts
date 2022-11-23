@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder, AttachmentBuilder } from 'discord.js';
+import { EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import { Command } from '@sapphire/framework';
 import { Category, randomColor, Subcategory } from '#constants/index';
 
@@ -7,14 +7,13 @@ export default class Metabits extends Command {
   public override description = 'A detailed explanation of how to obtain Metabits faster';
   public override fullCategory = [Category.game, Subcategory.main];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
     const metabitAttachmentBuilder = new AttachmentBuilder('./src/images/emojis/Metabit.png', {
         name: 'attachment://Metabit.png',
       }),
       embed = new EmbedBuilder()
         .setTitle('Ways to earn Metabits faster')
-        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+        .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
         .setColor(randomColor)
         .setThumbnail(metabitAttachmentBuilder.name)
         .setDescription(
@@ -49,9 +48,5 @@ export default class Metabits extends Command {
           ].join('\n\n'),
         );
     return { embeds: [embed], files: [metabitAttachmentBuilder] };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

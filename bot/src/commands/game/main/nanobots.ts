@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { attachments, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -7,11 +7,10 @@ export default class Nanobots extends Command {
   public override description = 'Provides details on nanobots and whatever else about those cute critters';
   public override fullCategory = [Category.game, Subcategory.main];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('Nanobots')
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)
       .setImage(attachments.nanobots.name)
@@ -27,9 +26,5 @@ export default class Nanobots extends Command {
         text: 'Thanks to SampeDrako for creating this beautifully better designed image representing nanobots!',
       });
     return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.nanobots.attachment] };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

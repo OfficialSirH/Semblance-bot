@@ -1,5 +1,4 @@
 import {
-  type Message,
   ActionRowBuilder,
   ButtonBuilder,
   type ChatInputCommandInteraction,
@@ -16,8 +15,9 @@ export default class Credits extends Command {
   public override description = 'Lists everyone that has helped with the project of Semblance, including myself(SirH).';
   public override fullCategory = [Category.semblance];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+    const { user } = interaction;
+
     const embed = new EmbedBuilder()
       .setTitle('Credits')
       .setColor(randomColor)
@@ -44,6 +44,7 @@ export default class Credits extends Command {
           ].join('\n'),
         },
       );
+
     const component = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId(buildCustomId({ command: 'credits', action: 'thanks', id: user.id }))
@@ -63,15 +64,7 @@ export default class Credits extends Command {
         .setStyle(ButtonStyle.Primary),
     );
 
-    return { embeds: [embed], components: [component] };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
-  }
-
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
-    await interaction.reply(this.sharedRun(interaction));
+    await interaction.reply({ embeds: [embed], components: [component] });
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

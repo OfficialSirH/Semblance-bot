@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -18,9 +18,5 @@ export default class Reboot extends Command {
           'rebooting also offers a lot of speed boost and rewards',
       );
     return { embeds: [embed], files: [attachments.currentLogo.attachment] };
-  }
-
-  public async messageRun(message: Message) {
-    await message.reply(this.sharedRun());
   }
 }

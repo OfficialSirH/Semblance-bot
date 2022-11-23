@@ -1,23 +1,14 @@
-import { type Guild, type Message, EmbedBuilder, ChannelType } from 'discord.js';
-import { Category, getPermissionLevel, randomColor } from '#constants/index';
-import { type Args, Command } from '@sapphire/framework';
+import { type ChatInputCommandInteraction, EmbedBuilder, ChannelType } from 'discord.js';
+import { Category, randomColor } from '#constants/index';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
 export default class ServerInfo extends Command {
   public override name = 'serverinfo';
   public override description = 'Provides info on the current server';
   public override fullCategory = [Category.utility];
 
-  public override async messageRun(message: Message, args: Args) {
-    let guild: Guild | null;
-    if (getPermissionLevel(message.member) == 7) {
-      const guildId = await args.pickResult('string');
-      guild =
-        guildId.isOk() && message.client.guilds.cache.has(guildId.unwrap())
-          ? (message.client.guilds.cache.get(guildId.unwrap()) as Guild)
-          : message.guild;
-    } else guild = message.guild;
-
-    if (!guild) return message.channel.send('Guild not found');
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+    const guild = interaction.guild;
 
     let textChannel = 0,
       voiceChannel = 0,
@@ -68,6 +59,14 @@ export default class ServerInfo extends Command {
         { name: 'Role List', value: canRoleListWork, inline: false },
       )
       .setFooter({ text: `Id: ${guild.id} | Server Created: ${serverCreated}` });
-    await message.reply({ embeds: [embed] });
+    await interaction.reply({ embeds: [embed] });
+  }
+
+  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+    registry.registerChatInputCommand({
+      name: this.name,
+      description: this.description,
+      dm_permission: false,
+    });
   }
 }

@@ -1,5 +1,4 @@
 import {
-  type Message,
   ActionRowBuilder,
   ButtonBuilder,
   type ChatInputCommandInteraction,
@@ -17,9 +16,8 @@ export default class Game extends Command {
   public override description = 'An idle-game within Semblance';
   public override fullCategory = [Category.fun];
 
-  public override async sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
-    const client = builder.client;
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+    const { user, client } = interaction;
 
     const statsHandler = await client.db.game.findUnique({ where: { player: user.id } }),
       embed = new EmbedBuilder();
@@ -129,23 +127,10 @@ export default class Game extends Command {
       ),
     ];
 
-    const command = client.application.commands.cache.find(c => c.name == this.name);
-    return {
-      content:
-        'user' in builder
-          ? undefined
-          : `note: It's recommended to use the slash command variant of this command (</${command?.name}:${command?.id}>) as normal commands may be removed from Semblance later.`,
+    await interaction.reply({
       embeds: [embed],
       components,
-    };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(await this.sharedRun(message));
-  }
-
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
-    await interaction.reply(await this.sharedRun(interaction));
+    });
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

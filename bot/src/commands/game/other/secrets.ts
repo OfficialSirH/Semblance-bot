@@ -1,4 +1,4 @@
-import { type ChatInputCommandInteraction, type Message, EmbedBuilder } from 'discord.js';
+import { type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { applicationCommandToMention, Category, randomColor, Subcategory } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
@@ -6,9 +6,8 @@ export default class Secrets extends Command {
   public override name = 'secrets';
   public override description = 'secrets';
   public override fullCategory = [Category.game, Subcategory.other];
-  public override aliases = ['secret'];
 
-  public override sharedRun() {
+  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const embed = new EmbedBuilder()
       .setTitle('Secret Achievements')
       .setColor(randomColor)
@@ -35,17 +34,8 @@ export default class Secrets extends Command {
           '12. Find all of the dodos: https://discord.com/channels/488478892873744385/488478893586645004/1034451108216713307',
         ].join('\n'),
       );
-    return { embeds: [embed], ephemeral: true };
-  }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
-    return interaction.reply(this.sharedRun());
-  }
-
-  public override async messageRun(message: Message) {
-    await message.author
-      .send(this.sharedRun())
-      .catch(() => message.reply("I can't DM you! You're probably blocking DMs."));
+    await interaction.reply({ embeds: [embed], ephemeral: true });
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

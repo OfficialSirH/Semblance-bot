@@ -3,7 +3,6 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   EmbedBuilder,
-  type Message,
   ButtonStyle,
   type MessageActionRowComponentBuilder,
 } from 'discord.js';
@@ -20,8 +19,7 @@ export default class Roadmap extends Command {
     await interaction.reply(this.sharedRun(interaction));
   }
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('Road Map')
       .setColor(randomColor)
@@ -34,7 +32,7 @@ export default class Roadmap extends Command {
             buildCustomId({
               command: 'roadmap',
               action: 'testers',
-              id: user.id,
+              id: interaction.user.id,
             }),
           )
           .setStyle(ButtonStyle.Primary)
@@ -44,7 +42,7 @@ export default class Roadmap extends Command {
             buildCustomId({
               command: 'roadmap',
               action: 'early-beyond',
-              id: user.id,
+              id: interaction.user.id,
             }),
           )
           .setStyle(ButtonStyle.Primary)
@@ -59,9 +57,5 @@ export default class Roadmap extends Command {
       name: this.name,
       description: this.description,
     });
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

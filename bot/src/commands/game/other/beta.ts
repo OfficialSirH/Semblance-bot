@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { attachments, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -17,9 +17,5 @@ export default class Beta extends Command {
       .setDescription(infoHandler.value)
       .setFooter({ text: 'New stuff do be epicc' });
     return { embeds: [embed], files: [attachments.currentLogo.attachment] };
-  }
-
-  public async messageRun(message: Message) {
-    await message.reply(await this.sharedRun());
   }
 }

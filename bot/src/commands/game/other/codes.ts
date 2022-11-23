@@ -1,5 +1,4 @@
 import {
-  type Message,
   type ChatInputCommandInteraction,
   ActionRowBuilder,
   ButtonBuilder,
@@ -20,13 +19,12 @@ export default class Codes extends Command {
     await interaction.reply(await this.sharedRun(interaction));
   }
 
-  public override async sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override async sharedRun(interaction: Command['SharedBuilder']) {
     const codeHandler = await this.container.client.db.information.findUnique({ where: { type: 'codes' } });
     if (!codeHandler) return 'No codes found.';
     const embed = new EmbedBuilder()
       .setTitle('Darwinium Codes')
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo.name)
       .setDescription(codeHandler.value)
@@ -37,7 +35,7 @@ export default class Codes extends Command {
           buildCustomId({
             command: 'codes',
             action: 'expired',
-            id: user.id,
+            id: interaction.user.id,
           }),
         )
         .setLabel('View Expired Codes')
@@ -58,9 +56,5 @@ export default class Codes extends Command {
       },
       {},
     );
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(await this.sharedRun(message));
   }
 }

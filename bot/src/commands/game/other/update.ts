@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -16,9 +16,5 @@ export default class Update extends Command {
       .setThumbnail(attachments.currentLogo.name)
       .setDescription(infoHandler.value);
     return { embeds: [embed], files: [attachments.currentLogo.attachment] };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(await this.sharedRun());
   }
 }

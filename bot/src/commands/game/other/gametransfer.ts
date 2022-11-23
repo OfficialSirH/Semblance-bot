@@ -1,6 +1,5 @@
 ﻿import { attachments, Category, gameTransferPages, randomColor, Subcategory } from '#constants/index';
 import {
-  type Message,
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
@@ -16,8 +15,8 @@ export default class GameTransfer extends Command {
     'See a step-by-step guide to transfering your game progress into the cloud and onto another device.';
   public override fullCategory = [Category.game, Subcategory.other];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
+  public override sharedRun(interaction: Command['SharedBuilder']) {
+    const { user } = interaction;
     const embed = new EmbedBuilder()
       .setTitle('Game Transfer')
       .setColor(randomColor)
@@ -46,9 +45,5 @@ export default class GameTransfer extends Command {
       files: [attachments.currentLogo.attachment],
       components: [component],
     };
-  }
-
-  public async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 }

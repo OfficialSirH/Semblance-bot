@@ -1,4 +1,4 @@
-import { type Message, EmbedBuilder } from 'discord.js';
+import { EmbedBuilder } from 'discord.js';
 import { attachments, emojis, Category, randomColor, Subcategory } from '#constants/index';
 import { Command } from '@sapphire/framework';
 
@@ -43,9 +43,5 @@ export default class Singularity extends Command {
       )
       .setFooter({ text: 'Thanks to Jojoseis#0001 for making the Singularity Speedrun Guide' });
     return { embeds: [embed], files: [attachments.currentLogo.attachment] };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun());
   }
 }

@@ -1,37 +1,17 @@
 import {
   EmbedBuilder,
-  type Message,
   GuildMember,
   type User,
   type ChatInputCommandInteraction,
   ApplicationCommandOptionType,
 } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
-import { type ApplicationCommandRegistry, type Args, Command } from '@sapphire/framework';
+import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 
 export default class Profile extends Command {
   public override name = 'profile';
   public override description = 'Get the profile of a user.';
   public override fullCategory = [Category.utility];
-
-  public override async messageRun(message: Message, args: Args) {
-    const userResolve = await args.pickResult('user');
-    let user: User | null = null,
-      member: GuildMember | null;
-    if (userResolve.isErr()) member = message.member;
-    else {
-      user = userResolve.unwrap();
-      member =
-        user instanceof GuildMember
-          ? user
-          : ((await message.guild?.members
-              .fetch({ user: user.id, cache: false })
-              .catch(() => null)) as GuildMember | null);
-    }
-
-    if (member) return message.reply(guildProfileEmbed(member));
-    return message.reply(userProfileEmbed(message, user as User));
-  }
 
   public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const user = interaction.options.getUser('user');
@@ -88,9 +68,8 @@ function guildProfileEmbed(member: GuildMember) {
   return { embeds: [embed] };
 }
 
-function userProfileEmbed(builder: Command['SharedBuilder'], user: User) {
-  const cmdCaller = 'user' in builder ? builder.user : builder.author;
-  const accountCreated = `${cmdCaller.createdAt.toString().substring(0, 16)}(${daysAgo(user.createdTimestamp)})`;
+function userProfileEmbed(interaction: Command['SharedBuilder'], user: User) {
+  const accountCreated = `${interaction.user.createdAt.toString().substring(0, 16)}(${daysAgo(user.createdTimestamp)})`;
   const embed = new EmbedBuilder()
     .setTitle('User Profile')
     .setDescription(`User data for ${user}:`)

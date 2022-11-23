@@ -1,5 +1,4 @@
 import {
-  type Message,
   ActionRowBuilder,
   ButtonBuilder,
   EmbedBuilder,
@@ -19,9 +18,9 @@ export default class Help extends Command {
   public override description = 'Lists all available commands.';
   public override fullCategory = [Category.help];
 
-  public override sharedRun(builder: Command['SharedBuilder']) {
-    const user = 'user' in builder ? builder.user : builder.author;
-    const c2sServerCommands = builder.client.stores
+  public override sharedRun(interaction: Command['SharedBuilder']) {
+    const { user, client } = interaction;
+    const c2sServerCommands = interaction.client.stores
       .get('commands')
       .filter(c => c.category === Category.c2sServer)
       .map(c => `**${c.name}**`);
@@ -29,10 +28,10 @@ export default class Help extends Command {
       .setTitle('Semblance Command List')
       .setColor(randomColor)
       .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
-      .setThumbnail(builder.client.user.displayAvatarURL())
+      .setThumbnail(client.user.displayAvatarURL())
       .setDescription(
         `All of the available commands below can be found through the ${applicationCommandToMention({
-          client: builder.client,
+          client,
           commandName: 'help',
         })} command via the \`query\` option.`,
       )
@@ -47,7 +46,7 @@ export default class Help extends Command {
           value: [
             "Semblance's Slash Commands can be listed by typing `/`, which if none are visible,",
             "that's likely due to Semblance not being authorized on the server and a admin will need to click",
-            `[here](https://discord.com/oauth2/authorize?client_id=${builder.client.user.id}&permissions=274878295040&scope=bot+applications.commands) to authorize Semblance.`,
+            `[here](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=274878295040&scope=bot+applications.commands) to authorize Semblance.`,
           ].join(' '),
         },
       );
@@ -87,19 +86,10 @@ export default class Help extends Command {
       ),
     ];
 
-    const command = builder.client.application.commands.cache.find(c => c.name === this.name);
     return {
-      content:
-        'user' in builder
-          ? undefined
-          : `side note: </${command?.name}:${command?.id}> is recommended to be used instead of its message-command variant as the message-command variant *will* be removed in the future.`,
       embeds: [embed],
       components,
     };
-  }
-
-  public override async messageRun(message: Message) {
-    await message.reply(this.sharedRun(message));
   }
 
   public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
