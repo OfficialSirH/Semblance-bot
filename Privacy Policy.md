@@ -15,11 +15,9 @@ For a better experience, while using our Service, I may require you to provide u
 
  • Voting for Semblance on bot listing sites(i.e. Top.gg) and usage of Semblance’s idle-game(`game`) will keep your user Id until a TBD data reset or if requested.
 
- • The usage of the `report` command is restricted primarily to the official Cell to Singularity Discord server and stores your user Id until the said report you’ve made is deleted or denied.
-
  • Users that boost the Cell to Singularity Discord server will have their user Id stored until they stop boosting the Discord server to be able to provide them the booster reward every 2 weeks.
 
- • Users that use the Cell to Singularity feature, Discord Link, will have their user Id stored for functionality of providing roles based on in-game progress until they request for a removal from the Discord Link.
+ • Users that use the Cell to Singularity feature, Discord Link, will have their user Id stored for functionality of providing roles based on in-game progress until they request for a removal from Discord Link.
  
 ## **Service Providers**
  
@@ -43,9 +41,9 @@ This Service may contain links to other sites. If you click on a third-party lin
  
 I may update our Privacy Policy from time to time. Thus, you are advised to review this page periodically for any changes. I will notify you of any changes by posting the new Privacy Policy on this page.
  
-This policy is effective as of 2022-1-26
+This policy is effective as of 2022-11-23
  
 ## **Contact Us**
  
-If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at micahbenac52@gmail.com.
+If you have any questions or suggestions about my Privacy Policy, do not hesitate to contact me at sirhgamesdev@gmail.com.
 

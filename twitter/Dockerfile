@@ -17,8 +17,6 @@ RUN npm run build:docker
 
 FROM node:16-alpine as runtime
 
-EXPOSE 8008
-
 COPY . .
 
 COPY --from=builder build/dist ./dist

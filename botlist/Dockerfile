@@ -17,7 +17,7 @@ RUN npm run build:docker
 
 FROM node:16-alpine as runtime
 
-EXPOSE 8008
+EXPOSE 8079
 
 COPY . .
 

@@ -1,0 +1,43 @@
+{
+  "name": "semblance",
+  "version": "1.0.0",
+  "description": "The AI that runs the Reality Engine",
+  "main": "dist/src/index.js",
+  "author": "SirH",
+  "type": "module",
+  "dependencies": {
+    "@discordjs/rest": "^1.3.0",
+    "discord-api-types": "^0.37.19",
+    "dotenv": "^16.0.3",
+    "source-map-support": "^0.5.21",
+    "twitter-api-v2": "^1.12.9"
+  },
+  "scripts": {
+    "build-image": "docker build -t sirh/c2s:twitter .",
+    "push-image": "docker push sirh/c2s:twitter",
+    "start:docker": "node dist/src/index.js",
+    "build:docker": "npx tsc --project tsconfig.json",
+    "cleanup": "rm -rf dist",
+    "setup": "npm run lint:fix && npm run prettier",
+    "prettier": "prettier --write src/**/*.ts lib/**/*.ts",
+    "lint": "eslint --ext .ts lib src",
+    "lint:fix": "eslint --ext .ts --fix lib src",
+    "prepare": "husky install"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^18.11.9",
+    "@types/source-map-support": "^0.5.6",
+    "@typescript-eslint/eslint-plugin": "^5.44.0",
+    "@typescript-eslint/parser": "^5.44.0",
+    "eslint": "^8.28.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.2",
+    "lint-staged": "^13.0.3",
+    "prettier": "^2.8.0",
+    "typescript": "^4.9.3"
+  },
+  "packageManager": "yarn@3.2.2"
+}

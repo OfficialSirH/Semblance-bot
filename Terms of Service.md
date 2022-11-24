@@ -39,7 +39,7 @@
 
 <h2>8. Your Privacy</h2>
 
-<p>Please read our <a href="https://github.com/OfficialSirH/Semblance-bot/blob/master/Privacy%20Policy.md">Privacy Policy</a>.</p>
+<p>Please read our <a href="https://github.com/OfficialSirH/Semblance-bot/blob/main/Privacy%20Policy.md">Privacy Policy</a>.</p>
 
 <h2>9. Governing Law</h2>
 
@@ -47,4 +47,4 @@
 
 <h2>Contacting Us</h2>
 
-<p>If you have any questions about these Terms of Service, please contact us via sending an email to <a href="mailto:micahbenac52@gmail.com">micahbenac52@gmail.com</a>.</p>
+<p>If you have any questions about these Terms of Service, please contact us via sending an email to <a href="mailto:sirhgamesdev@gmail.com">sirhgamesdev@gmail.com</a>.</p>
