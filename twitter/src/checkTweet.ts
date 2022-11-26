@@ -1,25 +1,25 @@
-import { isProduction, GuildId } from '#constants/index';
-import { TwitterInitialization } from '#structures/TwitterInitialization';
-import type { SapphireClient } from '@sapphire/framework';
-import type { NewsChannel } from 'discord.js';
+import { isProduction, cellToSingularityTweetsChannel } from './constants';
+import { TwitterInitialization } from './TwitterInitialization';
 import { type ApiResponseError, TwitterApi } from 'twitter-api-v2';
+import type { REST } from '@discordjs/rest';
+import { type APIMessage, Routes } from 'discord-api-types/v10';
 let current_id: string | null = null;
 const screen_name = 'ComputerLunch';
 const userId = '618235960'; // ComputerLunch's id
 
 /**
  * fallback for when the stream is not working
- * @param client the main discord client
+ * @param rest rest client
  * @returns void
  */
-export const checkTweet = async (client: SapphireClient) => {
+export const checkTweet = async (rest: REST) => {
   if (TwitterInitialization.online) {
     clearInterval(TwitterInitialization.fallbackHandlerInterval as NodeJS.Timer);
     TwitterInitialization.fallbackHandlerInterval = null;
     return;
   }
 
-  const twClient = new TwitterApi(JSON.parse(process.env.twitter).bearer_token);
+  const twClient = new TwitterApi(JSON.parse(process.env.TWITTER).bearer_token);
   const options: Parameters<typeof twClient.v2.readOnly.userTimeline>[1] = { exclude: 'replies' };
   if (current_id) options['since_id'] = current_id;
   const tweets = await twClient.v2.readOnly.userTimeline(userId, options).catch((e: ApiResponseError) => e.data.detail);
@@ -43,14 +43,11 @@ export const checkTweet = async (client: SapphireClient) => {
       return;
     }
 
-    const c2sTwitterChannel = client.guilds.cache
-      .get(GuildId.cellToSingularity)
-      ?.channels.cache.find(c => c.name == 'cells-tweets') as NewsChannel;
-
-    const msg = await c2sTwitterChannel.send(
-      `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${current_id}?s=21`,
-    );
-
-    await msg.crosspost();
+    const msg = (await rest.post(Routes.channelMessages(cellToSingularityTweetsChannel), {
+      body: {
+        content: `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${current_id}?s=21`,
+      },
+    })) as APIMessage;
+    await rest.post(Routes.channelMessageCrosspost(cellToSingularityTweetsChannel, msg.id));
   }
 };

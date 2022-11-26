@@ -2,17 +2,25 @@ import 'dotenv/config';
 import { install as sourceMapInstall } from 'source-map-support';
 sourceMapInstall();
 
-import { isProduction } from '#constants/index';
-import { WebhookLogger } from '#structures/WebhookLogger';
+import { REST } from '@discordjs/rest';
+import { isProduction, LogLevel } from './constants';
+import { WebhookLogger } from './WebhookLogger';
 
-rest.setToken(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
+declare module '@discordjs/rest' {
+  interface REST {
+    logger: WebhookLogger;
+  }
+}
 
-import { checkTweet } from './twitter/checkTweet.js';
-import { TwitterInitialization } from '#structures/TwitterInitialization';
+const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
+rest.logger = new WebhookLogger(rest, isProduction ? LogLevel.Info : LogLevel.Trace);
+
+import { checkTweet } from './checkTweet.js';
+import { TwitterInitialization } from './TwitterInitialization';
 // Check for Tweet from ComputerLunch
 const twitterAvailabilityTimer = setTimeout(() => {
   if (!TwitterInitialization.online)
-    TwitterInitialization.fallbackHandlerInterval = setInterval(() => checkTweet(client), 2_000);
+    TwitterInitialization.fallbackHandlerInterval = setInterval(() => checkTweet(rest), 2_000);
 }, 300_000);
-await TwitterInitialization.initialize(client);
+await TwitterInitialization.initialize(rest);
 clearTimeout(twitterAvailabilityTimer);

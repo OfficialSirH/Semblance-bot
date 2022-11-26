@@ -1,7 +1,7 @@
-import { filteredTweetCreate } from '../twitter/filteredTweetCreate.js';
+import { filteredTweetCreate } from './filteredTweetCreate.js';
 import { TwitterApi, type ApiResponseError, type TweetStream, ETwitterStreamEvent } from 'twitter-api-v2';
 import { promisify } from 'util';
-import type { SapphireClient } from '@sapphire/framework';
+import type { REST } from '@discordjs/rest';
 
 export class TwitterInitialization {
   static online = false;
@@ -48,7 +48,7 @@ export class TwitterInitialization {
     }
   }
 
-  public static async reloadStream(client: SapphireClient, maxRetries = Infinity) {
+  public static async reloadStream(rest: REST, maxRetries = Infinity) {
     let retryTimer = 1000;
     let retries = 0;
     const wait = promisify(setTimeout);
@@ -85,17 +85,17 @@ export class TwitterInitialization {
 
     this.stream.autoReconnect = true;
 
-    this.stream.on(ETwitterStreamEvent.Data, async tweet => await filteredTweetCreate(client, tweet));
+    this.stream.on(ETwitterStreamEvent.Data, async tweet => await filteredTweetCreate(rest, tweet));
 
     return finalResult;
   }
 
-  public static async initialize(client: SapphireClient) {
-    this.twitterClient = new TwitterApi(JSON.parse(process.env.twitter).bearer_token);
+  public static async initialize(rest: REST) {
+    this.twitterClient = new TwitterApi(JSON.parse(process.env.TWITTER).bearer_token);
 
     await this.reloadRules();
 
-    await this.reloadStream(client);
+    await this.reloadStream(rest);
 
     this.online = true;
   }

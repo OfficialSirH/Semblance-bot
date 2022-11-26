@@ -4,16 +4,8 @@ declare module 'process' {
     namespace NodeJS {
       interface ProcessEnv {
         readonly NODE_ENV: 'development' | 'production';
-        readonly TOKEN: string;
-        readonly DEV_TOKEN: string;
-        readonly DATABASE_URL: string;
-
-        readonly USERDATA_AUTH: string;
-        readonly DISCORD_LINK_API_URL: string;
-
-        readonly CAT_API_KEY: string;
-        readonly DOG_API_KEY: string;
-        readonly DEEPL_API_KEY: string;
+        readonly DISCORD_TOKEN: string;
+        readonly TWITTER: string;
 
         readonly PROD_LOG_ID: string;
         readonly PROD_LOG_TOKEN: string;

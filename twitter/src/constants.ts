@@ -1,5 +1,7 @@
 export const isProduction = process.env.NODE_ENV === 'production';
 
+export const cellToSingularityTweetsChannel = '706102474821468182';
+
 export enum LogLevel {
   /**
    * The lowest log level, used when calling {@link WebhookLogger.trace}.
