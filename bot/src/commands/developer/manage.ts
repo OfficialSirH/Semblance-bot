@@ -8,8 +8,6 @@ import {
 } from 'discord.js';
 import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
 import { GuildId, bigToName, Category, msToTime, isDstObserved } from '#constants/index';
-import { type ApiResponseError, TweetStream, TwitterApi } from 'twitter-api-v2';
-import { TwitterInitialization } from '#structures/TwitterInitialization';
 import { DiscordLinkAPI } from '#structures/DiscordLinkAPI';
 import { type Events, gameEvents } from '#lib/utils/events';
 
@@ -47,18 +45,6 @@ export default class Manage extends Command {
           return this.discordLinkGet(interaction);
         default:
           return interaction.reply(`Unknown subcommand \`${subcommand}\``);
-      }
-
-    if (subcommandGroup === 'twitter')
-      switch (subcommand) {
-        case 'test-fetch':
-          return this.testFetch(interaction);
-        case 'reload-handler':
-          return this.reloadHandler(interaction);
-        case 'handler-status':
-          return this.handlerStatus(interaction);
-        default:
-          return interaction.reply(`Unknown subcommand: \`${subcommand}\``);
       }
   }
 
@@ -198,28 +184,6 @@ export default class Manage extends Command {
               },
             ],
           },
-          {
-            name: 'twitter',
-            description: 'Manage Twitter',
-            type: ApplicationCommandOptionType.SubcommandGroup,
-            options: [
-              {
-                name: 'handler-status',
-                description: 'Check if the Twitter handler is running',
-                type: ApplicationCommandOptionType.Subcommand,
-              },
-              {
-                name: 'reload-handler',
-                description: 'Reload the Twitter handler',
-                type: ApplicationCommandOptionType.Subcommand,
-              },
-              {
-                name: 'test-fetch',
-                description: 'Test if the Twitter API is functional',
-                type: ApplicationCommandOptionType.Subcommand,
-              },
-            ],
-          },
         ],
       },
       {
@@ -269,57 +233,6 @@ export default class Manage extends Command {
         : `\`\`\`json\n${JSON.stringify(linkedAccount)}\`\`\``;
 
     return interaction.reply({ content, ephemeral: true });
-  }
-
-  public async handlerStatus(interaction: ChatInputCommandInteraction<'cached'>) {
-    return interaction.reply(
-      `Twitter Handler status: ${TwitterInitialization.stream instanceof TweetStream ? 'online' : 'offline'}`,
-    );
-  }
-
-  public async reloadHandler(interaction: ChatInputCommandInteraction<'cached'>) {
-    await interaction.reply('Reloading Twitter handler, this may take a while...');
-
-    const startTime = Date.now();
-
-    const reloadCall = await TwitterInitialization.reloadStream(this.container.client).catch(e => ({
-      success: false,
-      message: e,
-    }));
-
-    const endTime = Date.now();
-
-    if (reloadCall.success)
-      return interaction.channel?.send(
-        `Successfully reloaded the Twitter handler!\nTime taken: ${msToTime(endTime - startTime)}`,
-      );
-    return interaction.channel?.send(
-      `Failed to reload the Twitter handler!\nTime taken: ${msToTime(endTime - startTime)}\nreason: ${
-        reloadCall.message
-      }`,
-    );
-  }
-
-  public async testFetch(interaction: ChatInputCommandInteraction<'cached'>) {
-    const twClient = new TwitterApi(JSON.parse(process.env.twitter).bearer_token);
-
-    const computerLunch = await twClient.v2
-      .userByUsername('ComputerLunch')
-      .catch((e: ApiResponseError) => e.data.detail);
-    if (typeof computerLunch === 'string') return interaction.reply(computerLunch);
-    else if (!computerLunch) return interaction.reply('No user returned');
-
-    const tweets = await twClient.v2
-      .userTimeline(computerLunch.data.id, { exclude: 'replies', max_results: 5 })
-      .catch((e: ApiResponseError) => e.data.detail);
-    if (typeof tweets === 'string') return interaction.reply(tweets);
-    else if (!tweets) return interaction.reply('No tweets returned');
-
-    return interaction.reply(
-      `Here's **ComputerLunch's** most recent Tweet!\nhttps://twitter.com/ComputerLunch/status/${
-        tweets.data.data.at(0)?.id
-      }?s=21`,
-    );
   }
 
   public async createGameEvent(interaction: ChatInputCommandInteraction<'cached'>) {

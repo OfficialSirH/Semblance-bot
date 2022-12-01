@@ -17,10 +17,14 @@ rest.logger = new WebhookLogger(rest, isProduction ? LogLevel.Info : LogLevel.Tr
 
 import { checkTweet } from './checkTweet.js';
 import { TwitterInitialization } from './TwitterInitialization';
-// Check for Tweet from ComputerLunch
-const twitterAvailabilityTimer = setTimeout(() => {
-  if (!TwitterInitialization.online)
-    TwitterInitialization.fallbackHandlerInterval = setInterval(() => checkTweet(rest), 2_000);
-}, 300_000);
-await TwitterInitialization.initialize(rest);
-clearTimeout(twitterAvailabilityTimer);
+
+if (isProduction) {
+  const twitterAvailabilityTimer = setTimeout(() => {
+    if (!TwitterInitialization.online)
+      TwitterInitialization.fallbackHandlerInterval = setInterval(() => checkTweet(rest), 2_000);
+  }, 300_000);
+  await TwitterInitialization.initialize(rest);
+  clearTimeout(twitterAvailabilityTimer);
+} else {
+  setInterval(() => checkTweet(rest), 2_000);
+}

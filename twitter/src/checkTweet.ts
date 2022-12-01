@@ -4,7 +4,7 @@ import { type ApiResponseError, TwitterApi } from 'twitter-api-v2';
 import type { REST } from '@discordjs/rest';
 import { type APIMessage, Routes } from 'discord-api-types/v10';
 let current_id: string | null = null;
-const screen_name = 'ComputerLunch';
+let initialRequestDone = false;
 const userId = '618235960'; // ComputerLunch's id
 
 /**
@@ -18,6 +18,8 @@ export const checkTweet = async (rest: REST) => {
     TwitterInitialization.fallbackHandlerInterval = null;
     return;
   }
+
+  console.info('Checking for new tweets');
 
   const twClient = new TwitterApi(JSON.parse(process.env.TWITTER).bearer_token);
   const options: Parameters<typeof twClient.v2.readOnly.userTimeline>[1] = { exclude: 'replies' };
@@ -39,13 +41,18 @@ export const checkTweet = async (rest: REST) => {
   if (new_id !== current_id && new_id) {
     current_id = new_id as string;
     if (!isProduction) {
-      console.log('new tweet id: ' + new_id);
+      rest.logger.info('new tweet id: ' + new_id);
+      return;
+    }
+
+    if (!initialRequestDone) {
+      initialRequestDone = true;
       return;
     }
 
     const msg = (await rest.post(Routes.channelMessages(cellToSingularityTweetsChannel), {
       body: {
-        content: `Hey! **${screen_name}** just posted a new Tweet!\nhttps://twitter.com/${screen_name}/status/${current_id}?s=21`,
+        content: `Hey! **ComputerLunch** just posted a new Tweet!\nhttps://twitter.com/ComputerLunch/status/${current_id}?s=21`,
       },
     })) as APIMessage;
     await rest.post(Routes.channelMessageCrosspost(cellToSingularityTweetsChannel, msg.id));

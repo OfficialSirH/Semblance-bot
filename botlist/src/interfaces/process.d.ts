@@ -12,9 +12,6 @@ declare module 'process' {
         readonly topGGAuth: string;
         readonly BOT_LISTING_AUTH: string;
 
-        readonly USERDATA_AUTH: string;
-        readonly DISCORD_LINK_API_URL: string;
-
         readonly PROD_LOG_ID: string;
         readonly PROD_LOG_TOKEN: string;
         readonly PROD_ERR_LOG_ID: string;

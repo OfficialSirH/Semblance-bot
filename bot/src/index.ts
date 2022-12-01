@@ -62,27 +62,3 @@ const client = new SapphireClient({
 client.db = new prisma.PrismaClient();
 // TODO: setup an http-only server for the bot to use
 client.rest.setToken(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
-
-// fastify routing
-import fastify from 'fastify';
-const app = fastify();
-
-import router from '#routes/index';
-if (isProduction) router(app, client);
-
-app.get('/', (_req, res) => {
-  res.redirect('https://officialsirh.github.io/');
-});
-
-const address = await app.listen({ port: 8079, host: '0.0.0.0' });
-client.logger.info(`Bot listening on port ${address}`);
-
-import { checkTweet } from './twitter/checkTweet.js';
-import { TwitterInitialization } from '#structures/TwitterInitialization';
-// Check for Tweet from ComputerLunch
-const twitterAvailabilityTimer = setTimeout(() => {
-  if (!TwitterInitialization.online)
-    TwitterInitialization.fallbackHandlerInterval = setInterval(() => checkTweet(client), 2_000);
-}, 300_000);
-await TwitterInitialization.initialize(client);
-clearTimeout(twitterAvailabilityTimer);
