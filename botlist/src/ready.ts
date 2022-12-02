@@ -1,6 +1,6 @@
 import { ActivityType, type Client } from 'discord.js';
 import type { FastifyInstance } from 'fastify';
-import { isProduction } from './constants';
+import { isProduction } from './constants.js';
 
 export const ready = async (client: Client, app: FastifyInstance) => {
   client.logger.info('Client for bot list handling is ready!');

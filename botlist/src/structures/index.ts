@@ -1,2 +1,2 @@
-export { DBLApi } from './DiscordBotListAPI';
-export { DBotsApi } from './DiscordBotsAPI';
+export { DBLApi } from './DiscordBotListAPI.js';
+export { DBotsApi } from './DiscordBotsAPI.js';

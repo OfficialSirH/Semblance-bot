@@ -3,10 +3,10 @@ import { install as sourceMapInstall } from 'source-map-support';
 sourceMapInstall();
 
 import prisma from '@prisma/client';
-import { isProduction, LogLevel } from './constants';
-import { ready } from './ready';
-import { guildCreate } from './guildCreate';
-import { WebhookLogger } from './structures/WebhookLogger';
+import { isProduction, LogLevel } from './constants.js';
+import { ready } from './ready.js';
+import { guildCreate } from './guildCreate.js';
+import { WebhookLogger } from './structures/WebhookLogger.js';
 import { Client, Events, IntentsBitField, Options } from 'discord.js';
 
 declare module 'discord.js' {

@@ -1,4 +1,4 @@
-import { isProduction, cellToSingularityTweetsChannel } from './constants';
+import { isProduction, cellToSingularityTweetsChannel } from './constants.js';
 import type { TweetV2SingleStreamResult } from 'twitter-api-v2';
 import type { REST } from '@discordjs/rest';
 import { type APIMessage, Routes } from 'discord-api-types/v10';

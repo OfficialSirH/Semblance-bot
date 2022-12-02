@@ -1,7 +1,7 @@
 import { type Guild, ActivityType } from 'discord.js';
 import { Api as TopggApi } from '@top-gg/sdk';
 import { DBLApi, DBotsApi } from './structures';
-import { isProduction } from './constants';
+import { isProduction } from './constants.js';
 
 export const guildCreate = (guild: Guild) => {
   const client = guild.client;

@@ -6,7 +6,7 @@ RUN apk add --no-cache python3 make g++
 
 RUN yarn set version stable
 
-COPY package.json tsconfig.json yarn.lock ./
+COPY package.json tsconfig.json yarn.lock .yarnrc.yml ./
 COPY  .yarn ./.yarn
 
 RUN yarn install
@@ -16,8 +16,6 @@ COPY . ./
 RUN npm run build:docker
 
 FROM node:16-alpine as runtime
-
-EXPOSE 8008
 
 COPY . .
 

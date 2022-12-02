@@ -1,5 +1,5 @@
-import { isProduction, cellToSingularityTweetsChannel } from './constants';
-import { TwitterInitialization } from './TwitterInitialization';
+import { isProduction, cellToSingularityTweetsChannel } from './constants.js';
+import { TwitterInitialization } from './TwitterInitialization.js';
 import { type ApiResponseError, TwitterApi } from 'twitter-api-v2';
 import type { REST } from '@discordjs/rest';
 import { type APIMessage, Routes } from 'discord-api-types/v10';

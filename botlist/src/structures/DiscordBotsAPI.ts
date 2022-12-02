@@ -1,5 +1,5 @@
-import { BaseAPI } from './BaseAPI';
-import type { BotStats } from '../interfaces/discordBots';
+import { BaseAPI } from './BaseAPI.js';
+import type { BotStats } from '../interfaces/discordBots.js';
 
 /**
  * discord.bots.gg API Client for Posting stats or Fetching data

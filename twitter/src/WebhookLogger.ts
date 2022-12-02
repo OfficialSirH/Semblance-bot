@@ -1,4 +1,4 @@
-import { isProduction, LogLevel } from './constants';
+import { isProduction, LogLevel } from './constants.js';
 import type { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/rest/v10';
 

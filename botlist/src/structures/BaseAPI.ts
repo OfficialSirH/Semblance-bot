@@ -1,5 +1,5 @@
 import { type Dispatcher, Headers, request } from 'undici';
-import { ApiError } from './ApiError';
+import { ApiError } from './ApiError.js';
 import type { HttpMethod } from 'undici/types/dispatcher';
 
 interface APIOptions {

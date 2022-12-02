@@ -1,8 +1,8 @@
 import { type TextChannel, type Client, User, EmbedBuilder } from 'discord.js';
-import { sirhGuild } from '../constants';
+import { sirhGuild } from '../constants.js';
 import type { FastifyReply } from 'fastify';
-import type { DBLRequest } from '../interfaces/discordBotList';
-import type { TGGRequest } from '../interfaces/topGG';
+import type { DBLRequest } from '../interfaces/discordBotList.js';
+import type { TGGRequest } from '../interfaces/topGG.js';
 
 type AvailableRequests = DBLRequest | TGGRequest;
 

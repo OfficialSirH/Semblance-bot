@@ -10,10 +10,11 @@
   PermissionFlagsBits,
   ComponentType,
   ButtonBuilder,
-  SelectMenuBuilder,
+  StringSelectMenuBuilder,
 } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 import * as fs from 'fs/promises';
+import type { APIStringSelectComponent } from 'discord-api-types/v9';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 
@@ -377,7 +378,7 @@ export const disableAllComponents = (interaction: MessageComponentInteraction) =
         component.components.map(comp =>
           comp.type == ComponentType.Button
             ? new ButtonBuilder(comp.data).setDisabled(true)
-            : new SelectMenuBuilder(comp.data).setDisabled(true),
+            : new StringSelectMenuBuilder(comp.data as APIStringSelectComponent).setDisabled(true),
         ),
       );
       return component;
