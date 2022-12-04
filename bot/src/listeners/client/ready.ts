@@ -3,7 +3,6 @@ import * as schedule from 'node-schedule';
 import { isProduction } from '#constants/index';
 import { handleBoosterReward, handleReminder } from '#constants/models';
 import type { BoosterReward, Reminder } from '@prisma/client';
-import { ActivityType } from 'discord.js';
 
 export default class Ready extends Listener<typeof Events.ClientReady> {
   public constructor(context: Listener.Context, options: Listener.Options) {
@@ -15,14 +14,7 @@ export default class Ready extends Listener<typeof Events.ClientReady> {
   }
 
   public override async run(client: SapphireClient) {
-    client.logger.info(`Logged in as ${client.user?.tag}!`);
-
-    const totalMembers = client.guilds.cache
-      .map(g => g.memberCount)
-      .filter(g => g)
-      .reduce((total, cur) => (total += cur), 0);
-    const activity = `help in ${client.guilds.cache.size} servers | ${totalMembers} members`;
-    client.user?.setActivity(activity, { type: ActivityType.Watching });
+    client.logger.info('Bot service is now running.');
 
     if (isProduction) {
       /* Reminder scheduling */

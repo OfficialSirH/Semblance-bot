@@ -1,7 +1,7 @@
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { VoteHandler } from './structures/VoteHandler.js';
 import type { WebhookPayload } from '@top-gg/sdk';
-import type { DBLVote } from './interfaces/discordBotList';
+import type { DBLVote } from './interfaces/discordBotList.js';
 import type { Client } from 'discord.js';
 
 export default function (app: FastifyInstance, client: Client) {

@@ -17,6 +17,7 @@ import * as fs from 'fs/promises';
 import type { APIStringSelectComponent } from 'discord-api-types/v9';
 
 export const isProduction = process.env.NODE_ENV === 'production';
+export const publicKey = isProduction ? process.env.PUBLIC_KEY : process.env.DEV_PUBLIC_KEY;
 
 export const applicationCommandToMention = (
   interaction: ChatInputCommandInteraction | ApplicationCommand | { client: SapphireClient; commandName: string },

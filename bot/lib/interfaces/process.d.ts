@@ -8,6 +8,9 @@ declare module 'process' {
         readonly DEV_TOKEN: string;
         readonly DATABASE_URL: string;
 
+        readonly PUBLIC_KEY: string;
+        readonly DEV_PUBLIC_KEY: string;
+
         readonly USERDATA_AUTH: string;
         readonly DISCORD_LINK_API_URL: string;
 

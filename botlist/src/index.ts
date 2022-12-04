@@ -33,7 +33,7 @@ await client.login(process.env.DISCORD_TOKEN);
 import fastify from 'fastify';
 const app = fastify();
 
-import router from './routes';
+import router from './routes.js';
 router(app, client);
 
 app.get('/', (_req, res) => {

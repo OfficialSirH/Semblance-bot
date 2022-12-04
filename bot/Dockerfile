@@ -23,4 +23,6 @@ COPY --from=builder build/dist ./dist
 
 COPY --from=builder build/node_modules ./node_modules
 
+EXPOSE 8008
+
 CMD [ "npm", "run", "start:docker" ]
