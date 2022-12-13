@@ -39,6 +39,7 @@ import {
   type Awaitable,
   Options,
   type ModalSubmitInteraction,
+  IntentsBitField,
 } from 'discord.js';
 import fastify from 'fastify';
 import { type APIInteraction, InteractionType } from 'discord-api-types/v9';
@@ -62,12 +63,11 @@ const client = new SapphireClient({
       keepOverLimit: user => user.id === '794033850665533450',
     },
   }),
-  intents: [],
+  intents: [IntentsBitField.Flags.Guilds],
 });
 client.db = new prisma.PrismaClient();
 
-client.rest.setToken(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
-client.stores.get('listeners').get('ready')?.run(client);
+await client.login(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
 
 const app = fastify();
 
@@ -95,73 +95,6 @@ app.route<{ Body: APIInteraction }>({
     // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
     client.container.stores.get('commands').get(parsedCustomId.command)?.modalRun(interaction);
     return res.status(200).send();
-
-    // chunk of InteractionCreateAction from discord.js, will implement as something useable in this case
-    // // Do not emit this for interactions that cache messages that are non-text-based.
-    // let InteractionClass;
-
-    // switch (data.type) {
-    //   case InteractionType.ApplicationCommand:
-    //     switch (data.data.type) {
-    //       case ApplicationCommandType.ChatInput:
-    //         InteractionClass = ChatInputCommandInteraction;
-    //         break;
-    //       case ApplicationCommandType.User:
-    //         InteractionClass = UserContextMenuCommandInteraction;
-    //         break;
-    //       case ApplicationCommandType.Message:
-    //         // if (channel && !channel.isTextBased()) return;
-    //         InteractionClass = MessageContextMenuCommandInteraction;
-    //         break;
-    //       default:
-    //         client.logger.warn(
-    //           `[INTERACTION] Received application command interaction with unknown type: ${data.data.type}`,
-    //         );
-    //         return;
-    //     }
-    //     break;
-    //   case InteractionType.MessageComponent:
-    //     // if (channel && !channel.isTextBased()) return;
-
-    //     switch (data.data.component_type) {
-    //       case ComponentType.Button:
-    //         InteractionClass = ButtonInteraction;
-    //         break;
-    //       case ComponentType.StringSelect:
-    //         InteractionClass = StringSelectMenuInteraction;
-    //         break;
-    //       case ComponentType.UserSelect:
-    //         InteractionClass = UserSelectMenuInteraction;
-    //         break;
-    //       case ComponentType.RoleSelect:
-    //         InteractionClass = RoleSelectMenuInteraction;
-    //         break;
-    //       case ComponentType.MentionableSelect:
-    //         InteractionClass = MentionableSelectMenuInteraction;
-    //         break;
-    //       case ComponentType.ChannelSelect:
-    //         InteractionClass = ChannelSelectMenuInteraction;
-    //         break;
-    //       default:
-    //         client.logger.warn(
-    //           `[INTERACTION] Received component interaction with unknown type: ${data.data.component_type}`,
-    //         );
-    //         return;
-    //     }
-    //     break;
-    //   case InteractionType.ApplicationCommandAutocomplete:
-    //     InteractionClass = AutocompleteInteraction;
-    //     break;
-    //   case InteractionType.ModalSubmit:
-    //     InteractionClass = ModalSubmitInteraction;
-    //     break;
-    //   default:
-    //     client.logger.warn(`[INTERACTION] Received interaction with unknown type: ${data.type}`);
-    //     return;
-    // }
-
-    // // @ts-expect-error - I need to use these classes for an ease of abstracted interactions
-    // const interaction = new InteractionClass(client, data);
   },
 });
 

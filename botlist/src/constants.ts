@@ -1,6 +1,6 @@
 export const isProduction = process.env.NODE_ENV === 'production';
 
-export const sirhGuild = '794054988224659490';
+export const voteChannel = '794054989340475399';
 
 export enum LogLevel {
   /**

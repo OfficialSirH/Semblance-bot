@@ -2,11 +2,24 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import { VoteHandler } from './structures/VoteHandler.js';
 import type { WebhookPayload } from '@top-gg/sdk';
 import type { DBLVote } from './interfaces/discordBotList.js';
-import type { Client } from 'discord.js';
+import { updateBotData } from './updateBotData.js';
+import type { REST } from '@discordjs/rest';
 
-export default function (app: FastifyInstance, client: Client) {
-  const discordBotList = new VoteHandler(client, 'discordbotlist.com');
-  const topGG = new VoteHandler(client, 'top.gg');
+export default function (app: FastifyInstance, rest: REST) {
+  const discordBotList = new VoteHandler(rest, 'discordbotlist.com');
+  const topGG = new VoteHandler(rest, 'top.gg');
+
+  app.route<{
+    Body: { guild_count: number; shard_count: number; shard_id: number; user_count: number };
+  }>({
+    method: 'POST',
+    url: '/update',
+    preHandler: (request, reply, done) => {
+      middleware(request, reply);
+      done();
+    },
+    handler: updateBotData,
+  });
 
   app.route<{
     Body: WebhookPayload;

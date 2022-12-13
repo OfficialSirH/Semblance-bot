@@ -1,28 +1,17 @@
-import { type TextChannel, type Client, User, EmbedBuilder } from 'discord.js';
-import { sirhGuild } from '../constants.js';
 import type { FastifyReply } from 'fastify';
 import type { DBLRequest } from '../interfaces/discordBotList.js';
 import type { TGGRequest } from '../interfaces/topGG.js';
+import type { REST } from '@discordjs/rest';
+import { type APIEmbed, type APIUser, Routes } from 'discord-api-types/v10.js';
+import { voteChannel } from 'src/constants.js';
 
 type AvailableRequests = DBLRequest | TGGRequest;
 
 export class VoteHandler {
-  readonly client: Client;
-  readonly votingSite: string;
-
-  constructor(client: Client, votingSite: string) {
-    this.client = client;
-    this.votingSite = votingSite;
-  }
-
-  get voteChannel() {
-    return this.client.guilds.cache
-      .get(sirhGuild)
-      ?.channels.cache.find(c => c.name == 'semblance-votes') as TextChannel;
-  }
+  constructor(readonly rest: REST, readonly votingSite: string) {}
 
   public async sendVotedEmbed(
-    user: string | User,
+    user: string | APIUser,
     description: string,
     { hasGame, weekendBonus }: { hasGame: boolean; weekendBonus?: boolean } = {
       hasGame: false,
@@ -36,15 +25,37 @@ export class VoteHandler {
       else description += "\nAs a voting bonus, you have earned **6** hours of idle profit for Semblance's Idle Game!";
     }
 
-    const embed = new EmbedBuilder().setDescription(description);
-    if (user instanceof User)
-      embed
-        .setAuthor({ name: `${user.tag}`, iconURL: user.displayAvatarURL() })
-        .setThumbnail(user.displayAvatarURL())
-        .setFooter({ text: `${user.tag} has voted.` });
-    else embed.setAuthor({ name: `<@${user}>` }).setFooter({ text: `user of id ${user} has voted.` });
+    let embed: APIEmbed = {
+      description,
+    };
+    if (typeof user == 'string')
+      embed = {
+        ...embed,
+        author: { name: `<@${user}>` },
+        footer: {
+          text: `user of id ${user} has voted.`,
+        },
+      };
+    else
+      embed = {
+        ...embed,
+        author: {
+          name: `${user.username}#${user.discriminator}`,
+          icon_url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${
+            user.avatar?.startsWith('a_') ? 'gif' : 'png'
+          }`,
+        },
+        thumbnail: {
+          url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${
+            user.avatar?.startsWith('a_') ? 'gif' : 'png'
+          }`,
+        },
+        footer: {
+          text: `${user.username}#${user.discriminator} has voted.`,
+        },
+      };
 
-    return this.voteChannel.send({ embeds: [embed] });
+    return this.rest.post(Routes.channelMessages(voteChannel), { body: { embeds: [embed] } });
   }
 
   public async handle(request: AvailableRequests, reply: FastifyReply): Promise<FastifyReply> {
@@ -62,18 +73,18 @@ export class VoteHandler {
     else if (!('user' in vote)) userId = vote.id;
 
     if (!userId) {
-      this.client.logger.error('VoteHandler', `No user id found in ${this.votingSite} vote.`);
+      this.rest.logger.error('VoteHandler', `No user id found in ${this.votingSite} vote.`);
       return reply.code(200).send({
         success: false,
         message: 'No user id found',
       });
     }
 
-    const user = await this.client.users.fetch(userId, { cache: false });
+    const user = (await this.rest.get(Routes.user(userId))) as APIUser;
 
-    console.log(`${user.tag} just voted!`);
+    console.log(`${user.username}#${user.discriminator} just voted!`);
     const earningsBonus = 'isWeekend' in vote && vote.isWeekend ? 3600 * 12 : 3600 * 6;
-    const playerProfit = await this.client.db.game.findUnique({
+    const playerProfit = await this.rest.db.game.findUnique({
       select: {
         profitRate: true,
       },
@@ -82,7 +93,7 @@ export class VoteHandler {
 
     if (!playerProfit) return reply.code(200).send({ success: true });
 
-    const playerData = await this.client.db.game
+    const playerData = await this.rest.db.game
       .update({
         where: {
           player: user.id,
@@ -102,7 +113,7 @@ export class VoteHandler {
       weekendBonus: 'isWeekend' in vote ? vote.isWeekend : false,
     });
 
-    await this.client.db.vote.upsert({
+    await this.rest.db.vote.upsert({
       where: {
         userId: user.id,
       },
