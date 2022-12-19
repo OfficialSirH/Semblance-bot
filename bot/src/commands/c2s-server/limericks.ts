@@ -1,6 +1,6 @@
 import { Category, randomColor, attachments, emojis } from '#constants/index';
 import { Command } from '@sapphire/framework';
-import { EmbedBuilder } from 'discord.js';
+import type { APIInteractionResponseCallbackData } from 'discord-api-types/v9';
 
 export default class Limericks extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -13,14 +13,18 @@ export default class Limericks extends Command {
     });
   }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
-    const embed = new EmbedBuilder()
-      .setTitle('Limericks Contest winners')
-      .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo.name)
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
-      .setDescription(
-        [
+  public override template = {
+    content: 'Limericks Contest winners',
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    attachments: [{ filename: attachments.currentLogo.name!, id: '0' }],
+    embeds: [
+      {
+        title: 'Limericks Contest winners',
+        color: randomColor,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        thumbnail: { url: attachments.currentLogo.name! },
+        author: { name: '', icon_url: '' },
+        description: [
           `**1st Place(2000 ${emojis.darwinium}):** Jean_Xontric -`,
           'Before the dinosaur ran out of luck,',
           'he lectured a four-legged, furry duck: ',
@@ -46,8 +50,8 @@ export default class Limericks extends Command {
           'From cell to singularity',
           'Playing our parts in the greatest show',
         ].join('\n'),
-      )
-      .setFooter({ text: 'Let the hunger gam-- I mean Limericks Contest- begin!' });
-    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
-  }
+        footer: { text: 'Let the hunger gam-- I mean Limericks Contest- begin!' },
+      },
+    ],
+  } satisfies APIInteractionResponseCallbackData;
 }

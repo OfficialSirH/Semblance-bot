@@ -7,42 +7,62 @@ import prisma from '@prisma/client';
 declare module 'discord.js' {
   interface Client {
     db: prisma.PrismaClient;
+    app: FastifyInstance;
   }
 }
 
 declare module '@sapphire/framework' {
   class Command {
     /**
-     * allows for building output for both messages and chat input interactions
-     * @param builder The message that triggered the command.
+     * The response for interactions that don't require much more than static data.
      */
-    sharedRun?<T extends Command['SharedBuilder']>(interaction: T): Awaitable<string | InteractionReplyOptions>;
+    template?: APIInteractionResponseCallbackData;
 
     /**
-     * allows for running through a submitted modal
+     * executes application commands
      * @param interaction The interaction that triggered the command.
      */
-    modalRun?(interaction: ModalSubmitInteraction): Awaitable<void>;
+    applicationRun?(interaction: APIApplicationCommandInteraction): Awaitable<void>;
+
+    /**
+     * executes message components
+     * @param interaction The interaction that triggered the command.
+     */
+    componentRun?(interaction: APIMessageComponentInteraction): Awaitable<void>;
+
+    /**
+     * executes autocomplete commands
+     * @param interaction The interaction that triggered the command.
+     */
+    autocompleteRun?(interaction: APIApplicationCommandAutocompleteInteraction): Awaitable<void>;
+
+    /**
+     * executes a modal
+     * @param interaction The interaction that triggered the command.
+     */
+    modalRun?(interaction: APIModalSubmitInteraction): Awaitable<void>;
   }
 
   interface Command {
-    SharedBuilder: Interaction<'cached'>;
+    SharedBuilder: APIInteraction;
   }
 }
 
-import { isProduction, publicKey } from '#constants/index';
+import { isProduction, publicKey, UserId } from '#constants/index';
 import { WebhookLogger } from '#structures/WebhookLogger';
 import { ApplicationCommandRegistries, LogLevel, RegisterBehavior, SapphireClient } from '@sapphire/framework';
+import { type Awaitable, Options, IntentsBitField } from 'discord.js';
+import fastify, { type FastifyInstance } from 'fastify';
 import {
-  type InteractionReplyOptions,
-  type Interaction,
-  type Awaitable,
-  Options,
-  type ModalSubmitInteraction,
-  IntentsBitField,
-} from 'discord.js';
-import fastify from 'fastify';
-import { type APIInteraction, InteractionType } from 'discord-api-types/v9';
+  type APIInteraction,
+  InteractionType,
+  InteractionResponseType,
+  type APIApplicationCommandInteraction,
+  type APIMessageComponentInteraction,
+  type APIApplicationCommandAutocompleteInteraction,
+  type APIModalSubmitInteraction,
+  type APIInteractionResponseCallbackData,
+} from 'discord-api-types/v9';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
 import nacl from 'tweetnacl';
 
@@ -53,9 +73,6 @@ const client = new SapphireClient({
     instance: new WebhookLogger(isProduction ? LogLevel.Info : LogLevel.Debug),
   },
   allowedMentions: { parse: [] },
-  defaultCooldown: {
-    delay: 2_000,
-  },
   makeCache: Options.cacheWithLimits({
     GuildMemberManager: 10,
     UserManager: {
@@ -67,12 +84,15 @@ const client = new SapphireClient({
 });
 client.db = new prisma.PrismaClient();
 
+const app = fastify();
+client.app = app;
+
 await client.login(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
 
-const app = fastify();
+client.stores.get('listeners').sweep(listener => listener.name !== 'guildCreate' && listener.name !== 'ready');
 
 app.route<{ Body: APIInteraction }>({
-  url: '/interactions',
+  url: process.env.NODE_ENV === 'development' ? '/dev-interactions' : '/interactions',
   method: 'POST',
   preHandler: async (req, res) => {
     const signature = String(req.headers['X-Signature-Ed25519']);
@@ -89,12 +109,29 @@ app.route<{ Body: APIInteraction }>({
   },
   handler: async (req, res) => {
     const interaction = req.body;
-    if (interaction.type === InteractionType.Ping) return res.send({ type: 1 });
-    if (interaction.type !== InteractionType.ModalSubmit) return res.status(200).send();
-    const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
-    // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-    client.container.stores.get('commands').get(parsedCustomId.command)?.modalRun(interaction);
-    return res.status(200).send();
+    if (interaction.type === InteractionType.Ping) return res.send({ type: InteractionResponseType.Pong });
+
+    if (interaction.member?.user?.id === UserId.sirh) client.logger.info('Sirh test', interaction);
+    else return res.status(400).send('not sirh');
+
+    switch (interaction.type) {
+      case InteractionType.ApplicationCommand:
+        client.stores.get('commands').get(interaction?.data.name)?.applicationRun?.(interaction);
+        break;
+      case InteractionType.MessageComponent:
+        client.stores.get('commands').get(interaction?.data.custom_id)?.componentRun?.(interaction);
+        break;
+      case InteractionType.ApplicationCommandAutocomplete:
+        client.stores.get('commands').get(interaction?.data.name)?.autocompleteRun?.(interaction);
+        break;
+      case InteractionType.ModalSubmit: {
+        const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
+        client.stores.get('commands').get(parsedCustomId.command)?.modalRun?.(interaction);
+        break;
+      }
+      default:
+        return res.status(400).send('Unknown interaction type');
+    }
   },
 });
 
