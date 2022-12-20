@@ -1,7 +1,6 @@
 ﻿import {
   type ApplicationCommand,
   type ChatInputCommandInteraction,
-  AttachmentBuilder,
   type GuildMember,
   type MessageComponentInteraction,
   type Snowflake,
@@ -14,10 +13,15 @@
 } from 'discord.js';
 import type { SapphireClient } from '@sapphire/framework';
 import * as fs from 'fs/promises';
-import type { APIStringSelectComponent } from 'discord-api-types/v9';
+import type { APIStringSelectComponent, APIUser } from 'discord-api-types/v9';
+import type { Stream } from 'stream';
+import { Attachy } from '#structures/Attachy';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 export const publicKey = isProduction ? process.env.PUBLIC_KEY : process.env.DEV_PUBLIC_KEY;
+
+export const avatarUrl = (user: APIUser) =>
+  `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar?.startsWith('a_') ? 'gif' : 'png'}`;
 
 export const applicationCommandToMention = (
   interaction: ChatInputCommandInteraction | ApplicationCommand | { client: SapphireClient; commandName: string },
@@ -90,16 +94,20 @@ export const attachments = await (async () => {
     | 'nanobots'
     | 'currency'
     | 'mementoMori',
-    AttachmentBuilder
+    Attachy
   >;
   for (const file of files)
     if (file.endsWith('.png') || file.endsWith('.mp4')) {
-      const attachment = new AttachmentBuilder(`./src/images/${file}`, { name: `attachment://${file}` }),
-        attachmentName = file.substring(0, file.indexOf('.'));
+      const attachment = new Attachy(`./src/images/${file}`, { name: file });
+
+      const attachmentName = file.substring(0, file.indexOf('.'));
       finalAttachments[attachmentName as keyof typeof finalAttachments] = attachment;
     }
   return finalAttachments;
 })();
+
+export const resolveFile = (path: string | Buffer | Stream) =>
+  typeof path === 'string' ? fs.readFile(path as string).catch(() => '') : '';
 
 export enum UserId {
   sirh = '780995336293711875',

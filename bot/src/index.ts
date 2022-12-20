@@ -16,7 +16,7 @@ declare module '@sapphire/framework' {
     /**
      * The response for interactions that don't require much more than static data.
      */
-    template?: APIInteractionResponseCallbackData;
+    template?: Omit<APIInteractionResponse, 'type'> & Partial<Pick<APIInteractionResponse, 'type'>>;
 
     /**
      * executes application commands
@@ -34,7 +34,9 @@ declare module '@sapphire/framework' {
      * executes autocomplete commands
      * @param interaction The interaction that triggered the command.
      */
-    autocompleteRun?(interaction: APIApplicationCommandAutocompleteInteraction): Awaitable<void>;
+    autocomplete?(
+      interaction: APIApplicationCommandAutocompleteInteraction,
+    ): Awaitable<APIApplicationCommandOptionChoice[]>;
 
     /**
      * executes a modal
@@ -45,6 +47,8 @@ declare module '@sapphire/framework' {
 
   interface Command {
     SharedBuilder: APIInteraction;
+    defaultTemplate: Omit<APIInteractionResponseChannelMessageWithSource, 'type'> &
+      Partial<Pick<APIInteractionResponseChannelMessageWithSource, 'type'>>;
   }
 }
 
@@ -61,7 +65,10 @@ import {
   type APIMessageComponentInteraction,
   type APIApplicationCommandAutocompleteInteraction,
   type APIModalSubmitInteraction,
-  type APIInteractionResponseCallbackData,
+  type APIInteractionResponse,
+  type APIInteractionResponseChannelMessageWithSource,
+  APIApplicationCommandOptionWithAutocompleteOrChoicesWrapper,
+  APIApplicationCommandOptionChoice,
 } from 'discord-api-types/v9';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
 import nacl from 'tweetnacl';
@@ -89,15 +96,13 @@ client.app = app;
 
 await client.login(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
 
-client.stores.get('listeners').sweep(listener => listener.name !== 'guildCreate' && listener.name !== 'ready');
-
 app.route<{ Body: APIInteraction }>({
   url: process.env.NODE_ENV === 'development' ? '/dev-interactions' : '/interactions',
   method: 'POST',
   preHandler: async (req, res) => {
-    const signature = String(req.headers['X-Signature-Ed25519']);
-    const timestamp = String(req.headers['X-Signature-Timestamp']);
-    const body = req.body.toString();
+    const signature = String(req.headers['x-signature-ed25519']);
+    const timestamp = String(req.headers['x-signature-timestamp']);
+    const body = JSON.stringify(req.body);
 
     const isValid = nacl.sign.detached.verify(
       Buffer.from(timestamp + body),
@@ -116,19 +121,29 @@ app.route<{ Body: APIInteraction }>({
 
     switch (interaction.type) {
       case InteractionType.ApplicationCommand:
-        client.stores.get('commands').get(interaction?.data.name)?.applicationRun?.(interaction);
+        try {
+          await client.stores.get('commands').get(interaction?.data.name)?.applicationRun?.(interaction);
+        } catch (e) {
+          client.logger.error(e);
+        }
         break;
-      case InteractionType.MessageComponent:
+
+      case InteractionType.MessageComponent: {
         client.stores.get('commands').get(interaction?.data.custom_id)?.componentRun?.(interaction);
         break;
-      case InteractionType.ApplicationCommandAutocomplete:
-        client.stores.get('commands').get(interaction?.data.name)?.autocompleteRun?.(interaction);
+      }
+
+      case InteractionType.ApplicationCommandAutocomplete: {
+        await client.stores.get('commands').get(interaction?.data.name)?.autocompleteRun?.(interaction);
         break;
+      }
+
       case InteractionType.ModalSubmit: {
         const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
         client.stores.get('commands').get(parsedCustomId.command)?.modalRun?.(interaction);
         break;
       }
+
       default:
         return res.status(400).send('Unknown interaction type');
     }

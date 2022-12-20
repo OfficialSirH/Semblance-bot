@@ -1,14 +1,13 @@
-import {
-  type ChatInputCommandInteraction,
-  type AutocompleteInteraction,
-  EmbedBuilder,
-  ApplicationCommandOptionType,
-} from 'discord.js';
+import { type ChatInputCommandInteraction, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { randomColor, formattedDate, Category } from '#constants/index';
 import type { Reminder, UserReminder } from '@prisma/client';
 import { handleReminder } from '#constants/models';
 import { scheduleJob } from 'node-schedule';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import type {
+  APIApplicationCommandAutocompleteInteraction,
+  APIApplicationCommandInteractionDataIntegerOption,
+} from 'discord-api-types/v9';
 
 const MAX_TIME = 29030400000;
 const MAX_REMINDERS = 5;
@@ -39,12 +38,17 @@ export default class RemindMe extends Command {
     }
   }
 
-  public override async autocompleteRun(interaction: AutocompleteInteraction<'cached'>) {
-    let inputtedAmount: string | number = interaction.options.getFocused();
-    inputtedAmount = parseInt(inputtedAmount as string);
+  public override async autocomplete(interaction: APIApplicationCommandAutocompleteInteraction) {
+    // TODO: stupid shit is going on
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const focusedOption = interaction.data.options.find(
+      option => (option as APIApplicationCommandInteractionDataIntegerOption).focused,
+    )!;
+
+    const inputtedAmount = parseInt(focusedOption as string);
     if (!inputtedAmount || inputtedAmount < 1) inputtedAmount = 1;
 
-    await interaction.respond([
+    return [
       {
         name: `${inputtedAmount} minute(s)`,
         value: inputtedAmount,
@@ -65,7 +69,7 @@ export default class RemindMe extends Command {
         name: `${inputtedAmount} month(s)`,
         value: inputtedAmount * 60 * 24 * 30,
       },
-    ]);
+    ];
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {

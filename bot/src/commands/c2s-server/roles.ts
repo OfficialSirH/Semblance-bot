@@ -1,14 +1,20 @@
 import {
   ActionRowBuilder,
   ButtonBuilder,
-  type ChatInputCommandInteraction,
   EmbedBuilder,
   type MessageActionRowComponentBuilder,
   ButtonStyle,
 } from 'discord.js';
-import { c2sRoles, c2sRolesInformation, Category, attachments, GuildId } from '#constants/index';
+import { c2sRoles, c2sRolesInformation, Category, attachments, GuildId, avatarUrl } from '#constants/index';
 import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
+import {
+  type APIApplicationCommandInteraction,
+  type APIInteractionResponse,
+  InteractionResponseType,
+  MessageFlags,
+  Routes,
+} from 'discord-api-types/v9';
 
 export default class Roles extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -21,21 +27,42 @@ export default class Roles extends Command {
     });
   }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
+  public override async applicationRun(interaction: APIApplicationCommandInteraction) {
     const member = interaction.member;
     if (!member) {
-      return 'An issue occurred while trying to get your roles.';
+      await this.container.client.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+        body: {
+          type: InteractionResponseType.ChannelMessageWithSource,
+          data: {
+            flags: MessageFlags.Ephemeral,
+            content: 'An issue occurred while trying to get your roles.',
+          },
+        } satisfies APIInteractionResponse,
+      });
+      return;
     }
-    const guildRoles = interaction.client.guilds.cache.get(GuildId.cellToSingularity)?.roles.cache;
+    const guildRoles = this.container.client.guilds.cache.get(GuildId.cellToSingularity)?.roles.cache;
 
     if (!guildRoles) {
-      return 'An issue occurred while trying to get the roles.';
+      await this.container.client.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+        body: {
+          type: InteractionResponseType.ChannelMessageWithSource,
+          data: {
+            flags: MessageFlags.Ephemeral,
+            content: 'An issue occurred while trying to get your roles.',
+          },
+        } satisfies APIInteractionResponse,
+      });
+      return;
     }
 
     const embed = new EmbedBuilder()
         .setTitle('C2S Roles')
-        .setAuthor({ name: member.user.tag, iconURL: member.user.displayAvatarURL() })
-        .setThumbnail(attachments.currentLogo.name)
+        .setAuthor({
+          name: `${member.user.username}#${member.user.discriminator}`,
+          iconURL: avatarUrl(member.user),
+        })
+        .setThumbnail(attachments.currentLogo.url)
         .setDescription(
           [
             [
@@ -86,28 +113,37 @@ export default class Roles extends Command {
           ].join('\n\n'),
         )
         .setFooter({ text: 'Epic roles.' }),
-      hasServerEvents = member.roles.cache.has(c2sRoles.server.serverEvents),
+      hasServerEvents = member.roles.find(r => r === c2sRoles.server.serverEvents),
       components = [
-        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
-          new ButtonBuilder()
-            .setDisabled(interaction.guild.id != GuildId.cellToSingularity)
-            .setCustomId(
-              buildCustomId({
-                command: this.name,
-                action: hasServerEvents ? 'remove-events' : 'add-events',
-                id: member.user.id,
-              }),
-            )
-            .setEmoji(hasServerEvents ? '❌' : '✅')
-            .setLabel(hasServerEvents ? 'Remove Server Events Role' : 'Add Server Events Role')
-            .setStyle(hasServerEvents ? ButtonStyle.Danger : ButtonStyle.Success),
-        ),
+        new ActionRowBuilder<MessageActionRowComponentBuilder>()
+          .addComponents(
+            new ButtonBuilder()
+              .setDisabled(interaction.guild_id != GuildId.cellToSingularity)
+              .setCustomId(
+                buildCustomId({
+                  command: this.name,
+                  action: hasServerEvents ? 'remove-events' : 'add-events',
+                  id: member.user.id,
+                }),
+              )
+              .setEmoji(hasServerEvents ? '❌' : '✅')
+              .setLabel(hasServerEvents ? 'Remove Server Events Role' : 'Add Server Events Role')
+              .setStyle(hasServerEvents ? ButtonStyle.Danger : ButtonStyle.Success),
+          )
+          .toJSON(),
       ];
-    return { embeds: [embed], files: [attachments.currentLogo.attachment], components };
-  }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
-    await interaction.reply(this.sharedRun(interaction));
+    await this.container.client.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      files: [{ name: attachments.currentLogo.name!, data: await attachments.currentLogo.data() }],
+      body: {
+        type: InteractionResponseType.ChannelMessageWithSource,
+        data: {
+          embeds: [embed.toJSON()],
+          components,
+        },
+      } satisfies APIInteractionResponse,
+    });
   }
 
   public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
