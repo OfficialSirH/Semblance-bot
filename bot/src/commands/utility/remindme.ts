@@ -39,14 +39,12 @@ export default class RemindMe extends Command {
   }
 
   public override async autocomplete(interaction: APIApplicationCommandAutocompleteInteraction) {
-    // TODO: stupid shit is going on
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const focusedOption = interaction.data.options.find(
       option => (option as APIApplicationCommandInteractionDataIntegerOption).focused,
-    )!;
+    )! as APIApplicationCommandInteractionDataIntegerOption;
 
-    const inputtedAmount = parseInt(focusedOption as string);
-    if (!inputtedAmount || inputtedAmount < 1) inputtedAmount = 1;
+    const inputtedAmount = focusedOption.value < 1 ? 1 : focusedOption.value;
 
     return [
       {
