@@ -58,7 +58,6 @@ import { ApplicationCommandRegistries, LogLevel, RegisterBehavior, SapphireClien
 import { type Awaitable, Options, IntentsBitField } from 'discord.js';
 import fastify, { type FastifyInstance } from 'fastify';
 import {
-  type APIInteraction,
   InteractionType,
   InteractionResponseType,
   type APIApplicationCommandInteraction,
@@ -67,10 +66,10 @@ import {
   type APIModalSubmitInteraction,
   type APIInteractionResponse,
   type APIInteractionResponseChannelMessageWithSource,
-  APIApplicationCommandOptionWithAutocompleteOrChoicesWrapper,
-  APIApplicationCommandOptionChoice,
+  type APIApplicationCommandOptionChoice,
+  Routes,
 } from 'discord-api-types/v9';
-import type { CustomIdData } from '#lib/interfaces/Semblance';
+import type { CustomIdData, APIInteraction, APIInteractionResponseWithData } from '#lib/interfaces/Semblance';
 import nacl from 'tweetnacl';
 
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
@@ -112,20 +111,26 @@ app.route<{ Body: APIInteraction }>({
 
     if (!isValid) return res.status(401).send('Invalid request signature');
   },
-  handler: async (req, res) => {
+  handler: async (req, rep) => {
     const interaction = req.body;
-    if (interaction.type === InteractionType.Ping) return res.send({ type: InteractionResponseType.Pong });
+    interaction.send = (data: APIInteractionResponseWithData) => rep.send(data);
+    interaction.reply = (data: APIInteractionResponseWithData) =>
+      rep.send({ type: InteractionResponseType.ChannelMessageWithSource, data });
+    interaction.deferReply = (data: APIInteractionResponseWithData) =>
+      rep.send({ type: InteractionResponseType.DeferredChannelMessageWithSource, data });
+    interaction.editReply = ({ id, token }: { id: string; token: string }, data: APIInteractionResponseWithData) =>
+      client.rest.patch(Routes.webhookMessage(id, token, '@original'), {
+        body: data,
+      });
+
+    if (interaction.type === InteractionType.Ping) return rep.send({ type: InteractionResponseType.Pong });
 
     if (interaction.member?.user?.id === UserId.sirh) client.logger.info('Sirh test', interaction);
-    else return res.status(400).send('not sirh');
+    else return rep.status(400).send('not sirh');
 
     switch (interaction.type) {
       case InteractionType.ApplicationCommand:
-        try {
-          await client.stores.get('commands').get(interaction?.data.name)?.applicationRun?.(interaction);
-        } catch (e) {
-          client.logger.error(e);
-        }
+        await client.stores.get('commands').get(interaction?.data.name)?.applicationRun?.(interaction);
         break;
 
       case InteractionType.MessageComponent: {
@@ -134,7 +139,7 @@ app.route<{ Body: APIInteraction }>({
       }
 
       case InteractionType.ApplicationCommandAutocomplete: {
-        await client.stores.get('commands').get(interaction?.data.name)?.autocompleteRun?.(interaction);
+        await client.stores.get('commands').get(interaction?.data.name)?.autocomplete?.(interaction);
         break;
       }
 
@@ -145,7 +150,7 @@ app.route<{ Body: APIInteraction }>({
       }
 
       default:
-        return res.status(400).send('Unknown interaction type');
+        return rep.status(400).send('Unknown interaction type');
     }
   },
 });
