@@ -7,7 +7,7 @@ import prisma from '@prisma/client';
 declare module 'discord.js' {
   interface Client {
     db: prisma.PrismaClient;
-    app: FastifyInstance;
+    api: FastifyBasedAPI;
   }
 }
 
@@ -22,19 +22,20 @@ declare module '@sapphire/framework' {
      * executes application commands
      * @param interaction The interaction that triggered the command.
      */
-    applicationRun?(interaction: APIApplicationCommandInteraction): Awaitable<void>;
+    applicationRun?(reply: FastifyReply, interaction: APIApplicationCommandInteraction): Awaitable<void>;
 
     /**
      * executes message components
      * @param interaction The interaction that triggered the command.
      */
-    componentRun?(interaction: APIMessageComponentInteraction): Awaitable<void>;
+    componentRun?(reply: FastifyReply, interaction: APIMessageComponentInteraction): Awaitable<void>;
 
     /**
      * executes autocomplete commands
      * @param interaction The interaction that triggered the command.
      */
     autocomplete?(
+      reply: FastifyReply,
       interaction: APIApplicationCommandAutocompleteInteraction,
     ): Awaitable<APIApplicationCommandOptionChoice[]>;
 
@@ -42,7 +43,7 @@ declare module '@sapphire/framework' {
      * executes a modal
      * @param interaction The interaction that triggered the command.
      */
-    modalRun?(interaction: APIModalSubmitInteraction): Awaitable<void>;
+    modalRun?(reply: FastifyReply, interaction: APIModalSubmitInteraction): Awaitable<void>;
   }
 
   interface Command {
@@ -56,7 +57,7 @@ import { isProduction, publicKey, UserId } from '#constants/index';
 import { WebhookLogger } from '#structures/WebhookLogger';
 import { ApplicationCommandRegistries, LogLevel, RegisterBehavior, SapphireClient } from '@sapphire/framework';
 import { type Awaitable, Options, IntentsBitField } from 'discord.js';
-import fastify, { type FastifyInstance } from 'fastify';
+import fastify, { type FastifyReply } from 'fastify';
 import {
   InteractionType,
   InteractionResponseType,
@@ -67,10 +68,11 @@ import {
   type APIInteractionResponse,
   type APIInteractionResponseChannelMessageWithSource,
   type APIApplicationCommandOptionChoice,
-  Routes,
+  type APIInteraction,
 } from 'discord-api-types/v9';
-import type { CustomIdData, APIInteraction, APIInteractionResponseWithData } from '#lib/interfaces/Semblance';
+import type { CustomIdData } from '#lib/interfaces/Semblance';
 import nacl from 'tweetnacl';
+import { FastifyBasedAPI } from '#structures/DiscordAPI';
 
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
 
@@ -89,11 +91,11 @@ const client = new SapphireClient({
   intents: [IntentsBitField.Flags.Guilds],
 });
 client.db = new prisma.PrismaClient();
-
-const app = fastify();
-client.app = app;
+client.api = new FastifyBasedAPI(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
 
 await client.login(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
+
+const app = fastify();
 
 app.route<{ Body: APIInteraction }>({
   url: process.env.NODE_ENV === 'development' ? '/dev-interactions' : '/interactions',
@@ -113,15 +115,6 @@ app.route<{ Body: APIInteraction }>({
   },
   handler: async (req, rep) => {
     const interaction = req.body;
-    interaction.send = (data: APIInteractionResponseWithData) => rep.send(data);
-    interaction.reply = (data: APIInteractionResponseWithData) =>
-      rep.send({ type: InteractionResponseType.ChannelMessageWithSource, data });
-    interaction.deferReply = (data: APIInteractionResponseWithData) =>
-      rep.send({ type: InteractionResponseType.DeferredChannelMessageWithSource, data });
-    interaction.editReply = ({ id, token }: { id: string; token: string }, data: APIInteractionResponseWithData) =>
-      client.rest.patch(Routes.webhookMessage(id, token, '@original'), {
-        body: data,
-      });
 
     if (interaction.type === InteractionType.Ping) return rep.send({ type: InteractionResponseType.Pong });
 
@@ -130,22 +123,22 @@ app.route<{ Body: APIInteraction }>({
 
     switch (interaction.type) {
       case InteractionType.ApplicationCommand:
-        await client.stores.get('commands').get(interaction?.data.name)?.applicationRun?.(interaction);
+        await client.stores.get('commands').get(interaction?.data.name)?.applicationRun?.(rep, interaction);
         break;
 
       case InteractionType.MessageComponent: {
-        client.stores.get('commands').get(interaction?.data.custom_id)?.componentRun?.(interaction);
+        client.stores.get('commands').get(interaction?.data.custom_id)?.componentRun?.(rep, interaction);
         break;
       }
 
       case InteractionType.ApplicationCommandAutocomplete: {
-        await client.stores.get('commands').get(interaction?.data.name)?.autocomplete?.(interaction);
+        await client.stores.get('commands').get(interaction?.data.name)?.autocomplete?.(rep, interaction);
         break;
       }
 
       case InteractionType.ModalSubmit: {
         const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
-        client.stores.get('commands').get(parsedCustomId.command)?.modalRun?.(interaction);
+        client.stores.get('commands').get(parsedCustomId.command)?.modalRun?.(rep, interaction);
         break;
       }
 

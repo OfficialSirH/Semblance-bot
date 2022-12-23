@@ -15,6 +15,7 @@ import {
   MessageFlags,
   Routes,
 } from 'discord-api-types/v9';
+import type { FastifyReply } from 'fastify';
 
 export default class Roles extends Command {
   public constructor(context: Command.Context, options: Command.Options) {
@@ -27,7 +28,7 @@ export default class Roles extends Command {
     });
   }
 
-  public override async applicationRun(interaction: APIApplicationCommandInteraction) {
+  public override async applicationRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const member = interaction.member;
     if (!member) {
       await this.container.client.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
@@ -133,16 +134,10 @@ export default class Roles extends Command {
           .toJSON(),
       ];
 
-    await this.container.client.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      files: [{ name: attachments.currentLogo.name!, data: await attachments.currentLogo.data() }],
-      body: {
-        type: InteractionResponseType.ChannelMessageWithSource,
-        data: {
-          embeds: [embed.toJSON()],
-          components,
-        },
-      } satisfies APIInteractionResponse,
+    await this.container.client.api.interactions.reply(res, {
+      embeds: [embed.toJSON()],
+      components,
+      files: [attachments.currentLogo],
     });
   }
 
