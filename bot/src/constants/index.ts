@@ -1,21 +1,15 @@
-﻿import {
-  type ApplicationCommand,
-  type ChatInputCommandInteraction,
-  type GuildMember,
-  type MessageComponentInteraction,
-  type Snowflake,
-  type User,
-  type Guild,
-  PermissionFlagsBits,
-  ComponentType,
-  ButtonBuilder,
-  StringSelectMenuBuilder,
-} from 'discord.js';
-import type { SapphireClient } from '@sapphire/framework';
+﻿import type { SapphireClient } from '@sapphire/framework';
 import * as fs from 'fs/promises';
-import type { APIStringSelectComponent, APIUser } from 'discord-api-types/v9';
 import type { Stream } from 'stream';
 import { Attachy } from '#structures/Attachy';
+import {
+  type Snowflake,
+  type APIGuildMember,
+  type APIMessageComponentInteraction,
+  Routes,
+  type APIUser,
+} from '@discordjs/core';
+import type { REST } from '@discordjs/rest';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 export const publicKey = isProduction ? process.env.PUBLIC_KEY : process.env.DEV_PUBLIC_KEY;
@@ -23,19 +17,10 @@ export const publicKey = isProduction ? process.env.PUBLIC_KEY : process.env.DEV
 export const avatarUrl = (user: APIUser) =>
   `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar?.startsWith('a_') ? 'gif' : 'png'}`;
 
-export const applicationCommandToMention = (
-  interaction: ChatInputCommandInteraction | ApplicationCommand | { client: SapphireClient; commandName: string },
-  subcommand?: string,
-) => {
-  if (!('id' in interaction)) {
-    const command = interaction.client.application?.commands.cache.find(c => c.name === interaction.commandName);
-    if (!command) return '</nonexisting command:fakeid>';
-    return `</${command.name}${subcommand ? ` ${subcommand}` : ''}:${command.id}>`;
-  }
-
-  return `</${'commandName' in interaction ? interaction.commandName : interaction.name}${
-    subcommand ? ` ${subcommand}` : ''
-  }:${interaction.id}>`;
+export const applicationCommandToMention = (client: SapphireClient, commandName: string, subcommand?: string) => {
+  const command = client.cache.applicationCommands.find(c => c.name === commandName);
+  if (!command) return '</nonexisting command:fakeid>';
+  return `</${command.name}${subcommand ? ` ${subcommand}` : ''}:${command.id}>`;
 };
 
 export const quickSort = (list: [Snowflake, number][], left: number, right: number) => {
@@ -98,7 +83,7 @@ export const attachments = await (async () => {
   >;
   for (const file of files)
     if (file.endsWith('.png') || file.endsWith('.mp4')) {
-      const attachment = new Attachy(`./src/images/${file}`, { name: file });
+      const attachment = new Attachy(`./src/images/${file}`, file);
 
       const attachmentName = file.substring(0, file.indexOf('.'));
       finalAttachments[attachmentName as keyof typeof finalAttachments] = attachment;
@@ -253,16 +238,6 @@ export enum Subcategory {
   other = 'other',
 }
 
-export const roles = {
-  admin: PermissionFlagsBits.Administrator,
-  exec: PermissionFlagsBits.ManageGuild,
-  srmod: PermissionFlagsBits.MentionEveryone,
-  mod: PermissionFlagsBits.ManageChannels,
-  jrmod: PermissionFlagsBits.ManageRoles,
-  helper: PermissionFlagsBits.ManageMessages,
-  duty: PermissionFlagsBits.MuteMembers,
-};
-
 export const c2sRolesInformation: typeof c2sRoles = {
   server: {
     dev: 'Cell to Singularity Developer',
@@ -338,17 +313,13 @@ export const c2sRoles = {
   },
 };
 
-export const getPermissionLevel = function (member: GuildMember | null) {
+export const getPermissionLevel = function (member: APIGuildMember | null) {
   if (!member) return 0;
   try {
-    if (UserId.aditya === member.user.id || UserId.sirh === member.user.id) return 7;
+    if (UserId.aditya === member.user?.id || UserId.sirh === member.user?.id) return 3;
     // Aditya, SirH //RIP SirH OG: "279080959612026880" === member.user.id // SirH#4297
-    if (member.permissions.has(roles.admin)) return 6; // admin
-    if (member.permissions.has(roles.exec)) return 5; // exec
-    if (member.permissions.has(roles.srmod)) return 4; // sr.mod
-    if (member.permissions.has(roles.mod)) return 3; // mod
-    if (member.permissions.has(roles.jrmod)) return 2; // jr.mod
-    if (member.permissions.has(roles.helper)) return 1; // helper
+    if (member.roles.includes(c2sRoles.server.councilOverseer)) return 2;
+    if (member.roles.includes(c2sRoles.server.martianCouncil)) return 1;
     return 0; // normal user
   } catch {
     return 0;
@@ -378,26 +349,24 @@ class RandomColor {
 }
 export const randomColor = RandomColor.randomColor;
 
-export const disableAllComponents = (interaction: MessageComponentInteraction) =>
-  interaction.message.edit({
-    components: interaction.message.components.map(component => {
-      Reflect.set(
-        component,
-        'components',
-        component.components.map(comp =>
-          comp.type == ComponentType.Button
-            ? new ButtonBuilder(comp.data).setDisabled(true)
-            : new StringSelectMenuBuilder(comp.data as APIStringSelectComponent).setDisabled(true),
-        ),
-      );
-      return component;
-    }),
+export const disableAllComponents = async (rest: REST, interaction: APIMessageComponentInteraction) =>
+  await rest.patch(Routes.channelMessage(interaction.channel_id, interaction.message.id), {
+    body: {
+      components: interaction.message.components?.map(component => {
+        Reflect.set(
+          component,
+          'components',
+          component.components.map(comp => ({ ...comp, disabled: true })),
+        );
+        return component;
+      }),
+    },
   });
 
-export const isUserInGuild = async (user: User, guild: Guild) => {
+export const isUserInGuild = async (rest: REST, guildId: string, user: APIUser) => {
   try {
-    await guild.members.fetch(user.id);
-    return true;
+    const member = (await rest.get(Routes.guildMember(guildId, user.id))) as APIGuildMember | null;
+    return !!member;
   } catch {
     return false;
   }

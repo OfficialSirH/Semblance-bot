@@ -2,16 +2,17 @@ import 'dotenv/config';
 import { install as sourceMapInstall } from 'source-map-support';
 sourceMapInstall();
 await import('#constants/index');
-
 import prisma from '@prisma/client';
-declare module 'discord.js' {
-  interface Client {
+
+declare module '@sapphire/framework' {
+  interface SapphireClient {
+    cache: {
+      guilds: Collection<Snowflake, APIGuild>;
+      applicationCommands: Collection<Snowflake, APIApplicationCommand>;
+    };
     db: prisma.PrismaClient;
     api: FastifyBasedAPI;
   }
-}
-
-declare module '@sapphire/framework' {
   class Command {
     /**
      * The response for interactions that don't require much more than static data.
@@ -55,8 +56,13 @@ declare module '@sapphire/framework' {
 
 import { isProduction, publicKey, UserId } from '#constants/index';
 import { WebhookLogger } from '#structures/WebhookLogger';
-import { ApplicationCommandRegistries, LogLevel, RegisterBehavior, SapphireClient } from '@sapphire/framework';
-import { type Awaitable, Options, IntentsBitField } from 'discord.js';
+import {
+  ApplicationCommandRegistries,
+  type Awaitable,
+  LogLevel,
+  RegisterBehavior,
+  SapphireClient,
+} from '@sapphire/framework';
 import fastify, { type FastifyReply } from 'fastify';
 import {
   InteractionType,
@@ -73,6 +79,8 @@ import {
 import type { CustomIdData } from '#lib/interfaces/Semblance';
 import nacl from 'tweetnacl';
 import { FastifyBasedAPI } from '#structures/DiscordAPI';
+import { type APIGuild, GatewayIntentBits, type Snowflake, type APIApplicationCommand } from '@discordjs/core';
+import type { Collection } from '@discordjs/collection';
 
 ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
 
@@ -81,15 +89,14 @@ const client = new SapphireClient({
     instance: new WebhookLogger(isProduction ? LogLevel.Info : LogLevel.Debug),
   },
   allowedMentions: { parse: [] },
-  makeCache: Options.cacheWithLimits({
-    GuildMemberManager: 10,
-    UserManager: {
-      maxSize: 10,
-      keepOverLimit: user => user.id === '794033850665533450',
-    },
-  }),
-  intents: [IntentsBitField.Flags.Guilds],
+  intents: [GatewayIntentBits.Guilds],
 });
+// client.prepare = async () => {
+//   // Loads all stores, then call login:
+//   await Promise.all([...this.stores.values()].map(store => store.loadAll()));
+//   const login = await super.login(token);
+//   return login;
+// };
 client.db = new prisma.PrismaClient();
 client.api = new FastifyBasedAPI(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
 
@@ -118,6 +125,7 @@ app.route<{ Body: APIInteraction }>({
 
     if (interaction.type === InteractionType.Ping) return rep.send({ type: InteractionResponseType.Pong });
 
+    // TODO: remove this whenever I finish setting up proper permission checks
     if (interaction.member?.user?.id === UserId.sirh) client.logger.info('Sirh test', interaction);
     else return rep.status(400).send('not sirh');
 

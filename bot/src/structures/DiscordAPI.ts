@@ -1,7 +1,15 @@
-import { WebhooksAPI, type APIInteractionResponseCallbackData } from '@discordjs/core';
-import { type APIInteractionResponse, InteractionResponseType, REST, type RawFile, type Snowflake } from 'discord.js';
 import type { Attachy } from '#structures/Attachy';
 import type { FastifyReply } from 'fastify';
+import { REST, type RawFile } from '@discordjs/rest';
+import {
+  WebhooksAPI,
+  type APIInteractionResponse,
+  type APIInteractionResponseCallbackData,
+  InteractionResponseType,
+  type Snowflake,
+  type APICommandAutocompleteInteractionResponseCallbackData,
+  type APIModalInteractionResponseCallbackData,
+} from '@discordjs/core';
 
 export class FastifyBasedAPI {
   readonly webhooks: WebhooksAPI;
@@ -18,7 +26,13 @@ export class FastifyBasedAPI {
 export class FastifyBasedInteractionsAPI {
   constructor(readonly webhooks: WebhooksAPI) {}
 
-  async resolveData(data: APIInteractionResponse & { files?: Attachy[] }) {
+  async resolveData(
+    data: Extract<
+      APIInteractionResponse,
+      { type: InteractionResponseType.ChannelMessageWithSource | InteractionResponseType.UpdateMessage }
+    > & { files?: Attachy[] },
+  ) {
+    if (data.data && !data.data?.allowed_mentions) data.data.allowed_mentions = { parse: [] };
     if (data.files) {
       const form = new FormData();
       form.append('payload_json', JSON.stringify(data));
@@ -57,6 +71,7 @@ export class FastifyBasedInteractionsAPI {
     interactionIdToken: { id: Snowflake; token: string },
     data: APIInteractionResponseCallbackData & { files?: RawFile[] },
   ) {
+    if (!data.allowed_mentions) data.allowed_mentions = { parse: [] };
     await this.webhooks.execute(interactionIdToken.id, interactionIdToken.token, data);
   }
 
@@ -65,6 +80,7 @@ export class FastifyBasedInteractionsAPI {
     data: APIInteractionResponseCallbackData & { files?: RawFile[] },
     messageId: Snowflake = '@original',
   ) {
+    if (!data.allowed_mentions) data.allowed_mentions = { parse: [] };
     await this.webhooks.editMessage(interactionIdToken.id, interactionIdToken.token, messageId, data);
   }
 
@@ -76,19 +92,19 @@ export class FastifyBasedInteractionsAPI {
     await this.webhooks.deleteMessage(interactionIdToken.id, interactionIdToken.token, messageId);
   }
 
-  async updateMessage(res: FastifyReply, data: APIInteractionResponseCallbackData & { files?: Attachy[] }) {
+  async updateMessage(res: FastifyReply, data?: APIInteractionResponseCallbackData & { files?: Attachy[] }) {
     const resolvedData = await this.resolveData({ data, type: InteractionResponseType.UpdateMessage });
     await res.type('multipart/form-data').send(resolvedData);
   }
 
-  async createAutocompleteResponse(res: FastifyReply, data: APIInteractionResponseCallbackData) {
-    await res.type('multipart/form-data').send({
+  async createAutocompleteResponse(res: FastifyReply, data: APICommandAutocompleteInteractionResponseCallbackData) {
+    await res.send({
       type: InteractionResponseType.ApplicationCommandAutocompleteResult,
       data,
     });
   }
 
-  async createModal(res: FastifyReply, data: APIInteractionResponseCallbackData) {
+  async createModal(res: FastifyReply, data: APIModalInteractionResponseCallbackData) {
     await res.send({
       type: InteractionResponseType.Modal,
       data,

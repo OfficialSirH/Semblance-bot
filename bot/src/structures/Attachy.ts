@@ -1,14 +1,13 @@
 import { resolveFile } from '#constants/index';
-import { AttachmentBuilder } from 'discord.js';
 
-export class Attachy extends AttachmentBuilder {
-  public constructor(...args: ConstructorParameters<typeof AttachmentBuilder>) {
-    super(...args);
+export class Attachy {
+  public constructor(public readonly path: string, public readonly name: string) {
+    this.url = `attachment://${this.name}`;
   }
 
-  url = `attachment://${this.name}`;
+  url: `attachment://${string}`;
 
   data(): '' | Promise<Buffer | string> {
-    return resolveFile(this.attachment);
+    return resolveFile(this.path);
   }
 }
