@@ -10,15 +10,17 @@ import {
   type APIUser,
 } from '@discordjs/core';
 import type { REST } from '@discordjs/rest';
+import type { Client } from '#structures/Client';
 
 export const isProduction = process.env.NODE_ENV === 'production';
+export const token = isProduction ? process.env.TOKEN : process.env.DEV_TOKEN;
 export const publicKey = isProduction ? process.env.PUBLIC_KEY : process.env.DEV_PUBLIC_KEY;
 
 export const avatarUrl = (user: APIUser) =>
   `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar?.startsWith('a_') ? 'gif' : 'png'}`;
 
-export const applicationCommandToMention = (client: SapphireClient, commandName: string, subcommand?: string) => {
-  const command = client.cache.applicationCommands.find(c => c.name === commandName);
+export const applicationCommandToMention = (client: Client, commandName: string, subcommand?: string) => {
+  const command = client.cache.commands.find(c => c.name === commandName);
   if (!command) return '</nonexisting command:fakeid>';
   return `</${command.name}${subcommand ? ` ${subcommand}` : ''}:${command.id}>`;
 };

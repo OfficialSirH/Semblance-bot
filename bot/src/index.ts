@@ -2,105 +2,25 @@ import 'dotenv/config';
 import { install as sourceMapInstall } from 'source-map-support';
 sourceMapInstall();
 await import('#constants/index');
-import prisma from '@prisma/client';
 
-declare module '@sapphire/framework' {
-  interface SapphireClient {
-    cache: {
-      guilds: Collection<Snowflake, APIGuild>;
-      applicationCommands: Collection<Snowflake, APIApplicationCommand>;
-    };
-    db: prisma.PrismaClient;
-    api: FastifyBasedAPI;
-  }
-  class Command {
-    /**
-     * The response for interactions that don't require much more than static data.
-     */
-    template?: Omit<APIInteractionResponse, 'type'> & Partial<Pick<APIInteractionResponse, 'type'>>;
-
-    /**
-     * executes application commands
-     * @param interaction The interaction that triggered the command.
-     */
-    applicationRun?(reply: FastifyReply, interaction: APIApplicationCommandInteraction): Awaitable<void>;
-
-    /**
-     * executes message components
-     * @param interaction The interaction that triggered the command.
-     */
-    componentRun?(reply: FastifyReply, interaction: APIMessageComponentInteraction): Awaitable<void>;
-
-    /**
-     * executes autocomplete commands
-     * @param interaction The interaction that triggered the command.
-     */
-    autocomplete?(
-      reply: FastifyReply,
-      interaction: APIApplicationCommandAutocompleteInteraction,
-    ): Awaitable<APIApplicationCommandOptionChoice[]>;
-
-    /**
-     * executes a modal
-     * @param interaction The interaction that triggered the command.
-     */
-    modalRun?(reply: FastifyReply, interaction: APIModalSubmitInteraction): Awaitable<void>;
-  }
-
-  interface Command {
-    SharedBuilder: APIInteraction;
-    defaultTemplate: Omit<APIInteractionResponseChannelMessageWithSource, 'type'> &
-      Partial<Pick<APIInteractionResponseChannelMessageWithSource, 'type'>>;
-  }
-}
-
-import { isProduction, publicKey, UserId } from '#constants/index';
-import { WebhookLogger } from '#structures/WebhookLogger';
+import { publicKey, UserId } from '#constants/index';
+import fastify from 'fastify';
+import { InteractionType, InteractionResponseType, type APIInteraction } from 'discord-api-types/v9';
+import type { CustomIdData } from '#lib/interfaces/Semblance';
+import nacl from 'tweetnacl';
+import { Client } from '#structures/Client';
 import {
-  ApplicationCommandRegistries,
-  type Awaitable,
-  LogLevel,
-  RegisterBehavior,
-  SapphireClient,
-} from '@sapphire/framework';
-import fastify, { type FastifyReply } from 'fastify';
-import {
-  InteractionType,
-  InteractionResponseType,
-  type APIApplicationCommandInteraction,
+  ApplicationCommandType,
+  type APIChatInputApplicationCommandInteraction,
+  type APIContextMenuInteraction,
   type APIMessageComponentInteraction,
   type APIApplicationCommandAutocompleteInteraction,
   type APIModalSubmitInteraction,
-  type APIInteractionResponse,
-  type APIInteractionResponseChannelMessageWithSource,
-  type APIApplicationCommandOptionChoice,
-  type APIInteraction,
-} from 'discord-api-types/v9';
-import type { CustomIdData } from '#lib/interfaces/Semblance';
-import nacl from 'tweetnacl';
-import { FastifyBasedAPI } from '#structures/DiscordAPI';
-import { type APIGuild, GatewayIntentBits, type Snowflake, type APIApplicationCommand } from '@discordjs/core';
-import type { Collection } from '@discordjs/collection';
+} from '@discordjs/core';
 
-ApplicationCommandRegistries.setDefaultBehaviorWhenNotIdentical(RegisterBehavior.Overwrite);
+const client = new Client();
 
-const client = new SapphireClient({
-  logger: {
-    instance: new WebhookLogger(isProduction ? LogLevel.Info : LogLevel.Debug),
-  },
-  allowedMentions: { parse: [] },
-  intents: [GatewayIntentBits.Guilds],
-});
-// client.prepare = async () => {
-//   // Loads all stores, then call login:
-//   await Promise.all([...this.stores.values()].map(store => store.loadAll()));
-//   const login = await super.login(token);
-//   return login;
-// };
-client.db = new prisma.PrismaClient();
-client.api = new FastifyBasedAPI(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
-
-await client.login(isProduction ? process.env.TOKEN : process.env.DEV_TOKEN);
+await client.login();
 
 const app = fastify();
 
@@ -131,22 +51,39 @@ app.route<{ Body: APIInteraction }>({
 
     switch (interaction.type) {
       case InteractionType.ApplicationCommand:
-        await client.stores.get('commands').get(interaction?.data.name)?.applicationRun?.(rep, interaction);
+        switch (interaction.data.type) {
+          case ApplicationCommandType.ChatInput:
+            await client.cache.commands
+              .get(interaction?.data.name)
+              ?.chatInputRun?.(rep, interaction as APIChatInputApplicationCommandInteraction);
+            break;
+
+          case ApplicationCommandType.User:
+          case ApplicationCommandType.Message:
+            await client.cache.commands
+              .get(interaction?.data.name)
+              ?.contextMenuRun?.(rep, interaction as APIContextMenuInteraction);
+        }
         break;
 
       case InteractionType.MessageComponent: {
-        client.stores.get('commands').get(interaction?.data.custom_id)?.componentRun?.(rep, interaction);
+        const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
+        await client.cache.commands
+          .get(parsedCustomId.command)
+          ?.componentRun?.(rep, interaction as APIMessageComponentInteraction, parsedCustomId);
         break;
       }
 
       case InteractionType.ApplicationCommandAutocomplete: {
-        await client.stores.get('commands').get(interaction?.data.name)?.autocomplete?.(rep, interaction);
+        await client.cache.commands
+          .get(interaction?.data.name)
+          ?.autocompleteRun?.(rep, interaction as APIApplicationCommandAutocompleteInteraction);
         break;
       }
 
       case InteractionType.ModalSubmit: {
         const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
-        client.stores.get('commands').get(parsedCustomId.command)?.modalRun?.(rep, interaction);
+        client.cache.commands.get(parsedCustomId.command)?.modalRun?.(rep, interaction as APIModalSubmitInteraction);
         break;
       }
 

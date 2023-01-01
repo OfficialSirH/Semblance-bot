@@ -1,6 +1,6 @@
 import type { Attachy } from '#structures/Attachy';
 import type { FastifyReply } from 'fastify';
-import { REST, type RawFile } from '@discordjs/rest';
+import type { REST, RawFile } from '@discordjs/rest';
 import {
   WebhooksAPI,
   type APIInteractionResponse,
@@ -15,9 +15,7 @@ export class FastifyBasedAPI {
   readonly webhooks: WebhooksAPI;
   readonly interactions: FastifyBasedInteractionsAPI;
 
-  constructor(token: string) {
-    const rest = new REST({ version: '10' }).setToken(token);
-
+  constructor(rest: REST) {
     this.webhooks = new WebhooksAPI(rest);
     this.interactions = new FastifyBasedInteractionsAPI(this.webhooks);
   }
@@ -97,7 +95,7 @@ export class FastifyBasedInteractionsAPI {
     await res.type('multipart/form-data').send(resolvedData);
   }
 
-  async createAutocompleteResponse(res: FastifyReply, data: APICommandAutocompleteInteractionResponseCallbackData) {
+  async autocomplete(res: FastifyReply, data: APICommandAutocompleteInteractionResponseCallbackData) {
     await res.send({
       type: InteractionResponseType.ApplicationCommandAutocompleteResult,
       data,
