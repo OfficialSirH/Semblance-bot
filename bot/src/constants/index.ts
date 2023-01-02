@@ -2,13 +2,7 @@
 import * as fs from 'fs/promises';
 import type { Stream } from 'stream';
 import { Attachy } from '#structures/Attachy';
-import {
-  type Snowflake,
-  type APIGuildMember,
-  type APIMessageComponentInteraction,
-  Routes,
-  type APIUser,
-} from '@discordjs/core';
+import { type APIGuildMember, type APIMessageComponentInteraction, Routes, type APIUser } from '@discordjs/core';
 import type { REST } from '@discordjs/rest';
 import type { Client } from '#structures/Client';
 
@@ -16,54 +10,44 @@ export const isProduction = process.env.NODE_ENV === 'production';
 export const token = isProduction ? process.env.TOKEN : process.env.DEV_TOKEN;
 export const publicKey = isProduction ? process.env.PUBLIC_KEY : process.env.DEV_PUBLIC_KEY;
 
+export enum LogLevel {
+  /**
+   * The lowest log level.
+   */
+  Trace = 10,
+  /**
+   * The debug level.
+   */
+  Debug = 20,
+  /**
+   * The info level.
+   */
+  Info = 30,
+  /**
+   * The warning level.
+   */
+  Warn = 40,
+  /**
+   * The error level.
+   */
+  Error = 50,
+  /**
+   * The critical level.
+   */
+  Fatal = 60,
+  /**
+   * An unknown or uncategorized level.
+   */
+  None = 100,
+}
+
 export const avatarUrl = (user: APIUser) =>
   `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar?.startsWith('a_') ? 'gif' : 'png'}`;
 
 export const applicationCommandToMention = (client: Client, commandName: string, subcommand?: string) => {
-  const command = client.cache.commands.find(c => c.name === commandName);
+  const command = client.cache.data.applicationCommands.find(c => c.name === commandName);
   if (!command) return '</nonexisting command:fakeid>';
   return `</${command.name}${subcommand ? ` ${subcommand}` : ''}:${command.id}>`;
-};
-
-export const quickSort = (list: [Snowflake, number][], left: number, right: number) => {
-  let index: number;
-  if (list.length > 1) {
-    index = partition(list, left, right); //index returned from partition
-    if (left < index - 1) {
-      //more elements on the left side of the pivot
-      quickSort(list, left, index - 1);
-    }
-    if (index < right) {
-      //more elements on the right side of the pivot
-      quickSort(list, index, right);
-    }
-  }
-  return list;
-};
-const swap = (list: [Snowflake, number][], leftIndex: number, rightIndex: number) => {
-  const temp = list[leftIndex];
-  list[leftIndex] = list[rightIndex];
-  list[rightIndex] = temp;
-  return list;
-};
-const partition = (list: [Snowflake, number][], left: number, right: number) => {
-  const pivot = list[Math.floor((right + left) / 2)][1];
-  let i = left,
-    j = right;
-  while (i <= j) {
-    while (list[i][1] > pivot) {
-      i++;
-    }
-    while (list[j][1] < pivot) {
-      j--;
-    }
-    if (i <= j) {
-      swap(list, i, j);
-      i++;
-      j--;
-    }
-  }
-  return i;
 };
 
 export const attachments = await (async () => {
@@ -238,6 +222,11 @@ export enum Subcategory {
   mesozoic = 'mesozoic',
   beyond = 'beyond',
   other = 'other',
+}
+
+export enum PreconditionName {
+  OwnerOnly = 'OwnerOnly',
+  ModOnly = 'ModOnly',
 }
 
 export const c2sRolesInformation: typeof c2sRoles = {

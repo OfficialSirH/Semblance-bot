@@ -1,4 +1,6 @@
-import type { Snowflake } from 'discord.js';
+import type { Snowflake } from '@discordjs/core';
+
+export type Awaitable<T> = PromiseLike<T> | T;
 
 type NonNestedDirectories = 'commands' | 'images';
 export type ReadDirString = `./dist/src/${NonNestedDirectories}`;

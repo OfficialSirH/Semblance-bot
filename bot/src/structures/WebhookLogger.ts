@@ -1,23 +1,52 @@
-import { isProduction } from '#constants/index';
-import { LogLevel, Logger } from '@sapphire/framework';
-import { REST } from '@discordjs/rest';
-import { Routes } from 'discord-api-types/rest/v10';
-export class WebhookLogger extends Logger {
-  rest: REST;
+import { LogLevel, isProduction } from '#constants/index';
+import { Routes } from '@discordjs/core';
+import type { REST } from '@discordjs/rest';
 
-  constructor(readonly level: LogLevel) {
-    super(level);
-    this.rest = new REST().setToken(process.env.TOKEN);
+type ConsoleFunctions = {
+  [K in keyof typeof console]: typeof console[K] extends (...args: unknown[]) => void ? K : never;
+}[keyof typeof console];
+
+export class WebhookLogger {
+  public static levels = new Map<LogLevel, ConsoleFunctions>([
+    [LogLevel.Trace, 'trace'],
+    [LogLevel.Debug, 'debug'],
+    [LogLevel.Info, 'info'],
+    [LogLevel.Warn, 'warn'],
+    [LogLevel.Error, 'error'],
+    [LogLevel.Fatal, 'error'],
+    [LogLevel.None, 'log'],
+  ]);
+
+  constructor(readonly rest: REST, readonly level: LogLevel) {}
+
+  debug(...values: unknown[]) {
+    this.write(LogLevel.Debug, ...values);
+  }
+
+  info(...values: unknown[]) {
+    this.write(LogLevel.Info, ...values);
+  }
+
+  warn(...values: unknown[]) {
+    this.write(LogLevel.Warn, ...values);
+  }
+
+  error(...values: unknown[]) {
+    this.write(LogLevel.Error, ...values);
+  }
+
+  fatal(...values: unknown[]) {
+    this.write(LogLevel.Fatal, ...values);
   }
 
   write(level: LogLevel, ...values: unknown[]) {
-    if (!this.has(level)) return;
-    const method = Logger.levels.get(level);
+    const method = WebhookLogger.levels.get(level);
     const content = [`[${method?.toUpperCase()}]`, ...values].join(' ');
     if (typeof method === 'string') console[method](content);
 
     const environment = isProduction ? 'PROD' : 'DEV';
-    const webhookLogType = level >= LogLevel.Warn ? `${environment}_ERR_LOG` : `${environment}_LOG`;
+    const webhookLogType =
+      level >= LogLevel.Warn ? (`${environment}_ERR_LOG` as const) : (`${environment}_LOG` as const);
 
     if (content.length == 0) content.concat('Somehow got empty content');
     const options: Parameters<REST['post']>[1] =

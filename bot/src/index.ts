@@ -53,14 +53,14 @@ app.route<{ Body: APIInteraction }>({
       case InteractionType.ApplicationCommand:
         switch (interaction.data.type) {
           case ApplicationCommandType.ChatInput:
-            await client.cache.commands
+            await client.cache.handles.commands
               .get(interaction?.data.name)
               ?.chatInputRun?.(rep, interaction as APIChatInputApplicationCommandInteraction);
             break;
 
           case ApplicationCommandType.User:
           case ApplicationCommandType.Message:
-            await client.cache.commands
+            await client.cache.handles.commands
               .get(interaction?.data.name)
               ?.contextMenuRun?.(rep, interaction as APIContextMenuInteraction);
         }
@@ -68,14 +68,14 @@ app.route<{ Body: APIInteraction }>({
 
       case InteractionType.MessageComponent: {
         const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
-        await client.cache.commands
+        await client.cache.handles.commands
           .get(parsedCustomId.command)
           ?.componentRun?.(rep, interaction as APIMessageComponentInteraction, parsedCustomId);
         break;
       }
 
       case InteractionType.ApplicationCommandAutocomplete: {
-        await client.cache.commands
+        await client.cache.handles.commands
           .get(interaction?.data.name)
           ?.autocompleteRun?.(rep, interaction as APIApplicationCommandAutocompleteInteraction);
         break;
@@ -83,7 +83,9 @@ app.route<{ Body: APIInteraction }>({
 
       case InteractionType.ModalSubmit: {
         const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
-        client.cache.commands.get(parsedCustomId.command)?.modalRun?.(rep, interaction as APIModalSubmitInteraction);
+        client.cache.handles.commands
+          .get(parsedCustomId.command)
+          ?.modalRun?.(rep, interaction as APIModalSubmitInteraction);
         break;
       }
 

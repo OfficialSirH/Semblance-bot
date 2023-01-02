@@ -1,33 +1,41 @@
 import { Collection } from '@discordjs/collection';
 import Prisma from '@prisma/client';
 import { FastifyBasedAPI } from './DiscordAPI';
-import { isProduction, token } from '#constants/index';
+import { LogLevel, isProduction, token } from '#constants/index';
 import { WebhookLogger } from './WebhookLogger';
-import { LogLevel } from '@sapphire/framework';
 import { REST } from '@discordjs/rest';
 import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
 import { readdir } from 'fs/promises';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import type { Command } from './Command';
-import type { Event } from './Event';
-import { type Snowflake, type APIGuild, GatewayDispatchEvents, GatewayIntentBits, createClient } from '@discordjs/core';
+import type { Listener } from './Listener';
+import {
+  type Snowflake,
+  type APIGuild,
+  GatewayDispatchEvents,
+  GatewayIntentBits,
+  createClient,
+  type APIApplicationCommand,
+  type APIUser,
+} from '@discordjs/core';
 
 export class Client {
-  public cache: {
-    guilds: Collection<Snowflake, APIGuild>;
-    events: Collection<GatewayDispatchEvents, Event>;
-    commands: Collection<Snowflake, Command>;
-  } = {
-    guilds: new Collection(),
-    events: new Collection(),
-    commands: new Collection(),
+  public cache = {
+    data: {
+      guilds: new Collection<Snowflake, APIGuild>(),
+      applicationCommands: new Collection<Snowflake, APIApplicationCommand>(),
+    },
+    handles: {
+      listeners: new Collection<GatewayDispatchEvents, Listener>(),
+      commands: new Collection<Snowflake, Command>(),
+    },
   };
 
-  public logger = new WebhookLogger(isProduction ? LogLevel.Info : LogLevel.Debug);
+  public rest = new REST({ version: '10' }).setToken(token);
+  public logger = new WebhookLogger(this.rest, isProduction ? LogLevel.Info : LogLevel.Debug);
   public db = new Prisma.PrismaClient();
 
-  public rest = new REST({ version: '10' }).setToken(token);
   public ws = new WebSocketManager({
     token,
     intents: GatewayIntentBits.Guilds,
@@ -36,9 +44,11 @@ export class Client {
   public core = createClient({ rest: this.rest, ws: this.ws });
   public api = new FastifyBasedAPI(this.rest);
 
+  public user?: APIUser;
+
   async login() {
     await this.loadCommands();
-    await this.loadEvents();
+    await this.loadListeners();
     await this.ws.connect();
   }
 
@@ -47,27 +57,28 @@ export class Client {
     const commandFiles = (await readdir(join(__dirname, 'commands'))).filter(file => file.endsWith('.js'));
 
     for (const file of commandFiles) {
-      const command = new (await import(join(__dirname, 'commands', file))).default() as Command;
-      this.cache.commands.set(command.name, command);
+      const command = new (await import(join(__dirname, 'commands', file))).default(this) as Command;
+      this.cache.handles.commands.set(command.name, command);
     }
   }
 
-  async loadEvents() {
+  async loadListeners() {
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const eventFiles = (await readdir(join(__dirname, 'events'))).filter(file => file.endsWith('.js'));
+    const listenerFiles = (await readdir(join(__dirname, 'listeners'))).filter(file => file.endsWith('.js'));
 
-    for (const file of eventFiles) {
-      const event = new (await import(join(__dirname, 'events', file))).default() as Event;
-      this.cache.events.set(event.name, event);
+    for (const file of listenerFiles) {
+      const listener = new (await import(join(__dirname, 'listeners', file))).default(this) as Listener;
+      this.cache.handles.listeners.set(listener.event, listener);
     }
 
     this.ws.on(WebSocketShardEvents.Dispatch, ({ data }) => {
       switch (data.t) {
         case GatewayDispatchEvents.Ready:
-          this.cache.events.get(GatewayDispatchEvents.Ready)?.run?.(this);
+          this.user = data.d.user;
+          this.cache.handles.listeners.get(data.t)?.run?.(data.d);
           break;
         case GatewayDispatchEvents.GuildCreate:
-          this.cache.events.get(data.t)?.run?.(data.d);
+          this.cache.handles.listeners.get(data.t)?.run?.(data.d);
       }
     });
   }
