@@ -10,14 +10,27 @@ import type { Awaitable } from '@sapphire/framework';
 import type { FastifyReply } from 'fastify';
 import type { Client } from './Client';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
+import type { Category, PreconditionName, Subcategory } from '#constants/index';
 
 export class Command {
   public readonly name: string;
   public readonly description: string;
+  public readonly category: [Category, Subcategory?];
+  public readonly preconditions: PreconditionName[];
 
-  public constructor(public readonly client: Command.Requirement, options: { name: string; description: string }) {
+  public constructor(
+    public readonly client: Command.Requirement,
+    options: {
+      name: string;
+      description: string;
+      category: [Category, Subcategory?];
+      preconditions?: PreconditionName[];
+    },
+  ) {
     this.name = options.name;
     this.description = options.description;
+    this.category = options.category;
+    this.preconditions = options.preconditions ?? [];
   }
 
   /**
