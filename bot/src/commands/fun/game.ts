@@ -1,22 +1,20 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  type ChatInputCommandInteraction,
-  EmbedBuilder,
-  type MessageActionRowComponentBuilder,
-  ButtonStyle,
-} from 'discord.js';
 import { Category, randomColor } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { currentPrice } from '#constants/commands';
 import { buildCustomId } from '#constants/components';
+import { type APIApplicationCommandInteraction, ButtonStyle } from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 export default class Game extends Command {
-  public override name = 'game';
-  public override description = 'An idle-game within Semblance';
-  public override fullCategory = [Category.fun];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'game',
+      description: 'An idle-game within Semblance',
+      category: [Category.fun],
+    });
+  }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const { user, client } = interaction;
 
     const statsHandler = await client.db.game.findUnique({ where: { player: user.id } }),
@@ -133,10 +131,9 @@ export default class Game extends Command {
     });
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-    });
+  public override data() {
+    return {
+      command: { name: this.name, description: this.description },
+    };
   }
 }

@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { attachments, emojis, Category, randomColor, Subcategory } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Dinos extends Command {
   public override name = 'dinos';
   public override description = 'Info on the Mesozoic Valley';
-  public override fullCategory = [Category.game, Subcategory.mesozoic];
+  public override category = [Category.game, Subcategory.mesozoic];
 
   public override sharedRun() {
     const embed = new EmbedBuilder()

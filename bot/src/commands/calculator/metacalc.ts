@@ -1,16 +1,15 @@
 import { bigToName, Category, randomColor } from '#constants/index';
-import {
-  type ChatInputCommandInteraction,
-  EmbedBuilder,
-  type InteractionResponse,
-  ApplicationCommandOptionType,
-} from 'discord.js';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
+import { ApplicationCommandOptionType } from '@discordjs/core';
 
 export default class MetaCalc extends Command {
-  public override name = 'metacalc';
-  public override description = 'calculate the amount of metabits produced by entropy and ideas';
-  public override fullCategory = [Category.calculator];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'metacalc',
+      description: 'calculate the amount of metabits produced by entropy and ideas',
+      category: [Category.calculator],
+    });
+  }
 
   public async metaCalc(
     interaction: ChatInputCommandInteraction<'cached'>,
@@ -77,44 +76,46 @@ export default class MetaCalc extends Command {
     }
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'obtainable_metabits',
-          description: 'Calculate the required resources to level up an item a specified amount',
-          type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: 'entropy',
-              description: 'The amount of entropy to include in the calculation',
-              type: ApplicationCommandOptionType.String,
-              required: true,
-            },
-            {
-              name: 'ideas',
-              description: 'The amount of ideas to include in the calculation',
-              type: ApplicationCommandOptionType.String,
-              required: true,
-            },
-          ],
-        },
-        {
-          name: 'required_accumulation',
-          description: 'The amount of accumulated entropy and ideas required for a specified amount of metabits',
-          type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: 'metabits',
-              description: 'The amount of metabits to calculate the required accumulation for',
-              type: ApplicationCommandOptionType.Number,
-              required: true,
-            },
-          ],
-        },
-      ],
-    });
+  public override data() {
+    return {
+      command: {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'obtainable_metabits',
+            description: 'Calculate the required resources to level up an item a specified amount',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+              {
+                name: 'entropy',
+                description: 'The amount of entropy to include in the calculation',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+              },
+              {
+                name: 'ideas',
+                description: 'The amount of ideas to include in the calculation',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+              },
+            ],
+          },
+          {
+            name: 'required_accumulation',
+            description: 'The amount of accumulated entropy and ideas required for a specified amount of metabits',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+              {
+                name: 'metabits',
+                description: 'The amount of metabits to calculate the required accumulation for',
+                type: ApplicationCommandOptionType.Number,
+                required: true,
+              },
+            ],
+          },
+        ],
+      },
+    };
   }
 }

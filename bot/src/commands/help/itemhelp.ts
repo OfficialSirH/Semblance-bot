@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { applicationCommandToMention, Category, randomColor } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class ItemHelp extends Command {
   public override name = 'itemhelp';
   public override description = 'Get help with the item calculator commands';
-  public override fullCategory = [Category.help];
+  public override category = [Category.help];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const { client } = interaction;

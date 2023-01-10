@@ -1,7 +1,7 @@
-import type { SapphireClient } from '@sapphire/framework';
+import type { Client } from '#structures/Client';
 
 export class LeaderboardUtilities {
-  public static async topTwenty(client: SapphireClient, type: 'game' | 'vote'): Promise<string> {
+  public static async topTwenty(client: Client, type: 'game' | 'vote'): Promise<string> {
     if (type === 'game')
       return (
         await client.db.game.findMany({

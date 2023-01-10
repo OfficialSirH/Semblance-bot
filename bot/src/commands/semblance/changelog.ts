@@ -1,11 +1,11 @@
 ﻿import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Changelog extends Command {
   public override name = 'changelog';
   public override description = 'Provides the latest changes to Semblance.';
-  public override fullCategory = [Category.semblance];
+  public override category = [Category.semblance];
 
   public override async sharedRun(interaction: Command['SharedBuilder']) {
     const changelogHandler = await interaction.client.db.information.findUnique({ where: { type: 'changelog' } });
@@ -18,10 +18,9 @@ export default class Changelog extends Command {
     return { embeds: [embed] };
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-    });
+  public override data() {
+    return {
+      command: { name: this.name, description: this.description },
+    };
   }
 }

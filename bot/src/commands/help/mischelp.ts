@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { applicationCommandToMention, Category, randomColor } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class MiscHelp extends Command {
   public override name = 'mischelp';
   public override description = 'List all miscelaneous commands';
-  public override fullCategory = [Category.help];
+  public override category = [Category.help];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const { client } = interaction;

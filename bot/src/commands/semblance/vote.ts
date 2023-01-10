@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Vote extends Command {
   public override name = 'vote';
   public override description = 'Lists websites where you can vote for Semblance.';
-  public override fullCategory = [Category.semblance];
+  public override category = [Category.semblance];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const { client } = interaction;

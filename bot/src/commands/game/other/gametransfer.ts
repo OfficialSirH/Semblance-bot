@@ -6,14 +6,14 @@ import {
   ButtonStyle,
   type MessageActionRowComponentBuilder,
 } from 'discord.js';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
 
 export default class GameTransfer extends Command {
   public override name = 'gametransfer';
   public override description =
     'See a step-by-step guide to transfering your game progress into the cloud and onto another device.';
-  public override fullCategory = [Category.game, Subcategory.other];
+  public override category = [Category.game, Subcategory.other];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const { user } = interaction;

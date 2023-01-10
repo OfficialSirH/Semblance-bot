@@ -6,13 +6,13 @@ import {
   type MessageActionRowComponentBuilder,
 } from 'discord.js';
 import { Category, randomColor, Subcategory, subcategoryList } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
 
 export default class C2sHelp extends Command {
   public override name = 'c2shelp';
   public override description = 'List of all Cell to Singularity related commands';
-  public override fullCategory = [Category.help];
+  public override category = [Category.help];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const { client, user } = interaction;

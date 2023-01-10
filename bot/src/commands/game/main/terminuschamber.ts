@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { attachments, Category, randomColor, Subcategory } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class TerminusChamber extends Command {
   public override name = 'terminuschamber';
   public override description = 'Details on how to obtain each node within the Terminus Chamber';
-  public override fullCategory = [Category.game, Subcategory.main];
+  public override category = [Category.game, Subcategory.main];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()

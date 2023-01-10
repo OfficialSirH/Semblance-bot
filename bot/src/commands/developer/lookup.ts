@@ -1,32 +1,30 @@
 ﻿import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
-import {
-  type EmbedField,
-  type Snowflake,
-  type TextChannel,
-  type User,
-  ApplicationCommandOptionType,
-  type ChatInputCommandInteraction,
-  ChannelType,
-} from 'discord.js';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import type { APIInvite, APIUser } from 'discord-api-types/v10';
-import { Category, onlyUnique, randomColor } from '#constants/index';
+import { Category, PreconditionName, onlyUnique, randomColor } from '#constants/index';
 import { request } from 'undici';
+import {
+  type RESTPostAPIApplicationCommandsJSONBody,
+  type APIApplicationCommandInteraction,
+  ApplicationCommandOptionType,
+  ChannelType,
+  type Snowflake,
+} from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 export default class Lookup extends Command {
-  public constructor(context: Command.Context, options: Command.Options) {
-    super(context, {
-      ...options,
+  public constructor(client: Command.Requirement) {
+    super(client, {
       name: 'lookup',
       description: 'Lookup something unknown, like an Id or an invite, and hopefully get the meaning behind it!',
-      fullCategory: [Category.developer],
-      preconditions: ['OwnerOnly'],
+      category: [Category.developer],
+      preconditions: [PreconditionName.OwnerOnly],
     });
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
+  public override data() {
+    return {
+      command: {
         name: this.name,
         description: this.description,
         options: [
@@ -37,12 +35,11 @@ export default class Lookup extends Command {
             required: true,
           },
         ],
-      },
-      {},
-    );
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
+    };
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const unknownItem = interaction.options.getString('unknown_item');
     if (!unknownItem) return interaction.reply('Please provide a valid ID or invite!');
 

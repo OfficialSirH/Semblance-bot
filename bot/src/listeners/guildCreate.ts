@@ -1,13 +1,7 @@
 import { isProduction } from '#constants/index';
 import { request } from 'undici';
 import { Listener } from '#structures/Listener';
-import {
-  ActivityType,
-  GatewayDispatchEvents,
-  type GatewayGuildCreateDispatchData,
-  GatewayOpcodes,
-  PresenceUpdateStatus,
-} from '@discordjs/core';
+import { GatewayDispatchEvents, type GatewayGuildCreateDispatchData } from '@discordjs/core';
 
 export default class GuildCreate extends Listener<GatewayDispatchEvents.GuildCreate> {
   public constructor(client: Listener.Requirement) {
@@ -19,27 +13,17 @@ export default class GuildCreate extends Listener<GatewayDispatchEvents.GuildCre
   public override async run(guild: GatewayGuildCreateDispatchData) {
     this.client.cache.data.guilds.set(guild.id, guild);
     const guilds = this.client.cache.data.guilds;
+
+    for (const channel of guild.channels) {
+      this.client.cache.data.channels.set(channel.id, channel);
+    }
+
     if (guilds.size % 10 != 0 || !isProduction) return;
 
     const totalMembers = guilds
-      .map(g => g.approximate_member_count)
+      .map(g => !('unavailable' in g) && g.approximate_member_count)
       .filter(g => g)
       .reduce<number>((total, cur) => (total += cur || 0), 0);
-    const activity = `help in ${guilds.size} servers | ${totalMembers} members`;
-    this.client.ws.send(0, {
-      op: GatewayOpcodes.PresenceUpdate,
-      d: {
-        activities: [
-          {
-            name: activity,
-            type: ActivityType.Watching,
-          },
-        ],
-        afk: false,
-        since: null,
-        status: PresenceUpdateStatus.Online,
-      },
-    });
 
     const res = (await request(`${process.env.BOT_LISTING_HANDLER_URL}/update`, {
       method: 'POST',

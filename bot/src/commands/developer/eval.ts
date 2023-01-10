@@ -1,22 +1,16 @@
-import {
-  type ContextMenuCommandInteraction,
-  EmbedBuilder,
-  AttachmentBuilder,
-  ApplicationCommandType,
-  PermissionFlagsBits,
-} from 'discord.js';
-import { GuildId, Category, randomColor } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { GuildId, Category, randomColor, PreconditionName } from '#constants/index';
+import { Command } from '#structures/Command';
 import { inspect } from 'util';
+import type { ApplicationCommandRegistry } from '@sapphire/framework';
+import { ApplicationCommandType, PermissionFlagsBits } from '@discordjs/core';
 
 export default class Eval extends Command {
-  public constructor(context: Command.Context, options: Command.Options) {
-    super(context, {
-      ...options,
+  public constructor(client: Command.Requirement) {
+    super(client, {
       name: 'eval',
       description: 'Evaluate some code.',
-      fullCategory: [Category.developer],
-      preconditions: ['OwnerOnly'],
+      category: [Category.developer],
+      preconditions: [PreconditionName.OwnerOnly],
     });
   }
 

@@ -1,5 +1,5 @@
 import type { Client } from 'discord.js';
-import type { SapphireClient } from '@sapphire/framework';
+import type { Client } from '#structures/Client';
 import { clamp } from '#lib/utils/math';
 import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndDogAPI';
 import type { DeepLParams, DeepLResponse } from '#lib/interfaces/deepLAPI';
@@ -73,7 +73,7 @@ export const fetchDeepL = async (query_params: DeepLParams) => {
 
 // game - currentPrice
 // TODO: figure some way to not need checkedLevel and have the cost automatically adjusted based on the level
-export async function currentPrice(client: SapphireClient, userData: Game) {
+export async function currentPrice(client: Client, userData: Game) {
   if (userData.level == userData.checkedLevel) {
     userData = await client.db.game.update({
       where: {

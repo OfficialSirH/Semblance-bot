@@ -1,32 +1,24 @@
 import { GuildId, Category } from '#constants/index';
 import { buildCustomId } from '#constants/components';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import {
-  type ModalSubmitInteraction,
-  type MessageActionRowComponentBuilder,
-  type TextBasedChannel,
-  type ChatInputCommandInteraction,
-  TextInputBuilder,
-  ModalBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
+  type APIApplicationCommandInteraction,
   ButtonStyle,
-  EmbedBuilder,
   TextInputStyle,
-} from 'discord.js';
+  type APIModalSubmitInteraction,
+} from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 export default class Suggest extends Command {
-  public constructor(context: Command.Context, options: Command.Options) {
-    super(context, {
-      ...options,
+  public constructor(client: Command.Requirement) {
+    super(client, {
       name: 'suggest',
       description: 'Submit suggestions for Cell to Singularity or the server.',
-      fullCategory: [Category.c2sServer],
-      preconditions: ['C2SOnly'],
+      category: [Category.c2sServer],
     });
   }
 
-  public async modalRun(interaction: ModalSubmitInteraction<'cached'>) {
+  public async modalRun(res: FastifyReply, interaction: APIModalSubmitInteraction) {
     const suggestion = interaction.fields.getTextInputValue('suggestion');
 
     const embed = new EmbedBuilder()
@@ -84,7 +76,7 @@ export default class Suggest extends Command {
     });
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const modal = new ModalBuilder()
       .setTitle('Suggestion')
       .setCustomId(
@@ -110,15 +102,10 @@ export default class Suggest extends Command {
     await interaction.showModal(modal);
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
-        name: this.name,
-        description: this.description,
-      },
-      {
-        guildIds: [GuildId.cellToSingularity],
-      },
-    );
+  public override data() {
+    return {
+      command: { name: this.name, description: this.description },
+      guildIds: [GuildId.cellToSingularity],
+    };
   }
 }

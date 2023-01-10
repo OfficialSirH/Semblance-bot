@@ -1,22 +1,21 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  type ChatInputCommandInteraction,
-  EmbedBuilder,
-  ApplicationCommandOptionType,
-  ButtonStyle,
-  type MessageActionRowComponentBuilder,
-} from 'discord.js';
 import type { sizeType } from '#lib/interfaces/catAndDogAPI';
 import { fetchCatOrDog } from '#constants/commands';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
+import { Category } from '#constants/index';
+import { type APIApplicationCommandInteraction, ButtonStyle, ApplicationCommandOptionType } from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 export default class Imagegen extends Command {
-  public override name = 'imagegen';
-  public override description = 'Generates a random image of either a cat or dog.';
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'imagegen',
+      description: 'Generates a random image of either a cat or dog.',
+      category: [Category.fun],
+    });
+  }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     if (!interaction.options.getSubcommand()) return;
     const wantsCat = interaction.options.getSubcommand() === 'cat';
 
@@ -68,22 +67,24 @@ export default class Imagegen extends Command {
     });
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'cat',
-          description: 'Generates a random cat image.',
-          type: ApplicationCommandOptionType.Subcommand,
-        },
-        {
-          name: 'dog',
-          description: 'Generates a random dog image.',
-          type: ApplicationCommandOptionType.Subcommand,
-        },
-      ],
-    });
+  public override data() {
+    return {
+      command: {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'cat',
+            description: 'Generates a random cat image.',
+            type: ApplicationCommandOptionType.Subcommand,
+          },
+          {
+            name: 'dog',
+            description: 'Generates a random dog image.',
+            type: ApplicationCommandOptionType.Subcommand,
+          },
+        ],
+      },
+    };
   }
 }

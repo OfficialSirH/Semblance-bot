@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { attachments, Category, randomColor, Subcategory } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Sharks extends Command {
   public override name = 'sharks';
   public override description = 'info on sharks';
-  public override fullCategory = [Category.game, Subcategory.main];
+  public override category = [Category.game, Subcategory.main];
 
   public override sharedRun() {
     const embed = new EmbedBuilder()

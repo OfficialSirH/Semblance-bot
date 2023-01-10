@@ -1,5 +1,15 @@
 import { onlyUnique } from '#constants/index';
-import { type Snowflake, type Guild, type GuildMember, ChannelType } from 'discord.js';
+import {
+  type Snowflake,
+  ChannelType,
+  type RESTPostAPIChannelMessageJSONBody,
+  Routes,
+  type RESTPostAPIChannelMessageResult,
+} from '@discordjs/core';
+import type { Client } from '#structures/Client';
+
+export const sendMessage = async (client: Client, channel: Snowflake, body: RESTPostAPIChannelMessageJSONBody) =>
+  (await client.rest.post(Routes.channelMessages(channel), { body })) as Promise<RESTPostAPIChannelMessageResult>;
 
 export const getRole = (search: string | Snowflake, guild: Guild) =>
   guild.roles.cache.find(r => r.name == search) ??

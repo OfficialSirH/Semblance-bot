@@ -1,10 +1,10 @@
 import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor, attachments } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Mementomori extends Command {
   public override name = 'mementomori';
-  public override fullCategory = [Category.secret];
+  public override category = [Category.secret];
 
   public override async sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()

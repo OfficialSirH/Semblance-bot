@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Prestige extends Command {
   public override name = 'prestige';
   public override description = 'info on the Mesozoic Valley Prestige System.';
-  public override fullCategory = [Category.game, Subcategory.mesozoic];
+  public override category = [Category.game, Subcategory.mesozoic];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()

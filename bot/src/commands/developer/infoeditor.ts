@@ -1,26 +1,20 @@
-import {
-  type ChatInputCommandInteraction,
-  EmbedBuilder,
-  AttachmentBuilder,
-  escapeCodeBlock,
-  ApplicationCommandOptionType,
-  PermissionFlagsBits,
-} from 'discord.js';
-import { GuildId, Category, randomColor } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { GuildId, Category, randomColor, PreconditionName } from '#constants/index';
+import { Command } from '#structures/Command';
+import { ApplicationCommandOptionType, PermissionFlagsBits } from '@discordjs/core';
+import type { ApplicationCommandRegistry } from '@sapphire/framework';
+import type { FastifyReply } from 'fastify';
 
 export default class InfoEditor extends Command {
-  public constructor(context: Command.Context, options: Command.Options) {
-    super(context, {
-      ...options,
+  public constructor(client: Command.Requirement) {
+    super(client, {
       name: 'info-editor',
       description: 'edit information on commands that has ever-changing information',
-      fullCategory: [Category.developer],
-      preconditions: ['OwnerOnly'],
+      category: [Category.developer],
+      preconditions: [PreconditionName.OwnerOnly],
     });
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     if (interaction.options.getSubcommandGroup(false) == 'boostercodes') {
       const subCommand = interaction.options.getSubcommand();
 
@@ -40,7 +34,7 @@ export default class InfoEditor extends Command {
     }
 
     const subject = async () => {
-      const subject = await this.container.client.db.information.findUnique({
+      const subject = await this.client.db.information.findUnique({
         where: {
           type: interaction.options.getString('subject', true),
         },
@@ -60,7 +54,7 @@ export default class InfoEditor extends Command {
           )}\`\`\``,
         );
 
-      const updatedSubject = await this.container.client.db.information.update({
+      const updatedSubject = await this.client.db.information.update({
         where: {
           type: subjectValue.type,
         },
@@ -90,7 +84,7 @@ export default class InfoEditor extends Command {
     const embed = new EmbedBuilder()
       .setTitle(subjectValue.type)
       .setColor(randomColor)
-      .setThumbnail(this.container.client.user?.displayAvatarURL() as string)
+      .setThumbnail(this.client.user?.displayAvatarURL() as string)
       .setDescription('The following JSON for the info is in the file attached');
 
     const file = new AttachmentBuilder(Buffer.from(JSON.stringify(subjectValue)), {
@@ -102,7 +96,7 @@ export default class InfoEditor extends Command {
 
   public override async registerApplicationCommands(registry: ApplicationCommandRegistry) {
     const infoSubjects = (
-      await this.container.client.db.information.findMany({
+      await this.client.db.information.findMany({
         select: {
           type: true,
         },

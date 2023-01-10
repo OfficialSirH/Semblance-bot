@@ -1,13 +1,13 @@
 import { type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { applicationCommandToMention, Category, randomColor, Subcategory } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Secrets extends Command {
   public override name = 'secrets';
   public override description = 'secrets';
-  public override fullCategory = [Category.game, Subcategory.other];
+  public override category = [Category.game, Subcategory.other];
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const embed = new EmbedBuilder()
       .setTitle('Secret Achievements')
       .setColor(randomColor)
@@ -16,7 +16,7 @@ export default class Secrets extends Command {
           '1. Make an ape dab by tapping on it numerous times.',
           '2. Make an archosaur, named Archie, dance by tapping the archosaur with a tuxedo/suit.',
           `3. Unlock all sharks, *check ${applicationCommandToMention({
-            client: this.container.client,
+            client: this.client,
             commandName: 'help',
           })} and input 'sharks' into the option*.`,
           '**Land Garden:**',
@@ -38,10 +38,9 @@ export default class Secrets extends Command {
     await interaction.reply({ embeds: [embed], ephemeral: true });
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-    });
+  public override data() {
+    return {
+      command: { name: this.name, description: this.description },
+    };
   }
 }

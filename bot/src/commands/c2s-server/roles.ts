@@ -1,60 +1,33 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  EmbedBuilder,
-  type MessageActionRowComponentBuilder,
-  ButtonStyle,
-} from 'discord.js';
 import { c2sRoles, c2sRolesInformation, Category, attachments, GuildId, avatarUrl } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
 import { buildCustomId } from '#constants/components';
-import {
-  type APIApplicationCommandInteraction,
-  type APIInteractionResponse,
-  InteractionResponseType,
-  MessageFlags,
-  Routes,
-} from 'discord-api-types/v9';
 import type { FastifyReply } from 'fastify';
+import { Command } from '#structures/Command';
+import { type APIApplicationCommandInteraction, MessageFlags, ButtonStyle, type APIGuild } from '@discordjs/core';
 
 export default class Roles extends Command {
-  public constructor(context: Command.Context, options: Command.Options) {
-    super(context, {
-      ...options,
+  public constructor(client: Command.Requirement) {
+    super(client, {
       name: 'roles',
       description: 'see the list of available roles for the c2s server',
-      fullCategory: [Category.c2sServer],
-      preconditions: ['C2SOnly'],
+      category: [Category.c2sServer],
     });
   }
 
-  public override async applicationRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const member = interaction.member;
     if (!member) {
-      await this.container.client.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
-        body: {
-          type: InteractionResponseType.ChannelMessageWithSource,
-          data: {
-            flags: MessageFlags.Ephemeral,
-            content: 'An issue occurred while trying to get your roles.',
-          },
-        } satisfies APIInteractionResponse,
+      return this.client.api.interactions.reply(res, {
+        flags: MessageFlags.Ephemeral,
+        content: 'An issue occurred while trying to get your roles.',
       });
-      return;
     }
-    const guildRoles = this.container.client.guilds.cache.get(GuildId.cellToSingularity)?.roles.cache;
+    const guildRoles = (this.client.cache.data.guilds.get(GuildId.cellToSingularity) as APIGuild).roles;
 
     if (!guildRoles) {
-      await this.container.client.rest.post(Routes.interactionCallback(interaction.id, interaction.token), {
-        body: {
-          type: InteractionResponseType.ChannelMessageWithSource,
-          data: {
-            flags: MessageFlags.Ephemeral,
-            content: 'An issue occurred while trying to get your roles.',
-          },
-        } satisfies APIInteractionResponse,
+      return this.client.api.interactions.reply(res, {
+        flags: MessageFlags.Ephemeral,
+        content: 'An issue occurred while trying to get your roles.',
       });
-      return;
     }
 
     const embed = new EmbedBuilder()
@@ -134,22 +107,17 @@ export default class Roles extends Command {
           .toJSON(),
       ];
 
-    await this.container.client.api.interactions.reply(res, {
+    await this.client.api.interactions.reply(res, {
       embeds: [embed.toJSON()],
       components,
       files: [attachments.currentLogo],
     });
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
-        name: this.name,
-        description: this.description,
-      },
-      {
-        guildIds: [GuildId.cellToSingularity],
-      },
-    );
+  public override data() {
+    return {
+      command: { name: this.name, description: this.description },
+      guildIds: [GuildId.cellToSingularity],
+    };
   }
 }

@@ -3,7 +3,7 @@ import { randomColor, formattedDate, Category } from '#constants/index';
 import type { Reminder, UserReminder } from '@prisma/client';
 import { handleReminder } from '#constants/models';
 import { scheduleJob } from 'node-schedule';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import type {
   APIApplicationCommandAutocompleteInteraction,
   APIApplicationCommandInteractionDataIntegerOption,
@@ -16,9 +16,9 @@ const MILLISECONDS_TO_MINUTES = 1000 * 60;
 export default class RemindMe extends Command {
   public override name = 'remindme';
   public override description = 'create reminders for yourself';
-  public override fullCategory = [Category.utility];
+  public override category = [Category.utility];
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const action = interaction.options.getSubcommand();
 
     switch (action) {

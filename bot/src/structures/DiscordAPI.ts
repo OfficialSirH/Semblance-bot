@@ -53,9 +53,10 @@ export class FastifyBasedInteractionsAPI {
     await res.type('multipart/form-data').send(resolvedData);
   }
 
-  async defer(res: FastifyReply) {
+  async deferReply(res: FastifyReply, data?: Pick<APIInteractionResponseCallbackData, 'flags'>) {
     await res.send({
       type: InteractionResponseType.DeferredChannelMessageWithSource,
+      data,
     });
   }
 

@@ -6,14 +6,14 @@ import {
   ApplicationCommandOptionType,
 } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Profile extends Command {
   public override name = 'profile';
   public override description = 'Get the profile of a user.';
-  public override fullCategory = [Category.utility];
+  public override category = [Category.utility];
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const user = interaction.options.getUser('user');
     let member: GuildMember | null;
     if (!user) member = interaction.member;
@@ -27,18 +27,20 @@ export default class Profile extends Command {
     return interaction.reply(userProfileEmbed(interaction, user as User));
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'user',
-          description: 'The user to get the profile of.',
-          type: ApplicationCommandOptionType.User,
-        },
-      ],
-    });
+  public override data() {
+    return {
+      command: {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'user',
+            description: 'The user to get the profile of.',
+            type: ApplicationCommandOptionType.User,
+          },
+        ],
+      },
+    };
   }
 }
 

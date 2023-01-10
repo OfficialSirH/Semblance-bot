@@ -1,12 +1,12 @@
 import { EmbedBuilder, version } from 'discord.js';
 import { randomColor, msToTime, Category, emojis } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { release } from 'os';
 
 export default class Info extends Command {
   public override name = 'stats';
   public override description = 'Provides statistics about Semblance.';
-  public override fullCategory = [Category.semblance];
+  public override category = [Category.semblance];
 
   public override async sharedRun(interaction: Command['SharedBuilder']) {
     const { client } = interaction;

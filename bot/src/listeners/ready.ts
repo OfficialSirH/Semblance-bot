@@ -22,6 +22,10 @@ export default class Ready extends Listener<GatewayDispatchEvents.Ready> {
   public override async run(data: GatewayReadyDispatchData) {
     this.client.logger.info('Bot service is now running.');
 
+    for (const guild of data.guilds) {
+      this.client.cache.data.guilds.set(guild.id, guild);
+    }
+
     if (!isProduction) {
       this.client.ws.send(0, {
         op: GatewayOpcodes.PresenceUpdate,
@@ -40,19 +44,13 @@ export default class Ready extends Listener<GatewayDispatchEvents.Ready> {
       return;
     }
 
-    const totalMembers = this.client.cache.data.guilds
-      .map(g => g.approximate_member_count)
-      .filter(g => g)
-      .reduce<number>((total, cur) => (total += cur || 0), 0);
-    const activity = `help in ${this.client.cache.data.guilds.size} servers | ${totalMembers} members`;
-
     this.client.ws.send(0, {
       op: GatewayOpcodes.PresenceUpdate,
       d: {
         activities: [
           {
-            name: activity,
-            type: ActivityType.Watching,
+            name: 'with current experiments for the universe',
+            type: ActivityType.Playing,
           },
         ],
         afk: false,

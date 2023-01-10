@@ -1,13 +1,13 @@
 import { type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { Category, randomColor } from '#constants/index';
 
 export default class Invite extends Command {
   public override name = 'invite';
   public override description = 'Gets an invite link for the bot and support server.';
-  public override fullCategory = [Category.semblance];
+  public override category = [Category.semblance];
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const { client, user } = interaction;
     const embed = new EmbedBuilder()
       .setTitle('Bot Invite')
@@ -23,10 +23,9 @@ export default class Invite extends Command {
     await interaction.reply({ embeds: [embed] });
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-    });
+  public override data() {
+    return {
+      command: { name: this.name, description: this.description },
+    };
   }
 }

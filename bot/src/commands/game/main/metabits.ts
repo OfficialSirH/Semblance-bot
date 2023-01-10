@@ -1,11 +1,11 @@
 import { EmbedBuilder, AttachmentBuilder } from 'discord.js';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { Category, randomColor, Subcategory } from '#constants/index';
 
 export default class Metabits extends Command {
   public override name = 'metabits';
   public override description = 'A detailed explanation of how to obtain Metabits faster';
-  public override fullCategory = [Category.game, Subcategory.main];
+  public override category = [Category.game, Subcategory.main];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const metabitAttachmentBuilder = new AttachmentBuilder('./src/images/emojis/Metabit.png', {

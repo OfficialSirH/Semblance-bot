@@ -1,12 +1,16 @@
 import { bigToName, Category, randomColor } from '#constants/index';
-import { type ChatInputCommandInteraction, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { clamp } from '#lib/utils/math';
+import { ApplicationCommandOptionType } from '@discordjs/core';
 
 export default class MetaspeedCalc extends Command {
-  public override name = 'metaspeedcalc';
-  public override description = 'Provides the production multiplier for the specified amount of metabits.';
-  public override fullCategory = [Category.calculator];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'metaspeedcalc',
+      description: 'Provides the production multiplier for the specified amount of metabits.',
+      category: [Category.calculator],
+    });
+  }
 
   public override chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
     const options = interaction.options,
@@ -72,28 +76,30 @@ export default class MetaspeedCalc extends Command {
     return interaction.reply({ embeds: [embed] });
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'metabits',
-          description: 'The amount of metabits to calculate the multiplier for.',
-          type: ApplicationCommandOptionType.Number,
-          required: true,
-        },
-        {
-          name: 'mv_ranks',
-          description: 'The amount of Mesozoic Valley ranks to calculate the multiplier for.',
-          type: ApplicationCommandOptionType.Integer,
-        },
-        {
-          name: 'speed_upgrades',
-          description: 'The amount of simulation speed upgrades to calculate the multiplier for.',
-          type: ApplicationCommandOptionType.Integer,
-        },
-      ],
-    });
+  public override data() {
+    return {
+      command: {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'metabits',
+            description: 'The amount of metabits to calculate the multiplier for.',
+            type: ApplicationCommandOptionType.Number,
+            required: true,
+          },
+          {
+            name: 'mv_ranks',
+            description: 'The amount of Mesozoic Valley ranks to calculate the multiplier for.',
+            type: ApplicationCommandOptionType.Integer,
+          },
+          {
+            name: 'speed_upgrades',
+            description: 'The amount of simulation speed upgrades to calculate the multiplier for.',
+            type: ApplicationCommandOptionType.Integer,
+          },
+        ],
+      },
+    };
   }
 }

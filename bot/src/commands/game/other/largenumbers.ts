@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { attachments, Category, randomColor, Subcategory } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class LargeNumbers extends Command {
   public override name = 'largenumbers';
   public override description = 'List of all the named large numbers in the game.';
-  public override fullCategory = [Category.game, Subcategory.other];
+  public override category = [Category.game, Subcategory.other];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()

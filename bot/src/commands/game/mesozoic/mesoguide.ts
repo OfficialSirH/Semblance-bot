@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Mesoguide extends Command {
   public override name = 'mesoguide';
   public override description = 'Mesozoic Valley Guide';
-  public override fullCategory = [Category.game, Subcategory.mesozoic];
+  public override category = [Category.game, Subcategory.mesozoic];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()

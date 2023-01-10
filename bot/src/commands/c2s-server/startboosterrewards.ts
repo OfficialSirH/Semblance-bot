@@ -1,34 +1,35 @@
 import { Category, GuildId } from '#constants/index';
-import { boosterRole, createBoosterRewards } from '#constants/models';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import type { ChatInputCommandInteraction } from 'discord.js';
+import { boosterRoleId, createBoosterRewards } from '#constants/models';
+import { Command } from '#structures/Command';
+import { type APIApplicationCommandInteraction, MessageFlags } from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 export default class StartBoosterRewards extends Command {
-  public constructor(context: Command.Context, options: Command.Options) {
-    super(context, {
-      ...options,
+  public constructor(client: Command.Requirement) {
+    super(client, {
       name: 'startboosterrewards',
       description: 'Start retrieving booster rewards after you boost the server.',
-      fullCategory: [Category.c2sServer],
+      category: [Category.c2sServer],
     });
   }
 
-  public async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
-    if (!interaction.member.roles.cache.has(boosterRole))
-      return interaction.reply({ content: 'You need to have the booster role to use this command.', ephemeral: true });
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
+    if (!interaction.member?.roles.includes(boosterRoleId))
+      return this.client.api.interactions.reply(res, {
+        content: 'You need to have the booster role to use this command.',
+        flags: MessageFlags.Ephemeral,
+      });
 
-    return interaction.reply(await createBoosterRewards(interaction.client, interaction.user.id));
+    return this.client.api.interactions.reply(
+      res,
+      await createBoosterRewards(this.client, interaction.user?.id as string),
+    );
   }
 
-  public registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
-        name: this.name,
-        description: this.description,
-      },
-      {
-        guildIds: [GuildId.cellToSingularity],
-      },
-    );
+  public override data() {
+    return {
+      command: { name: this.name, description: this.description },
+      guildIds: [GuildId.cellToSingularity],
+    };
   }
 }

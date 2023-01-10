@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Mvunlocks extends Command {
   public override name = 'mvunlocks';
   public override description = 'Information about the unlocking of each reptile and bird';
-  public override fullCategory = [Category.game, Subcategory.mesozoic];
+  public override category = [Category.game, Subcategory.mesozoic];
   public override aliases = ['reptiles', 'birds', 'mvunlock'];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {

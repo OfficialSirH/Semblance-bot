@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { attachments, Category, emojis, randomColor, Subcategory } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Trex extends Command {
   public override name = 'trex';
   public override description = 'Info on the T-rex';
-  public override fullCategory = [Category.game, Subcategory.mesozoic];
+  public override category = [Category.game, Subcategory.mesozoic];
 
   public override sharedRun() {
     const embed = new EmbedBuilder()

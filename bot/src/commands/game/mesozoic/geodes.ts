@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { Category, Subcategory, attachments } from '#constants/index';
 
 export default class Geodes extends Command {
   public override name = 'geodes';
   public override description = 'Get geode comparisons to show the best value.';
-  public override fullCategory = [Category.game, Subcategory.mesozoic];
+  public override category = [Category.game, Subcategory.mesozoic];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()

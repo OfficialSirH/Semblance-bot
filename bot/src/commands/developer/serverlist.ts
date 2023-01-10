@@ -1,25 +1,16 @@
-import {
-  type ChatInputCommandInteraction,
-  ActionRowBuilder,
-  ButtonBuilder,
-  EmbedBuilder,
-  type MessageActionRowComponentBuilder,
-  ButtonStyle,
-  ApplicationCommandOptionType,
-} from 'discord.js';
-import { randomColor, guildBookPage, Category, GuildId } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { randomColor, guildBookPage, Category, GuildId, PreconditionName } from '#constants/index';
+import { Command } from '#structures/Command';
 import { serversPerPage } from '#constants/commands';
 import { buildCustomId } from '#constants/components';
+import { ButtonStyle, ApplicationCommandOptionType } from '@discordjs/core';
 
 export default class ServerList extends Command {
-  public constructor(context: Command.Context, options: Command.Options) {
-    super(context, {
-      ...options,
+  public constructor(client: Command.Requirement) {
+    super(client, {
       name: 'serverlist',
       description: 'Lists all servers that Semblance is in.',
-      fullCategory: [Category.developer],
-      preconditions: ['OwnerOnly'],
+      category: [Category.developer],
+      preconditions: [PreconditionName.OwnerOnly],
     });
   }
 
@@ -94,9 +85,9 @@ export default class ServerList extends Command {
     await interaction.reply({ embeds: [embed], components });
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
+  public override data() {
+    return {
+      command: {
         name: this.name,
         description: this.description,
         options: [
@@ -108,9 +99,7 @@ export default class ServerList extends Command {
           },
         ],
       },
-      {
-        guildIds: [GuildId.sirhStuff],
-      },
-    );
+      guildIds: [GuildId.sirhStuff],
+    };
   }
 }

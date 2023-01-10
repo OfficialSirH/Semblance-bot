@@ -1,4 +1,4 @@
-﻿import type { SapphireClient } from '@sapphire/framework';
+﻿import type { Client } from '#structures/Client';
 import * as fs from 'fs/promises';
 import type { Stream } from 'stream';
 import { Attachy } from '#structures/Attachy';
@@ -120,7 +120,7 @@ export const earlyBeyondTesters = [
   '263156930879553537', // 'xXTacocubesXx#6012',
 ];
 
-export const subcategoryList = (client: SapphireClient, category: Category, subcategory: Subcategory) =>
+export const subcategoryList = (client: Client, category: Category, subcategory: Subcategory) =>
   client.stores
     .get('commands')
     .filter(c => c.category == category && c.subCategory == subcategory)

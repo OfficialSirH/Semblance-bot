@@ -1,14 +1,19 @@
-import { type ChatInputCommandInteraction, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { applicationCommandToMention, Category, randomColor } from '#constants/index';
 import { currentPrice } from '#constants/commands';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
+import { type APIApplicationCommandInteraction, ApplicationCommandOptionType } from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 export default class Gamestats extends Command {
-  public override name = 'gamestats';
-  public override description = "Displays a user's game stats for Semblance Idle-Game.";
-  public override fullCategory = [Category.fun];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'gamestats',
+      description: "Displays a user's game stats for Semblance Idle-Game.",
+      category: [Category.fun],
+    });
+  }
 
-  public async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     let user = interaction.options.getUser('user');
     if (!user) user = interaction.user;
 
@@ -44,17 +49,19 @@ export default class Gamestats extends Command {
     return interaction.reply({ embeds: [embed] });
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'user',
-          description: 'The user to display stats for.',
-          type: ApplicationCommandOptionType.User,
-        },
-      ],
-    });
+  public override data() {
+    return {
+      command: {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'user',
+            description: 'The user to display stats for.',
+            type: ApplicationCommandOptionType.User,
+          },
+        ],
+      },
+    };
   }
 }

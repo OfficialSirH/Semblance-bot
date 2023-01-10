@@ -1,19 +1,18 @@
 import { Category, randomColor, attachments, emojis } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
+import type { FastifyReply } from 'fastify';
 
 export default class Limericks extends Command {
-  public constructor(context: Command.Context, options: Command.Options) {
-    super(context, {
-      ...options,
+  public constructor(client: Command.Requirement) {
+    super(client, {
       name: 'limericks',
       description: 'details on the limericks contest',
-      fullCategory: [Category.c2sServer],
-      preconditions: ['C2SOnly'],
+      category: [Category.c2sServer],
     });
   }
 
-  public override template = {
-    data: {
+  public override chatInputRun(res: FastifyReply) {
+    return this.client.api.interactions.reply(res, {
       content: 'Limericks Contest winners',
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       attachments: [{ filename: attachments.currentLogo.name!, id: '0' }],
@@ -52,6 +51,6 @@ export default class Limericks extends Command {
           footer: { text: 'Let the hunger gam-- I mean Limericks Contest- begin!' },
         },
       ],
-    },
-  } satisfies Command['defaultTemplate'];
+    });
+  }
 }

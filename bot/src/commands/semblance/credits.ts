@@ -7,15 +7,15 @@ import {
   type MessageActionRowComponentBuilder,
 } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
 
 export default class Credits extends Command {
   public override name = 'credits';
   public override description = 'Lists everyone that has helped with the project of Semblance, including myself(SirH).';
-  public override fullCategory = [Category.semblance];
+  public override category = [Category.semblance];
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const { user } = interaction;
 
     const embed = new EmbedBuilder()
@@ -67,10 +67,9 @@ export default class Credits extends Command {
     await interaction.reply({ embeds: [embed], components: [component] });
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-    });
+  public override data() {
+    return {
+      command: { name: this.name, description: this.description },
+    };
   }
 }

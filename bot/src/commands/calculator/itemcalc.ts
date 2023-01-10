@@ -1,19 +1,17 @@
 import { bigToName, Category, randomColor } from '#constants/index';
-import {
-  type InteractionResponse,
-  type AutocompleteInteraction,
-  type ChatInputCommandInteraction,
-  EmbedBuilder,
-  ApplicationCommandOptionType,
-} from 'discord.js';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { itemList } from '#itemList';
 import type { ItemList } from '#lib/interfaces/ItemList';
+import { ApplicationCommandOptionType } from '@discordjs/core';
 
 export default class ItemCalc extends Command {
-  public override name = 'itemcalc';
-  public override description = 'calculate prices for items in-game';
-  public override fullCategory = [Category.calculator];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'itemcalc',
+      description: 'calculate prices for items in-game',
+      category: [Category.calculator],
+    });
+  }
 
   public async itemCalc(
     interaction: ChatInputCommandInteraction<'cached'>,
@@ -149,9 +147,9 @@ export default class ItemCalc extends Command {
     await interaction.respond(filteredList);
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
+  public override data() {
+    return {
+      command: {
         name: this.name,
         description: this.description,
         options: [
@@ -207,7 +205,6 @@ export default class ItemCalc extends Command {
           },
         ],
       },
-      {},
-    );
+    };
   }
 }

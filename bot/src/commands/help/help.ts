@@ -10,13 +10,13 @@ import {
   type MessageActionRowComponentBuilder,
 } from 'discord.js';
 import { applicationCommandToMention, Category, randomColor } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
 
 export default class Help extends Command {
   public override name = 'help';
   public override description = 'Lists all available commands.';
-  public override fullCategory = [Category.help];
+  public override category = [Category.help];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const { user, client } = interaction;
@@ -92,7 +92,7 @@ export default class Help extends Command {
     };
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const query = interaction.options.getString('query');
     if (!query) return interaction.reply(this.sharedRun(interaction));
 
@@ -153,18 +153,20 @@ export default class Help extends Command {
     return interaction.respond([...queriedInfoStartsWith, ...queriedInfoContains]);
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'query',
-          description: 'The query to search for.',
-          type: ApplicationCommandOptionType.String,
-          autocomplete: true,
-        },
-      ],
-    });
+  public override data() {
+    return {
+      command: {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'query',
+            description: 'The query to search for.',
+            type: ApplicationCommandOptionType.String,
+            autocomplete: true,
+          },
+        ],
+      },
+    };
   }
 }

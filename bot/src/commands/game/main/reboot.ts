@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Reboot extends Command {
   public override name = 'reboot';
   public override description = 'info on rebooting your in-game simulation';
-  public override fullCategory = [Category.game, Subcategory.main];
+  public override category = [Category.game, Subcategory.main];
 
   public override sharedRun() {
     const embed = new EmbedBuilder()

@@ -13,9 +13,6 @@ import {
   ApplicationCommandType,
   type APIChatInputApplicationCommandInteraction,
   type APIContextMenuInteraction,
-  type APIMessageComponentInteraction,
-  type APIApplicationCommandAutocompleteInteraction,
-  type APIModalSubmitInteraction,
 } from '@discordjs/core';
 
 const client = new Client();
@@ -70,22 +67,18 @@ app.route<{ Body: APIInteraction }>({
         const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
         await client.cache.handles.commands
           .get(parsedCustomId.command)
-          ?.componentRun?.(rep, interaction as APIMessageComponentInteraction, parsedCustomId);
+          ?.componentRun?.(rep, interaction, parsedCustomId);
         break;
       }
 
       case InteractionType.ApplicationCommandAutocomplete: {
-        await client.cache.handles.commands
-          .get(interaction?.data.name)
-          ?.autocompleteRun?.(rep, interaction as APIApplicationCommandAutocompleteInteraction);
+        await client.cache.handles.commands.get(interaction?.data.name)?.autocompleteRun?.(rep, interaction);
         break;
       }
 
       case InteractionType.ModalSubmit: {
         const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
-        client.cache.handles.commands
-          .get(parsedCustomId.command)
-          ?.modalRun?.(rep, interaction as APIModalSubmitInteraction);
+        client.cache.handles.commands.get(parsedCustomId.command)?.modalRun?.(rep, interaction);
         break;
       }
 

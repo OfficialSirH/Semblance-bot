@@ -10,9 +10,9 @@ import type { Awaitable } from '@sapphire/framework';
 import type { FastifyReply } from 'fastify';
 import type { Client } from './Client';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
-import type { Category, PreconditionName, Subcategory } from '#constants/index';
+import type { Category, GuildId, PreconditionName, Subcategory } from '#constants/index';
 
-export class Command {
+export abstract class Command {
   public readonly name: string;
   public readonly description: string;
   public readonly category: [Category, Subcategory?];
@@ -164,7 +164,7 @@ export class Command {
    * }
    * ```
    */
-  public data?(): RESTPostAPIApplicationCommandsJSONBody;
+  public data?(): { command: RESTPostAPIApplicationCommandsJSONBody; guildIds?: GuildId[] };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace

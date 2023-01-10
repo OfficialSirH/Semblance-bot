@@ -1,11 +1,11 @@
 ﻿import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments, emojis } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Currency extends Command {
   public override name = 'currency';
   public override description = 'List all of the in-game currency.';
-  public override fullCategory = [Category.game, Subcategory.other];
+  public override category = [Category.game, Subcategory.other];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()

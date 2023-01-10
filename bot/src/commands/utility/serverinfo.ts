@@ -1,13 +1,13 @@
 import { type ChatInputCommandInteraction, EmbedBuilder, ChannelType } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class ServerInfo extends Command {
   public override name = 'serverinfo';
   public override description = 'Provides info on the current server';
-  public override fullCategory = [Category.utility];
+  public override category = [Category.utility];
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const guild = interaction.guild;
 
     let textChannel = 0,
@@ -62,11 +62,9 @@ export default class ServerInfo extends Command {
     await interaction.reply({ embeds: [embed] });
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      dm_permission: false,
-    });
+  public override data() {
+    return {
+      command: { name: this.name, description: this.description, dm_permission: false },
+    };
   }
 }

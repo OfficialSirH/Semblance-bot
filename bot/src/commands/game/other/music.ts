@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class Music extends Command {
   public name = 'music';
   public description = 'Provides the links to the in-game music on the Fandom wiki and on Spotify.';
-  public fullCategory = [Category.game, Subcategory.other];
+  public category = [Category.game, Subcategory.other];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()

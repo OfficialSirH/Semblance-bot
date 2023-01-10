@@ -1,25 +1,24 @@
-import { Category, GuildId } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
-import { exec } from 'child_process';
+import { Category, GuildId, PreconditionName } from '#constants/index';
+import { Command } from '#structures/Command';
 import {
-  type ChatInputCommandInteraction,
-  EmbedBuilder,
+  type APIApplicationCommandInteraction,
   ApplicationCommandOptionType,
   PermissionFlagsBits,
-} from 'discord.js';
+} from '@discordjs/core';
+import { exec } from 'child_process';
+import type { FastifyReply } from 'fastify';
 
 export default class Exec extends Command {
-  public constructor(context: Command.Context, options: Command.Options) {
-    super(context, {
-      ...options,
+  public constructor(client: Command.Requirement) {
+    super(client, {
       name: 'exec',
       description: 'Executes a command in the terminal.',
-      fullCategory: [Category.developer],
-      preconditions: ['OwnerOnly'],
+      category: [Category.developer],
+      preconditions: [PreconditionName.OwnerOnly],
     });
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     await interaction.deferReply();
     const embed = new EmbedBuilder();
     exec(interaction.options.getString('input', true), (error, stdout, stderr) => {
@@ -30,9 +29,9 @@ export default class Exec extends Command {
     });
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
+  public override data() {
+    return {
+      command: {
         name: this.name,
         description: this.description,
         default_member_permissions: PermissionFlagsBits.Administrator.toString(),
@@ -45,9 +44,7 @@ export default class Exec extends Command {
           },
         ],
       },
-      {
-        guildIds: [GuildId.cellToSingularity],
-      },
-    );
+      guildIds: [GuildId.cellToSingularity],
+    };
   }
 }

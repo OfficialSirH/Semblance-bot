@@ -7,15 +7,15 @@ import {
   type MessageActionRowComponentBuilder,
 } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
-import { type ApplicationCommandRegistry, Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
 
 export default class Roadmap extends Command {
   public override name = 'roadmap';
   public override description = 'details on the C2S Roadmap';
-  public override fullCategory = [Category.game, Subcategory.other];
+  public override category = [Category.game, Subcategory.other];
 
-  public async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     await interaction.reply(this.sharedRun(interaction));
   }
 
@@ -52,10 +52,9 @@ export default class Roadmap extends Command {
     return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.roadMap.attachment], components };
   }
 
-  public registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-    });
+  public override data() {
+    return {
+      command: { name: this.name, description: this.description },
+    };
   }
 }

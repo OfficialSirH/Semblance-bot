@@ -1,11 +1,14 @@
-import { EmbedBuilder } from 'discord.js';
 import { attachments, Category } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class ArchieDance extends Command {
-  public override name = 'archiedance';
-  public override description = 'View epic videos of Archie dancing.';
-  public override fullCategory = [Category.fun];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'archiedance',
+      description: 'View epic videos of Archie dancing.',
+      category: [Category.fun],
+    });
+  }
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()

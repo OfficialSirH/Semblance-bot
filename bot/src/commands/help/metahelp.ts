@@ -1,10 +1,10 @@
 import { EmbedBuilder } from 'discord.js';
 import { applicationCommandToMention, Category, randomColor } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 export default class MetaHelp extends Command {
   public override name = 'metahelp';
   public override description = 'help for metabit calculators';
-  public override fullCategory = [Category.help];
+  public override category = [Category.help];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const { client } = interaction;

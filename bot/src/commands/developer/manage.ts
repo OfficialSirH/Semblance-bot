@@ -1,28 +1,26 @@
-import {
-  type AutocompleteInteraction,
-  type ChatInputCommandInteraction,
-  EmbedBuilder,
-  ApplicationCommandOptionType,
-  GuildScheduledEventPrivacyLevel,
-  GuildScheduledEventEntityType,
-} from 'discord.js';
-import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
-import { GuildId, bigToName, Category, msToTime, isDstObserved } from '#constants/index';
+import { GuildId, bigToName, Category, msToTime, isDstObserved, PreconditionName } from '#constants/index';
 import { DiscordLinkAPI } from '#structures/DiscordLinkAPI';
 import { type Events, gameEvents } from '#lib/utils/events';
+import { Command } from '#structures/Command';
+import {
+  type APIApplicationCommandInteraction,
+  ApplicationCommandOptionType,
+  GuildScheduledEventEntityType,
+  GuildScheduledEventPrivacyLevel,
+} from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 export default class Manage extends Command {
-  public constructor(context: Command.Context, options: Command.Options) {
-    super(context, {
-      ...options,
+  public constructor(client: Command.Requirement) {
+    super(client, {
       name: 'manage',
       description: 'Manage the bot.',
-      fullCategory: [Category.developer],
-      preconditions: ['OwnerOnly'],
+      category: [Category.developer],
+      preconditions: [PreconditionName.OwnerOnly],
     });
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const subcommandGroup = interaction.options.getSubcommandGroup();
     const subcommand = interaction.options.getSubcommand();
 
@@ -69,9 +67,9 @@ export default class Manage extends Command {
     await interaction.respond(dateChoices);
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
-    registry.registerChatInputCommand(
-      {
+  public override data() {
+    return {
+      command: {
         name: this.name,
         description: this.description,
         options: [
@@ -186,15 +184,13 @@ export default class Manage extends Command {
           },
         ],
       },
-      {
-        guildIds: [GuildId.cellToSingularity],
-      },
-    );
+      guildIds: [GuildId.cellToSingularity],
+    };
   }
 
   public async discordLinkGet(interaction: ChatInputCommandInteraction<'cached'>) {
     const user = interaction.options.getUser('discord-id', true);
-    const linkedAccount = await this.container.client.db.userData.findUnique({ where: { discord_id: user.id } });
+    const linkedAccount = await this.client.db.userData.findUnique({ where: { discord_id: user.id } });
 
     if (!linkedAccount)
       return interaction.reply({ content: `No linked account found for ${user.tag}`, ephemeral: true });

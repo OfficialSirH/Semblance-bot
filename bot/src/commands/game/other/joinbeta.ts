@@ -1,11 +1,11 @@
 import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor, Subcategory, attachments } from '#constants/index';
-import { Command } from '@sapphire/framework';
+import { Command } from '#structures/Command';
 
 export default class JoinBeta extends Command {
   public override name = 'joinbeta';
   public override description = 'Info on how to become a beta tester';
-  public override fullCategory = [Category.game, Subcategory.other];
+  public override category = [Category.game, Subcategory.other];
 
   public override async sharedRun(interaction: Command['SharedBuilder']) {
     const infoHandler = await interaction.client.db.information.findUnique({ where: { type: 'joinbeta' } });
