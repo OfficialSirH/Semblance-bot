@@ -1,21 +1,20 @@
-import { EmbedBuilder, AttachmentBuilder } from 'discord.js';
 import { Command } from '#structures/Command';
-import { Category, randomColor, Subcategory } from '#constants/index';
+import { Category, randomColor, SubCategory } from '#constants/index';
+import { Attachy } from '#structures/Attachy';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Metabits extends Command {
   public override name = 'metabits';
   public override description = 'A detailed explanation of how to obtain Metabits faster';
-  public override category = [Category.game, Subcategory.main];
+  public override category = [Category.game, SubCategory.main];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
-    const metabitAttachmentBuilder = new AttachmentBuilder('./src/images/emojis/Metabit.png', {
-        name: 'attachment://Metabit.png',
-      }),
+    const metabitImage = new Attachy('./src/images/emojis/Metabit.png'),
       embed = new EmbedBuilder()
         .setTitle('Ways to earn Metabits faster')
-        .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+        .setAuthor(interaction.user)
         .setColor(randomColor)
-        .setThumbnail(metabitAttachmentBuilder.name)
+        .setThumbnail(metabitImage.name)
         .setDescription(
           [
             [
@@ -47,6 +46,6 @@ export default class Metabits extends Command {
             "If you'd like to see the effects all of these have on overall production speed, use the slash command, `/metaspeedcalc`, to play around with the values!",
           ].join('\n\n'),
         );
-    return { embeds: [embed], files: [metabitAttachmentBuilder] };
+    return { embeds: [embed], files: [metabitImage] };
   }
 }

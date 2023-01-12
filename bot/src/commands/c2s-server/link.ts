@@ -14,7 +14,7 @@ export default class Link extends Command {
     super(client, {
       name: 'link',
       description: 'Link C2S data with your Discord Id.',
-      category: [Category.c2sServer],
+      fullCategory: [Category.c2sServer],
     });
   }
 

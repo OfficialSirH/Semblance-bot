@@ -2,7 +2,7 @@ import {
   EmbedBuilder,
   GuildMember,
   type User,
-  type ChatInputCommandInteraction,
+  type APIApplicationCommandInteraction,
   ApplicationCommandOptionType,
 } from 'discord.js';
 import { Category, randomColor } from '#constants/index';

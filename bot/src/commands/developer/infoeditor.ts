@@ -9,7 +9,7 @@ export default class InfoEditor extends Command {
     super(client, {
       name: 'info-editor',
       description: 'edit information on commands that has ever-changing information',
-      category: [Category.developer],
+      fullCategory: [Category.developer],
       preconditions: [PreconditionName.OwnerOnly],
     });
   }
@@ -87,7 +87,7 @@ export default class InfoEditor extends Command {
       .setThumbnail(this.client.user?.displayAvatarURL() as string)
       .setDescription('The following JSON for the info is in the file attached');
 
-    const file = new AttachmentBuilder(Buffer.from(JSON.stringify(subjectValue)), {
+    const file = new Attachy(Buffer.from(JSON.stringify(subjectValue)), {
       name: `${subjectValue.type}.json`,
     });
 
@@ -205,18 +205,18 @@ export default class InfoEditor extends Command {
     );
   }
 
-  private async listBoosterCodes(interaction: ChatInputCommandInteraction<'cached'>) {
+  private async listBoosterCodes(interaction: APIApplicationCommandInteraction) {
     const darwiniumCodes = await interaction.client.db.boosterCodes.findMany({});
     const list = darwiniumCodes.length > 0 ? darwiniumCodes.map(c => c.code).join(', ') : 'None';
     const embed = new EmbedBuilder()
       .setTitle('Booster Codes')
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setDescription(`number of codes: ${darwiniumCodes.length}\n\`\`\`\n${list}\`\`\``)
       .setColor(randomColor);
     interaction.reply({ embeds: [embed] });
   }
 
-  private async addBoosterCode(interaction: ChatInputCommandInteraction<'cached'>, codes: string[]) {
+  private async addBoosterCode(interaction: APIApplicationCommandInteraction, codes: string[]) {
     if (codes.length == 0) return interaction.reply('You need to give me a code to add.');
 
     const darwiniumCodes = await interaction.client.db.boosterCodes.findMany({});
@@ -231,7 +231,7 @@ export default class InfoEditor extends Command {
     const list = darwiniumCodes.map(c => c.code).concat(codes);
     const embed = new EmbedBuilder()
       .setTitle('Booster Codes')
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setDescription(
         `**The provided codes were successfully added**\nnew number of codes: ${list.length}\n\`\`\`\n${list.join(
           ', ',
@@ -241,7 +241,7 @@ export default class InfoEditor extends Command {
     interaction.reply({ embeds: [embed] });
   }
 
-  private async removeBoosterCode(interaction: ChatInputCommandInteraction<'cached'>, codes: string[]) {
+  private async removeBoosterCode(interaction: APIApplicationCommandInteraction, codes: string[]) {
     if (codes.length == 0) return interaction.reply('You need to give me a code to remove.');
 
     const darwiniumCodes = await interaction.client.db.boosterCodes.findMany({});
@@ -261,7 +261,7 @@ export default class InfoEditor extends Command {
 
     const embed = new EmbedBuilder()
       .setTitle('Booster Codes')
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setDescription(
         `**The provided codes were successfully removed**\nnew number of codes: ${
           filteredList.length

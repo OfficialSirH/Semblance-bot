@@ -1,19 +1,19 @@
 import {
-  type ChatInputCommandInteraction,
+  type APIApplicationCommandInteraction,
   ActionRowBuilder,
   ButtonBuilder,
   EmbedBuilder,
   ButtonStyle,
   type MessageActionRowComponentBuilder,
 } from 'discord.js';
-import { Category, randomColor, Subcategory, attachments } from '#constants/index';
+import { Category, randomColor, SubCategory, attachments } from '#constants/index';
 import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
 
 export default class Roadmap extends Command {
   public override name = 'roadmap';
   public override description = 'details on the C2S Roadmap';
-  public override category = [Category.game, Subcategory.other];
+  public override category = [Category.game, SubCategory.other];
 
   public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     await interaction.reply(this.sharedRun(interaction));
@@ -23,8 +23,8 @@ export default class Roadmap extends Command {
     const embed = new EmbedBuilder()
       .setTitle('Road Map')
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo.name)
-      .setImage(attachments.roadMap.name);
+      .setThumbnail(attachments.currentLogo)
+      .setImage(attachments.roadMap);
     const components = [
       new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
         new ButtonBuilder()

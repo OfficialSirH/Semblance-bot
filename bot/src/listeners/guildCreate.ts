@@ -1,4 +1,4 @@
-import { isProduction } from '#constants/index';
+import { GuildId, isProduction } from '#constants/index';
 import { request } from 'undici';
 import { Listener } from '#structures/Listener';
 import { GatewayDispatchEvents, type GatewayGuildCreateDispatchData } from '@discordjs/core';
@@ -14,9 +14,10 @@ export default class GuildCreate extends Listener<GatewayDispatchEvents.GuildCre
     this.client.cache.data.guilds.set(guild.id, guild);
     const guilds = this.client.cache.data.guilds;
 
-    for (const channel of guild.channels) {
-      this.client.cache.data.channels.set(channel.id, channel);
-    }
+    if (guild.id === GuildId.cellToSingularity)
+      for (const channel of guild.channels) {
+        this.client.cache.data.cellsChannels.set(channel.id, channel);
+      }
 
     if (guilds.size % 10 != 0 || !isProduction) return;
 

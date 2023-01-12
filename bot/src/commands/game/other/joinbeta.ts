@@ -1,11 +1,10 @@
-import { EmbedBuilder } from 'discord.js';
-import { Category, randomColor, Subcategory, attachments } from '#constants/index';
+import { Category, randomColor, SubCategory, attachments } from '#constants/index';
 import { Command } from '#structures/Command';
 
 export default class JoinBeta extends Command {
   public override name = 'joinbeta';
   public override description = 'Info on how to become a beta tester';
-  public override category = [Category.game, Subcategory.other];
+  public override category = [Category.game, SubCategory.other];
 
   public override async sharedRun(interaction: Command['SharedBuilder']) {
     const infoHandler = await interaction.client.db.information.findUnique({ where: { type: 'joinbeta' } });
@@ -13,8 +12,8 @@ export default class JoinBeta extends Command {
     const embed = new EmbedBuilder()
       .setTitle('Steps to join beta')
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo.name)
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setThumbnail(attachments.currentLogo)
+      .setAuthor(interaction.user)
       .setFooter({ text: `Called by ${interaction.user.tag}` })
       .setDescription(infoHandler.value);
     return { embeds: [embed], files: [attachments.currentLogo.attachment] };

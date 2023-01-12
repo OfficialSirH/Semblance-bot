@@ -25,18 +25,28 @@ export class FastifyBasedInteractionsAPI {
   constructor(readonly webhooks: WebhooksAPI) {}
 
   async resolveData(
-    data: Extract<
+    providedData: Omit<
+      Extract<
+        APIInteractionResponse,
+        { type: InteractionResponseType.ChannelMessageWithSource | InteractionResponseType.UpdateMessage }
+      >,
+      'data'
+    > & { files?: Attachy[]; data?: APIInteractionResponseCallbackData },
+  ) {
+    const data = { ...providedData } as Extract<
       APIInteractionResponse,
       { type: InteractionResponseType.ChannelMessageWithSource | InteractionResponseType.UpdateMessage }
-    > & { files?: Attachy[] },
-  ) {
-    if (data.data && !data.data?.allowed_mentions) data.data.allowed_mentions = { parse: [] };
+    > & { files?: Attachy[] };
+
+    if (data.data) {
+      if (!data.data?.allowed_mentions) data.data.allowed_mentions = { parse: [] };
+    }
+
     if (data.files) {
       const form = new FormData();
       form.append('payload_json', JSON.stringify(data));
       for (const file of data.files) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        form.append('file', new Blob([await file.data()]), file.name!);
+        form.append('file', new Blob([await file.data()]), file.name);
       }
       return form;
     }
@@ -91,7 +101,12 @@ export class FastifyBasedInteractionsAPI {
     await this.webhooks.deleteMessage(interactionIdToken.id, interactionIdToken.token, messageId);
   }
 
-  async updateMessage(res: FastifyReply, data?: APIInteractionResponseCallbackData & { files?: Attachy[] }) {
+  async updateMessage(
+    res: FastifyReply,
+    data?: APIInteractionResponseCallbackData & {
+      files?: Attachy[];
+    },
+  ) {
     const resolvedData = await this.resolveData({ data, type: InteractionResponseType.UpdateMessage });
     await res.type('multipart/form-data').send(resolvedData);
   }

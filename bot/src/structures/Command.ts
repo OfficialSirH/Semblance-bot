@@ -10,12 +10,13 @@ import type { Awaitable } from '@sapphire/framework';
 import type { FastifyReply } from 'fastify';
 import type { Client } from './Client';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
-import type { Category, GuildId, PreconditionName, Subcategory } from '#constants/index';
+import type { Category, GuildId, PreconditionName, SubCategory } from '#constants/index';
 
 export abstract class Command {
   public readonly name: string;
   public readonly description: string;
-  public readonly category: [Category, Subcategory?];
+  public readonly category?: Category;
+  public readonly subCategory?: SubCategory;
   public readonly preconditions: PreconditionName[];
 
   public constructor(
@@ -23,13 +24,16 @@ export abstract class Command {
     options: {
       name: string;
       description: string;
-      category: [Category, Subcategory?];
+      fullCategory?: [Category, SubCategory?];
       preconditions?: PreconditionName[];
     },
   ) {
     this.name = options.name;
     this.description = options.description;
-    this.category = options.category;
+    if (options.fullCategory) {
+      this.category = options.fullCategory[0];
+      this.subCategory = options.fullCategory[1];
+    }
     this.preconditions = options.preconditions ?? [];
   }
 

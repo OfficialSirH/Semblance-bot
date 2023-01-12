@@ -1,18 +1,17 @@
-import { EmbedBuilder } from 'discord.js';
-import { attachments, Category, randomColor, Subcategory } from '#constants/index';
+import { attachments, Category, randomColor, SubCategory } from '#constants/index';
 import { Command } from '#structures/Command';
 
 export default class LargeNumbers extends Command {
   public override name = 'largenumbers';
   public override description = 'List of all the named large numbers in the game.';
-  public override category = [Category.game, Subcategory.other];
+  public override category = [Category.game, SubCategory.other];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('Large Numbers')
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo.name)
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setThumbnail(attachments.currentLogo)
+      .setAuthor(interaction.user)
       .setDescription(
         [
           'M(Million), B(Billion)',

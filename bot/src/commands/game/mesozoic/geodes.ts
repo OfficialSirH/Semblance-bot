@@ -1,18 +1,17 @@
-import { EmbedBuilder } from 'discord.js';
 import { Command } from '#structures/Command';
-import { Category, Subcategory, attachments } from '#constants/index';
+import { Category, SubCategory, attachments } from '#constants/index';
 
 export default class Geodes extends Command {
   public override name = 'geodes';
   public override description = 'Get geode comparisons to show the best value.';
-  public override category = [Category.game, Subcategory.mesozoic];
+  public override category = [Category.game, SubCategory.mesozoic];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('Geodes Comparison')
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
-      .setThumbnail(attachments.currentLogo.name)
-      .setImage(attachments.geodeLevelComparison.name)
+      .setAuthor(interaction.user)
+      .setThumbnail(attachments.currentLogo)
+      .setImage(attachments.geodeLevelComparison)
       .setDescription(
         'The top row of the image represents the rewards from each geode at rank 50, ' +
           'while the bottom row represents the geode rewards at rank 4, ' +

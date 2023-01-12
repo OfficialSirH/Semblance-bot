@@ -1,17 +1,16 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  EmbedBuilder,
-  type ChatInputCommandInteraction,
-  SelectMenuBuilder,
-  type AutocompleteInteraction,
-  ApplicationCommandOptionType,
-  ButtonStyle,
-  type MessageActionRowComponentBuilder,
-} from 'discord.js';
-import { applicationCommandToMention, Category, randomColor } from '#constants/index';
+import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
+import {
+  EmbedBuilder,
+  chatInputApplicationCommandMention,
+  ActionRowBuilder,
+  type MessageActionRowComponentBuilder,
+  ButtonBuilder,
+  SelectMenuBuilder,
+} from '@discordjs/builders';
+import { ButtonStyle, type APIApplicationCommandInteraction, ApplicationCommandOptionType } from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 export default class Help extends Command {
   public override name = 'help';
@@ -27,10 +26,10 @@ export default class Help extends Command {
     const embed = new EmbedBuilder()
       .setTitle('Semblance Command List')
       .setColor(randomColor)
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor(user)
       .setThumbnail(client.user.displayAvatarURL())
       .setDescription(
-        `All of the available commands below can be found through the ${applicationCommandToMention({
+        `All of the available commands below can be found through the ${chatInputApplicationCommandMention({
           client,
           commandName: 'help',
         })} command via the \`query\` option.`,

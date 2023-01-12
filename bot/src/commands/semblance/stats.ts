@@ -1,4 +1,3 @@
-import { EmbedBuilder, version } from 'discord.js';
 import { randomColor, msToTime, Category, emojis } from '#constants/index';
 import { Command } from '#structures/Command';
 import { release } from 'os';
@@ -34,7 +33,7 @@ export default class Info extends Command {
 
     const embed = new EmbedBuilder()
       .setTitle(`Bot Information - ${client.user.tag}`)
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())
       .addFields(

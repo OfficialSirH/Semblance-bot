@@ -1,4 +1,3 @@
-import { type ButtonInteraction, EmbedBuilder } from 'discord.js';
 import { gameTransferPages } from '#constants/commands';
 import { attachments } from '#constants/index';
 import { componentInteractionDefaultParser } from '#constants/components';
@@ -34,7 +33,7 @@ export default class GameTransfer extends InteractionHandler {
       description = '\nDownload your progress onto the other device you wish to put your progress on';
 
     embed
-      .setThumbnail(attachments.currentLogo.name)
+      .setThumbnail(attachments.currentLogo)
       .setImage(gameTransferPages[currentPage])
       .setDescription(`Step ${currentPage + 1}:${description}`);
     await interaction.update({ embeds: [embed] });

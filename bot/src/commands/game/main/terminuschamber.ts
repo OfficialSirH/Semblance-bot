@@ -1,19 +1,18 @@
-import { EmbedBuilder } from 'discord.js';
-import { attachments, Category, randomColor, Subcategory } from '#constants/index';
+import { attachments, Category, randomColor, SubCategory } from '#constants/index';
 import { Command } from '#structures/Command';
 
 export default class TerminusChamber extends Command {
   public override name = 'terminuschamber';
   public override description = 'Details on how to obtain each node within the Terminus Chamber';
-  public override category = [Category.game, Subcategory.main];
+  public override category = [Category.game, SubCategory.main];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('Terminus Chamber')
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo.name)
-      .setImage(attachments.terminusChamber.name)
+      .setThumbnail(attachments.currentLogo)
+      .setImage(attachments.terminusChamber)
       .setDescription(
         [
           '**Yellow Cube** - ||Explore the Mesozoic Valley||',

@@ -1,13 +1,4 @@
-import {
-  type ButtonInteraction,
-  type MessageComponentInteraction,
-  ActionRowBuilder,
-  ButtonBuilder,
-  EmbedBuilder,
-  type MessageActionRowComponentBuilder,
-  ButtonStyle,
-} from 'discord.js';
-import { applicationCommandToMention, randomColor } from '#constants/index';
+import { randomColor } from '#constants/index';
 import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { currentPrice } from '#constants/commands';
 import { LeaderboardUtilities } from '#structures/LeaderboardUtilities';
@@ -19,6 +10,14 @@ import {
   filterAction,
 } from '#constants/components';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
+import {
+  ActionRowBuilder,
+  type MessageActionRowComponentBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+  chatInputApplicationCommandMention,
+} from '@discordjs/builders';
+import { ButtonStyle } from '@discordjs/core';
 
 export default class GameHandler extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {
@@ -244,13 +243,15 @@ async function create(
 
   const embed = new EmbedBuilder()
     .setTitle('Game Created')
-    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+    .setAuthor(user)
     .setColor(randomColor)
     .setDescription(
-      `Game Successfully created! Now you can start collecting Random-Bucks by using ${applicationCommandToMention({
-        client: interaction.client,
-        commandName: 'game',
-      })} and pressing 'collect' and upgrade with 'upgrade'\n\n` +
+      `Game Successfully created! Now you can start collecting Random-Bucks by using ${chatInputApplicationCommandMention(
+        {
+          client: interaction.client,
+          commandName: 'game',
+        },
+      )} and pressing 'collect' and upgrade with 'upgrade'\n\n` +
         `Price Increase: ${(creationHandler.percentIncrease - 1) * 100}%\n` +
         `Starting Profits: ${creationHandler.profitRate.toFixed(3)}/sec\n\n` +
         "Reminder, don't be constantly spamming and creating a new game just cause your RNG stats aren't perfect \n",
@@ -267,7 +268,7 @@ async function about(
   const { user } = interaction;
   const embed = new EmbedBuilder()
     .setTitle("What's Semblance's Idle-Game about?")
-    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+    .setAuthor(user)
     .setColor(randomColor)
     .setDescription(
       "SIG, AKA Semblance's Idle-Game, is an RNG idle-game that uses a currency called Random-Bucks \n" +
@@ -302,7 +303,7 @@ async function collect(
 
   const embed = new EmbedBuilder()
     .setTitle('Balance')
-    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+    .setAuthor(user)
     .setColor(randomColor)
     .setDescription(
       `You've collected ${collected.toFixed(
@@ -328,7 +329,7 @@ async function upgrade(
       embeds: [
         new EmbedBuilder()
           .setTitle('Not Enough Random-Bucks')
-          .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+          .setAuthor(user)
           .setColor(randomColor)
           .setDescription(
             [
@@ -363,7 +364,7 @@ async function upgrade(
 
   const embed = new EmbedBuilder()
     .setTitle('Upgrade Stats')
-    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+    .setAuthor(user)
     .setColor(randomColor)
     .setDescription(
       `You have successfully upgrade from level ${previousLevel} => ${
@@ -387,7 +388,7 @@ async function leaderboard(
   if (!leaderboard) leaderboard = 'There is currently no one who has upgraded their income.';
   const embed = new EmbedBuilder()
     .setTitle("Semblance's idle-game leaderboard")
-    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+    .setAuthor(user)
     .setColor(randomColor)
     .setDescription(`${leaderboard}`)
     .setFooter({ text: 'May the odds be with you.' });
@@ -423,7 +424,7 @@ async function stats(
   const { user } = interaction;
   const embed = new EmbedBuilder()
     .setTitle("Welcome back to Semblance's Idle-Game!")
-    .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+    .setAuthor(user)
     .setColor(randomColor)
     .setThumbnail(user.displayAvatarURL())
     .addFields(

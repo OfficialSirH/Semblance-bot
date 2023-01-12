@@ -1,15 +1,16 @@
-import { applicationCommandToMention, Category, randomColor } from '#constants/index';
+import { Category, randomColor } from '#constants/index';
 import { currentPrice } from '#constants/commands';
 import { Command } from '#structures/Command';
 import { type APIApplicationCommandInteraction, ApplicationCommandOptionType } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
+import { chatInputApplicationCommandMention, EmbedBuilder } from '@discordjs/builders';
 
 export default class Gamestats extends Command {
   public constructor(client: Command.Requirement) {
     super(client, {
       name: 'gamestats',
       description: "Displays a user's game stats for Semblance Idle-Game.",
-      category: [Category.fun],
+      fullCategory: [Category.fun],
     });
   }
 
@@ -23,7 +24,7 @@ export default class Gamestats extends Command {
         content:
           user.id != interaction.user.id
             ? 'This user does not exist'
-            : `You have not created a game yet; if you'd like to create a game, use \`${applicationCommandToMention(
+            : `You have not created a game yet; if you'd like to create a game, use \`${chatInputApplicationCommandMention(
                 interaction,
                 'create',
               )}\``,
@@ -32,7 +33,7 @@ export default class Gamestats extends Command {
     const nxtUpgrade = await currentPrice(interaction.client, statsHandler);
     const embed = new EmbedBuilder()
       .setTitle(`${user.username}'s gamestats`)
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor(user)
       .setColor(randomColor)
       .setThumbnail(user.displayAvatarURL())
       .addFields(

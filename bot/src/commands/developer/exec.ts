@@ -13,7 +13,7 @@ export default class Exec extends Command {
     super(client, {
       name: 'exec',
       description: 'Executes a command in the terminal.',
-      category: [Category.developer],
+      fullCategory: [Category.developer],
       preconditions: [PreconditionName.OwnerOnly],
     });
   }

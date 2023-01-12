@@ -1,5 +1,5 @@
 import * as schedule from 'node-schedule';
-import { isProduction } from '#constants/index';
+import { GuildId, isProduction } from '#constants/index';
 import { handleBoosterReward, handleReminder } from '#constants/models';
 import type { BoosterReward, Reminder } from '@prisma/client';
 import {
@@ -8,8 +8,11 @@ import {
   GatewayOpcodes,
   type GatewayReadyDispatchData,
   PresenceUpdateStatus,
+  Routes,
+  type APIRole,
 } from '@discordjs/core';
 import { Listener } from '#structures/Listener';
+import { Collection } from '@discordjs/collection';
 
 export default class Ready extends Listener<GatewayDispatchEvents.Ready> {
   public constructor(client: Listener.Requirement) {
@@ -25,6 +28,13 @@ export default class Ready extends Listener<GatewayDispatchEvents.Ready> {
     for (const guild of data.guilds) {
       this.client.cache.data.guilds.set(guild.id, guild);
     }
+
+    this.client.cache.data.cellsRoles = new Collection(
+      ((await this.client.rest.get(Routes.guildRoles(GuildId.cellToSingularity))) as APIRole[]).map(role => [
+        role.id,
+        role,
+      ]) as [string, APIRole][],
+    );
 
     if (!isProduction) {
       this.client.ws.send(0, {

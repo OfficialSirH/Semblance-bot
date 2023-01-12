@@ -25,3 +25,5 @@ export type ParsedCustomIdData<T extends string = string, NewData extends Custom
 > & {
   action: T;
 };
+
+export type Result<Ok extends boolean = boolean> = Ok extends true ? { ok: true } : { ok: false; message: string };

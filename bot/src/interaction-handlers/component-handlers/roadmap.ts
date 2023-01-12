@@ -44,7 +44,7 @@ export default class Roadmap extends InteractionHandler {
 function earlyBeyond(interaction: ButtonInteraction, name: string) {
   const embed = new EmbedBuilder()
     .setTitle('Beyond Clips')
-    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+    .setAuthor(interaction.user)
     .setColor(randomColor)
     .setDescription(
       [
@@ -76,7 +76,7 @@ function earlyBeyond(interaction: ButtonInteraction, name: string) {
 function testerCredits(interaction: ButtonInteraction, name: string) {
   const embed = new EmbedBuilder()
     .setTitle('Credits to our Early Private Beta Testers!')
-    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+    .setAuthor(interaction.user)
     .setColor(randomColor)
     .setDescription(earlyBeyondTesters.map(e => `<@${e}>`).join('\n'))
     .setFooter({
@@ -96,10 +96,10 @@ function testerCredits(interaction: ButtonInteraction, name: string) {
 function roadmap(interaction: ButtonInteraction) {
   const embed = new EmbedBuilder()
     .setTitle('Road Map')
-    .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+    .setAuthor(interaction.user)
     .setColor(randomColor)
-    .setThumbnail(attachments.currentLogo.name)
-    .setImage(attachments.roadMap.name);
+    .setThumbnail(attachments.currentLogo)
+    .setImage(attachments.roadMap);
   const components = [
     new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
       new ButtonBuilder()

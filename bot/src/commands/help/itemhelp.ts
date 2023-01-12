@@ -1,6 +1,6 @@
-import { EmbedBuilder } from 'discord.js';
-import { applicationCommandToMention, Category, randomColor } from '#constants/index';
+import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
+import { chatInputApplicationCommandMention, EmbedBuilder } from '@discordjs/builders';
 
 export default class ItemHelp extends Command {
   public override name = 'itemhelp';
@@ -9,14 +9,14 @@ export default class ItemHelp extends Command {
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const { client } = interaction;
-    const itemcalc = applicationCommandToMention(
+    const itemcalc = chatInputApplicationCommandMention(
       {
         client,
         commandName: 'itemcalc',
       },
       'required_resources',
     );
-    const itemcalcrev = applicationCommandToMention(
+    const itemcalcrev = chatInputApplicationCommandMention(
       {
         client,
         commandName: 'itemcalc',
@@ -26,7 +26,7 @@ export default class ItemHelp extends Command {
 
     const embed = new EmbedBuilder()
       .setTitle('Item Calculator Help')
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())
       .setDescription(

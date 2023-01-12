@@ -9,12 +9,12 @@ export default class ServerList extends Command {
     super(client, {
       name: 'serverlist',
       description: 'Lists all servers that Semblance is in.',
-      category: [Category.developer],
+      fullCategory: [Category.developer],
       preconditions: [PreconditionName.OwnerOnly],
     });
   }
 
-  public override async chatInputRun(interaction: ChatInputCommandInteraction) {
+  public override async chatInputRun(interaction: APIApplicationCommandInteraction) {
     const page = interaction.options.getInteger('page') || 1;
     const { client, user } = interaction;
 

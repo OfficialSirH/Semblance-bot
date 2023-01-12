@@ -1,23 +1,17 @@
 import { getPermissionLevel } from '#constants/index';
-import { Precondition } from '@sapphire/framework';
-import type { ChatInputCommandInteraction, ContextMenuCommandInteraction } from 'discord.js';
+import type { APIApplicationCommandInteraction, APIContextMenuInteraction } from '@discordjs/core';
+import { Precondition } from '#structures/Precondition';
 
 export class ModOnly extends Precondition {
-  public override chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override chatInputRun(interaction: APIApplicationCommandInteraction) {
     return getPermissionLevel(interaction.member) > 0
       ? this.ok()
-      : this.error({ message: 'Only the moderators can use this command!' });
+      : this.error('Only the moderators can use this command!');
   }
 
-  public override contextMenuRun(interaction: ContextMenuCommandInteraction<'cached'>) {
+  public override contextMenuRun(interaction: APIContextMenuInteraction) {
     return getPermissionLevel(interaction.member) > 0
       ? this.ok()
-      : this.error({ message: 'Only the moderators can use this command!' });
-  }
-}
-
-declare module '@sapphire/framework' {
-  interface Preconditions {
-    ModOnly: never;
+      : this.error('Only the moderators can use this command!');
   }
 }

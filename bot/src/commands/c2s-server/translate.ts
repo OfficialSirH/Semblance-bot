@@ -15,7 +15,7 @@ export default class Translate extends Command {
     super(client, {
       name: 'translate',
       description: 'Translates a message to English.',
-      category: [Category.c2sServer],
+      fullCategory: [Category.c2sServer],
       preconditions: [PreconditionName.ModOnly],
     });
   }

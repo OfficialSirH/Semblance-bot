@@ -1,4 +1,4 @@
-import type { Awaitable } from '#lib/interfaces/Semblance';
+import type { Awaitable, Result } from '#lib/interfaces/Semblance';
 import type { APIChatInputApplicationCommandInteraction, APIContextMenuInteraction } from '@discordjs/core';
 import type { Client } from './Client';
 
@@ -10,7 +10,7 @@ export class Precondition {
   }
 
   /**
-   * chatInputRun method for checking if a slash command meets the precondition
+   * method for checking if a slash command meets the precondition
    * @param interaction the interaction that triggered the command
    * @example
    * ```typescript
@@ -20,10 +20,10 @@ export class Precondition {
    * ```
    * @returns true if the precondition is met, false if not
    */
-  public chatInputRun?(interaction: APIChatInputApplicationCommandInteraction): Awaitable<boolean>;
+  public chatInputRun?(interaction: APIChatInputApplicationCommandInteraction): Awaitable<Result>;
 
   /**
-   * contextMenuRun method for checking if a context menu meets the precondition
+   * method for checking if a context menu meets the precondition
    * @param interaction the interaction that triggered the command
    * @example
    * ```typescript
@@ -33,7 +33,36 @@ export class Precondition {
    * ```
    * @returns true if the precondition is met, false if not
    */
-  public contextMenuRun?(interaction: APIContextMenuInteraction): Awaitable<boolean>;
+  public contextMenuRun?(interaction: APIContextMenuInteraction): Awaitable<Result>;
+
+  /**
+   * method for declaring a precondition as ok
+   * @example
+   * ```typescript
+   * public override async chatInputRun(interaction: APIChatInputApplicationCommandInteraction) {
+   *  return this.ok();
+   * }
+   * ```
+   * @returns Result with ok set to true
+   */
+  public ok(): Result<true> {
+    return { ok: true };
+  }
+
+  /**
+   * method for declaring a precondition as not ok
+   * @param message the message to be returned to the user
+   * @example
+   * ```typescript
+   * public override async chatInputRun(interaction: APIChatInputApplicationCommandInteraction) {
+   *  return this.error({ message: 'You do not have permission to use this command!' });
+   * }
+   * ```
+   * @returns Result with ok set to false and message set to the message passed in
+   */
+  public error(message: string): Result<false> {
+    return { ok: false, message };
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace

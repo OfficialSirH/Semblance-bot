@@ -8,11 +8,11 @@ export default class MetaspeedCalc extends Command {
     super(client, {
       name: 'metaspeedcalc',
       description: 'Provides the production multiplier for the specified amount of metabits.',
-      category: [Category.calculator],
+      fullCategory: [Category.calculator],
     });
   }
 
-  public override chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override chatInputRun(interaction: APIApplicationCommandInteraction) {
     const options = interaction.options,
       metabits = options.getNumber('metabits', true),
       dinoRanks = options.getInteger('mv_ranks') ? clamp(options.getInteger('mv_ranks') || 0, 0, 550) : 0,
@@ -60,7 +60,7 @@ export default class MetaspeedCalc extends Command {
     const user = interaction.member.user,
       embed = new EmbedBuilder()
         .setTitle('Multiplier Total')
-        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+        .setAuthor(user)
         .setColor(randomColor)
         .setDescription(
           [

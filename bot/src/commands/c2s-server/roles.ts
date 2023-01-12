@@ -1,15 +1,21 @@
-import { c2sRoles, c2sRolesInformation, Category, attachments, GuildId, avatarUrl } from '#constants/index';
+import { c2sRoles, c2sRolesInformation, Category, attachments, GuildId, authorDefault } from '#constants/index';
 import { buildCustomId } from '#constants/components';
 import type { FastifyReply } from 'fastify';
 import { Command } from '#structures/Command';
-import { type APIApplicationCommandInteraction, MessageFlags, ButtonStyle, type APIGuild } from '@discordjs/core';
+import { type APIApplicationCommandInteraction, MessageFlags, ButtonStyle } from '@discordjs/core';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+  type MessageActionRowComponentBuilder,
+} from '@discordjs/builders';
 
 export default class Roles extends Command {
   public constructor(client: Command.Requirement) {
     super(client, {
       name: 'roles',
       description: 'see the list of available roles for the c2s server',
-      category: [Category.c2sServer],
+      fullCategory: [Category.c2sServer],
     });
   }
 
@@ -21,7 +27,7 @@ export default class Roles extends Command {
         content: 'An issue occurred while trying to get your roles.',
       });
     }
-    const guildRoles = (this.client.cache.data.guilds.get(GuildId.cellToSingularity) as APIGuild).roles;
+    const guildRoles = this.client.cache.data.cellsRoles;
 
     if (!guildRoles) {
       return this.client.api.interactions.reply(res, {
@@ -32,10 +38,7 @@ export default class Roles extends Command {
 
     const embed = new EmbedBuilder()
         .setTitle('C2S Roles')
-        .setAuthor({
-          name: `${member.user.username}#${member.user.discriminator}`,
-          iconURL: avatarUrl(member.user),
-        })
+        .setAuthor(authorDefault(member.user))
         .setThumbnail(attachments.currentLogo.url)
         .setDescription(
           [
@@ -100,7 +103,7 @@ export default class Roles extends Command {
                   id: member.user.id,
                 }),
               )
-              .setEmoji(hasServerEvents ? '❌' : '✅')
+              .setEmoji({ name: hasServerEvents ? '❌' : '✅' })
               .setLabel(hasServerEvents ? 'Remove Server Events Role' : 'Add Server Events Role')
               .setStyle(hasServerEvents ? ButtonStyle.Danger : ButtonStyle.Success),
           )

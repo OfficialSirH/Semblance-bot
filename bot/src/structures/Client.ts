@@ -20,14 +20,16 @@ import {
   type APIUser,
   type APIUnavailableGuild,
   type APIChannel,
+  type APIRole,
 } from '@discordjs/core';
 
 export class Client {
   public cache = {
     data: {
       guilds: new Collection<Snowflake, APIGuild | APIUnavailableGuild>(),
-      channels: new Collection<Snowflake, APIChannel>(),
       applicationCommands: new Collection<Snowflake, APIApplicationCommand>(),
+      cellsChannels: new Collection<Snowflake, APIChannel>(),
+      cellsRoles: new Collection<Snowflake, APIRole>(),
     },
     handles: {
       listeners: new Collection<GatewayDispatchEvents, Listener>(),

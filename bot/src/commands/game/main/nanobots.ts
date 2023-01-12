@@ -1,19 +1,18 @@
-import { EmbedBuilder } from 'discord.js';
-import { attachments, Category, randomColor, Subcategory } from '#constants/index';
+import { attachments, Category, randomColor, SubCategory } from '#constants/index';
 import { Command } from '#structures/Command';
 
 export default class Nanobots extends Command {
   public override name = 'nanobots';
   public override description = 'Provides details on nanobots and whatever else about those cute critters';
-  public override category = [Category.game, Subcategory.main];
+  public override category = [Category.game, SubCategory.main];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('Nanobots')
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo.name)
-      .setImage(attachments.nanobots.name)
+      .setThumbnail(attachments.currentLogo)
+      .setImage(attachments.nanobots)
       .setDescription(
         [
           'Nanobots are little dudes that can help with either auto-upgrading or clicking. These little dudes are obtainable through rebooting and spending metabits for them, which you can buy up to 12(First Image).',

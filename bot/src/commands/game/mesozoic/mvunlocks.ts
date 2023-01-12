@@ -1,18 +1,17 @@
-import { EmbedBuilder } from 'discord.js';
-import { Category, randomColor, Subcategory, attachments } from '#constants/index';
+import { Category, randomColor, SubCategory, attachments } from '#constants/index';
 import { Command } from '#structures/Command';
 
 export default class Mvunlocks extends Command {
   public override name = 'mvunlocks';
   public override description = 'Information about the unlocking of each reptile and bird';
-  public override category = [Category.game, Subcategory.mesozoic];
+  public override category = [Category.game, SubCategory.mesozoic];
   public override aliases = ['reptiles', 'birds', 'mvunlock'];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('Reptiles and Birds')
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
-      .setThumbnail(attachments.currentLogo.name)
+      .setAuthor(interaction.user)
+      .setThumbnail(attachments.currentLogo)
       .setColor(randomColor)
       .setDescription(
         'The following generators are unlocked by achieving the following ranks in the Mesozoic Valley\n' +

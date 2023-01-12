@@ -1,7 +1,5 @@
 import { Category } from '#constants/index';
 import { Command } from '#structures/Command';
-import { EmbedBuilder } from 'discord.js';
-
 export default class Freedarwinium extends Command {
   public override name = 'freedarwinium';
   public override category = [Category.secret];

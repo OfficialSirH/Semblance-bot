@@ -1,16 +1,11 @@
-import {
-  type MessageActionRowComponentBuilder,
-  type ButtonInteraction,
-  Collection,
-  ActionRowBuilder,
-  ButtonBuilder,
-  EmbedBuilder,
-  ButtonStyle,
-} from 'discord.js';
 import { c2sRoles, GuildId, attachments } from '#constants/index';
 import { componentInteractionDefaultParser, buildCustomId } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
+import { EmbedBuilder } from '@discordjs/builders';
+import { Collection } from '@discordjs/collection';
+import { ButtonStyle } from '@discordjs/core';
+// todo: remove this poor cooldown implementation and actually implement a cooldown that will actually remove the user from the cooldown collection after the cooldown is over
 const cooldown: Collection<string, number> = new Collection();
 
 export default class Roles extends InteractionHandler {
@@ -71,7 +66,7 @@ export default class Roles extends InteractionHandler {
         ephemeral: true,
       });
     }
-    const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data).setThumbnail(attachments.currentLogo.name);
+    const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data).setThumbnail(attachments.currentLogo);
     await interaction.message.edit({ embeds: [embed], components });
   }
 }

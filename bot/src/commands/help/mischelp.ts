@@ -1,6 +1,6 @@
-import { EmbedBuilder } from 'discord.js';
-import { applicationCommandToMention, Category, randomColor } from '#constants/index';
+import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder, chatInputApplicationCommandMention } from '@discordjs/builders';
 
 export default class MiscHelp extends Command {
   public override name = 'mischelp';
@@ -27,12 +27,13 @@ export default class MiscHelp extends Command {
       .setTitle('Miscellaneous Commands')
       .setThumbnail(client.user.displayAvatarURL())
       .setColor(randomColor)
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setDescription(
-        `All of the available commands below can be found through the ${applicationCommandToMention({
-          client,
-          commandName: 'help',
-        })} command via the \`query\` option.`,
+        `All of the available commands below can be found through the ${chatInputApplicationCommandMention(
+          'help',
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+          this.client.cache.data.applicationCommands.find(c => c.name === 'help')?.id!,
+        )} command via the \`query\` option.`,
       )
       .addFields(
         {

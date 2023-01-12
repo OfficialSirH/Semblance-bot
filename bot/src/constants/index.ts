@@ -1,8 +1,13 @@
-﻿import type { Client } from '#structures/Client';
-import * as fs from 'fs/promises';
+﻿import * as fs from 'fs/promises';
 import type { Stream } from 'stream';
 import { Attachy } from '#structures/Attachy';
-import { type APIGuildMember, type APIMessageComponentInteraction, Routes, type APIUser } from '@discordjs/core';
+import {
+  type APIGuildMember,
+  type APIMessageComponentInteraction,
+  Routes,
+  type APIUser,
+  type APIInteractionGuildMember,
+} from '@discordjs/core';
 import type { REST } from '@discordjs/rest';
 import type { Client } from '#structures/Client';
 
@@ -44,11 +49,14 @@ export enum LogLevel {
 export const avatarUrl = (user: APIUser) =>
   `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar?.startsWith('a_') ? 'gif' : 'png'}`;
 
-export const applicationCommandToMention = (client: Client, commandName: string, subcommand?: string) => {
-  const command = client.cache.data.applicationCommands.find(c => c.name === commandName);
-  if (!command) return '</nonexisting command:fakeid>';
-  return `</${command.name}${subcommand ? ` ${subcommand}` : ''}:${command.id}>`;
-};
+export const userTag = (user: APIUser) => `${user.username}#${user.discriminator}`;
+
+export const authorDefault = (user: APIUser | undefined) => ({
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  name: userTag(user!),
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  iconURL: avatarUrl(user!),
+});
 
 export const attachments = await (async () => {
   const files = await fs.readdir('./src/images/');
@@ -120,9 +128,8 @@ export const earlyBeyondTesters = [
   '263156930879553537', // 'xXTacocubesXx#6012',
 ];
 
-export const subcategoryList = (client: Client, category: Category, subcategory: Subcategory) =>
-  client.stores
-    .get('commands')
+export const subcategoryList = (client: Client, category: Category, subcategory: SubCategory) =>
+  client.cache.handles.commands
     .filter(c => c.category == category && c.subCategory == subcategory)
     .map(c => `**${c.name}**`)
     .join(', ');
@@ -217,7 +224,7 @@ export enum Category {
   semblance = 'semblance',
 }
 
-export enum Subcategory {
+export enum SubCategory {
   main = 'main',
   mesozoic = 'mesozoic',
   beyond = 'beyond',
@@ -304,17 +311,13 @@ export const c2sRoles = {
   },
 };
 
-export const getPermissionLevel = function (member: APIGuildMember | null) {
+export const getPermissionLevel = function (member: APIGuildMember | APIInteractionGuildMember | undefined) {
   if (!member) return 0;
-  try {
-    if (UserId.aditya === member.user?.id || UserId.sirh === member.user?.id) return 3;
-    // Aditya, SirH //RIP SirH OG: "279080959612026880" === member.user.id // SirH#4297
-    if (member.roles.includes(c2sRoles.server.councilOverseer)) return 2;
-    if (member.roles.includes(c2sRoles.server.martianCouncil)) return 1;
-    return 0; // normal user
-  } catch {
-    return 0;
-  }
+  if (UserId.aditya === member.user?.id || UserId.sirh === member.user?.id) return 3;
+  // Aditya, SirH //RIP SirH OG: "279080959612026880" === member.user.id // SirH#4297
+  if (member.roles.includes(c2sRoles.server.councilOverseer)) return 2;
+  if (member.roles.includes(c2sRoles.server.martianCouncil)) return 1;
+  return 0; // normal user
 };
 class RandomColor {
   static get randomColor() {

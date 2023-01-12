@@ -1,7 +1,6 @@
 import { disableAllComponents, getPermissionLevel } from '#constants/index';
 import { componentInteractionDefaultParser } from '#constants/components';
 import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
-import { type ButtonInteraction, type TextBasedChannel, EmbedBuilder } from 'discord.js';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Suggest extends InteractionHandler {
@@ -43,11 +42,7 @@ export default class Suggest extends InteractionHandler {
           'It just means that your suggestion has been accepted into being shown in the suggestions channel where the team may consider your suggestion.',
       );
       return (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannel).send({
-        embeds: [
-          new EmbedBuilder()
-            .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
-            .setDescription(interaction.message.embeds[0].description),
-        ],
+        embeds: [new EmbedBuilder().setAuthor(user).setDescription(interaction.message.embeds[0].description)],
       });
     }
 

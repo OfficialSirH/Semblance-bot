@@ -1,5 +1,4 @@
-﻿import { EmbedBuilder } from 'discord.js';
-import { Category, randomColor } from '#constants/index';
+﻿import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
 
 export default class Changelog extends Command {
@@ -12,7 +11,7 @@ export default class Changelog extends Command {
     if (!changelogHandler) return 'No changelog found.';
     const embed = new EmbedBuilder()
       .setTitle('Changelog')
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setColor(randomColor)
       .setDescription(changelogHandler.value);
     return { embeds: [embed] };

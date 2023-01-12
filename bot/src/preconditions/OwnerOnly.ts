@@ -1,21 +1,16 @@
 import { UserId } from '#constants/index';
-import { Precondition } from '@sapphire/framework';
+import { Precondition } from '#structures/Precondition';
+import type { APIChatInputApplicationCommandInteraction, APIContextMenuInteraction } from '@discordjs/core';
 export class OwnerOnly extends Precondition {
-  public override chatInputRun(interaction: { user: { id: UserId } }) {
-    return [UserId.aditya, UserId.sirh].includes(interaction.user.id as UserId)
+  public override chatInputRun(interaction: APIChatInputApplicationCommandInteraction) {
+    return [UserId.aditya, UserId.sirh].includes(interaction.user?.id as UserId)
       ? this.ok()
-      : this.error({ message: 'Only the bot owner can use this command!' });
+      : this.error('Only the bot owner can use this command!');
   }
 
-  public override contextMenuRun(interaction: { user: { id: UserId } }) {
-    return [UserId.aditya, UserId.sirh].includes(interaction.user.id as UserId)
+  public override contextMenuRun(interaction: APIContextMenuInteraction) {
+    return [UserId.aditya, UserId.sirh].includes(interaction.user?.id as UserId)
       ? this.ok()
-      : this.error({ message: 'Only the bot owner can use this command!' });
-  }
-}
-
-declare module '@sapphire/framework' {
-  interface Preconditions {
-    OwnerOnly: never;
+      : this.error('Only the bot owner can use this command!');
   }
 }

@@ -1,19 +1,19 @@
 import {
-  type ChatInputCommandInteraction,
+  type APIApplicationCommandInteraction,
   ActionRowBuilder,
   ButtonBuilder,
   EmbedBuilder,
   ButtonStyle,
   type MessageActionRowComponentBuilder,
 } from 'discord.js';
-import { Category, randomColor, Subcategory, attachments } from '#constants/index';
+import { Category, randomColor, SubCategory, attachments } from '#constants/index';
 import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
 
 export default class Codes extends Command {
   public override name = 'codes';
   public override description = 'get all of the ingame codes';
-  public override category = [Category.game, Subcategory.other];
+  public override category = [Category.game, SubCategory.other];
 
   public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     await interaction.reply(await this.sharedRun(interaction));
@@ -24,9 +24,9 @@ export default class Codes extends Command {
     if (!codeHandler) return 'No codes found.';
     const embed = new EmbedBuilder()
       .setTitle('Darwinium Codes')
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo.name)
+      .setThumbnail(attachments.currentLogo)
       .setDescription(codeHandler.value)
       .setFooter({ text: codeHandler.footer as string });
     const component = new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(

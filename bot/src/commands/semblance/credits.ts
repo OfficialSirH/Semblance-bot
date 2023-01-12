@@ -1,7 +1,7 @@
 import {
   ActionRowBuilder,
   ButtonBuilder,
-  type ChatInputCommandInteraction,
+  type APIApplicationCommandInteraction,
   EmbedBuilder,
   ButtonStyle,
   type MessageActionRowComponentBuilder,

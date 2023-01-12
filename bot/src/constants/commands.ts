@@ -1,4 +1,3 @@
-import type { Client } from 'discord.js';
 import type { Client } from '#structures/Client';
 import { clamp } from '#lib/utils/math';
 import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndDogAPI';

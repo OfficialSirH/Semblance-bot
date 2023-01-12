@@ -1,18 +1,17 @@
-import { EmbedBuilder } from 'discord.js';
-import { Category, randomColor, Subcategory, attachments } from '#constants/index';
+import { Category, randomColor, SubCategory, attachments } from '#constants/index';
 import { Command } from '#structures/Command';
 
 export default class Mesoguide extends Command {
   public override name = 'mesoguide';
   public override description = 'Mesozoic Valley Guide';
-  public override category = [Category.game, Subcategory.mesozoic];
+  public override category = [Category.game, SubCategory.mesozoic];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('**Mesozoic Valley Guide**')
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo.name)
+      .setThumbnail(attachments.currentLogo)
       .setDescription(
         'This guide is mainly aimed at helping people with their first run through the Mesozoic Valley.\n' +
           'For later runs, up to prestige 10 you should start saving up lots of mutagen to make getting the last achievements much easier. ' +

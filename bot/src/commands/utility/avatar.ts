@@ -1,6 +1,8 @@
-import { type ChatInputCommandInteraction, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
+import { APIApplicationCommandInteraction, ApplicationCommandOptionType } from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Avatar extends Command {
   public override name = 'avatar';
@@ -14,7 +16,7 @@ export default class Avatar extends Command {
       author = interaction.member.user,
       embed = new EmbedBuilder()
         .setTitle(`${user.username}'s Avatar`)
-        .setAuthor({ name: `${author.tag}`, iconURL: author.displayAvatarURL() })
+        .setAuthor({ name: author.tag, iconURL: author.displayAvatarURL() })
         .setColor(randomColor)
         .setImage(user.displayAvatarURL());
     return interaction.reply({ embeds: [embed] });

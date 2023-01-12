@@ -13,8 +13,6 @@ export interface UserReminder {
   channelId: Snowflake;
 }
 
-import type { Snowflake } from 'discord.js';
-
 export interface Leaderboard<T extends 'game' | 'vote' = 'game' | 'vote'> {
   type: T;
   users: Pick<LeaderboardUser, 'userId' | (T extends 'game' ? 'level' : 'voteCount')>[];

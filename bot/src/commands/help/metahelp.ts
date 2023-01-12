@@ -1,6 +1,6 @@
-import { EmbedBuilder } from 'discord.js';
-import { applicationCommandToMention, Category, randomColor } from '#constants/index';
+import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder, chatInputApplicationCommandMention } from '@discordjs/builders';
 export default class MetaHelp extends Command {
   public override name = 'metahelp';
   public override description = 'help for metabit calculators';
@@ -13,10 +13,10 @@ export default class MetaHelp extends Command {
       .setTitle('Metabit Calculator Help')
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setDescription(
         'The Metabit Calculator supports Scientific Notation, which means you can type numbers like 1E25. You can also input names for numbers like million all the way to vigintillion;' +
-          ` Use ${applicationCommandToMention({
+          ` Use ${chatInputApplicationCommandMention({
             client,
             commandName: 'help',
           })} and input 'largenumbers' into the query option to get more info on large numbers.`,
@@ -34,7 +34,7 @@ export default class MetaHelp extends Command {
         },
         {
           name: 'metacalc example',
-          value: `${applicationCommandToMention(
+          value: `${chatInputApplicationCommandMention(
             {
               client,
               commandName: 'metacalc',
@@ -44,7 +44,7 @@ export default class MetaHelp extends Command {
         },
         {
           name: 'metacalcrev example',
-          value: `${applicationCommandToMention(
+          value: `${chatInputApplicationCommandMention(
             {
               client,
               commandName: 'metacalc',

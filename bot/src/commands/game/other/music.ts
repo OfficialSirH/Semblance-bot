@@ -1,17 +1,16 @@
-import { EmbedBuilder } from 'discord.js';
-import { Category, randomColor, Subcategory, attachments } from '#constants/index';
+import { Category, randomColor, SubCategory, attachments } from '#constants/index';
 import { Command } from '#structures/Command';
 
 export default class Music extends Command {
   public name = 'music';
   public description = 'Provides the links to the in-game music on the Fandom wiki and on Spotify.';
-  public category = [Category.game, Subcategory.other];
+  public category = [Category.game, SubCategory.other];
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const embed = new EmbedBuilder()
       .setTitle('Music')
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo.name)
+      .setThumbnail(attachments.currentLogo)
       .setDescription(
         [
           `Here's a link to the music, ${interaction.user.username}`,

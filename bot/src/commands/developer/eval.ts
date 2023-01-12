@@ -9,12 +9,12 @@ export default class Eval extends Command {
     super(client, {
       name: 'eval',
       description: 'Evaluate some code.',
-      category: [Category.developer],
+      fullCategory: [Category.developer],
       preconditions: [PreconditionName.OwnerOnly],
     });
   }
 
-  public override async contextMenuRun(interaction: ContextMenuCommandInteraction<'cached'>) {
+  public override async contextMenuRun(interaction: APIContextMenuInteraction) {
     const message = interaction.options.getMessage('message');
     if (!message) return interaction.reply({ content: 'Could not find message.', ephemeral: true });
     const content =
@@ -33,12 +33,12 @@ export default class Eval extends Command {
       Promise.resolve(evaled).then(async result => {
         evaled = result;
         if (typeof evaled != 'string') evaled = inspect(evaled);
-        const data: { embeds: EmbedBuilder[] | undefined; files: AttachmentBuilder[] } = {
+        const data: { embeds: EmbedBuilder[] | undefined; files: Attachy[] } = {
           embeds: undefined,
           files: [],
         };
         if (evaled.length > 1015) {
-          const evalOutputFile = new AttachmentBuilder(Buffer.from(`${evaled}`), { name: 'evalOutput.js' });
+          const evalOutputFile = new Attachy(Buffer.from(`${evaled}`), { name: 'evalOutput.js' });
           data.files = [evalOutputFile];
           embed
             .addFields({ name: '📤 Output', value: 'Output is in file preview above' })

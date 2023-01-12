@@ -1,4 +1,3 @@
-import { type ChatInputCommandInteraction, EmbedBuilder, ApplicationCommandOptionType } from 'discord.js';
 import { randomColor, formattedDate, Category } from '#constants/index';
 import type { Reminder, UserReminder } from '@prisma/client';
 import { handleReminder } from '#constants/models';
@@ -166,7 +165,7 @@ export default class RemindMe extends Command {
   }
 }
 
-async function create(interaction: ChatInputCommandInteraction<'cached'>) {
+async function create(interaction: APIApplicationCommandInteraction) {
   const timeAmount = interaction.options.getInteger('amount', true) * MILLISECONDS_TO_MINUTES,
     reminder = interaction.options.getString('reminder', true),
     user = interaction.member.user;
@@ -241,7 +240,7 @@ async function create(interaction: ChatInputCommandInteraction<'cached'>) {
   );
 }
 
-async function edit(interaction: ChatInputCommandInteraction<'cached'>) {
+async function edit(interaction: APIApplicationCommandInteraction) {
   const user = interaction.member.user,
     currentReminderData = (await interaction.client.db.reminder.findUnique({
       where: { userId: user.id },
@@ -303,7 +302,7 @@ async function edit(interaction: ChatInputCommandInteraction<'cached'>) {
   await interaction.reply({ embeds: [embed] });
 }
 
-async function deleteReminder(interaction: ChatInputCommandInteraction<'cached'>) {
+async function deleteReminder(interaction: APIApplicationCommandInteraction) {
   const user = interaction.member.user,
     reminderId = interaction.options.getInteger('reminderid', true),
     currentReminderData = (await interaction.client.db.reminder.findUnique({
@@ -348,7 +347,7 @@ async function deleteReminder(interaction: ChatInputCommandInteraction<'cached'>
   await interaction.reply({ embeds: [embed] });
 }
 
-async function list(interaction: ChatInputCommandInteraction<'cached'>) {
+async function list(interaction: APIApplicationCommandInteraction) {
   const user = interaction.member.user,
     currentReminderData = (await interaction.client.db.reminder.findUnique({
       where: { userId: user.id },

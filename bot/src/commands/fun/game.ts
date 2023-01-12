@@ -10,7 +10,7 @@ export default class Game extends Command {
     super(client, {
       name: 'game',
       description: 'An idle-game within Semblance',
-      category: [Category.fun],
+      fullCategory: [Category.fun],
     });
   }
 
@@ -23,7 +23,7 @@ export default class Game extends Command {
     if (!statsHandler)
       embed
         .setTitle("Semblance's Idle-Game")
-        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+        .setAuthor(user)
         .setDescription(
           [
             'Use the buttons below to play the game. :D',
@@ -38,7 +38,7 @@ export default class Game extends Command {
     else
       embed
         .setTitle("Welcome back to Semblance's Idle-Game!")
-        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+        .setAuthor(user)
         .setColor(randomColor)
         .setThumbnail(user.displayAvatarURL())
         .addFields(

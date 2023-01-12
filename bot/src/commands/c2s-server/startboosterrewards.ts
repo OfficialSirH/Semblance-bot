@@ -9,7 +9,7 @@ export default class StartBoosterRewards extends Command {
     super(client, {
       name: 'startboosterrewards',
       description: 'Start retrieving booster rewards after you boost the server.',
-      category: [Category.c2sServer],
+      fullCategory: [Category.c2sServer],
     });
   }
 

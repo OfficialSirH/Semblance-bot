@@ -9,12 +9,12 @@ export default class ItemCalc extends Command {
     super(client, {
       name: 'itemcalc',
       description: 'calculate prices for items in-game',
-      category: [Category.calculator],
+      fullCategory: [Category.calculator],
     });
   }
 
   public async itemCalc(
-    interaction: ChatInputCommandInteraction<'cached'>,
+    interaction: APIApplicationCommandInteraction,
     options: {
       item: string;
       levelGains: number;
@@ -57,7 +57,7 @@ export default class ItemCalc extends Command {
     const user = interaction.member.user,
       embed = new EmbedBuilder()
         .setTitle('Item Calculator Results')
-        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+        .setAuthor(user)
         .setColor(randomColor)
         .setDescription(
           [
@@ -71,7 +71,7 @@ export default class ItemCalc extends Command {
   }
 
   public async itemCalcRev(
-    interaction: ChatInputCommandInteraction<'cached'>,
+    interaction: APIApplicationCommandInteraction,
     options: {
       item: string;
       currentAmount: string;
@@ -101,7 +101,7 @@ export default class ItemCalc extends Command {
     const user = interaction.member.user,
       embed = new EmbedBuilder()
         .setTitle('Item Calculator Results')
-        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+        .setAuthor(user)
         .setColor(randomColor)
         .setDescription(
           [
@@ -114,7 +114,7 @@ export default class ItemCalc extends Command {
     return interaction.reply({ embeds: [embed] });
   }
 
-  public override chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override chatInputRun(interaction: APIApplicationCommandInteraction) {
     const chosenCalculator = interaction.options.getSubcommand();
     if (chosenCalculator === 'required_resources') {
       const item = interaction.options.getString('item', true);

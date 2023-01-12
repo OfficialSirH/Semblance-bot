@@ -1,16 +1,16 @@
 import fs from 'fs/promises';
-import { AttachmentBuilder } from 'discord.js';
 import { formattedDate } from '#constants/index';
+import type { Attachy } from '#structures/Attachy';
 
 export const eventAttachments = await (async () => {
   const files = await fs.readdir('./src/images/events/');
   const finalAttachments = {} as Record<
     Exclude<Events, 'James Webb' | 'Fungus Among Us' | '?'> | 'JamesWebb' | 'FungusAmongUs' | 'QuestionMark',
-    AttachmentBuilder
+    Attachy
   >;
   for (const file of files)
     if (file.endsWith('.png')) {
-      const attachment = new AttachmentBuilder(`./src/images/events/${file}`, { name: `attachment://${file}` }),
+      const attachment = new Attachy(`./src/images/events/${file}`, { name: `attachment://${file}` }),
         attachmentName = file.substring(0, file.indexOf('.'));
       finalAttachments[attachmentName as keyof typeof finalAttachments] = attachment;
     }
@@ -64,5 +64,5 @@ export type Events = 'James Webb' | 'Fungus Among Us' | 'Philosophy' | 'Extincti
 
 export interface GameEvent {
   description: (start: number, end: number) => string;
-  image: AttachmentBuilder;
+  image: Attachy;
 }

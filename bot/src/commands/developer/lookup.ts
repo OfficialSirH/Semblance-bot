@@ -17,7 +17,7 @@ export default class Lookup extends Command {
     super(client, {
       name: 'lookup',
       description: 'Lookup something unknown, like an Id or an invite, and hopefully get the meaning behind it!',
-      category: [Category.developer],
+      fullCategory: [Category.developer],
       preconditions: [PreconditionName.OwnerOnly],
     });
   }

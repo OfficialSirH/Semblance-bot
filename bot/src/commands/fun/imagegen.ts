@@ -11,7 +11,7 @@ export default class Imagegen extends Command {
     super(client, {
       name: 'imagegen',
       description: 'Generates a random image of either a cat or dog.',
-      category: [Category.fun],
+      fullCategory: [Category.fun],
     });
   }
 
@@ -41,7 +41,7 @@ export default class Imagegen extends Command {
 
     const embed = new EmbedBuilder()
       .setTitle(`Here's a ${breed.name}!`)
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor(interaction.user)
       .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)
       .setImage(image_url);
 

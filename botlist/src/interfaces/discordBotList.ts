@@ -1,4 +1,3 @@
-import type { Snowflake } from 'discord.js';
 import type { FastifyRequest } from 'fastify';
 
 export interface BotStats {

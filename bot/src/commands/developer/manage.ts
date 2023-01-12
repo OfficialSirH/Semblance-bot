@@ -15,7 +15,7 @@ export default class Manage extends Command {
     super(client, {
       name: 'manage',
       description: 'Manage the bot.',
-      category: [Category.developer],
+      fullCategory: [Category.developer],
       preconditions: [PreconditionName.OwnerOnly],
     });
   }
@@ -188,7 +188,7 @@ export default class Manage extends Command {
     };
   }
 
-  public async discordLinkGet(interaction: ChatInputCommandInteraction<'cached'>) {
+  public async discordLinkGet(interaction: APIApplicationCommandInteraction) {
     const user = interaction.options.getUser('discord-id', true);
     const linkedAccount = await this.client.db.userData.findUnique({ where: { discord_id: user.id } });
 
@@ -212,7 +212,7 @@ export default class Manage extends Command {
     return interaction.reply({ embeds: [embed], ephemeral: true });
   }
 
-  public async discordLinkCreate(interaction: ChatInputCommandInteraction<'cached'>) {
+  public async discordLinkCreate(interaction: APIApplicationCommandInteraction) {
     const user = interaction.options.getUser('discord-id', true);
     const playerEmail = interaction.options.getString('playeremail');
     const playerToken = interaction.options.getString('playertoken');
@@ -231,7 +231,7 @@ export default class Manage extends Command {
     return interaction.reply({ content, ephemeral: true });
   }
 
-  public async createGameEvent(interaction: ChatInputCommandInteraction<'cached'>) {
+  public async createGameEvent(interaction: APIApplicationCommandInteraction) {
     const name = interaction.options.getString('name', true);
 
     if (!gameEvents[name as Events]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
@@ -262,7 +262,7 @@ export default class Manage extends Command {
     }
   }
 
-  public async editGameEvent(interaction: ChatInputCommandInteraction<'cached'>) {
+  public async editGameEvent(interaction: APIApplicationCommandInteraction) {
     const name = interaction.options.getString('name', true);
 
     if (!gameEvents[name as Events]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });

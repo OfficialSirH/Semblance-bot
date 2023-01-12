@@ -7,12 +7,12 @@ export default class MetaCalc extends Command {
     super(client, {
       name: 'metacalc',
       description: 'calculate the amount of metabits produced by entropy and ideas',
-      category: [Category.calculator],
+      fullCategory: [Category.calculator],
     });
   }
 
   public async metaCalc(
-    interaction: ChatInputCommandInteraction<'cached'>,
+    interaction: APIApplicationCommandInteraction,
     options: {
       entropy: string;
       ideas: string;
@@ -38,7 +38,7 @@ export default class MetaCalc extends Command {
       embed = new EmbedBuilder()
         .setTitle('Metabits Produced')
         .setColor(randomColor)
-        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+        .setAuthor(user)
         .setDescription(
           `Entropy Input: ${parsedEntropy}\nIdea Input: ${parsedIdeas}\n\nMetabits Produced: ${
             metabits < 1 ? 0 : bigToName(metabits)
@@ -48,7 +48,7 @@ export default class MetaCalc extends Command {
   }
 
   public async metaCalcRev(
-    interaction: ChatInputCommandInteraction<'cached'>,
+    interaction: APIApplicationCommandInteraction,
     metabits: number,
   ): Promise<InteractionResponse<true>> {
     const accumulated = Math.floor(Math.pow((metabits + 1) * 10000, 1 / 0.3333333333333333)),
@@ -56,12 +56,12 @@ export default class MetaCalc extends Command {
       embed = new EmbedBuilder()
         .setTitle('Accumulation Requirements')
         .setColor(randomColor)
-        .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+        .setAuthor(user)
         .setDescription(`Metabit Input: ${metabits}\n\nEntropy/Idea Accumulation Required: ${bigToName(accumulated)}`);
     return interaction.reply({ embeds: [embed] });
   }
 
-  public override chatInputRun(interaction: ChatInputCommandInteraction<'cached'>) {
+  public override chatInputRun(interaction: APIApplicationCommandInteraction) {
     const chosenCalculator = interaction.options.getSubcommand();
 
     if (chosenCalculator === 'obtainable_metabits') {

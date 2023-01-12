@@ -1,11 +1,13 @@
-import { type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
-import { applicationCommandToMention, Category, randomColor, Subcategory } from '#constants/index';
+import { Category, randomColor, SubCategory } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder, chatInputApplicationCommandMention } from '@discordjs/builders';
+import type { APIApplicationCommandInteraction } from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 export default class Secrets extends Command {
   public override name = 'secrets';
   public override description = 'secrets';
-  public override category = [Category.game, Subcategory.other];
+  public override category = [Category.game, SubCategory.other];
 
   public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
     const embed = new EmbedBuilder()
@@ -15,7 +17,7 @@ export default class Secrets extends Command {
         [
           '1. Make an ape dab by tapping on it numerous times.',
           '2. Make an archosaur, named Archie, dance by tapping the archosaur with a tuxedo/suit.',
-          `3. Unlock all sharks, *check ${applicationCommandToMention({
+          `3. Unlock all sharks, *check ${chatInputApplicationCommandMention({
             client: this.client,
             commandName: 'help',
           })} and input 'sharks' into the option*.`,

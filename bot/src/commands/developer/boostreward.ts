@@ -12,7 +12,7 @@ export default class BoostReward extends Command {
     super(client, {
       name: 'boostreward',
       description: 'interact with booster rewards for users',
-      category: [Category.developer],
+      fullCategory: [Category.developer],
       preconditions: [PreconditionName.OwnerOnly],
     });
   }
@@ -117,10 +117,7 @@ export default class BoostReward extends Command {
   }
 }
 
-const addBooster = async (
-  interaction: ChatInputCommandInteraction<'cached'>,
-  options: { user: User; days: number },
-) => {
+const addBooster = async (interaction: APIApplicationCommandInteraction, options: { user: User; days: number }) => {
   let boosterRewards = await interaction.client.db.boosterReward.findUnique({ where: { userId: options.user.id } });
   if (boosterRewards)
     return interaction.reply(
@@ -140,10 +137,7 @@ const addBooster = async (
   );
 };
 
-const editBooster = async (
-  interaction: ChatInputCommandInteraction<'cached'>,
-  options: { user: User; days: number },
-) => {
+const editBooster = async (interaction: APIApplicationCommandInteraction, options: { user: User; days: number }) => {
   let boosterRewards = await interaction.client.db.boosterReward.findUnique({ where: { userId: options.user.id } });
   if (!boosterRewards) return interaction.reply('That user is not listed to receive an automated reward');
 
@@ -162,21 +156,21 @@ const editBooster = async (
   );
 };
 
-const removeBooster = async (interaction: ChatInputCommandInteraction<'cached'>, user: User) => {
+const removeBooster = async (interaction: APIApplicationCommandInteraction, user: User) => {
   const boosterRewards = await interaction.client.db.boosterReward.delete({ where: { userId: user.id } });
   if (!boosterRewards) return interaction.reply('That user is not listed to receive an automated reward');
 
   await interaction.reply('That user will no longer receive an automated reward');
 };
 
-const listBoosters = async (interaction: ChatInputCommandInteraction<'cached'>) => {
+const listBoosters = async (interaction: APIApplicationCommandInteraction) => {
   const boosterRewards = await interaction.client.db.boosterReward.findMany({});
   if (!boosterRewards.length) return interaction.reply('There are no booster rewards to list');
 
   interaction.reply({
     content: `Here's all ${boosterRewards.length} booster reward users`,
     files: [
-      new AttachmentBuilder(
+      new Attachy(
         Buffer.from(
           `${boosterRewards.reduce(
             (acc, cur) => (acc += `${cur.userId} - ${formattedDate(cur.rewardingDate.valueOf())}\n`),

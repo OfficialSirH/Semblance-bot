@@ -1,4 +1,3 @@
-import { EmbedBuilder } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
 

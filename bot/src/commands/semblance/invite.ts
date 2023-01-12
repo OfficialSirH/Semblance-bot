@@ -1,4 +1,3 @@
-import { type ChatInputCommandInteraction, EmbedBuilder } from 'discord.js';
 import { Command } from '#structures/Command';
 import { Category, randomColor } from '#constants/index';
 
@@ -13,7 +12,7 @@ export default class Invite extends Command {
       .setTitle('Bot Invite')
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor(user)
       .setDescription(
         `Invite me to your server be clicking [here](https://discord.com/oauth2/authorize?client_id=${client.user.id}&permissions=274878295040&scope=bot+applications.commands).` +
           '\n\n[Semblance Support server](https://discord.gg/XFMaTn6taf)',

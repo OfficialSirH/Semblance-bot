@@ -1,6 +1,8 @@
-import { type ChatInputCommandInteraction, EmbedBuilder, ChannelType } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder } from '@discordjs/builders';
+import { type APIApplicationCommandInteraction, ChannelType } from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 export default class ServerInfo extends Command {
   public override name = 'serverinfo';

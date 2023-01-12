@@ -1,11 +1,4 @@
-import {
-  EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  type MessageActionRowComponentBuilder,
-} from 'discord.js';
-import { Category, randomColor, Subcategory, subcategoryList } from '#constants/index';
+import { Category, randomColor, SubCategory, subcategoryList } from '#constants/index';
 import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
 
@@ -17,9 +10,9 @@ export default class C2sHelp extends Command {
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const { client, user } = interaction;
 
-    const mainCommands = subcategoryList(client, Category.game, Subcategory.main);
-    const mesozoicCommands = subcategoryList(client, Category.game, Subcategory.mesozoic);
-    const otherCommands = subcategoryList(client, Category.game, Subcategory.other);
+    const mainCommands = subcategoryList(client, Category.game, SubCategory.main);
+    const mesozoicCommands = subcategoryList(client, Category.game, SubCategory.mesozoic);
+    const otherCommands = subcategoryList(client, Category.game, SubCategory.other);
     const components = [
       new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
         new ButtonBuilder()
@@ -46,7 +39,7 @@ export default class C2sHelp extends Command {
     ];
     const embed = new EmbedBuilder()
       .setTitle('**-> Cell to Singularity Commands**')
-      .setAuthor({ name: user.tag, iconURL: user.displayAvatarURL() })
+      .setAuthor(user)
       .setColor(randomColor)
       .setThumbnail(client.user.displayAvatarURL())
       .addFields(
