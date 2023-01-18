@@ -1,6 +1,14 @@
-import { bigToName, Category, randomColor } from '#constants/index';
+import { authorDefault, bigToName, Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
-import { ApplicationCommandOptionType } from '@discordjs/core';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { EmbedBuilder } from '@discordjs/builders';
+import {
+  type APIChatInputApplicationCommandGuildInteraction,
+  ApplicationCommandOptionType,
+  type RESTPostAPIApplicationCommandsJSONBody,
+  MessageFlags,
+} from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 export default class MetaCalc extends Command {
   public constructor(client: Command.Requirement) {
@@ -12,67 +20,71 @@ export default class MetaCalc extends Command {
   }
 
   public async metaCalc(
-    interaction: APIApplicationCommandInteraction,
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
     options: {
       entropy: string;
       ideas: string;
     },
-  ): Promise<InteractionResponse<true>> {
+  ) {
     const parsedEntropy = parseFloat(options.entropy);
     const parsedIdeas = parseFloat(options.ideas);
 
     if (!parsedEntropy)
-      return interaction.reply({
+      return this.client.api.interactions.reply(res, {
         content: "Invalid input for 'entropy'.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     if (!parsedIdeas)
-      return interaction.reply({
+      return this.client.api.interactions.reply(res, {
         content: "Invalid input for 'ideas'.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     const metabits = Math.floor(Math.pow(parsedEntropy + parsedIdeas, 0.3333333333333333) / 10000 - 1),
-      user = interaction.member.user,
       embed = new EmbedBuilder()
         .setTitle('Metabits Produced')
         .setColor(randomColor)
-        .setAuthor(user)
+        .setAuthor(authorDefault(interaction.member.user))
         .setDescription(
           `Entropy Input: ${parsedEntropy}\nIdea Input: ${parsedIdeas}\n\nMetabits Produced: ${
             metabits < 1 ? 0 : bigToName(metabits)
           }`,
         );
-    return interaction.reply({ embeds: [embed] });
+    return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
   }
 
   public async metaCalcRev(
-    interaction: APIApplicationCommandInteraction,
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
     metabits: number,
-  ): Promise<InteractionResponse<true>> {
+  ) {
     const accumulated = Math.floor(Math.pow((metabits + 1) * 10000, 1 / 0.3333333333333333)),
-      user = interaction.member.user,
       embed = new EmbedBuilder()
         .setTitle('Accumulation Requirements')
         .setColor(randomColor)
-        .setAuthor(user)
+        .setAuthor(authorDefault(interaction.member.user))
         .setDescription(`Metabit Input: ${metabits}\n\nEntropy/Idea Accumulation Required: ${bigToName(accumulated)}`);
-    return interaction.reply({ embeds: [embed] });
+    return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
   }
 
-  public override chatInputRun(interaction: APIApplicationCommandInteraction) {
-    const chosenCalculator = interaction.options.getSubcommand();
+  public override chatInputRun(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    const chosenCalculator = options.getSubcommand();
 
     if (chosenCalculator === 'obtainable_metabits') {
-      const entropy = interaction.options.getString('entropy', true);
-      const ideas = interaction.options.getString('ideas', true);
-      return this.metaCalc(interaction, { entropy, ideas });
+      const entropy = options.getString('entropy', true);
+      const ideas = options.getString('ideas', true);
+      return this.metaCalc(res, interaction, { entropy, ideas });
     }
 
     if (chosenCalculator === 'required_accumulation') {
-      const metabits = interaction.options.getNumber('metabits', true);
-      return this.metaCalcRev(interaction, metabits);
+      const metabits = options.getNumber('metabits', true);
+      return this.metaCalcRev(res, interaction, metabits);
     }
   }
 
@@ -115,7 +127,7 @@ export default class MetaCalc extends Command {
             ],
           },
         ],
-      },
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
     };
   }
 }

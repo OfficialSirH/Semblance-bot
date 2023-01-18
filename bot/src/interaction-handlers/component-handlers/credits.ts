@@ -119,7 +119,7 @@ export default class Credits extends InteractionHandler {
           );
         break;
       case 'semblance':
-        embed.setTitle('Semblance - by cabiie').setImage(interaction.client.user.displayAvatarURL() + '?size=2048');
+        embed.setTitle('Semblance - by cabiie').setImage(this.client.user.displayAvatarURL() + '?size=2048');
         break;
       case 'semblance-beta':
         embed
@@ -139,6 +139,6 @@ export default class Credits extends InteractionHandler {
       [new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(...creditComponents)],
       data.action,
     );
-    await interaction.update({ embeds: [embed], components });
+    await interaction.update({ embeds: [embed.toJSON()], components });
   }
 }

@@ -21,6 +21,6 @@ export default class Dinos extends Command {
           ].join(' '),
         ].join('\n\n'),
       );
-    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
   }
 }

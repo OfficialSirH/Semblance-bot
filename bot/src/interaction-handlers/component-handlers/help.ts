@@ -43,13 +43,13 @@ export default class Help extends InteractionHandler {
 
     await disableAllComponents(interaction);
 
-    if (!interaction.client.stores.get('commands').has(query))
-      return interaction.reply({ content: 'Invalid query.', ephemeral: true });
+    if (!this.client.stores.get('commands').has(query))
+      return this.client.api.interactions.reply(res, { content: 'Invalid query.', flags: MessageFlags.Ephemeral });
 
     // @ts-expect-error - I already checked if the command exists just above, but TS doesn't know that
-    const info = await interaction.client.stores.get('commands').get(query).sharedRun(interaction);
+    const info = await this.client.stores.get('commands').get(query).sharedRun(interaction);
 
-    return interaction.reply(info);
+    return this.client.api.interactions.reply(res, info);
   }
 
   public async buttonRun(
@@ -58,7 +58,7 @@ export default class Help extends InteractionHandler {
       'c2shelp' | 'mischelp' | 'metabits' | 'mesoguide' | 'largenumbers' | 'metahelp' | 'itemhelp' | 'help' | 'close'
     >,
   ) {
-    const client = interaction.client;
+    const client = this.client;
     const components = [new ActionRowBuilder<MessageActionRowComponentBuilder>()];
     if (data.action != 'help')
       components
@@ -106,10 +106,11 @@ export default class Help extends InteractionHandler {
       case 'close':
         return interaction.channel?.messages.delete(interaction.message.id);
       default:
-        return interaction.reply({ content: 'Invalid action.', ephemeral: true });
+        return this.client.api.interactions.reply(res, { content: 'Invalid action.', flags: MessageFlags.Ephemeral });
     }
 
-    if (!options) return interaction.reply({ content: 'Invalid action.', ephemeral: true });
+    if (!options)
+      return this.client.api.interactions.reply(res, { content: 'Invalid action.', flags: MessageFlags.Ephemeral });
     if (typeof options != 'string') {
       if (options.components)
         (options.components?.at(0) as ActionRowData<MessageActionRowComponentData>).components.push(

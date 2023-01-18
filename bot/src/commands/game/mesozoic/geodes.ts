@@ -20,7 +20,7 @@ export default class Geodes extends Command {
       )
       .setFooter({ text: 'Diamond Geodes for da win!' });
     return {
-      embeds: [embed],
+      embeds: [embed.toJSON()],
       files: [attachments.currentLogo.attachment, attachments.geodeLevelComparison.attachment],
     };
   }

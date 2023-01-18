@@ -29,6 +29,6 @@ export default class LargeNumbers extends Command {
           ', for more details, click [here](http://www.thealmightyguru.com/Pointless/BigNumbers.html)',
       )
       .setFooter({ text: 'Large Numbers go brrrr...' });
-    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
   }
 }

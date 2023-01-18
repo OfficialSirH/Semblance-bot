@@ -41,6 +41,6 @@ export default class Singularity extends Command {
         ].join('\n\n'),
       )
       .setFooter({ text: 'Thanks to Jojoseis#0001 for making the Singularity Speedrun Guide' });
-    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
   }
 }

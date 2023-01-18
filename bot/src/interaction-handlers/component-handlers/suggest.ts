@@ -21,9 +21,9 @@ export default class Suggest extends InteractionHandler {
     data: ParsedCustomIdData<'accept' | 'deny' | 'silent-deny'>,
   ) {
     if (getPermissionLevel(interaction.member) == 0)
-      return interaction.reply("You don't have permission to use this button!");
+      return this.client.api.interactions.reply(res, "You don't have permission to use this button!");
     if (!['accept', 'deny', 'silent-deny'].includes(data.action))
-      return interaction.reply("Something ain't working right");
+      return this.client.api.interactions.reply(res, "Something ain't working right");
 
     await disableAllComponents(interaction);
 
@@ -34,7 +34,7 @@ export default class Suggest extends InteractionHandler {
 
     if (data.action == 'silent-deny') return;
 
-    const user = await interaction.client.users.fetch(data.id);
+    const user = await this.client.users.fetch(data.id);
     if (data.action == 'accept') {
       user.send(
         'Your suggestion has been accepted! ' +

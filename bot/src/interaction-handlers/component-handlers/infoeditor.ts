@@ -15,6 +15,6 @@ export default class InfoEditor extends InteractionHandler {
   }
 
   public override async run(interaction: ButtonInteraction) {
-    return interaction.reply({ content: 'Not implemented yet.', ephemeral: true });
+    return this.client.api.interactions.reply(res, { content: 'Not implemented yet.', flags: MessageFlags.Ephemeral });
   }
 }

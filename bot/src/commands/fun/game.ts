@@ -2,7 +2,7 @@ import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
 import { currentPrice } from '#constants/commands';
 import { buildCustomId } from '#constants/components';
-import { type APIApplicationCommandInteraction, ButtonStyle } from '@discordjs/core';
+import { ButtonStyle } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 
 export default class Game extends Command {
@@ -14,7 +14,7 @@ export default class Game extends Command {
     });
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
     const { user, client } = interaction;
 
     const statsHandler = await client.db.game.findUnique({ where: { player: user.id } }),
@@ -125,8 +125,8 @@ export default class Game extends Command {
       ),
     ];
 
-    await interaction.reply({
-      embeds: [embed],
+    await this.client.api.interactions.reply(res, {
+      embeds: [embed.toJSON()],
       components,
     });
   }

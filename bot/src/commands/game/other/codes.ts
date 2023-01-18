@@ -1,5 +1,4 @@
 import {
-  type APIApplicationCommandInteraction,
   ActionRowBuilder,
   ButtonBuilder,
   EmbedBuilder,
@@ -15,8 +14,8 @@ export default class Codes extends Command {
   public override description = 'get all of the ingame codes';
   public override category = [Category.game, SubCategory.other];
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
-    await interaction.reply(await this.sharedRun(interaction));
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    await this.client.api.interactions.reply(res, await this.sharedRun(interaction));
   }
 
   public override async sharedRun(interaction: Command['SharedBuilder']) {
@@ -42,7 +41,7 @@ export default class Codes extends Command {
         .setStyle(ButtonStyle.Primary),
     );
     return {
-      embeds: [embed],
+      embeds: [embed.toJSON()],
       files: [attachments.currentLogo.attachment],
       components: [component],
     };

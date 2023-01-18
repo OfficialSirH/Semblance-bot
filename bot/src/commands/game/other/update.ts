@@ -14,6 +14,6 @@ export default class Update extends Command {
       .setColor(randomColor)
       .setThumbnail(attachments.currentLogo)
       .setDescription(infoHandler.value);
-    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
   }
 }

@@ -28,6 +28,6 @@ export default class Mvunlocks extends Command {
             .map(t => `**${t}**`)
             .join('\n'),
       );
-    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
   }
 }

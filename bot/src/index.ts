@@ -52,14 +52,14 @@ app.route<{ Body: APIInteraction }>({
           case ApplicationCommandType.ChatInput:
             await client.cache.handles.commands
               .get(interaction?.data.name)
-              ?.chatInputRun?.(rep, interaction as APIChatInputApplicationCommandInteraction);
+              ?.preRun?.(rep, interaction as APIChatInputApplicationCommandInteraction);
             break;
 
           case ApplicationCommandType.User:
           case ApplicationCommandType.Message:
             await client.cache.handles.commands
               .get(interaction?.data.name)
-              ?.contextMenuRun?.(rep, interaction as APIContextMenuInteraction);
+              ?.preRun?.(rep, interaction as APIContextMenuInteraction);
         }
         break;
 
@@ -72,7 +72,7 @@ app.route<{ Body: APIInteraction }>({
       }
 
       case InteractionType.ApplicationCommandAutocomplete: {
-        await client.cache.handles.commands.get(interaction?.data.name)?.autocompleteRun?.(rep, interaction);
+        await client.cache.handles.commands.get(interaction?.data.name)?.preRun?.(rep, interaction);
         break;
       }
 

@@ -29,9 +29,9 @@ export default class Roles extends InteractionHandler {
       userCooldown = cooldown.get(user.id);
     if (!userCooldown || (!!userCooldown && Date.now() - userCooldown > 0)) cooldown.set(user.id, Date.now() + 30000);
     if (!!userCooldown && Date.now() - userCooldown < 0)
-      return await interaction.reply({
+      return await this.client.api.interactions.reply(res, {
         content: `You're on cooldown for ${(userCooldown - Date.now()) / 1000} seconds`,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     const isAddingRole = data.action == 'add-events',
@@ -54,19 +54,19 @@ export default class Roles extends InteractionHandler {
 
     if (data.action == 'add-events') {
       await member.roles.add(c2sRoles.server.serverEvents);
-      await interaction.reply({
+      await this.client.api.interactions.reply(res, {
         content: "Server Events role successfully added! Now you'll receive notifications for our server events! :D",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     } else if (data.action == 'remove-events') {
       await member.roles.remove(c2sRoles.server.serverEvents);
-      await interaction.reply({
+      await this.client.api.interactions.reply(res, {
         content:
           "Server Events role successfully removed. You'll stop receiveing notifications for our server events. :(",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     }
     const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data).setThumbnail(attachments.currentLogo);
-    await interaction.message.edit({ embeds: [embed], components });
+    await interaction.message.edit({ embeds: [embed.toJSON()], components });
   }
 }

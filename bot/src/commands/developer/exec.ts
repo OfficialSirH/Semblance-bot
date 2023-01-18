@@ -1,9 +1,12 @@
 import { Category, GuildId, PreconditionName } from '#constants/index';
 import { Command } from '#structures/Command';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { EmbedBuilder } from '@discordjs/builders';
 import {
-  type APIApplicationCommandInteraction,
   ApplicationCommandOptionType,
   PermissionFlagsBits,
+  type APIChatInputApplicationCommandGuildInteraction,
+  type RESTPostAPIApplicationCommandsJSONBody,
 } from '@discordjs/core';
 import { exec } from 'child_process';
 import type { FastifyReply } from 'fastify';
@@ -18,14 +21,18 @@ export default class Exec extends Command {
     });
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
-    await interaction.deferReply();
+  public override async chatInputRun(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    await this.client.api.interactions.deferReply(res);
     const embed = new EmbedBuilder();
-    exec(interaction.options.getString('input', true), (error, stdout, stderr) => {
+    exec(options.getString('input', true), (error, stdout, stderr) => {
       if (error) embed.setDescription(`\`\`\`js\n${error}\`\`\``);
       if (stderr) embed.setDescription(`\`\`\`js\n${stderr}\`\`\``);
       else embed.setDescription(`\`\`\`ansi\n${stdout}\`\`\``);
-      return interaction.editReply({ embeds: [embed] });
+      return this.client.api.interactions.editReply(interaction, { embeds: [embed.toJSON()] });
     });
   }
 
@@ -43,7 +50,7 @@ export default class Exec extends Command {
             required: true,
           },
         ],
-      },
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
       guildIds: [GuildId.cellToSingularity],
     };
   }

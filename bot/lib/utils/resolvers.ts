@@ -5,57 +5,53 @@ import {
   type RESTPostAPIChannelMessageJSONBody,
   Routes,
   type RESTPostAPIChannelMessageResult,
+  type APIGuild,
+  type GatewayGuildCreateDispatchData,
+  type APIGuildMember,
+  type APIUser,
 } from '@discordjs/core';
 import type { Client } from '#structures/Client';
+import type { REST } from '@discordjs/rest';
 
 export const sendMessage = async (client: Client, channel: Snowflake, body: RESTPostAPIChannelMessageJSONBody) =>
   (await client.rest.post(Routes.channelMessages(channel), { body })) as Promise<RESTPostAPIChannelMessageResult>;
 
-export const getRole = (search: string | Snowflake, guild: Guild) =>
-  guild.roles.cache.find(r => r.name == search) ??
-  guild.roles.cache.find(r => r.name.toLowerCase() == search.toLowerCase()) ??
-  guild.roles.cache.get(getId(search) as Snowflake);
+export const getRole = (search: string | Snowflake, guild: APIGuild) =>
+  guild.roles.find(r => r.name == search) ??
+  guild.roles.find(r => r.name.toLowerCase() == search.toLowerCase()) ??
+  guild.roles.find(r => r.id === getId(search));
 
-export const getMember = (search: string | Snowflake, guild: Guild) =>
-  guild.members.cache.find(m => search == m.user.tag) ??
-  guild.members.cache.find(m => search.toLowerCase() == m.user.tag.toLowerCase()) ??
-  guild.members.cache.find(m => search == m.displayName) ??
-  guild.members.cache.find(m => search.toLowerCase() == m.displayName.toLowerCase()) ??
-  guild.members.cache.get(getId(search) as Snowflake);
+export const getMember = (rest: REST, search: string | Snowflake, guild: APIGuild) =>
+  rest.get(Routes.guildMember(guild.id, search)) as Promise<APIGuildMember>;
 
-export const getChannel = (search: string | Snowflake, guild: Guild) => {
-  const channels = guild.channels.cache.filter(ch => ch.type == ChannelType.GuildText && ch.viewable);
+export const getChannel = (search: string | Snowflake, guild: APIGuild & GatewayGuildCreateDispatchData) => {
+  const channels = guild.channels.filter(ch => ch.type == ChannelType.GuildText);
   return (
     false ??
-    channels.find(ch => search.toLowerCase() == ch.name.toLowerCase()) ??
-    channels.get(getId(search) as Snowflake)
+    channels.find(ch => search.toLowerCase() == ch.name?.toLowerCase()) ??
+    channels.find(ch => ch.id === getId(search))
   );
 };
 
-export const getMembers = (searches: string[] | Snowflake[], guild: Guild) => {
-  const members: GuildMember[] = [];
+export const getMembers = async (rest: REST, searches: string[] | Snowflake[], guild: APIGuild) => {
+  const members: APIGuildMember[] = [];
   for (const search of searches) {
-    const member = getMember(search, guild);
+    const member = await getMember(rest, search, guild);
     if (member) members.push(member);
-    else {
-      const role = getRole(search, guild);
-      console.log(role);
-      if (role) role.members.forEach((member: GuildMember) => members.push(member));
-    }
   }
 
   return members
-    .map(m => m.id)
+    .map(m => m.user?.id)
     .filter(onlyUnique)
-    .map(id => members.find(m => m.id == id));
+    .map(id => members.find(m => m.user?.id == id));
 };
 
-export const getUser = async (search: string | Snowflake, guild: Guild) => {
-  const member = getMember(search, guild);
+export const getUser = async (rest: REST, search: string | Snowflake, guild: APIGuild) => {
+  const member = await getMember(rest, search, guild);
   if (member) return member.user;
   else
     try {
-      return await guild.client.users.fetch(search as Snowflake);
+      return rest.get(Routes.user(search)) as Promise<APIUser>;
     } catch (e) {
       return undefined;
     }

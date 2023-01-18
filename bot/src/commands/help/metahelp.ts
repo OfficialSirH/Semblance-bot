@@ -54,6 +54,6 @@ export default class MetaHelp extends Command {
         },
       )
       .setFooter({ text: 'Metabit Calculator goes brrr.' });
-    return { embeds: [embed] };
+    return { embeds: [embed.toJSON()] };
   }
 }

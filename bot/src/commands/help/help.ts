@@ -9,7 +9,12 @@ import {
   ButtonBuilder,
   SelectMenuBuilder,
 } from '@discordjs/builders';
-import { ButtonStyle, type APIApplicationCommandInteraction, ApplicationCommandOptionType } from '@discordjs/core';
+import {
+  ButtonStyle,
+  ApplicationCommandOptionType,
+  type APIChatInputApplicationCommandGuildInteraction,
+  type RESTPostAPIApplicationCommandsJSONBody,
+} from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 
 export default class Help extends Command {
@@ -19,7 +24,7 @@ export default class Help extends Command {
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
     const { user, client } = interaction;
-    const c2sServerCommands = interaction.client.stores
+    const c2sServerCommands = this.client.stores
       .get('commands')
       .filter(c => c.category === Category.c2sServer)
       .map(c => `**${c.name}**`);
@@ -86,16 +91,16 @@ export default class Help extends Command {
     ];
 
     return {
-      embeds: [embed],
+      embeds: [embed.toJSON()],
       components,
     };
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
-    const query = interaction.options.getString('query');
-    if (!query) return interaction.reply(this.sharedRun(interaction));
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    const query = options.getString('query');
+    if (!query) return this.client.api.interactions.reply(res, this.sharedRun(interaction));
 
-    const commands = interaction.client.stores.get('commands').filter(c => 'sharedRun' in c);
+    const commands = this.client.stores.get('commands').filter(c => 'sharedRun' in c);
 
     if (!commands.has(query)) {
       const possibleQueries = commands.map(i => i.name);
@@ -116,7 +121,7 @@ export default class Help extends Command {
         (acc[index].components[0] as SelectMenuBuilder).addOptions({ label: cur, value: cur });
         return acc;
       }, [] as ActionRowBuilder<MessageActionRowComponentBuilder>[]);
-      return interaction.reply({
+      return this.client.api.interactions.reply(res, {
         embeds: [
           new EmbedBuilder()
             .setTitle('Help')
@@ -130,18 +135,18 @@ export default class Help extends Command {
 
     // @ts-expect-error - more stupid unnecessary type errors
     const info = await commands.get(query)?.sharedRun(interaction);
-    await interaction.reply(info as string);
+    await this.client.api.interactions.reply(res, info as string);
   }
 
   public override autocompleteRun(interaction: AutocompleteInteraction<'cached'>) {
-    const query = interaction.options.getFocused();
+    const query = options.getFocused();
 
-    const queriedInfoStartsWith = interaction.client.stores
+    const queriedInfoStartsWith = this.client.stores
       .get('commands')
       .filter(i => 'sharedRun' in i && i.name.startsWith(query))
       .map(i => ({ name: i.name, value: i.name }))
       .slice(0, 25);
-    const queriedInfoContains = interaction.client.stores
+    const queriedInfoContains = this.client.stores
       .get('commands')
       .filter(i => 'sharedRun' in i && !i.name.startsWith(query) && i.name.includes(query))
       .map(i => ({ name: i.name, value: i.name }))
@@ -165,7 +170,7 @@ export default class Help extends Command {
             autocomplete: true,
           },
         ],
-      },
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
     };
   }
 }

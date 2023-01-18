@@ -55,7 +55,7 @@ export class VoteHandler {
         },
       };
 
-    return this.rest.post(Routes.channelMessages(voteChannel), { body: { embeds: [embed] } });
+    return this.rest.post(Routes.channelMessages(voteChannel), { body: { embeds: [embed.toJSON()] } });
   }
 
   public async handle(request: AvailableRequests, reply: FastifyReply): Promise<FastifyReply> {

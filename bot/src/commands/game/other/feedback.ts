@@ -14,6 +14,6 @@ export default class Feedback extends Command {
       .setColor(randomColor)
       .setDescription("Give feedback for ComputerLunch's game, C2S.")
       .setImage(feedbackImage);
-    return { embeds: [embed] };
+    return { embeds: [embed.toJSON()] };
   }
 }

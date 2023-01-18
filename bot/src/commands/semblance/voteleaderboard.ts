@@ -17,6 +17,6 @@ export default class VoteLeaderboard extends Command {
       .setColor(randomColor)
       .setDescription(leaderboard)
       .setFooter({ text: 'Vote for Semblance on the listed sites in the vote command' });
-    return { embeds: [embed] };
+    return { embeds: [embed.toJSON()] };
   }
 }

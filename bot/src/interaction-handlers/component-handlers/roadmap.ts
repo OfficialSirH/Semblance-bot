@@ -35,7 +35,10 @@ export default class Roadmap extends InteractionHandler {
         await interaction.update(roadmap(interaction));
         break;
       default:
-        await interaction.reply({ content: 'An improper action was received.', ephemeral: true });
+        await this.client.api.interactions.reply(res, {
+          content: 'An improper action was received.',
+          flags: MessageFlags.Ephemeral,
+        });
         break;
     }
   }
@@ -63,7 +66,7 @@ function earlyBeyond(interaction: ButtonInteraction, name: string) {
       ].join('\n'),
     );
   return {
-    embeds: [embed],
+    embeds: [embed.toJSON()],
     components: [
       new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
         backButton(name, interaction.user.id, 'roadmap'),
@@ -83,7 +86,7 @@ function testerCredits(interaction: ButtonInteraction, name: string) {
       text: 'Thank you Early Private Beta Testers for helping the ComputerLunch team with testing The Beyond! :D',
     });
   return {
-    embeds: [embed],
+    embeds: [embed.toJSON()],
     components: [
       new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
         backButton(name, interaction.user.id, 'roadmap'),
@@ -124,5 +127,9 @@ function roadmap(interaction: ButtonInteraction) {
         .setLabel('Early Beyond Sneak Peeks'),
     ),
   ];
-  return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.roadMap.attachment], components };
+  return {
+    embeds: [embed.toJSON()],
+    files: [attachments.currentLogo.attachment, attachments.roadMap.attachment],
+    components,
+  };
 }

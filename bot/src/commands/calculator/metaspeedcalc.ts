@@ -1,7 +1,14 @@
-import { bigToName, Category, randomColor } from '#constants/index';
+import { authorDefault, bigToName, Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
 import { clamp } from '#lib/utils/math';
-import { ApplicationCommandOptionType } from '@discordjs/core';
+import {
+  type APIChatInputApplicationCommandGuildInteraction,
+  ApplicationCommandOptionType,
+  type RESTPostAPIApplicationCommandsJSONBody,
+} from '@discordjs/core';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { EmbedBuilder } from '@discordjs/builders';
+import type { FastifyReply } from 'fastify';
 
 export default class MetaspeedCalc extends Command {
   public constructor(client: Command.Requirement) {
@@ -12,9 +19,12 @@ export default class MetaspeedCalc extends Command {
     });
   }
 
-  public override chatInputRun(interaction: APIApplicationCommandInteraction) {
-    const options = interaction.options,
-      metabits = options.getNumber('metabits', true),
+  public override chatInputRun(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    const metabits = options.getNumber('metabits', true),
       dinoRanks = options.getInteger('mv_ranks') ? clamp(options.getInteger('mv_ranks') || 0, 0, 550) : 0,
       simSpeed = options.getInteger('speed_upgrades') ? clamp(options.getInteger('speed_upgrades') || 0, 0, 2105) : 0;
     if (!metabits && dinoRanks == 0 && simSpeed == 0) return;
@@ -57,23 +67,23 @@ export default class MetaspeedCalc extends Command {
     const dinoranksMulti = 1 + dinoRanks * 0.1 + dinoPrestigeBonus * 0.5;
     num *= dinoRanks == 0 ? 1 : dinoranksMulti;
     num *= simSpeed / 100 + 1;
-    const user = interaction.member.user,
-      embed = new EmbedBuilder()
-        .setTitle('Multiplier Total')
-        .setAuthor(user)
-        .setColor(randomColor)
-        .setDescription(
-          [
-            `Total Collected Metabits/Simulation Level: ${bigToName(metabits)}`,
-            `Accumulated Mesozoic Valley Ranks: ${dinoRanks}`,
-            `Simulation Speed Upgrades: ${simSpeed}%`,
-            `Production/Total Multiplier: x${bigToName(num)}`,
-          ].join('\n'),
-        )
-        .setFooter({
-          text: 'P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2105%.',
-        });
-    return interaction.reply({ embeds: [embed] });
+
+    const embed = new EmbedBuilder()
+      .setTitle('Multiplier Total')
+      .setAuthor(authorDefault(interaction.member.user))
+      .setColor(randomColor)
+      .setDescription(
+        [
+          `Total Collected Metabits/Simulation Level: ${bigToName(metabits)}`,
+          `Accumulated Mesozoic Valley Ranks: ${dinoRanks}`,
+          `Simulation Speed Upgrades: ${simSpeed}%`,
+          `Production/Total Multiplier: x${bigToName(num)}`,
+        ].join('\n'),
+      )
+      .setFooter({
+        text: 'P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2105%.',
+      });
+    return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
   }
 
   public override data() {
@@ -99,7 +109,7 @@ export default class MetaspeedCalc extends Command {
             type: ApplicationCommandOptionType.Integer,
           },
         ],
-      },
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
     };
   }
 }

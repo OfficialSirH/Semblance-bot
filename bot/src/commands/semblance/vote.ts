@@ -22,6 +22,6 @@ export default class Vote extends Command {
         ].join('\n'),
       ); // Old Semblance Id: 668688939888148480
 
-    return { embeds: [embed] };
+    return { embeds: [embed.toJSON()] };
   }
 }

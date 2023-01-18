@@ -6,6 +6,6 @@ export default class Freedarwinium extends Command {
 
   public override sharedRun() {
     const embed = new EmbedBuilder().setTitle('Secret').setURL('https://rb.gy/enaq3a');
-    return { embeds: [embed], ephemeral: true };
+    return { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral };
   }
 }

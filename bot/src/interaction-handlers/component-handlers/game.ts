@@ -39,10 +39,10 @@ export default class GameHandler extends InteractionHandler {
     >,
   ) {
     const id = interaction.user.id;
-    const game = await interaction.client.db.game.findUnique({ where: { player: id } });
+    const game = await this.client.db.game.findUnique({ where: { player: id } });
     let cost = Infinity,
       components: ActionRowBuilder<MessageActionRowComponentBuilder>[];
-    if (game) cost = await currentPrice(interaction.client, game);
+    if (game) cost = await currentPrice(this.client, game);
 
     const mainComponents = [
         new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
@@ -170,7 +170,11 @@ export default class GameHandler extends InteractionHandler {
         votes(interaction, components);
         break;
       case 'stats':
-        if (!game) return interaction.reply({ content: 'You do not have a game yet.', ephemeral: true });
+        if (!game)
+          return this.client.api.interactions.reply(res, {
+            content: 'You do not have a game yet.',
+            flags: MessageFlags.Ephemeral,
+          });
         stats(interaction, components, game);
         break;
       case 'close':
@@ -221,7 +225,7 @@ async function create(
   const percent = (Math.round(Math.random() * 25) + 25) / 100 + 1;
   const startingProfits = Math.random() * 0.05 + 0.05;
 
-  const creationHandler = await interaction.client.db.game.upsert({
+  const creationHandler = await this.client.db.game.upsert({
     where: {
       player: user.id,
     },
@@ -248,7 +252,7 @@ async function create(
     .setDescription(
       `Game Successfully created! Now you can start collecting Random-Bucks by using ${chatInputApplicationCommandMention(
         {
-          client: interaction.client,
+          client: this.client,
           commandName: 'game',
         },
       )} and pressing 'collect' and upgrade with 'upgrade'\n\n` +
@@ -258,7 +262,7 @@ async function create(
     )
     .setFooter({ text: 'Enjoy idling!' });
   components = disableComponentsByLabel(components, ['Collect', 'Stats'], { enableInstead: true });
-  await interaction.update({ embeds: [embed], components });
+  await interaction.update({ embeds: [embed.toJSON()], components });
 }
 
 async function about(
@@ -278,7 +282,7 @@ async function about(
         'You have to collect Random-Bucks manually every once in a while, that is how the game works.',
     )
     .setFooter({ text: 'Noice' });
-  await interaction.update({ embeds: [embed], components });
+  await interaction.update({ embeds: [embed.toJSON()], components });
 }
 
 async function collect(
@@ -286,11 +290,15 @@ async function collect(
   components: ActionRowBuilder<MessageActionRowComponentBuilder>[],
 ) {
   const { user } = interaction;
-  let collectionHandler = await interaction.client.db.game.findUnique({ where: { player: user.id } });
-  if (!collectionHandler) return interaction.reply({ content: 'You do not have a game yet.', ephemeral: true });
+  let collectionHandler = await this.client.db.game.findUnique({ where: { player: user.id } });
+  if (!collectionHandler)
+    return this.client.api.interactions.reply(res, {
+      content: 'You do not have a game yet.',
+      flags: MessageFlags.Ephemeral,
+    });
   const collected = collectionHandler.profitRate * ((Date.now() - collectionHandler.lastCollected.valueOf()) / 1000);
 
-  collectionHandler = await interaction.client.db.game.update({
+  collectionHandler = await this.client.db.game.update({
     where: {
       player: user.id,
     },
@@ -310,7 +318,7 @@ async function collect(
         3,
       )} Random-Bucks and now your current balance is ${collectionHandler.money.toFixed(3)} Random-Bucks.`,
     );
-  await interaction.update({ embeds: [embed], components });
+  await interaction.update({ embeds: [embed.toJSON()], components });
 }
 
 async function upgrade(
@@ -320,10 +328,14 @@ async function upgrade(
   await interaction.deferUpdate();
   const { user, message } = interaction;
 
-  let upgradeHandler = await interaction.client.db.game.findUnique({ where: { player: user.id } });
-  if (!upgradeHandler) return interaction.reply({ content: 'You do not have a game yet.', ephemeral: true });
+  let upgradeHandler = await this.client.db.game.findUnique({ where: { player: user.id } });
+  if (!upgradeHandler)
+    return this.client.api.interactions.reply(res, {
+      content: 'You do not have a game yet.',
+      flags: MessageFlags.Ephemeral,
+    });
   const previousLevel = upgradeHandler.level;
-  let costSubtraction = await currentPrice(interaction.client, upgradeHandler);
+  let costSubtraction = await currentPrice(this.client, upgradeHandler);
   if (upgradeHandler.money < costSubtraction)
     return message.edit({
       embeds: [
@@ -343,8 +355,8 @@ async function upgrade(
     });
 
   while (upgradeHandler.money > costSubtraction) {
-    costSubtraction = await currentPrice(interaction.client, upgradeHandler);
-    upgradeHandler = await interaction.client.db.game.update({
+    costSubtraction = await currentPrice(this.client, upgradeHandler);
+    upgradeHandler = await this.client.db.game.update({
       where: {
         player: user.id,
       },
@@ -376,7 +388,7 @@ async function upgrade(
     .setFooter({
       text: 'Upgrades will raise your rank in the leaderboard within /game.',
     });
-  await message.edit({ embeds: [embed], components });
+  await message.edit({ embeds: [embed.toJSON()], components });
 }
 
 async function leaderboard(
@@ -384,7 +396,7 @@ async function leaderboard(
   components: ActionRowBuilder<MessageActionRowComponentBuilder>[],
 ) {
   const { user } = interaction;
-  let leaderboard = await LeaderboardUtilities.topTwenty(interaction.client, 'game');
+  let leaderboard = await LeaderboardUtilities.topTwenty(this.client, 'game');
   if (!leaderboard) leaderboard = 'There is currently no one who has upgraded their income.';
   const embed = new EmbedBuilder()
     .setTitle("Semblance's idle-game leaderboard")
@@ -392,7 +404,7 @@ async function leaderboard(
     .setColor(randomColor)
     .setDescription(`${leaderboard}`)
     .setFooter({ text: 'May the odds be with you.' });
-  await interaction.update({ embeds: [embed], components });
+  await interaction.update({ embeds: [embed.toJSON()], components });
 }
 
 async function votes(
@@ -413,7 +425,7 @@ async function votes(
           `[Discord.bots.gg](https://discord.bots.gg/bots/${client.user.id})`,
         ].join('\n'),
       );
-  return interaction.update({ embeds: [embed], components });
+  return interaction.update({ embeds: [embed.toJSON()], components });
 }
 
 async function stats(
@@ -433,10 +445,10 @@ async function stats(
       { name: 'Percent Increase', value: game.percentIncrease.toString() },
       {
         name: 'Next Upgrade Cost',
-        value: (await currentPrice(interaction.client, game)).toFixed(3).toString(),
+        value: (await currentPrice(this.client, game)).toFixed(3).toString(),
       },
       { name: 'Idle Profit', value: game.profitRate.toFixed(3).toString() },
     )
     .setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' });
-  await interaction.update({ embeds: [embed], components });
+  await interaction.update({ embeds: [embed.toJSON()], components });
 }

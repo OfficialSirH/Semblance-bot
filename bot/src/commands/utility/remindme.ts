@@ -7,6 +7,14 @@ import type {
   APIApplicationCommandAutocompleteInteraction,
   APIApplicationCommandInteractionDataIntegerOption,
 } from 'discord-api-types/v9';
+import { EmbedBuilder } from '@discordjs/builders';
+import {
+  type APIChatInputApplicationCommandGuildInteraction,
+  MessageFlags,
+  ApplicationCommandOptionType,
+  type RESTPostAPIApplicationCommandsJSONBody,
+} from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 const MAX_TIME = 29030400000;
 const MAX_REMINDERS = 5;
@@ -17,8 +25,8 @@ export default class RemindMe extends Command {
   public override description = 'create reminders for yourself';
   public override category = [Category.utility];
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
-    const action = interaction.options.getSubcommand();
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    const action = options.getSubcommand();
 
     switch (action) {
       case 'create':
@@ -30,9 +38,9 @@ export default class RemindMe extends Command {
       case 'list':
         return list(interaction);
       default:
-        return interaction.reply({
+        return this.client.api.interactions.reply(res, {
           content: 'You must specify a valid subcommand.',
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
     }
   }
@@ -69,7 +77,7 @@ export default class RemindMe extends Command {
     ];
   }
 
-  public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+  public override data() {
     const reminderIdChoices = [
       {
         name: '5',
@@ -92,95 +100,97 @@ export default class RemindMe extends Command {
         value: 1,
       },
     ];
-    registry.registerChatInputCommand({
-      name: this.name,
-      description: this.description,
-      options: [
-        {
-          name: 'create',
-          description: 'create a reminder',
-          type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: 'amount',
-              description: 'the amount of time to wait before the reminder',
-              type: ApplicationCommandOptionType.Integer,
-              autocomplete: true,
-              required: true,
-            },
-            {
-              name: 'reminder',
-              description: 'the reminder to be sent',
-              type: ApplicationCommandOptionType.String,
-              required: true,
-            },
-          ],
-        },
-        {
-          name: 'edit',
-          description: 'edit a reminder',
-          type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: 'reminderid',
-              description: 'the id of the reminder to edit',
-              type: ApplicationCommandOptionType.Integer,
-              choices: reminderIdChoices,
-              required: true,
-            },
-            {
-              name: 'amount',
-              description: 'the amount of time to wait before the reminder',
-              type: ApplicationCommandOptionType.Integer,
-              autocomplete: true,
-            },
-            {
-              name: 'reminder',
-              description: 'the reminder to be sent',
-              type: ApplicationCommandOptionType.String,
-            },
-          ],
-        },
-        {
-          name: 'delete',
-          description: 'delete a reminder',
-          type: ApplicationCommandOptionType.Subcommand,
-          options: [
-            {
-              name: 'reminderid',
-              description: 'the id of the reminder to delete',
-              type: ApplicationCommandOptionType.Integer,
-              choices: reminderIdChoices,
-              required: true,
-            },
-          ],
-        },
-        {
-          name: 'list',
-          description: 'list all of your reminders',
-          type: ApplicationCommandOptionType.Subcommand,
-        },
-      ],
-    });
+    return {
+      command: {
+        name: this.name,
+        description: this.description,
+        options: [
+          {
+            name: 'create',
+            description: 'create a reminder',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+              {
+                name: 'amount',
+                description: 'the amount of time to wait before the reminder',
+                type: ApplicationCommandOptionType.Integer,
+                autocomplete: true,
+                required: true,
+              },
+              {
+                name: 'reminder',
+                description: 'the reminder to be sent',
+                type: ApplicationCommandOptionType.String,
+                required: true,
+              },
+            ],
+          },
+          {
+            name: 'edit',
+            description: 'edit a reminder',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+              {
+                name: 'reminderid',
+                description: 'the id of the reminder to edit',
+                type: ApplicationCommandOptionType.Integer,
+                choices: reminderIdChoices,
+                required: true,
+              },
+              {
+                name: 'amount',
+                description: 'the amount of time to wait before the reminder',
+                type: ApplicationCommandOptionType.Integer,
+                autocomplete: true,
+              },
+              {
+                name: 'reminder',
+                description: 'the reminder to be sent',
+                type: ApplicationCommandOptionType.String,
+              },
+            ],
+          },
+          {
+            name: 'delete',
+            description: 'delete a reminder',
+            type: ApplicationCommandOptionType.Subcommand,
+            options: [
+              {
+                name: 'reminderid',
+                description: 'the id of the reminder to delete',
+                type: ApplicationCommandOptionType.Integer,
+                choices: reminderIdChoices,
+                required: true,
+              },
+            ],
+          },
+          {
+            name: 'list',
+            description: 'list all of your reminders',
+            type: ApplicationCommandOptionType.Subcommand,
+          },
+        ],
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
+    };
   }
 }
 
-async function create(interaction: APIApplicationCommandInteraction) {
-  const timeAmount = interaction.options.getInteger('amount', true) * MILLISECONDS_TO_MINUTES,
-    reminder = interaction.options.getString('reminder', true),
+async function create(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+  const timeAmount = options.getInteger('amount', true) * MILLISECONDS_TO_MINUTES,
+    reminder = options.getString('reminder', true),
     user = interaction.member.user;
 
   if (timeAmount > MAX_TIME)
-    return interaction.reply({
+    return this.client.api.interactions.reply(res, {
       content: 'You cannot create a reminder for longer than a year',
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
-  const currentReminderData = await interaction.client.db.reminder.findUnique({ where: { userId: user.id } });
+  const currentReminderData = await this.client.db.reminder.findUnique({ where: { userId: user.id } });
   if (currentReminderData && currentReminderData?.reminders.length >= MAX_REMINDERS)
-    return interaction.reply({
+    return this.client.api.interactions.reply(res, {
       content: `You cannot have more than ${MAX_REMINDERS} reminders at a time`,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
   const embed = new EmbedBuilder()
@@ -193,10 +203,10 @@ async function create(interaction: APIApplicationCommandInteraction) {
       )}\n **Reminder**: ${reminder}`,
     )
     .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
-  await interaction.reply({ embeds: [embed] });
+  await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
 
   if (currentReminderData) {
-    interaction.client.db.reminder.update({
+    this.client.db.reminder.update({
       where: { userId: user.id },
       data: {
         reminders: currentReminderData.reminders.concat([
@@ -211,14 +221,14 @@ async function create(interaction: APIApplicationCommandInteraction) {
     });
     return scheduleJob(new Date((currentReminderData.reminders.at(-1) as unknown as UserReminder).time), () =>
       handleReminder(
-        interaction.client,
+        this.client,
         currentReminderData as unknown as Reminder,
         currentReminderData.reminders.at(-1) as unknown as UserReminder,
       ),
     );
   }
 
-  const newReminder = await interaction.client.db.reminder.create({
+  const newReminder = await this.client.db.reminder.create({
     data: {
       userId: user.id,
       reminders: [
@@ -233,38 +243,38 @@ async function create(interaction: APIApplicationCommandInteraction) {
   });
   scheduleJob(new Date((newReminder.reminders.at(0) as unknown as UserReminder).time), () =>
     handleReminder(
-      interaction.client,
+      this.client,
       newReminder as unknown as Reminder,
       newReminder.reminders.at(0) as unknown as UserReminder,
     ),
   );
 }
 
-async function edit(interaction: APIApplicationCommandInteraction) {
+async function edit(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
   const user = interaction.member.user,
-    currentReminderData = (await interaction.client.db.reminder.findUnique({
+    currentReminderData = (await this.client.db.reminder.findUnique({
       where: { userId: user.id },
     })) as unknown as Reminder;
 
   if (!currentReminderData)
-    return interaction.reply({
+    return this.client.api.interactions.reply(res, {
       content: "You don't have any reminders to edit.",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
-  const reminderId = interaction.options.getInteger('reminderid', true),
-    reminder = interaction.options.getString('reminder'),
-    amount = interaction.options.getInteger('amount') || 0 * MILLISECONDS_TO_MINUTES;
+  const reminderId = options.getInteger('reminderid', true),
+    reminder = options.getString('reminder'),
+    amount = options.getInteger('amount') || 0 * MILLISECONDS_TO_MINUTES;
 
   if (!reminder && !amount)
-    return interaction.reply({
+    return this.client.api.interactions.reply(res, {
       content: 'You must specify either a reminder or an amount of time to apply an edit.',
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   if (reminderId > currentReminderData.reminders.length)
-    return interaction.reply({
+    return this.client.api.interactions.reply(res, {
       content: 'You must specify a valid reminder ID',
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
   const updatedReminder = {} as UserReminder;
@@ -274,7 +284,7 @@ async function edit(interaction: APIApplicationCommandInteraction) {
   updatedReminder.reminderId = reminderId;
   updatedReminder.channelId = currentReminderData.reminders.find(r => r.reminderId === reminderId)?.channelId as string;
 
-  const updatedReminderData = await interaction.client.db.reminder.update({
+  const updatedReminderData = await this.client.db.reminder.update({
     where: { userId: user.id },
     data: {
       reminders: currentReminderData.reminders.map(reminder => {
@@ -284,9 +294,9 @@ async function edit(interaction: APIApplicationCommandInteraction) {
   });
 
   if (!updatedReminderData)
-    return interaction.reply({
+    return this.client.api.interactions.reply(res, {
       content: 'An error occurred while updating your reminder',
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
   const embed = new EmbedBuilder()
@@ -299,34 +309,33 @@ async function edit(interaction: APIApplicationCommandInteraction) {
       }`,
     )
     .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
-  await interaction.reply({ embeds: [embed] });
+  await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
 }
 
-async function deleteReminder(interaction: APIApplicationCommandInteraction) {
+async function deleteReminder(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
   const user = interaction.member.user,
-    reminderId = interaction.options.getInteger('reminderid', true),
-    currentReminderData = (await interaction.client.db.reminder.findUnique({
+    reminderId = options.getInteger('reminderid', true),
+    currentReminderData = (await this.client.db.reminder.findUnique({
       where: { userId: user.id },
     })) as unknown as Reminder;
 
   if (!currentReminderData)
-    return interaction.reply({
+    return this.client.api.interactions.reply(res, {
       content: "You don't have any reminders to delete.",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   if (reminderId > currentReminderData.reminders.length)
-    return interaction.reply({
+    return this.client.api.interactions.reply(res, {
       content: 'You must specify a valid reminder ID',
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
   const deletedReminder = currentReminderData.reminders.find(
     reminder => reminder.reminderId == reminderId,
   ) as UserReminder;
-  if (currentReminderData.reminders.length == 1)
-    await interaction.client.db.reminder.delete({ where: { userId: user.id } });
+  if (currentReminderData.reminders.length == 1) await this.client.db.reminder.delete({ where: { userId: user.id } });
   else
-    await interaction.client.db.reminder.update({
+    await this.client.db.reminder.update({
       where: { userId: user.id },
       data: {
         reminders: currentReminderData.reminders
@@ -344,19 +353,19 @@ async function deleteReminder(interaction: APIApplicationCommandInteraction) {
     .setThumbnail(user.displayAvatarURL())
     .setDescription(`Your reminder to remind you about: ${deletedReminder.message}\n has been deleted successfully`)
     .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
-  await interaction.reply({ embeds: [embed] });
+  await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
 }
 
-async function list(interaction: APIApplicationCommandInteraction) {
+async function list(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
   const user = interaction.member.user,
-    currentReminderData = (await interaction.client.db.reminder.findUnique({
+    currentReminderData = (await this.client.db.reminder.findUnique({
       where: { userId: user.id },
     })) as unknown as Reminder;
 
   if (!currentReminderData)
-    return interaction.reply({
+    return this.client.api.interactions.reply(res, {
       content: "You don't have any reminders.",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
   const embed = new EmbedBuilder()
@@ -374,5 +383,5 @@ async function list(interaction: APIApplicationCommandInteraction) {
         .join('\n\n'),
     )
     .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
-  await interaction.reply({ embeds: [embed], ephemeral: true });
+  await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
 }

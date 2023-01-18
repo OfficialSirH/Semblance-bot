@@ -6,7 +6,7 @@ export default class Invite extends Command {
   public override description = 'Gets an invite link for the bot and support server.';
   public override category = [Category.semblance];
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
     const { client, user } = interaction;
     const embed = new EmbedBuilder()
       .setTitle('Bot Invite')
@@ -19,7 +19,7 @@ export default class Invite extends Command {
       )
       .setFooter({ text: 'Spread the word about Semblance!' });
 
-    await interaction.reply({ embeds: [embed] });
+    await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
   }
 
   public override data() {

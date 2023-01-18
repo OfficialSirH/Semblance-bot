@@ -1,9 +1,14 @@
 import { GuildId, Category, formattedDate, isUserInGuild, PreconditionName } from '#constants/index';
+import { Attachy } from '#structures/Attachy';
 import { Command } from '#structures/Command';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 import {
-  type APIApplicationCommandInteraction,
   ApplicationCommandOptionType,
   PermissionFlagsBits,
+  type APIChatInputApplicationCommandGuildInteraction,
+  MessageFlags,
+  type RESTPostAPIApplicationCommandsJSONBody,
+  type APIUser,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 
@@ -17,34 +22,38 @@ export default class BoostReward extends Command {
     });
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
-    const subcommand = interaction.options.getSubcommand();
+  public override async chatInputRun(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    const subcommand = options.getSubcommand();
 
     switch (subcommand) {
       case 'add': {
-        const user = interaction.options.getUser('user');
-        if (!user || !(await isUserInGuild(user, interaction.guild)))
-          return interaction.reply({ content: 'invalid user', ephemeral: true });
-        const days = interaction.options.getInteger('days') ?? 28;
-        return addBooster(interaction, { user, days });
+        const user = options.getUser('user');
+        if (!user || !(await isUserInGuild(this.client.rest, interaction.guild_id, user)))
+          return this.client.api.interactions.reply(res, { content: 'invalid user', flags: MessageFlags.Ephemeral });
+        const days = options.getInteger('days') ?? 28;
+        return this.addBooster(res, interaction, { user, days });
       }
       case 'edit': {
-        const user = interaction.options.getUser('user');
-        if (!user || !(await isUserInGuild(user, interaction.guild)))
-          return interaction.reply({ content: 'invalid user', ephemeral: true });
-        const days = interaction.options.getInteger('days', true);
-        return editBooster(interaction, { user, days });
+        const user = options.getUser('user');
+        if (!user || !(await isUserInGuild(this.client.rest, interaction.guild_id, user)))
+          return this.client.api.interactions.reply(res, { content: 'invalid user', flags: MessageFlags.Ephemeral });
+        const days = options.getInteger('days', true);
+        return this.editBooster(res, interaction, { user, days });
       }
       case 'remove': {
-        const user = interaction.options.getUser('user');
-        if (!user || !(await isUserInGuild(user, interaction.guild)))
-          return interaction.reply({ content: 'invalid user', ephemeral: true });
-        return removeBooster(interaction, user);
+        const user = options.getUser('user');
+        if (!user || !(await isUserInGuild(this.client.rest, interaction.guild_id, user)))
+          return this.client.api.interactions.reply(res, { content: 'invalid user', flags: MessageFlags.Ephemeral });
+        return this.removeBooster(res, interaction, user);
       }
       case 'list':
-        return listBoosters(interaction);
+        return this.listBoosters(res);
       default:
-        return interaction.reply('Invalid subcommand.');
+        return this.client.api.interactions.reply(res, { content: 'Invalid subcommand.' });
     }
   }
 
@@ -111,74 +120,95 @@ export default class BoostReward extends Command {
             type: ApplicationCommandOptionType.Subcommand,
           },
         ],
-      },
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
       guildIds: [GuildId.cellToSingularity],
     };
   }
-}
 
-const addBooster = async (interaction: APIApplicationCommandInteraction, options: { user: User; days: number }) => {
-  let boosterRewards = await interaction.client.db.boosterReward.findUnique({ where: { userId: options.user.id } });
-  if (boosterRewards)
-    return interaction.reply(
-      `That user is already listed to receive an automated reward on ${formattedDate(
+  public async addBooster(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: { user: APIUser; days: number },
+  ) {
+    let boosterRewards = await this.client.db.boosterReward.findUnique({ where: { userId: options.user.id } });
+    if (boosterRewards)
+      return this.client.api.interactions.reply(res, {
+        content: `That user is already listed to receive an automated reward on ${formattedDate(
+          boosterRewards.rewardingDate.valueOf(),
+        )}`,
+      });
+
+    boosterRewards = await this.client.db.boosterReward.create({
+      data: {
+        userId: options.user.id,
+        rewardingDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * options.days),
+      },
+    });
+    await this.client.api.interactions.reply(res, {
+      content: `That user will now receive an automated reward on ${formattedDate(
         boosterRewards.rewardingDate.valueOf(),
       )}`,
-    );
+    });
+  }
 
-  boosterRewards = await interaction.client.db.boosterReward.create({
-    data: {
-      userId: options.user.id,
-      rewardingDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * options.days),
-    },
-  });
-  await interaction.reply(
-    `That user will now receive an automated reward on ${formattedDate(boosterRewards.rewardingDate.valueOf())}`,
-  );
-};
+  public async editBooster(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: { user: APIUser; days: number },
+  ) {
+    let boosterRewards = await this.client.db.boosterReward.findUnique({ where: { userId: options.user.id } });
+    if (!boosterRewards)
+      return this.client.api.interactions.reply(res, {
+        content: 'That user is not listed to receive an automated reward',
+      });
 
-const editBooster = async (interaction: APIApplicationCommandInteraction, options: { user: User; days: number }) => {
-  let boosterRewards = await interaction.client.db.boosterReward.findUnique({ where: { userId: options.user.id } });
-  if (!boosterRewards) return interaction.reply('That user is not listed to receive an automated reward');
+    boosterRewards = await this.client.db.boosterReward.update({
+      where: {
+        userId: options.user.id,
+      },
+      data: {
+        rewardingDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * options.days),
+      },
+    });
+    await this.client.api.interactions.reply(res, {
+      content: `The user's reward was successfully updated, they will now receive an automated reward on ${formattedDate(
+        boosterRewards.rewardingDate.valueOf(),
+      )}`,
+    });
+  }
 
-  boosterRewards = await interaction.client.db.boosterReward.update({
-    where: {
-      userId: options.user.id,
-    },
-    data: {
-      rewardingDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * options.days),
-    },
-  });
-  await interaction.reply(
-    `The user's reward was successfully updated, they will now receive an automated reward on ${formattedDate(
-      boosterRewards.rewardingDate.valueOf(),
-    )}`,
-  );
-};
+  public async removeBooster(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    user: APIUser,
+  ) {
+    const boosterRewards = await this.client.db.boosterReward.delete({ where: { userId: user.id } });
+    if (!boosterRewards)
+      return this.client.api.interactions.reply(res, {
+        content: 'That user is not listed to receive an automated reward',
+      });
 
-const removeBooster = async (interaction: APIApplicationCommandInteraction, user: User) => {
-  const boosterRewards = await interaction.client.db.boosterReward.delete({ where: { userId: user.id } });
-  if (!boosterRewards) return interaction.reply('That user is not listed to receive an automated reward');
+    await this.client.api.interactions.reply(res, { content: 'That user will no longer receive an automated reward' });
+  }
 
-  await interaction.reply('That user will no longer receive an automated reward');
-};
+  public async listBoosters(res: FastifyReply) {
+    const boosterRewards = await this.client.db.boosterReward.findMany({});
+    if (!boosterRewards.length)
+      return this.client.api.interactions.reply(res, { content: 'There are no booster rewards to list' });
 
-const listBoosters = async (interaction: APIApplicationCommandInteraction) => {
-  const boosterRewards = await interaction.client.db.boosterReward.findMany({});
-  if (!boosterRewards.length) return interaction.reply('There are no booster rewards to list');
-
-  interaction.reply({
-    content: `Here's all ${boosterRewards.length} booster reward users`,
-    files: [
-      new Attachy(
-        Buffer.from(
-          `${boosterRewards.reduce(
-            (acc, cur) => (acc += `${cur.userId} - ${formattedDate(cur.rewardingDate.valueOf())}\n`),
-            '',
-          )}`,
+    this.client.api.interactions.reply(res, {
+      content: `Here's all ${boosterRewards.length} booster reward users`,
+      files: [
+        new Attachy(
+          Buffer.from(
+            `${boosterRewards.reduce(
+              (acc, cur) => (acc += `${cur.userId} - ${formattedDate(cur.rewardingDate.valueOf())}\n`),
+              '',
+            )}`,
+          ),
+          'boosterRewards.js',
         ),
-        { name: 'boosterRewards.js' },
-      ),
-    ],
-  });
-};
+      ],
+    });
+  }
+}

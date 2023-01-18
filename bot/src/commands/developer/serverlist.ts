@@ -2,7 +2,19 @@ import { randomColor, guildBookPage, Category, GuildId, PreconditionName } from 
 import { Command } from '#structures/Command';
 import { serversPerPage } from '#constants/commands';
 import { buildCustomId } from '#constants/components';
-import { ButtonStyle, ApplicationCommandOptionType } from '@discordjs/core';
+import {
+  ButtonStyle,
+  ApplicationCommandOptionType,
+  type APIChatInputApplicationCommandGuildInteraction,
+  type RESTPostAPIApplicationCommandsJSONBody,
+} from '@discordjs/core';
+import {
+  ActionRowBuilder,
+  type MessageActionRowComponentBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+} from '@discordjs/builders';
+import type { FastifyReply } from 'fastify';
 
 export default class ServerList extends Command {
   public constructor(client: Command.Requirement) {
@@ -14,8 +26,8 @@ export default class ServerList extends Command {
     });
   }
 
-  public override async chatInputRun(interaction: APIApplicationCommandInteraction) {
-    const page = interaction.options.getInteger('page') || 1;
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    const page = options.getInteger('page') || 1;
     const { client, user } = interaction;
 
     const { chosenPage, pageDetails } = guildBookPage(client, page);
@@ -82,7 +94,7 @@ export default class ServerList extends Command {
         .setDescription(pageDetails)
         .setFooter({ text: `Page ${chosenPage} out of ${numOfPages}` });
 
-    await interaction.reply({ embeds: [embed], components });
+    await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], components });
   }
 
   public override data() {
@@ -98,7 +110,7 @@ export default class ServerList extends Command {
             required: false,
           },
         ],
-      },
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
       guildIds: [GuildId.sirhStuff],
     };
   }

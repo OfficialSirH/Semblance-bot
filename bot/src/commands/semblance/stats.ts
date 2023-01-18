@@ -84,6 +84,6 @@ export default class Info extends Command {
       ].join('\n'),
       inline: true,
     });
-    return { embeds: [embed] };
+    return { embeds: [embed.toJSON()] };
   }
 }

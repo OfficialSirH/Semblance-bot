@@ -29,7 +29,8 @@ export default class ImageGen extends InteractionHandler {
 
     const images = await fetchCatOrDog(query_params, wantsCat);
 
-    if (images.length === 0) return interaction.reply({ content: 'No images found.', ephemeral: true });
+    if (images.length === 0)
+      return this.client.api.interactions.reply(res, { content: 'No images found.', flags: MessageFlags.Ephemeral });
 
     const image = images[0],
       image_url = image.url,
@@ -41,6 +42,6 @@ export default class ImageGen extends InteractionHandler {
       .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)
       .setImage(image_url);
 
-    await interaction.update({ embeds: [embed] });
+    await interaction.update({ embeds: [embed.toJSON()] });
   }
 }

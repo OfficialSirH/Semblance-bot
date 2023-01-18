@@ -21,6 +21,6 @@ export default class ArchieDance extends Command {
       )
       .setURL('https://drive.google.com/file/d/1twLIqvEG-wwZJFmhtSERWBM5KoJ3zmkg/view?usp=sharing');
 
-    return { embeds: [embed], files: [attachments.archieDance.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.archieDance.attachment] };
   }
 }

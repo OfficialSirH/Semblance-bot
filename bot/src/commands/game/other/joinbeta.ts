@@ -7,7 +7,7 @@ export default class JoinBeta extends Command {
   public override category = [Category.game, SubCategory.other];
 
   public override async sharedRun(interaction: Command['SharedBuilder']) {
-    const infoHandler = await interaction.client.db.information.findUnique({ where: { type: 'joinbeta' } });
+    const infoHandler = await this.client.db.information.findUnique({ where: { type: 'joinbeta' } });
     if (!infoHandler) return 'No join beta info found.';
     const embed = new EmbedBuilder()
       .setTitle('Steps to join beta')
@@ -16,6 +16,6 @@ export default class JoinBeta extends Command {
       .setAuthor(interaction.user)
       .setFooter({ text: `Called by ${interaction.user.tag}` })
       .setDescription(infoHandler.value);
-    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
   }
 }

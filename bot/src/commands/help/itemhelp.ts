@@ -45,6 +45,6 @@ export default class ItemHelp extends Command {
       )
       .setFooter({ text: 'Item Calculator goes brrrr...' });
 
-    return { embeds: [embed] };
+    return { embeds: [embed.toJSON()] };
   }
 }

@@ -107,6 +107,6 @@ export default class ServerList extends InteractionHandler {
         .setThumbnail(client.user.displayAvatarURL())
         .setDescription(pageDetails)
         .setFooter({ text: `Page ${chosenPage} out of ${numOfPages}` });
-    await interaction.update({ embeds: [embed], components });
+    await interaction.update({ embeds: [embed.toJSON()], components });
   }
 }

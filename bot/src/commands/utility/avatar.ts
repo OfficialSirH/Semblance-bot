@@ -1,17 +1,17 @@
 import { Category, randomColor } from '#constants/index';
-import { Command, type ApplicationCommandRegistry } from '@sapphire/framework';
-import { APIApplicationCommandInteraction, ApplicationCommandOptionType } from '@discordjs/core';
+import { type APIChatInputApplicationCommandGuildInteraction, ApplicationCommandOptionType } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import { EmbedBuilder } from '@discordjs/builders';
+import { Command } from '#structures/Command';
 
 export default class Avatar extends Command {
   public override name = 'avatar';
   public override description = 'Get the avatar of a user.';
   public override category = [Category.utility];
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
-    const user = interaction.options.getUser('user')
-        ? await this.client.users.fetch(interaction.options.getUser('user', true).id)
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    const user = options.getUser('user')
+        ? await this.client.users.fetch(options.getUser('user', true).id)
         : interaction.member.user,
       author = interaction.member.user,
       embed = new EmbedBuilder()
@@ -19,7 +19,7 @@ export default class Avatar extends Command {
         .setAuthor({ name: author.tag, iconURL: author.displayAvatarURL() })
         .setColor(randomColor)
         .setImage(user.displayAvatarURL());
-    return interaction.reply({ embeds: [embed] });
+    return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
   }
 
   public override data() {

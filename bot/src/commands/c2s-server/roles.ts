@@ -2,7 +2,7 @@ import { c2sRoles, c2sRolesInformation, Category, attachments, GuildId, authorDe
 import { buildCustomId } from '#constants/components';
 import type { FastifyReply } from 'fastify';
 import { Command } from '#structures/Command';
-import { type APIApplicationCommandInteraction, MessageFlags, ButtonStyle } from '@discordjs/core';
+import { MessageFlags, ButtonStyle, type APIChatInputApplicationCommandGuildInteraction } from '@discordjs/core';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -19,7 +19,7 @@ export default class Roles extends Command {
     });
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
     const member = interaction.member;
     if (!member) {
       return this.client.api.interactions.reply(res, {

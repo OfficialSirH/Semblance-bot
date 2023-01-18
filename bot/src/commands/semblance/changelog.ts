@@ -7,14 +7,14 @@ export default class Changelog extends Command {
   public override category = [Category.semblance];
 
   public override async sharedRun(interaction: Command['SharedBuilder']) {
-    const changelogHandler = await interaction.client.db.information.findUnique({ where: { type: 'changelog' } });
+    const changelogHandler = await this.client.db.information.findUnique({ where: { type: 'changelog' } });
     if (!changelogHandler) return 'No changelog found.';
     const embed = new EmbedBuilder()
       .setTitle('Changelog')
       .setAuthor(interaction.user)
       .setColor(randomColor)
       .setDescription(changelogHandler.value);
-    return { embeds: [embed] };
+    return { embeds: [embed.toJSON()] };
   }
 
   public override data() {

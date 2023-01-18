@@ -46,6 +46,6 @@ export default class Metabits extends Command {
             "If you'd like to see the effects all of these have on overall production speed, use the slash command, `/metaspeedcalc`, to play around with the values!",
           ].join('\n\n'),
         );
-    return { embeds: [embed], files: [metabitImage] };
+    return { embeds: [embed.toJSON()], files: [metabitImage] };
   }
 }

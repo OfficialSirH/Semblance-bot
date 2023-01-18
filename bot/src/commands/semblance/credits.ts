@@ -1,7 +1,6 @@
 import {
   ActionRowBuilder,
   ButtonBuilder,
-  type APIApplicationCommandInteraction,
   EmbedBuilder,
   ButtonStyle,
   type MessageActionRowComponentBuilder,
@@ -15,7 +14,7 @@ export default class Credits extends Command {
   public override description = 'Lists everyone that has helped with the project of Semblance, including myself(SirH).';
   public override category = [Category.semblance];
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
     const { user } = interaction;
 
     const embed = new EmbedBuilder()
@@ -64,7 +63,7 @@ export default class Credits extends Command {
         .setStyle(ButtonStyle.Primary),
     );
 
-    await interaction.reply({ embeds: [embed], components: [component] });
+    await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], components: [component] });
   }
 
   public override data() {

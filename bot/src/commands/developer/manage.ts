@@ -3,12 +3,15 @@ import { DiscordLinkAPI } from '#structures/DiscordLinkAPI';
 import { type Events, gameEvents } from '#lib/utils/events';
 import { Command } from '#structures/Command';
 import {
-  type APIApplicationCommandInteraction,
   ApplicationCommandOptionType,
   GuildScheduledEventEntityType,
   GuildScheduledEventPrivacyLevel,
+  APIChatInputApplicationCommandGuildInteraction,
+  MessageFlags,
+  RESTPostAPIApplicationCommandsJSONBody,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Manage extends Command {
   public constructor(client: Command.Requirement) {
@@ -20,9 +23,9 @@ export default class Manage extends Command {
     });
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
-    const subcommandGroup = interaction.options.getSubcommandGroup();
-    const subcommand = interaction.options.getSubcommand();
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    const subcommandGroup = options.getSubcommandGroup();
+    const subcommand = options.getSubcommand();
 
     if (subcommandGroup == 'game-event') {
       switch (subcommand) {
@@ -31,7 +34,7 @@ export default class Manage extends Command {
         case 'edit':
           return this.editGameEvent(interaction);
         default:
-          return interaction.reply('Invalid subcommand');
+          return this.client.api.interactions.reply(res, 'Invalid subcommand');
       }
     }
 
@@ -42,12 +45,12 @@ export default class Manage extends Command {
         case 'get':
           return this.discordLinkGet(interaction);
         default:
-          return interaction.reply(`Unknown subcommand \`${subcommand}\``);
+          return this.client.api.interactions.reply(res, `Unknown subcommand \`${subcommand}\``);
       }
   }
 
   public override async autocompleteRun(interaction: AutocompleteInteraction<'cached'>) {
-    let inputtedAmount: string | number = interaction.options.getFocused();
+    let inputtedAmount: string | number = options.getFocused();
     inputtedAmount = parseInt(inputtedAmount as string);
     if (!inputtedAmount || inputtedAmount < 1) inputtedAmount = 1;
 
@@ -183,17 +186,20 @@ export default class Manage extends Command {
             ],
           },
         ],
-      },
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
       guildIds: [GuildId.cellToSingularity],
     };
   }
 
-  public async discordLinkGet(interaction: APIApplicationCommandInteraction) {
-    const user = interaction.options.getUser('discord-id', true);
+  public async discordLinkGet(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    const user = options.getUser('discord-id', true);
     const linkedAccount = await this.client.db.userData.findUnique({ where: { discord_id: user.id } });
 
     if (!linkedAccount)
-      return interaction.reply({ content: `No linked account found for ${user.tag}`, ephemeral: true });
+      return this.client.api.interactions.reply(res, {
+        content: `No linked account found for ${user.tag}`,
+        flags: MessageFlags.Ephemeral,
+      });
 
     const embed = new EmbedBuilder()
       .setTitle(`Linked account for ${user.tag}(${user.id})`)
@@ -209,13 +215,13 @@ export default class Manage extends Command {
         }`,
       );
 
-    return interaction.reply({ embeds: [embed], ephemeral: true });
+    return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
   }
 
-  public async discordLinkCreate(interaction: APIApplicationCommandInteraction) {
-    const user = interaction.options.getUser('discord-id', true);
-    const playerEmail = interaction.options.getString('playeremail');
-    const playerToken = interaction.options.getString('playertoken');
+  public async discordLinkCreate(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    const user = options.getUser('discord-id', true);
+    const playerEmail = options.getString('playeremail');
+    const playerToken = options.getString('playertoken');
 
     const discordLinkClient = new DiscordLinkAPI(Buffer.from(playerEmail + ':' + playerToken).toString('base64'));
 
@@ -228,17 +234,21 @@ export default class Manage extends Command {
         ? linkedAccount.message
         : `\`\`\`json\n${JSON.stringify(linkedAccount)}\`\`\``;
 
-    return interaction.reply({ content, ephemeral: true });
+    return this.client.api.interactions.reply(res, { content, flags: MessageFlags.Ephemeral });
   }
 
-  public async createGameEvent(interaction: APIApplicationCommandInteraction) {
-    const name = interaction.options.getString('name', true);
+  public async createGameEvent(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    const name = options.getString('name', true);
 
-    if (!gameEvents[name as Events]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
+    if (!gameEvents[name as Events])
+      return this.client.api.interactions.reply(res, {
+        content: 'Invalid game event name',
+        flags: MessageFlags.Ephemeral,
+      });
 
     const event = gameEvents[name as Events];
-    const start = Number(interaction.options.getString('start', true));
-    const end = Number(interaction.options.getString('end', true));
+    const start = Number(options.getString('start', true));
+    const end = Number(options.getString('end', true));
 
     try {
       await interaction.guild.scheduledEvents.create({
@@ -253,39 +263,44 @@ export default class Manage extends Command {
           location: 'Cell to Singularity',
         },
       });
-      await interaction.reply(`Successfully created ${name} event!`);
+      await this.client.api.interactions.reply(res, `Successfully created ${name} event!`);
     } catch (e) {
       this.container.logger.error(`creating event failed: ${e}`);
       await interaction
-        .reply({ content: `creating event failed: ${e}`, ephemeral: true })
+        .reply({ content: `creating event failed: ${e}`, flags: MessageFlags.Ephemeral })
         .catch(err => this.container.logger.error(`error reply for failed event creation failed: ${err}`));
     }
   }
 
-  public async editGameEvent(interaction: APIApplicationCommandInteraction) {
-    const name = interaction.options.getString('name', true);
+  public async editGameEvent(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    const name = options.getString('name', true);
 
-    if (!gameEvents[name as Events]) return interaction.reply({ content: 'Invalid game event name', ephemeral: true });
+    if (!gameEvents[name as Events])
+      return this.client.api.interactions.reply(res, {
+        content: 'Invalid game event name',
+        flags: MessageFlags.Ephemeral,
+      });
 
     const event = gameEvents[name as Events];
-    const start = Number(interaction.options.getString('start', true));
-    const end = Number(interaction.options.getString('end', true));
+    const start = Number(options.getString('start', true));
+    const end = Number(options.getString('end', true));
 
     try {
       const scheduledEvent = (await interaction.guild.scheduledEvents.fetch()).find(e => e.name.includes(name));
 
-      if (!scheduledEvent) return interaction.reply({ content: 'No event found', ephemeral: true });
+      if (!scheduledEvent)
+        return this.client.api.interactions.reply(res, { content: 'No event found', flags: MessageFlags.Ephemeral });
 
       await scheduledEvent.edit({
         scheduledStartTime: new Date(start),
         scheduledEndTime: new Date(end),
         description: event.description(start, end),
       });
-      await interaction.reply(`Successfully edited ${name} event!`);
+      await this.client.api.interactions.reply(res, `Successfully edited ${name} event!`);
     } catch (e) {
       this.container.logger.error(`creating event failed: ${e}`);
       await interaction
-        .reply({ content: `creating event failed: ${e}`, ephemeral: true })
+        .reply({ content: `creating event failed: ${e}`, flags: MessageFlags.Ephemeral })
         .catch(err => this.container.logger.error(`error reply for failed event creation failed: ${err}`));
     }
   }

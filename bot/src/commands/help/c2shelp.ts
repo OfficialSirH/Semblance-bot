@@ -49,6 +49,6 @@ export default class C2sHelp extends Command {
         { name: 'Other/Extras', value: otherCommands, inline: true },
       )
       .setFooter({ text: 'C2S for the win!' });
-    return { embeds: [embed], components };
+    return { embeds: [embed.toJSON()], components };
   }
 }

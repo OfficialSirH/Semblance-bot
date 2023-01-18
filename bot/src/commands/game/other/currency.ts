@@ -49,6 +49,6 @@ export default class Currency extends Command {
         },
       )
       .setFooter({ text: 'List of currencies used ingame' });
-    return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.currency] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment, attachments.currency] };
   }
 }

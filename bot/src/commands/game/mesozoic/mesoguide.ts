@@ -85,6 +85,6 @@ export default class Mesoguide extends Command {
         },
       )
       .setFooter({ text: 'Thanks to Jojoseis#0001 for making this guide! :D' });
-    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
   }
 }

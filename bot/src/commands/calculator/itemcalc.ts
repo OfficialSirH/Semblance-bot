@@ -1,8 +1,17 @@
-import { bigToName, Category, randomColor } from '#constants/index';
+import { authorDefault, bigToName, Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
 import { itemList } from '#itemList';
 import type { ItemList } from '#lib/interfaces/ItemList';
-import { ApplicationCommandOptionType } from '@discordjs/core';
+import {
+  type APIApplicationCommandAutocompleteInteraction,
+  type RESTPostAPIApplicationCommandsJSONBody,
+  ApplicationCommandOptionType,
+  MessageFlags,
+  type APIChatInputApplicationCommandGuildInteraction,
+} from '@discordjs/core';
+import { EmbedBuilder } from '@discordjs/builders';
+import type { FastifyReply } from 'fastify';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 
 export default class ItemCalc extends Command {
   public constructor(client: Command.Requirement) {
@@ -14,25 +23,26 @@ export default class ItemCalc extends Command {
   }
 
   public async itemCalc(
-    interaction: APIApplicationCommandInteraction,
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
     options: {
       item: string;
       levelGains: number;
       currentLevel: number;
     },
-  ): Promise<InteractionResponse<true>> {
+  ) {
     if (!options.currentLevel) options.currentLevel = 0;
 
     if (!options.item)
-      return interaction.reply({
+      return this.client.api.interactions.reply(res, {
         content: "You forgot input for 'item'.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     if (!options.levelGains)
-      return interaction.reply({
+      return this.client.api.interactions.reply(res, {
         content: "You forgot input for 'level'.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     let itemCost = 0,
@@ -44,9 +54,9 @@ export default class ItemCalc extends Command {
       }
 
     if (!itemCost)
-      return interaction.reply({
+      return this.client.api.interactions.reply(res, {
         content: "Your input for 'item' was invalid.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     let resultingPrice = 0;
 
@@ -54,30 +64,30 @@ export default class ItemCalc extends Command {
       resultingPrice += itemCost * Math.pow(1.149999976158142, i);
       if (!isFinite(resultingPrice)) break;
     }
-    const user = interaction.member.user,
-      embed = new EmbedBuilder()
-        .setTitle('Item Calculator Results')
-        .setAuthor(user)
-        .setColor(randomColor)
-        .setDescription(
-          [
-            `Chosen item: ${options.item}`,
-            `Current item level: ${options.currentLevel}`,
-            `Item level goal: ${options.levelGains + options.currentLevel}`,
-            `Resulting Price: ${bigToName(resultingPrice)} ${itemCostType}`,
-          ].join('\n'),
-        );
-    return interaction.reply({ embeds: [embed] });
+    const embed = new EmbedBuilder()
+      .setTitle('Item Calculator Results')
+      .setAuthor(authorDefault(interaction.member.user))
+      .setColor(randomColor)
+      .setDescription(
+        [
+          `Chosen item: ${options.item}`,
+          `Current item level: ${options.currentLevel}`,
+          `Item level goal: ${options.levelGains + options.currentLevel}`,
+          `Resulting Price: ${bigToName(resultingPrice)} ${itemCostType}`,
+        ].join('\n'),
+      );
+    return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
   }
 
   public async itemCalcRev(
-    interaction: APIApplicationCommandInteraction,
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
     options: {
       item: string;
       currentAmount: string;
       currentLevel: number;
     },
-  ): Promise<InteractionResponse<true>> {
+  ) {
     if (!options.currentLevel) options.currentLevel = 0;
 
     const currentAmount = parseFloat(options.currentAmount);
@@ -91,47 +101,54 @@ export default class ItemCalc extends Command {
       }
 
     if (!itemCost)
-      return interaction.reply({
+      return this.client.api.interactions.reply(res, {
         content: "Your input for 'item' was invalid.",
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
     const num3 = currentAmount * 0.1499999761581421;
     const num5 = itemCost * Math.pow(1.149999976158142, options.currentLevel);
     const level = Math.floor(Math.log(num3 / num5 + 1) / Math.log(1.149999976158142));
-    const user = interaction.member.user,
-      embed = new EmbedBuilder()
-        .setTitle('Item Calculator Results')
-        .setAuthor(user)
-        .setColor(randomColor)
-        .setDescription(
-          [
-            `Chosen item: ${options.item}`,
-            `Current item level: ${options.currentLevel}`,
-            `currency input: ${bigToName(currentAmount)} ${itemCostType}`,
-            `Resulting level: ${level}`,
-          ].join('\n'),
-        );
-    return interaction.reply({ embeds: [embed] });
+    const embed = new EmbedBuilder()
+      .setTitle('Item Calculator Results')
+      .setAuthor(authorDefault(interaction.member.user))
+      .setColor(randomColor)
+      .setDescription(
+        [
+          `Chosen item: ${options.item}`,
+          `Current item level: ${options.currentLevel}`,
+          `currency input: ${bigToName(currentAmount)} ${itemCostType}`,
+          `Resulting level: ${level}`,
+        ].join('\n'),
+      );
+    return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
   }
 
-  public override chatInputRun(interaction: APIApplicationCommandInteraction) {
-    const chosenCalculator = interaction.options.getSubcommand();
+  public override chatInputRun(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    const chosenCalculator = options.getSubcommand();
     if (chosenCalculator === 'required_resources') {
-      const item = interaction.options.getString('item', true);
-      const levelGains = interaction.options.getNumber('level_gains', true);
-      const currentLevel = interaction.options.getNumber('current_level') || 0;
-      return this.itemCalc(interaction, { item, levelGains, currentLevel });
+      const item = options.getString('item', true);
+      const levelGains = options.getNumber('level_gains', true);
+      const currentLevel = options.getNumber('current_level') || 0;
+      return this.itemCalc(res, interaction, { item, levelGains, currentLevel });
     }
     if (chosenCalculator === 'obtainable_levels') {
-      const item = interaction.options.getString('item', true);
-      const currentAmount = interaction.options.getString('current_amount', true);
-      const currentLevel = interaction.options.getNumber('current_level') || 0;
-      return this.itemCalcRev(interaction, { item, currentAmount, currentLevel });
+      const item = options.getString('item', true);
+      const currentAmount = options.getString('current_amount', true);
+      const currentLevel = options.getNumber('current_level') || 0;
+      return this.itemCalcRev(res, interaction, { item, currentAmount, currentLevel });
     }
   }
 
-  public override async autocompleteRun(interaction: AutocompleteInteraction<'cached'>) {
-    const inputtedItem = interaction.options.getFocused() as string;
+  public override async autocompleteRun(
+    res: FastifyReply,
+    _interaction: APIApplicationCommandAutocompleteInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    const inputtedItem = options.getString('item', true);
 
     const fullList = Object.keys(itemList).reduce<Array<string>>(
       (acc, currency) => acc.concat(Object.keys(itemList[currency as keyof ItemList])),
@@ -144,7 +161,7 @@ export default class ItemCalc extends Command {
       .map(item => ({ name: item, value: item }));
 
     if (filteredList.length === 0) return;
-    await interaction.respond(filteredList);
+    await this.client.api.interactions.autocomplete(res, { choices: filteredList });
   }
 
   public override data() {
@@ -204,7 +221,7 @@ export default class ItemCalc extends Command {
             ],
           },
         ],
-      },
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
     };
   }
 }

@@ -25,8 +25,12 @@ export default class Codes extends InteractionHandler {
   }
 
   public override async run(interaction: ButtonInteraction, data: ParsedCustomIdData<'expired' | 'valid'>) {
-    const codeHandler = await interaction.client.db.information.findUnique({ where: { type: 'codes' } });
-    if (!codeHandler) return interaction.reply({ content: 'codes object is missing', ephemeral: true });
+    const codeHandler = await this.client.db.information.findUnique({ where: { type: 'codes' } });
+    if (!codeHandler)
+      return this.client.api.interactions.reply(res, {
+        content: 'codes object is missing',
+        flags: MessageFlags.Ephemeral,
+      });
     const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data);
     let component: ActionRowBuilder<MessageActionRowComponentBuilder>;
 
@@ -63,6 +67,6 @@ export default class Codes extends InteractionHandler {
     }
 
     embed.setThumbnail(attachments.currentLogo);
-    await interaction.update({ embeds: [embed], components: [component] });
+    await interaction.update({ embeds: [embed.toJSON()], components: [component] });
   }
 }

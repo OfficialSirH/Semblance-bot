@@ -1,16 +1,22 @@
 ﻿import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
 import { Command } from '#structures/Command';
-import type { APIInvite, APIUser } from 'discord-api-types/v10';
 import { Category, PreconditionName, onlyUnique, randomColor } from '#constants/index';
 import { request } from 'undici';
 import {
+  type APIEmbedField,
+  type APIGuild,
+  type APIInvite,
+  type APIMessage,
+  type APIUser,
+  type GatewayGuildCreateDispatchData,
+  Routes,
   type RESTPostAPIApplicationCommandsJSONBody,
-  type APIApplicationCommandInteraction,
   ApplicationCommandOptionType,
   ChannelType,
-  type Snowflake,
+  type APIChatInputApplicationCommandGuildInteraction,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 
 export default class Lookup extends Command {
   public constructor(client: Command.Requirement) {
@@ -39,30 +45,46 @@ export default class Lookup extends Command {
     };
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
-    const unknownItem = interaction.options.getString('unknown_item');
-    if (!unknownItem) return interaction.reply('Please provide a valid ID or invite!');
+  public override async chatInputRun(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    const unknownItem = options.getString('unknown_item');
+    if (!unknownItem)
+      return this.client.api.interactions.reply(res, { content: 'Please provide a valid ID or invite!' });
 
-    const role = getRole(unknownItem, interaction.guild);
-    if (role) return interaction.reply(`✅ This Id is a role Id for the role ${role.name}.`);
+    const role = getRole(unknownItem, this.client.cache.data.guilds.get(interaction.guild_id) as APIGuild);
+    if (role)
+      return this.client.api.interactions.reply(res, { content: `✅ This Id is a role Id for the role ${role.name}.` });
 
-    const channel = getChannel(unknownItem, interaction.guild);
-    if (channel) return interaction.reply(`✅ This Id is a channel Id for the channel ${channel}.`);
+    const channel = getChannel(
+      unknownItem,
+      this.client.cache.data.guilds.get(interaction.guild_id) as APIGuild & GatewayGuildCreateDispatchData,
+    );
+    if (channel)
+      return this.client.api.interactions.reply(res, {
+        content: `✅ This Id is a channel Id for the channel ${channel}.`,
+      });
 
     // user lookup
     try {
-      const user = await getUser(unknownItem, interaction.guild);
+      const user = await getUser(
+        this.client.rest,
+        unknownItem,
+        this.client.cache.data.guilds.get(interaction.guild_id) as APIGuild,
+      );
       if (user) {
         if (user.bot) {
           const botblock = (await request(`https://botblock.org/api/bots/${user.id}`).then(res =>
             res.body.json(),
           )) as BotBlock;
           if (botblock.discriminator == '0000')
-            return interaction.reply(
-              `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}). Unfortunately, this bot is not listed on any of BotBlock's bot lists.`,
-            );
+            return this.client.api.interactions.reply(res, {
+              content: `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}). Unfortunately, this bot is not listed on any of BotBlock's bot lists.`,
+            });
 
-          const fields: EmbedField[] = [],
+          const fields: APIEmbedField[] = [],
             add = (values: Record<string, unknown>) => {
               for (const name in values)
                 fields.push({
@@ -115,17 +137,24 @@ export default class Lookup extends Command {
             if (tags.length) add({ Tags: tags.join(', ') });
           }
 
-          let owners: string[] | User[] = await Promise.all(
+          let owners: string[] | APIUser[] = await Promise.all(
             botblock.owners
               .filter(o => !o.includes('#'))
               .filter(onlyUnique)
-              .map(u => getUser(u, interaction.guild) as Promise<User>),
+              .map(
+                u =>
+                  getUser(
+                    this.client.rest,
+                    u,
+                    this.client.cache.data.guilds.get(interaction.guild_id) as APIGuild,
+                  ) as Promise<APIUser>,
+              ),
           );
           owners = owners.filter(o => o).map(o => `${o.username}#${o.discriminator} (${o.id})`);
           if (owners.length > 1) add({ Owners: owners.join('\n') });
           else add({ Owner: owners[0] });
 
-          return interaction.reply({
+          return this.client.api.interactions.reply(res, {
             content: `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}).`,
             embeds: [
               {
@@ -140,21 +169,23 @@ export default class Lookup extends Command {
             ],
           });
         } else
-          return interaction.reply(`✅ This Id is a user Id of ${user.username}#${user.discriminator} (${user.id}).`);
+          return this.client.api.interactions.reply(res, {
+            content: `✅ This Id is a user Id of ${user.username}#${user.discriminator} (${user.id}).`,
+          });
       }
     } catch (e) {
-      this.container.logger.error(e);
+      this.client.logger.error(e);
     }
 
     // invite lookup
     try {
-      const _invite = await interaction.client.fetchInvite(unknownItem);
+      const _invite = (await this.client.rest.get(Routes.invite(unknownItem))) as APIInvite;
       if (_invite) {
         const invite = (await request(
-          'https://discordapp.com/api/v8/invites/' + _invite.code + '?with_counts=true',
+          'https://discordapp.com/api/v10/invites/' + _invite.code + '?with_counts=true',
         ).then(res => res.body.json())) as APIInvite;
 
-        const fields: EmbedField[] = [],
+        const fields: APIEmbedField[] = [],
           add = (values: Record<string, unknown>, inline = true) => {
             for (const name in values)
               fields.push({
@@ -197,7 +228,7 @@ export default class Lookup extends Command {
           });
         if (invite.guild?.features.length) add({ Features: invite.guild.features.join(', ') }, true);
 
-        return interaction.reply({
+        return this.client.api.interactions.reply(res, {
           content: '✅ This Id is a Discord invite.',
           embeds: [
             {
@@ -223,27 +254,31 @@ export default class Lookup extends Command {
 
     // emoji lookup
     try {
-      const res = await request(`https://cdn.discordapp.com/emojis/${unknownItem}.png`);
-      if (res.statusCode == 200)
-        return interaction.reply(`✅ This Id is an emoji Id: https://cdn.discordapp.com/emojis/${unknownItem}.png`);
+      const response = await request(`https://cdn.discordapp.com/emojis/${unknownItem}.png`);
+      if (response.statusCode == 200)
+        return this.client.api.interactions.reply(res, {
+          content: `✅ This Id is an emoji Id: https://cdn.discordapp.com/emojis/${unknownItem}.png`,
+        });
     } catch (e) {}
 
     // message lookup
-    const channels = interaction.guild.channels.cache
+    const channels = (
+      this.client.cache.data.guilds.get(interaction.guild_id) as APIGuild & GatewayGuildCreateDispatchData
+    ).channels
       .filter(ch => [ChannelType.GuildAnnouncement, ChannelType.GuildText].includes(ch.type))
-      .map(c => c) as TextChannel[];
+      .map(c => c);
     for (const ch of channels)
       try {
-        const m = await ch.messages.fetch(unknownItem as Snowflake);
+        const m = (await this.client.rest.get(Routes.channelMessage(ch.id, unknownItem))) as APIMessage;
         if (m)
-          return interaction.reply(
-            `✅ This Id is a message Id: <https://discordapp.com/channels/${m.guild.id}/${m.channel.id}/${m.id}>`,
-          );
+          return this.client.api.interactions.reply(res, {
+            content: `✅ This Id is a message Id: <https://discordapp.com/channels/${interaction.guild_id}/${ch.id}/${m.id}>`,
+          });
       } catch (e) {}
 
-    return interaction.reply(
-      `🚫 I don't know what the Id \`${unknownItem}\` is coming from. Maybe the deep abyss known as The Beyond?`,
-    );
+    return this.client.api.interactions.reply(res, {
+      content: `🚫 I don't know what the Id \`${unknownItem}\` is coming from. Maybe the deep abyss known as The Beyond?`,
+    });
   }
 }
 

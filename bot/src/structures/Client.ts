@@ -1,7 +1,7 @@
 import { Collection } from '@discordjs/collection';
 import Prisma from '@prisma/client';
 import { FastifyBasedAPI } from './DiscordAPI';
-import { LogLevel, isProduction, token } from '#constants/index';
+import { LogLevel, type PreconditionName, isProduction, token } from '#constants/index';
 import { WebhookLogger } from './WebhookLogger';
 import { REST } from '@discordjs/rest';
 import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
@@ -21,12 +21,14 @@ import {
   type APIUnavailableGuild,
   type APIChannel,
   type APIRole,
+  type GatewayGuildCreateDispatchData,
 } from '@discordjs/core';
+import type { Precondition } from './Precondition';
 
 export class Client {
   public cache = {
     data: {
-      guilds: new Collection<Snowflake, APIGuild | APIUnavailableGuild>(),
+      guilds: new Collection<Snowflake, (APIGuild & GatewayGuildCreateDispatchData) | APIUnavailableGuild>(),
       applicationCommands: new Collection<Snowflake, APIApplicationCommand>(),
       cellsChannels: new Collection<Snowflake, APIChannel>(),
       cellsRoles: new Collection<Snowflake, APIRole>(),
@@ -34,6 +36,7 @@ export class Client {
     handles: {
       listeners: new Collection<GatewayDispatchEvents, Listener>(),
       commands: new Collection<Snowflake, Command>(),
+      preconditions: new Collection<PreconditionName, Precondition>(),
     },
   };
 
@@ -64,6 +67,16 @@ export class Client {
     for (const file of commandFiles) {
       const command = new (await import(join(__dirname, 'commands', file))).default(this) as Command;
       this.cache.handles.commands.set(command.name, command);
+    }
+  }
+
+  async loadPreconditions() {
+    const __dirname = dirname(fileURLToPath(import.meta.url));
+    const preconditionFiles = (await readdir(join(__dirname, 'preconditions'))).filter(file => file.endsWith('.js'));
+
+    for (const file of preconditionFiles) {
+      const precondition = new (await import(join(__dirname, 'preconditions', file))).default(this) as Precondition;
+      this.cache.handles.preconditions.set(precondition.name as PreconditionName, precondition);
     }
   }
 

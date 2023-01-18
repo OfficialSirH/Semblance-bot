@@ -1,5 +1,4 @@
 import {
-  type APIApplicationCommandInteraction,
   ActionRowBuilder,
   ButtonBuilder,
   EmbedBuilder,
@@ -15,8 +14,8 @@ export default class Roadmap extends Command {
   public override description = 'details on the C2S Roadmap';
   public override category = [Category.game, SubCategory.other];
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
-    await interaction.reply(this.sharedRun(interaction));
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    await this.client.api.interactions.reply(res, this.sharedRun(interaction));
   }
 
   public override sharedRun(interaction: Command['SharedBuilder']) {
@@ -49,7 +48,11 @@ export default class Roadmap extends Command {
           .setLabel('Early Beyond Sneak Peeks'),
       ),
     ];
-    return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.roadMap.attachment], components };
+    return {
+      embeds: [embed.toJSON()],
+      files: [attachments.currentLogo.attachment, attachments.roadMap.attachment],
+      components,
+    };
   }
 
   public override data() {

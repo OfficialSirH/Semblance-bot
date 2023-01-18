@@ -34,7 +34,7 @@ export default class GameTransfer extends Command {
         .setStyle(ButtonStyle.Primary),
     );
     return {
-      embeds: [embed],
+      embeds: [embed.toJSON()],
       files: [attachments.currentLogo.attachment],
       components: [component],
     };

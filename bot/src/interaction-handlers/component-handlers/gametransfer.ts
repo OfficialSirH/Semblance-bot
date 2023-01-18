@@ -36,6 +36,6 @@ export default class GameTransfer extends InteractionHandler {
       .setThumbnail(attachments.currentLogo)
       .setImage(gameTransferPages[currentPage])
       .setDescription(`Step ${currentPage + 1}:${description}`);
-    await interaction.update({ embeds: [embed] });
+    await interaction.update({ embeds: [embed.toJSON()] });
   }
 }

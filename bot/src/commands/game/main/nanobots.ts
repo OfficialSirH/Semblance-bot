@@ -24,6 +24,6 @@ export default class Nanobots extends Command {
       .setFooter({
         text: 'Thanks to SampeDrako for creating this beautifully better designed image representing nanobots!',
       });
-    return { embeds: [embed], files: [attachments.currentLogo.attachment, attachments.nanobots.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment, attachments.nanobots.attachment] };
   }
 }

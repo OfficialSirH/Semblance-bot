@@ -3,7 +3,7 @@ import { fetchCatOrDog } from '#constants/commands';
 import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
 import { Category } from '#constants/index';
-import { type APIApplicationCommandInteraction, ButtonStyle, ApplicationCommandOptionType } from '@discordjs/core';
+import { ButtonStyle, ApplicationCommandOptionType } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 
 export default class Imagegen extends Command {
@@ -15,9 +15,9 @@ export default class Imagegen extends Command {
     });
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
-    if (!interaction.options.getSubcommand()) return;
-    const wantsCat = interaction.options.getSubcommand() === 'cat';
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    if (!options.getSubcommand()) return;
+    const wantsCat = options.getSubcommand() === 'cat';
 
     const query_params = {
       has_breeds: true,
@@ -30,9 +30,9 @@ export default class Imagegen extends Command {
     const images = await fetchCatOrDog(query_params, wantsCat);
 
     if (images.length === 0)
-      return interaction.reply({
+      return this.client.api.interactions.reply(res, {
         content: 'No images found.',
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
 
     const image = images[0],
@@ -61,8 +61,8 @@ export default class Imagegen extends Command {
       ),
     ];
 
-    return interaction.reply({
-      embeds: [embed],
+    return this.client.api.interactions.reply(res, {
+      embeds: [embed.toJSON()],
       components,
     });
   }

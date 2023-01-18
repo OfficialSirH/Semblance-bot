@@ -1,7 +1,7 @@
 import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
 import { EmbedBuilder } from '@discordjs/builders';
-import { type APIApplicationCommandInteraction, ChannelType } from '@discordjs/core';
+import { ChannelType } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 
 export default class ServerInfo extends Command {
@@ -9,7 +9,7 @@ export default class ServerInfo extends Command {
   public override description = 'Provides info on the current server';
   public override category = [Category.utility];
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
     const guild = interaction.guild;
 
     let textChannel = 0,
@@ -61,7 +61,7 @@ export default class ServerInfo extends Command {
         { name: 'Role List', value: canRoleListWork, inline: false },
       )
       .setFooter({ text: `Id: ${guild.id} | Server Created: ${serverCreated}` });
-    await interaction.reply({ embeds: [embed] });
+    await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
   }
 
   public override data() {

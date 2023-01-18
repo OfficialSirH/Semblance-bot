@@ -15,6 +15,6 @@ export default class Beta extends Command {
       .setThumbnail(attachments.currentLogo)
       .setDescription(infoHandler.value)
       .setFooter({ text: 'New stuff do be epicc' });
-    return { embeds: [embed], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
   }
 }

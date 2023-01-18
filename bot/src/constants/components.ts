@@ -1,14 +1,12 @@
 import type { InteractionHandler } from '@sapphire/framework';
+import type { CustomIdData } from '#lib/interfaces/Semblance';
+import { type ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder } from '@discordjs/builders';
 import {
   type APIButtonComponentWithCustomId,
   type APISelectMenuComponent,
-  type MessageActionRowComponentBuilder,
-  type ActionRowBuilder,
-  type MessageComponentInteraction,
-  ButtonBuilder,
+  MessageFlags,
   ButtonStyle,
-} from 'discord.js';
-import type { CustomIdData } from '#lib/interfaces/Semblance';
+} from '@discordjs/core';
 
 export const filterAction = (
   components: ActionRowBuilder<MessageActionRowComponentBuilder>[],
@@ -78,9 +76,9 @@ export const componentInteractionDefaultParser = async <T extends CustomIdData =
 
   if (data.command != handler.name) return handler.none();
   if (!allowOthers && data.id != interaction.user.id) {
-    await interaction.reply({
+    await this.client.api.interactions.reply(res, {
       content: "this button originates from a message that wasn't triggered by you.",
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     return handler.none();
   }
@@ -100,17 +98,15 @@ export const backButton = (command: string, userId: string, whereToGo: string) =
   new ButtonBuilder()
     .setCustomId(buildCustomId({ command, id: userId, action: whereToGo }))
     .setLabel('Back')
-    .setEmoji('⬅️')
+    .setEmoji({ name: '⬅️' })
     .setStyle(ButtonStyle.Secondary);
 
 export const closeButton = (command: string, userId: string) =>
   new ButtonBuilder()
     .setCustomId(buildCustomId({ command, id: userId, action: 'close' }))
     .setLabel('Close')
-    .setEmoji('🚫')
+    .setEmoji({ name: '🚫' })
     .setStyle(ButtonStyle.Secondary);
-
-export const defaultEmojiToUsableEmoji = (emoji: string) => ({ name: emoji });
 
 export const buildCustomId = <T extends CustomIdData | (CustomIdData & Record<string, unknown>) = CustomIdData>(
   customIdOptions: T,

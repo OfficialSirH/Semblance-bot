@@ -1,4 +1,4 @@
-import type { Awaitable } from '@sapphire/framework';
+import type { Awaitable } from '#lib/interfaces/Semblance';
 import type { Client } from './Client';
 import type { GatewayDispatchEvents, GatewayDispatchPayload } from '@discordjs/core';
 

@@ -1,7 +1,12 @@
 import { Category, randomColor } from '#constants/index';
 import { currentPrice } from '#constants/commands';
 import { Command } from '#structures/Command';
-import { type APIApplicationCommandInteraction, ApplicationCommandOptionType } from '@discordjs/core';
+import {
+  ApplicationCommandOptionType,
+  APIChatInputApplicationCommandGuildInteraction,
+  MessageFlags,
+  RESTPostAPIApplicationCommandsJSONBody,
+} from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import { chatInputApplicationCommandMention, EmbedBuilder } from '@discordjs/builders';
 
@@ -14,13 +19,13 @@ export default class Gamestats extends Command {
     });
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
-    let user = interaction.options.getUser('user');
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    let user = options.getUser('user');
     if (!user) user = interaction.user;
 
-    const statsHandler = await interaction.client.db.game.findUnique({ where: { player: user.id } });
+    const statsHandler = await this.client.db.game.findUnique({ where: { player: user.id } });
     if (!statsHandler)
-      return interaction.reply({
+      return this.client.api.interactions.reply(res, {
         content:
           user.id != interaction.user.id
             ? 'This user does not exist'
@@ -28,9 +33,9 @@ export default class Gamestats extends Command {
                 interaction,
                 'create',
               )}\``,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
-    const nxtUpgrade = await currentPrice(interaction.client, statsHandler);
+    const nxtUpgrade = await currentPrice(this.client, statsHandler);
     const embed = new EmbedBuilder()
       .setTitle(`${user.username}'s gamestats`)
       .setAuthor(user)
@@ -47,7 +52,7 @@ export default class Gamestats extends Command {
         { name: 'Idle Profit', value: statsHandler.profitRate.toString() },
       )
       .setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' });
-    return interaction.reply({ embeds: [embed] });
+    return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
   }
 
   public override data() {
@@ -62,7 +67,7 @@ export default class Gamestats extends Command {
             type: ApplicationCommandOptionType.User,
           },
         ],
-      },
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
     };
   }
 }

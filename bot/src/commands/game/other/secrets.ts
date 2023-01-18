@@ -1,7 +1,7 @@
 import { Category, randomColor, SubCategory } from '#constants/index';
 import { Command } from '#structures/Command';
 import { EmbedBuilder, chatInputApplicationCommandMention } from '@discordjs/builders';
-import type { APIApplicationCommandInteraction } from '@discordjs/core';
+import { type APIChatInputApplicationCommandGuildInteraction, MessageFlags } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 
 export default class Secrets extends Command {
@@ -9,7 +9,7 @@ export default class Secrets extends Command {
   public override description = 'secrets';
   public override category = [Category.game, SubCategory.other];
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
     const embed = new EmbedBuilder()
       .setTitle('Secret Achievements')
       .setColor(randomColor)
@@ -37,7 +37,7 @@ export default class Secrets extends Command {
         ].join('\n'),
       );
 
-    await interaction.reply({ embeds: [embed], ephemeral: true });
+    await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
   }
 
   public override data() {

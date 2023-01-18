@@ -1,10 +1,4 @@
-import {
-  EmbedBuilder,
-  GuildMember,
-  type User,
-  type APIApplicationCommandInteraction,
-  ApplicationCommandOptionType,
-} from 'discord.js';
+import { EmbedBuilder, GuildMember, type User, ApplicationCommandOptionType } from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
 
@@ -13,8 +7,8 @@ export default class Profile extends Command {
   public override description = 'Get the profile of a user.';
   public override category = [Category.utility];
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIApplicationCommandInteraction) {
-    const user = interaction.options.getUser('user');
+  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    const user = options.getUser('user');
     let member: GuildMember | null;
     if (!user) member = interaction.member;
     else
@@ -23,8 +17,8 @@ export default class Profile extends Command {
           ? user
           : await interaction.guild.members.fetch({ user: user.id, cache: false }).catch(() => null);
 
-    if (member) return interaction.reply(guildProfileEmbed(member));
-    return interaction.reply(userProfileEmbed(interaction, user as User));
+    if (member) return this.client.api.interactions.reply(res, guildProfileEmbed(member));
+    return this.client.api.interactions.reply(res, userProfileEmbed(interaction, user as User));
   }
 
   public override data() {
@@ -67,7 +61,7 @@ function guildProfileEmbed(member: GuildMember) {
       { name: 'Created', value: accountCreated, inline: true },
       { name: 'Joined', value: accountJoined, inline: true },
     );
-  return { embeds: [embed] };
+  return { embeds: [embed.toJSON()] };
 }
 
 function userProfileEmbed(interaction: Command['SharedBuilder'], user: User) {
@@ -84,7 +78,7 @@ function userProfileEmbed(interaction: Command['SharedBuilder'], user: User) {
       { name: 'User Id', value: user.id, inline: true },
       { name: 'Created', value: accountCreated, inline: true },
     );
-  return { embeds: [embed] };
+  return { embeds: [embed.toJSON()] };
 }
 
 function daysAgo(date: Date | number) {

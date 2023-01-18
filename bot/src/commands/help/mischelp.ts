@@ -52,6 +52,6 @@ export default class MiscHelp extends Command {
           inline: true,
         },
       );
-    return { embeds: [embed] };
+    return { embeds: [embed.toJSON()] };
   }
 }

@@ -26,7 +26,7 @@ export default class TerminusChamber extends Command {
         ].join('\n'),
       );
     return {
-      embeds: [embed],
+      embeds: [embed.toJSON()],
       files: [attachments.currentLogo.attachment, attachments.terminusChamber.attachment],
     };
   }
