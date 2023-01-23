@@ -1,9 +1,15 @@
-import { Category, randomColor } from '#constants/index';
+import { Category, authorDefault, avatarUrl, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
 import { currentPrice } from '#constants/commands';
 import { buildCustomId } from '#constants/components';
-import { ButtonStyle } from '@discordjs/core';
+import { type APIChatInputApplicationCommandGuildInteraction, ButtonStyle } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
+import {
+  EmbedBuilder,
+  ActionRowBuilder,
+  type MessageActionRowComponentBuilder,
+  ButtonBuilder,
+} from '@discordjs/builders';
 
 export default class Game extends Command {
   public constructor(client: Command.Requirement) {
@@ -15,15 +21,15 @@ export default class Game extends Command {
   }
 
   public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
-    const { user, client } = interaction;
+    const user = interaction.member.user;
 
-    const statsHandler = await client.db.game.findUnique({ where: { player: user.id } }),
+    const statsHandler = await this.client.db.game.findUnique({ where: { player: user.id } }),
       embed = new EmbedBuilder();
     let cost = Infinity;
     if (!statsHandler)
       embed
         .setTitle("Semblance's Idle-Game")
-        .setAuthor(user)
+        .setAuthor(authorDefault(user))
         .setDescription(
           [
             'Use the buttons below to play the game. :D',
@@ -38,9 +44,9 @@ export default class Game extends Command {
     else
       embed
         .setTitle("Welcome back to Semblance's Idle-Game!")
-        .setAuthor(user)
+        .setAuthor(authorDefault(user))
         .setColor(randomColor)
-        .setThumbnail(user.displayAvatarURL())
+        .setThumbnail(avatarUrl(user))
         .addFields(
           { name: 'Level', value: statsHandler.level.toString() },
           {
@@ -53,7 +59,7 @@ export default class Game extends Command {
           },
           {
             name: 'Next Upgrade Cost',
-            value: (await currentPrice(client, statsHandler)).toFixed(3).toString(),
+            value: (await currentPrice(this.client, statsHandler)).toFixed(3).toString(),
           },
           {
             name: 'Idle Profit',
@@ -61,7 +67,7 @@ export default class Game extends Command {
           },
         )
         .setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' }),
-        (cost = await currentPrice(client, statsHandler));
+        (cost = await currentPrice(this.client, statsHandler));
 
     const components = [
       new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
@@ -74,7 +80,7 @@ export default class Game extends Command {
             }),
           )
           .setStyle(ButtonStyle.Primary)
-          .setEmoji('❔')
+          .setEmoji({ name: '❔' })
           .setLabel('About'),
         new ButtonBuilder()
           .setCustomId(
@@ -86,7 +92,7 @@ export default class Game extends Command {
           )
           .setDisabled(!statsHandler)
           .setStyle(ButtonStyle.Primary)
-          .setEmoji('💵')
+          .setEmoji({ name: '💵' })
           .setLabel('Collect'),
         new ButtonBuilder()
           .setCustomId(
@@ -98,7 +104,7 @@ export default class Game extends Command {
           )
           .setDisabled(!statsHandler || statsHandler.money < cost)
           .setStyle(ButtonStyle.Primary)
-          .setEmoji('⬆')
+          .setEmoji({ name: '⬆' })
           .setLabel('Upgrade'),
         new ButtonBuilder()
           .setCustomId(
@@ -109,7 +115,7 @@ export default class Game extends Command {
             }),
           )
           .setStyle(ButtonStyle.Primary)
-          .setEmoji('🏅')
+          .setEmoji({ name: '🏅' })
           .setLabel('Leaderboard'),
         new ButtonBuilder()
           .setCustomId(
@@ -120,10 +126,10 @@ export default class Game extends Command {
             }),
           )
           .setStyle(ButtonStyle.Primary)
-          .setEmoji('💰')
+          .setEmoji({ name: '💰' })
           .setLabel('Voting Sites'),
       ),
-    ];
+    ].map(row => row.toJSON());
 
     await this.client.api.interactions.reply(res, {
       embeds: [embed.toJSON()],

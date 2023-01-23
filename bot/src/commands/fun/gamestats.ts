@@ -1,14 +1,15 @@
-import { Category, randomColor } from '#constants/index';
+import { Category, authorDefault, avatarUrl, randomColor } from '#constants/index';
 import { currentPrice } from '#constants/commands';
 import { Command } from '#structures/Command';
 import {
   ApplicationCommandOptionType,
-  APIChatInputApplicationCommandGuildInteraction,
+  type APIChatInputApplicationCommandGuildInteraction,
   MessageFlags,
-  RESTPostAPIApplicationCommandsJSONBody,
+  type RESTPostAPIApplicationCommandsJSONBody,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import { chatInputApplicationCommandMention, EmbedBuilder } from '@discordjs/builders';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 
 export default class Gamestats extends Command {
   public constructor(client: Command.Requirement) {
@@ -19,28 +20,33 @@ export default class Gamestats extends Command {
     });
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+  public override async chatInputRun(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
     let user = options.getUser('user');
-    if (!user) user = interaction.user;
+    if (!user) user = interaction.member.user;
 
     const statsHandler = await this.client.db.game.findUnique({ where: { player: user.id } });
     if (!statsHandler)
       return this.client.api.interactions.reply(res, {
         content:
-          user.id != interaction.user.id
+          user.id != interaction.member.user.id
             ? 'This user does not exist'
             : `You have not created a game yet; if you'd like to create a game, use \`${chatInputApplicationCommandMention(
-                interaction,
+                this.name,
                 'create',
+                this.client.cache.data.applicationCommands.find(c => c.name === this.name)?.id as string,
               )}\``,
         flags: MessageFlags.Ephemeral,
       });
     const nxtUpgrade = await currentPrice(this.client, statsHandler);
     const embed = new EmbedBuilder()
       .setTitle(`${user.username}'s gamestats`)
-      .setAuthor(user)
+      .setAuthor(authorDefault(user))
       .setColor(randomColor)
-      .setThumbnail(user.displayAvatarURL())
+      .setThumbnail(avatarUrl(user))
       .addFields(
         { name: 'Level', value: statsHandler.level.toString() },
         { name: 'Random-Bucks', value: statsHandler.money.toString() },

@@ -111,10 +111,12 @@ export class FastifyBasedInteractionsAPI {
     await res.type('multipart/form-data').send(resolvedData);
   }
 
-  async autocomplete(res: FastifyReply, data: APICommandAutocompleteInteractionResponseCallbackData) {
+  async autocomplete(res: FastifyReply, choices: APICommandAutocompleteInteractionResponseCallbackData['choices']) {
     await res.send({
       type: InteractionResponseType.ApplicationCommandAutocompleteResult,
-      data,
+      data: {
+        choices,
+      },
     });
   }
 

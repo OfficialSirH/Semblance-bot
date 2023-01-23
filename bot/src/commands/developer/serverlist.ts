@@ -1,4 +1,4 @@
-import { randomColor, guildBookPage, Category, GuildId, PreconditionName } from '#constants/index';
+import { randomColor, guildBookPage, Category, GuildId, PreconditionName, avatarUrl } from '#constants/index';
 import { Command } from '#structures/Command';
 import { serversPerPage } from '#constants/commands';
 import { buildCustomId } from '#constants/components';
@@ -7,6 +7,7 @@ import {
   ApplicationCommandOptionType,
   type APIChatInputApplicationCommandGuildInteraction,
   type RESTPostAPIApplicationCommandsJSONBody,
+  type APIUser,
 } from '@discordjs/core';
 import {
   ActionRowBuilder,
@@ -15,6 +16,7 @@ import {
   EmbedBuilder,
 } from '@discordjs/builders';
 import type { FastifyReply } from 'fastify';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 
 export default class ServerList extends Command {
   public constructor(client: Command.Requirement) {
@@ -26,12 +28,15 @@ export default class ServerList extends Command {
     });
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+  public override async chatInputRun(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
     const page = options.getInteger('page') || 1;
-    const { client, user } = interaction;
 
-    const { chosenPage, pageDetails } = guildBookPage(client, page);
-    const numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
+    const { chosenPage, pageDetails } = guildBookPage(this.client, page);
+    const numOfPages = Math.ceil(this.client.cache.data.guilds.size / serversPerPage);
 
     const components = [
         new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
@@ -43,33 +48,33 @@ export default class ServerList extends Command {
               buildCustomId({
                 command: this.name,
                 action: 'first',
-                id: user.id,
+                id: interaction.member.user.id,
                 page: chosenPage,
               }),
             ),
           new ButtonBuilder()
             .setLabel('Left')
             .setStyle(ButtonStyle.Secondary)
-            .setEmoji('⬅')
+            .setEmoji({ name: '⬅' })
             .setDisabled(chosenPage === 1)
             .setCustomId(
               buildCustomId({
                 command: this.name,
                 action: 'left',
-                id: user.id,
+                id: interaction.member.user.id,
                 page: chosenPage,
               }),
             ),
           new ButtonBuilder()
             .setLabel('Right')
             .setStyle(ButtonStyle.Secondary)
-            .setEmoji('➡')
+            .setEmoji({ name: '➡' })
             .setDisabled(chosenPage === numOfPages)
             .setCustomId(
               buildCustomId({
                 command: this.name,
                 action: 'right',
-                id: user.id,
+                id: interaction.member.user.id,
                 page: chosenPage,
               }),
             ),
@@ -81,16 +86,16 @@ export default class ServerList extends Command {
               buildCustomId({
                 command: this.name,
                 action: 'last',
-                id: user.id,
+                id: interaction.member.user.id,
                 page: chosenPage,
               }),
             ),
         ),
-      ],
+      ].map(row => row.toJSON()),
       embed = new EmbedBuilder()
-        .setTitle(`Server List [${client.guilds.cache.size}] - Page ${chosenPage}`)
+        .setTitle(`Server List [${this.client.cache.data.guilds.size}] - Page ${chosenPage}`)
         .setColor(randomColor)
-        .setThumbnail(client.user.displayAvatarURL())
+        .setThumbnail(avatarUrl(this.client.user as APIUser))
         .setDescription(pageDetails)
         .setFooter({ text: `Page ${chosenPage} out of ${numOfPages}` });
 

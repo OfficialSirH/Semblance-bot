@@ -2,9 +2,22 @@ import type { sizeType } from '#lib/interfaces/catAndDogAPI';
 import { fetchCatOrDog } from '#constants/commands';
 import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
-import { Category } from '#constants/index';
-import { ButtonStyle, ApplicationCommandOptionType } from '@discordjs/core';
+import { Category, authorDefault } from '#constants/index';
+import {
+  ButtonStyle,
+  ApplicationCommandOptionType,
+  type APIChatInputApplicationCommandGuildInteraction,
+  MessageFlags,
+  type RESTPostAPIApplicationCommandsJSONBody,
+} from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
+import {
+  EmbedBuilder,
+  ActionRowBuilder,
+  type MessageActionRowComponentBuilder,
+  ButtonBuilder,
+} from '@discordjs/builders';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 
 export default class Imagegen extends Command {
   public constructor(client: Command.Requirement) {
@@ -15,7 +28,11 @@ export default class Imagegen extends Command {
     });
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+  public override async chatInputRun(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
     if (!options.getSubcommand()) return;
     const wantsCat = options.getSubcommand() === 'cat';
 
@@ -23,7 +40,7 @@ export default class Imagegen extends Command {
       has_breeds: true,
       mime_types: 'jpg,png,gif',
       size: 'small' as sizeType,
-      sub_id: interaction.user.username,
+      sub_id: interaction.member.user.username,
       limit: 1,
     };
 
@@ -41,7 +58,7 @@ export default class Imagegen extends Command {
 
     const embed = new EmbedBuilder()
       .setTitle(`Here's a ${breed.name}!`)
-      .setAuthor(interaction.user)
+      .setAuthor(authorDefault(interaction.member.user))
       .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)
       .setImage(image_url);
 
@@ -49,17 +66,17 @@ export default class Imagegen extends Command {
       new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
         new ButtonBuilder()
           .setLabel('Refresh')
-          .setEmoji('🔄')
+          .setEmoji({ name: '🔄' })
           .setStyle(ButtonStyle.Secondary)
           .setCustomId(
             buildCustomId({
               command: 'imagegen',
               action: `refresh-${wantsCat ? 'cat' : 'dog'}`,
-              id: interaction.user.id,
+              id: interaction.member.user.id,
             }),
           ),
       ),
-    ];
+    ].map(row => row.toJSON());
 
     return this.client.api.interactions.reply(res, {
       embeds: [embed.toJSON()],
@@ -84,7 +101,7 @@ export default class Imagegen extends Command {
             type: ApplicationCommandOptionType.Subcommand,
           },
         ],
-      },
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
     };
   }
 }
