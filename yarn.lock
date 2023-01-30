@@ -1137,17 +1137,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-api-types@npm:^0.37.18":
-  version: 0.37.18
-  resolution: "discord-api-types@npm:0.37.18"
-  checksum: 66f8910f56cb882c85a698d723615d09407ce70b74fc9d8e033cc6620b45e3bdcbf19504e0b9428bdd2edfd47d12a5d97c086671f8b2c255e823b97a7c1b10fa
-  languageName: node
-  linkType: hard
-
 "discord-api-types@npm:^0.37.3":
   version: 0.37.10
   resolution: "discord-api-types@npm:0.37.10"
   checksum: a09460953a02adf3c40a486e3946c6ca0dd6c76d279444a4595abecfe8b5b88ad49d48b5eeb85e2cb95256a0824ee075cb7550d371c13e64e37ec703206c092b
+  languageName: node
+  linkType: hard
+
+"discord-api-types@npm:^0.37.31":
+  version: 0.37.31
+  resolution: "discord-api-types@npm:0.37.31"
+  checksum: 8886a4c320b2abd1fd32cb573d688a9b677b6d82107efe9ea70c6d571dc5eb04d27741320d5e2ae46b316282248176a82c2212de2d11fc32d1f5a869b6519f03
   languageName: node
   linkType: hard
 
@@ -3007,7 +3007,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": ^5.43.0
     "@typescript-eslint/parser": ^5.43.0
     bufferutil: ^4.0.7
-    discord-api-types: ^0.37.18
+    discord-api-types: ^0.37.31
     discord.js: ^14.6.0
     dotenv: ^16.0.3
     eslint: ^8.27.0
