@@ -66,7 +66,7 @@ export default class Roles extends InteractionHandler {
         flags: MessageFlags.Ephemeral,
       });
     }
-    const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data).setThumbnail(attachments.currentLogo);
+    const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data).setThumbnail(attachments.currentLogo.url);
     await interaction.message.edit({ embeds: [embed.toJSON()], components });
   }
 }

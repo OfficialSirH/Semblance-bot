@@ -1,18 +1,22 @@
 import { attachments, Category, randomColor, SubCategory } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class TerminusChamber extends Command {
-  public override name = 'terminuschamber';
-  public override description = 'Details on how to obtain each node within the Terminus Chamber';
-  public override category = [Category.game, SubCategory.main];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'terminuschamber',
+      description: 'Details on how to obtain each node within the Terminus Chamber',
+      fullCategory: [Category.game, SubCategory.main],
+    });
+  }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
+  public override templateRun() {
     const embed = new EmbedBuilder()
       .setTitle('Terminus Chamber')
-      .setAuthor(interaction.user)
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo)
-      .setImage(attachments.terminusChamber)
+      .setThumbnail(attachments.currentLogo.url)
+      .setImage(attachments.terminusChamber.url)
       .setDescription(
         [
           '**Yellow Cube** - ||Explore the Mesozoic Valley||',
@@ -27,7 +31,7 @@ export default class TerminusChamber extends Command {
       );
     return {
       embeds: [embed.toJSON()],
-      files: [attachments.currentLogo.attachment, attachments.terminusChamber.attachment],
+      files: [attachments.currentLogo, attachments.terminusChamber],
     };
   }
 }

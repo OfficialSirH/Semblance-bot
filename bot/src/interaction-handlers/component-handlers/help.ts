@@ -43,11 +43,11 @@ export default class Help extends InteractionHandler {
 
     await disableAllComponents(interaction);
 
-    if (!this.client.stores.get('commands').has(query))
+    if (!this.this.client.cache.handles.commands.has(query))
       return this.client.api.interactions.reply(res, { content: 'Invalid query.', flags: MessageFlags.Ephemeral });
 
     // @ts-expect-error - I already checked if the command exists just above, but TS doesn't know that
-    const info = await this.client.stores.get('commands').get(query).sharedRun(interaction);
+    const info = await this.this.client.cache.handles.commands.get(query).templateRun(interaction);
 
     return this.client.api.interactions.reply(res, info);
   }
@@ -70,38 +70,38 @@ export default class Help extends InteractionHandler {
       // Main Help Page
       case 'c2shelp':
         // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await client.stores.get('commands').get('c2shelp')?.sharedRun(interaction);
+        options = await this.client.cache.handles.commands.get('c2shelp')?.templateRun(interaction);
         break;
       case 'mischelp':
         // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await client.stores.get('commands').get('mischelp')?.sharedRun(interaction);
+        options = await this.client.cache.handles.commands.get('mischelp')?.templateRun(interaction);
         break;
       // Cell to Singularity Help Page
       case 'metabits':
         // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await client.stores.get('commands').get('metabits')?.sharedRun(interaction);
+        options = await this.client.cache.handles.commands.get('metabits')?.templateRun(interaction);
         break;
       case 'mesoguide':
         // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await client.stores.get('commands').get('mesoguide')?.sharedRun(interaction);
+        options = await this.client.cache.handles.commands.get('mesoguide')?.templateRun(interaction);
         break;
       // Calculator Help Page
       case 'largenumbers':
         // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await client.stores.get('commands').get('largenumbers')?.sharedRun(interaction);
+        options = await this.client.cache.handles.commands.get('largenumbers')?.templateRun(interaction);
         break;
       case 'metahelp':
         // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await client.stores.get('commands').get('metahelp')?.sharedRun(interaction);
+        options = await this.client.cache.handles.commands.get('metahelp')?.templateRun(interaction);
         break;
       case 'itemhelp':
         // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await client.stores.get('commands').get('itemhelp')?.sharedRun(interaction);
+        options = await this.client.cache.handles.commands.get('itemhelp')?.templateRun(interaction);
         break;
       // Back and Close Actions
       case 'help':
         // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await client.stores.get('commands').get('help')?.sharedRun(interaction);
+        options = await this.client.cache.handles.commands.get('help')?.templateRun(interaction);
         break;
       case 'close':
         return interaction.channel?.messages.delete(interaction.message.id);

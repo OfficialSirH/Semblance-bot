@@ -52,7 +52,8 @@ export class Client {
   public core = createClient({ rest: this.rest, ws: this.ws });
   public api = new FastifyBasedAPI(this.rest);
 
-  public user?: APIUser;
+  public user!: APIUser;
+  public readyTimestamp!: number;
 
   async login() {
     await this.loadCommands();
@@ -93,6 +94,7 @@ export class Client {
       switch (data.t) {
         case GatewayDispatchEvents.Ready:
           this.user = data.d.user;
+          this.readyTimestamp = Date.now();
           this.cache.handles.listeners.get(data.t)?.run?.(data.d);
           break;
         case GatewayDispatchEvents.GuildCreate:

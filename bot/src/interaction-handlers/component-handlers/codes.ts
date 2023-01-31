@@ -66,7 +66,7 @@ export default class Codes extends InteractionHandler {
         );
     }
 
-    embed.setThumbnail(attachments.currentLogo);
+    embed.setThumbnail(attachments.currentLogo.url);
     await interaction.update({ embeds: [embed.toJSON()], components: [component] });
   }
 }

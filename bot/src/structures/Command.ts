@@ -9,12 +9,14 @@ import {
   MessageFlags,
   type RESTPostAPIApplicationCommandsJSONBody,
   InteractionType,
+  type APIInteractionResponseCallbackData,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import type { Client } from './Client';
 import type { Awaitable, CustomIdData } from '#lib/interfaces/Semblance';
 import type { Category, GuildId, PreconditionName, SubCategory } from '#constants/index';
 import { InteractionOptionResolver } from './InteractionOptionResolver';
+import type { Attachy } from './Attachy';
 
 export abstract class Command {
   public readonly name: string;
@@ -223,6 +225,25 @@ export abstract class Command {
    * ```
    */
   public modalRun?(reply: FastifyReply, interaction: APIModalSubmitInteraction): Awaitable<void>;
+
+  /**
+   * run method for returning sendable data for slash commands
+   * @param interaction the interaction that triggered the command
+   * @example
+   * ```typescript
+   * public override async templateRun(interaction: APIChatInputApplicationCommandInteraction) {
+   *  return {
+   *   content: 'Hello, world!',
+   *   flags: MessageFlags.Ephemeral,
+   *  };
+   * }
+   * ```
+   */
+  public templateRun?(interaction: APIChatInputApplicationCommandInteraction): Awaitable<
+    APIInteractionResponseCallbackData & {
+      files?: Attachy[];
+    }
+  >;
 
   /**
    * application command structure

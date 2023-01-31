@@ -33,7 +33,7 @@ export default class GameTransfer extends InteractionHandler {
       description = '\nDownload your progress onto the other device you wish to put your progress on';
 
     embed
-      .setThumbnail(attachments.currentLogo)
+      .setThumbnail(attachments.currentLogo.url)
       .setImage(gameTransferPages[currentPage])
       .setDescription(`Step ${currentPage + 1}:${description}`);
     await interaction.update({ embeds: [embed.toJSON()] });

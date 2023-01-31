@@ -1,17 +1,21 @@
 import { attachments, Category, randomColor, SubCategory } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class LargeNumbers extends Command {
-  public override name = 'largenumbers';
-  public override description = 'List of all the named large numbers in the game.';
-  public override category = [Category.game, SubCategory.other];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'largenumbers',
+      description: 'List of all the named large numbers in the game.',
+      fullCategory: [Category.game, SubCategory.other],
+    });
+  }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
+  public override templateRun() {
     const embed = new EmbedBuilder()
       .setTitle('Large Numbers')
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo)
-      .setAuthor(interaction.user)
+      .setThumbnail(attachments.currentLogo.url)
       .setDescription(
         [
           'M(Million), B(Billion)',
@@ -29,6 +33,6 @@ export default class LargeNumbers extends Command {
           ', for more details, click [here](http://www.thealmightyguru.com/Pointless/BigNumbers.html)',
       )
       .setFooter({ text: 'Large Numbers go brrrr...' });
-    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo] };
   }
 }

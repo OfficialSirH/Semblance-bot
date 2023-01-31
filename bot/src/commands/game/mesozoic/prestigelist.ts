@@ -1,22 +1,27 @@
 import { Category, randomColor, SubCategory, attachments } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class PrestigeList extends Command {
-  public override name = 'prestigelist';
-  public override description = 'A list of the Mesozoic Valley Prestige ranks.';
-  public override category = [Category.game, SubCategory.mesozoic];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'prestigelist',
+      description: 'A list of the Mesozoic Valley Prestige ranks.',
+      fullCategory: [Category.game, SubCategory.mesozoic],
+    });
+  }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
+  public override templateRun() {
     const embed = new EmbedBuilder()
       .setTitle('Mesozoic Valley Prestige List')
-      .setAuthor(interaction.user)
+
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo)
-      .setImage(attachments.prestigeList)
+      .setThumbnail(attachments.currentLogo.url)
+      .setImage(attachments.prestigeList.url)
       .setFooter({ text: 'Thanks to Hardik for this lovely list of Prestige :D' });
     return {
       embeds: [embed.toJSON()],
-      files: [attachments.currentLogo.attachment, attachments.prestigeList.attachment],
+      files: [attachments.currentLogo, attachments.prestigeList],
     };
   }
 }

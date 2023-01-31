@@ -47,7 +47,7 @@ export default class Roadmap extends InteractionHandler {
 function earlyBeyond(interaction: ButtonInteraction, name: string) {
   const embed = new EmbedBuilder()
     .setTitle('Beyond Clips')
-    .setAuthor(interaction.user)
+
     .setColor(randomColor)
     .setDescription(
       [
@@ -79,7 +79,7 @@ function earlyBeyond(interaction: ButtonInteraction, name: string) {
 function testerCredits(interaction: ButtonInteraction, name: string) {
   const embed = new EmbedBuilder()
     .setTitle('Credits to our Early Private Beta Testers!')
-    .setAuthor(interaction.user)
+
     .setColor(randomColor)
     .setDescription(earlyBeyondTesters.map(e => `<@${e}>`).join('\n'))
     .setFooter({
@@ -99,10 +99,10 @@ function testerCredits(interaction: ButtonInteraction, name: string) {
 function roadmap(interaction: ButtonInteraction) {
   const embed = new EmbedBuilder()
     .setTitle('Road Map')
-    .setAuthor(interaction.user)
+
     .setColor(randomColor)
-    .setThumbnail(attachments.currentLogo)
-    .setImage(attachments.roadMap);
+    .setThumbnail(attachments.currentLogo.url)
+    .setImage(attachments.roadMap.url);
   const components = [
     new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
       new ButtonBuilder()
@@ -129,7 +129,7 @@ function roadmap(interaction: ButtonInteraction) {
   ];
   return {
     embeds: [embed.toJSON()],
-    files: [attachments.currentLogo.attachment, attachments.roadMap.attachment],
+    files: [attachments.currentLogo, attachments.roadMap],
     components,
   };
 }

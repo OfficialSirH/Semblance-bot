@@ -1,18 +1,22 @@
 import { attachments, Category, randomColor, SubCategory } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Nanobots extends Command {
-  public override name = 'nanobots';
-  public override description = 'Provides details on nanobots and whatever else about those cute critters';
-  public override category = [Category.game, SubCategory.main];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'nanobots',
+      description: 'Provides details on nanobots and whatever else about those cute critters',
+      fullCategory: [Category.game, SubCategory.main],
+    });
+  }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
+  public override templateRun() {
     const embed = new EmbedBuilder()
       .setTitle('Nanobots')
-      .setAuthor(interaction.user)
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo)
-      .setImage(attachments.nanobots)
+      .setThumbnail(attachments.currentLogo.url)
+      .setImage(attachments.nanobots.url)
       .setDescription(
         [
           'Nanobots are little dudes that can help with either auto-upgrading or clicking. These little dudes are obtainable through rebooting and spending metabits for them, which you can buy up to 12(First Image).',
@@ -24,6 +28,6 @@ export default class Nanobots extends Command {
       .setFooter({
         text: 'Thanks to SampeDrako for creating this beautifully better designed image representing nanobots!',
       });
-    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment, attachments.nanobots.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo, attachments.nanobots] };
   }
 }

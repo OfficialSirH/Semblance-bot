@@ -1,17 +1,22 @@
 import { Category, randomColor, SubCategory, attachments } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Mesoguide extends Command {
-  public override name = 'mesoguide';
-  public override description = 'Mesozoic Valley Guide';
-  public override category = [Category.game, SubCategory.mesozoic];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'mesoguide',
+      description: 'Mesozoic Valley Guide',
+      fullCategory: [Category.game, SubCategory.mesozoic],
+    });
+  }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
+  public override templateRun() {
     const embed = new EmbedBuilder()
       .setTitle('**Mesozoic Valley Guide**')
-      .setAuthor(interaction.user)
+
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo)
+      .setThumbnail(attachments.currentLogo.url)
       .setDescription(
         'This guide is mainly aimed at helping people with their first run through the Mesozoic Valley.\n' +
           'For later runs, up to prestige 10 you should start saving up lots of mutagen to make getting the last achievements much easier. ' +
@@ -85,6 +90,6 @@ export default class Mesoguide extends Command {
         },
       )
       .setFooter({ text: 'Thanks to Jojoseis#0001 for making this guide! :D' });
-    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo] };
   }
 }

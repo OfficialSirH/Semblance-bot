@@ -1,18 +1,23 @@
 import { Command } from '#structures/Command';
-import { Category, randomColor, SubCategory } from '#constants/index';
+import { authorDefault, Category, randomColor, SubCategory } from '#constants/index';
 import { Attachy } from '#structures/Attachy';
 import { EmbedBuilder } from '@discordjs/builders';
+import type { APIChatInputApplicationCommandGuildInteraction } from '@discordjs/core';
 
 export default class Metabits extends Command {
-  public override name = 'metabits';
-  public override description = 'A detailed explanation of how to obtain Metabits faster';
-  public override category = [Category.game, SubCategory.main];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'metabits',
+      description: 'A detailed explanation of how to obtain Metabits faster',
+      fullCategory: [Category.game, SubCategory.main],
+    });
+  }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
+  public override templateRun(interaction: APIChatInputApplicationCommandGuildInteraction) {
     const metabitImage = new Attachy('./src/images/emojis/Metabit.png'),
       embed = new EmbedBuilder()
         .setTitle('Ways to earn Metabits faster')
-        .setAuthor(interaction.user)
+        .setAuthor(authorDefault(interaction.member.user))
         .setColor(randomColor)
         .setThumbnail(metabitImage.name)
         .setDescription(

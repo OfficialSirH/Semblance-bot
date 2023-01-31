@@ -3,31 +3,29 @@ import { Command } from '#structures/Command';
 import { EmbedBuilder, chatInputApplicationCommandMention } from '@discordjs/builders';
 
 export default class MiscHelp extends Command {
-  public override name = 'mischelp';
-  public override description = 'List all miscelaneous commands';
-  public override category = [Category.help];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'mischelp',
+      description: 'List all miscelaneous commands',
+      fullCategory: [Category.help],
+    });
+  }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
-    const { client } = interaction;
-
-    const funCommands = client.stores
-      .get('commands')
+  public override templateRun() {
+    const funCommands = this.client.cache.handles.commands
       .filter(c => c.category === Category.fun)
       .map(c => `**${c.name}**`);
-    const utilityCommands = client.stores
-      .get('commands')
+    const utilityCommands = this.client.cache.handles.commands
       .filter(c => c.category === Category.utility)
       .map(c => `**${c.name}**`);
-    const semblanceCommands = client.stores
-      .get('commands')
+    const semblanceCommands = this.client.cache.handles.commands
       .filter(c => c.category === Category.semblance)
       .map(c => `**${c.name}**`);
 
     const embed = new EmbedBuilder()
       .setTitle('Miscellaneous Commands')
-      .setThumbnail(client.user.displayAvatarURL())
       .setColor(randomColor)
-      .setAuthor(interaction.user)
+
       .setDescription(
         `All of the available commands below can be found through the ${chatInputApplicationCommandMention(
           'help',

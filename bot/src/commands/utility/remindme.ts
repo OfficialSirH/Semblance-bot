@@ -21,9 +21,13 @@ const MAX_REMINDERS = 5;
 const MILLISECONDS_TO_MINUTES = 1000 * 60;
 
 export default class RemindMe extends Command {
-  public override name = 'remindme';
-  public override description = 'create reminders for yourself';
-  public override category = [Category.utility];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'remindme',
+      description: 'create reminders for yourself',
+      fullCategory: [Category.utility],
+    });
+  }
 
   public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
     const action = options.getSubcommand();

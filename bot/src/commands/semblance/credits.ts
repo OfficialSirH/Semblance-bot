@@ -1,21 +1,26 @@
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  EmbedBuilder,
-  ButtonStyle,
-  type MessageActionRowComponentBuilder,
-} from 'discord.js';
 import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
 import { buildCustomId } from '#constants/components';
+import { ButtonStyle, type APIChatInputApplicationCommandGuildInteraction } from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
+import {
+  EmbedBuilder,
+  ActionRowBuilder,
+  type MessageActionRowComponentBuilder,
+  ButtonBuilder,
+} from '@discordjs/builders';
 
 export default class Credits extends Command {
-  public override name = 'credits';
-  public override description = 'Lists everyone that has helped with the project of Semblance, including myself(SirH).';
-  public override category = [Category.semblance];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'credits',
+      description: 'Lists everyone that has helped with the project of Semblance, including myself(SirH).',
+      fullCategory: [Category.semblance],
+    });
+  }
 
   public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
-    const { user } = interaction;
+    const user = interaction.member.user;
 
     const embed = new EmbedBuilder()
       .setTitle('Credits')
@@ -28,7 +33,6 @@ export default class Credits extends Command {
           value: [
             '**Semblance:** cabiie',
             "**Semblance Beta:** Lemon ([Lemon's Instagram page](https://www.instagram.com/creations_without_limtation/))",
-            '**Semblance Revisioned:** StarLuckArt(preview soon:tm:) ([DeviantArt](https://www.deviantart.com/starluckart) and [Personal Site](https://bubblestheprotogen.wixsite.com/starluckart))',
           ].join('\n'),
         },
         { name: 'Silly dude who makes up funny ideas', value: 'NerdGamer2848' },
@@ -63,7 +67,7 @@ export default class Credits extends Command {
         .setStyle(ButtonStyle.Primary),
     );
 
-    await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], components: [component] });
+    await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], components: [component.toJSON()] });
   }
 
   public override data() {

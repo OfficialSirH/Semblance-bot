@@ -1,15 +1,22 @@
 import { Category, randomColor, SubCategory } from '#constants/index';
 import { Command } from '#structures/Command';
 import { EmbedBuilder, chatInputApplicationCommandMention } from '@discordjs/builders';
-import { type APIChatInputApplicationCommandGuildInteraction, MessageFlags } from '@discordjs/core';
+import { MessageFlags } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 
 export default class Secrets extends Command {
-  public override name = 'secrets';
-  public override description = 'secrets';
-  public override category = [Category.game, SubCategory.other];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'secrets',
+      description: 'View the secrets of the game.',
+      fullCategory: [Category.game, SubCategory.other],
+    });
+  }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+  public override async chatInputRun(res: FastifyReply) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const help = this.client.cache.data.applicationCommands.find(c => c.name === 'help')!;
+
     const embed = new EmbedBuilder()
       .setTitle('Secret Achievements')
       .setColor(randomColor)
@@ -17,10 +24,10 @@ export default class Secrets extends Command {
         [
           '1. Make an ape dab by tapping on it numerous times.',
           '2. Make an archosaur, named Archie, dance by tapping the archosaur with a tuxedo/suit.',
-          `3. Unlock all sharks, *check ${chatInputApplicationCommandMention({
-            client: this.client,
-            commandName: 'help',
-          })} and input 'sharks' into the option*.`,
+          `3. Unlock all sharks, *check ${chatInputApplicationCommandMention(
+            help.name,
+            help.id,
+          )} and input 'sharks' into the option*.`,
           '**Land Garden:**',
           '4. Click the paradise bird, an all brown bird with a blue face.',
           '5. While your game camera is still focused on the paradise bird, wait till the bird flies near a small island with the darwin bust statue and click the island.',

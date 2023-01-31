@@ -1,16 +1,21 @@
 import { attachments, emojis, Category, randomColor, SubCategory } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Singularity extends Command {
-  public override name = 'singularity';
-  public override description = 'detailed guide about singularity and speedrunning';
-  public override category = [Category.game, SubCategory.main];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'singularity',
+      description: 'detailed guide about singularity and speedrunning',
+      fullCategory: [Category.game, SubCategory.main],
+    });
+  }
 
-  public override sharedRun() {
+  public override templateRun() {
     const embed = new EmbedBuilder()
       .setTitle(`${emojis.singularity}Singularity`)
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo)
+      .setThumbnail(attachments.currentLogo.url)
       .setDescription(
         [
           "**What is the Singularity?**\nSo you've reached the singularity upgrade and the simulation crashed for some reason? well let me just tell you that the simulation didn't actually crash; I just wanted to prank you and restart all your work ***mwuahahahaha***... but seriously, it's a new journey from here out now. You can gain metabits (prestige currency), which will boost your earnings the more you collect.",
@@ -41,6 +46,6 @@ export default class Singularity extends Command {
         ].join('\n\n'),
       )
       .setFooter({ text: 'Thanks to Jojoseis#0001 for making the Singularity Speedrun Guide' });
-    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo] };
   }
 }

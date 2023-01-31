@@ -46,10 +46,13 @@ export enum LogLevel {
   None = 100,
 }
 
-export const avatarUrl = (user: APIUser) =>
-  `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar?.startsWith('a_') ? 'gif' : 'png'}`;
+export const avatarUrl = (user: APIUser | undefined) =>
+  user
+    ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.${user.avatar?.startsWith('a_') ? 'gif' : 'png'}`
+    : '';
 
-export const userTag = (user: APIUser) => `${user.username}#${user.discriminator}`;
+export const userTag = (user: APIUser | undefined) =>
+  user ? `${user.username}#${user.discriminator}` : 'Unknown User';
 
 export const authorDefault = (user: APIUser | undefined) => ({
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -57,6 +60,12 @@ export const authorDefault = (user: APIUser | undefined) => ({
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   iconURL: avatarUrl(user!),
 });
+
+export const IdToDate = (id: string) => {
+  const binary = BigInt(id).toString(2).padStart(64, '0');
+  const timestamp = parseInt(binary.substring(0, 42), 2) + 1420070400000;
+  return new Date(timestamp);
+};
 
 export const attachments = await (async () => {
   const files = await fs.readdir('./src/images/');
@@ -71,8 +80,7 @@ export const attachments = await (async () => {
     | 'prestigeList'
     | 'archieDance'
     | 'nanobots'
-    | 'currency'
-    | 'mementoMori',
+    | 'currency',
     Attachy
   >;
   for (const file of files)

@@ -3,7 +3,7 @@
     "module": "ESNext",
     "target": "ESNext",
     "moduleResolution": "node",
-    "importsNotUsedAsValues": "error",
+    "verbatimModuleSyntax": true,
     "strict": true,
     "declaration": false,
     "removeComments": false,

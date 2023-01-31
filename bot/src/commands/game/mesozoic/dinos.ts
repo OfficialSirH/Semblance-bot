@@ -1,16 +1,21 @@
 import { attachments, emojis, Category, randomColor, SubCategory } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Dinos extends Command {
-  public override name = 'dinos';
-  public override description = 'Info on the Mesozoic Valley';
-  public override category = [Category.game, SubCategory.mesozoic];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'dinos',
+      description: 'Info on the Mesozoic Valley',
+      fullCategory: [Category.game, SubCategory.mesozoic],
+    });
+  }
 
-  public override sharedRun() {
+  public override templateRun() {
     const embed = new EmbedBuilder()
       .setTitle(`${emojis.trexSkull} Mesozoic Valley`)
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo)
+      .setThumbnail(attachments.currentLogo.url)
       .setDescription(
         [
           'The Mesozoic Valley is a separate simulation that consists of dinosaurs, which provides insight for Semblance on what the demise of the human species could be',
@@ -21,6 +26,6 @@ export default class Dinos extends Command {
           ].join(' '),
         ].join('\n\n'),
       );
-    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo] };
   }
 }

@@ -38,7 +38,7 @@ export default class ImageGen extends InteractionHandler {
 
     const embed = new EmbedBuilder()
       .setTitle(`Here's a ${breed.name}!`)
-      .setAuthor(interaction.user)
+
       .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)
       .setImage(image_url);
 

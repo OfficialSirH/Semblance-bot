@@ -1,15 +1,21 @@
 import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder } from '@discordjs/builders';
+import type { FastifyReply } from 'fastify';
 
 export default class PrivacyPolicy extends Command {
-  public override name = 'privacypolicy';
-  public override description = 'Get the privacy policy for Semblance.';
-  public override category = [Category.semblance];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'privacypolicy',
+      description: 'Get the privacy policy for Semblance.',
+      fullCategory: [Category.semblance],
+    });
+  }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+  public override async chatInputRun(res: FastifyReply) {
     const embed = new EmbedBuilder()
       .setTitle('Privacy Policy')
-      .setAuthor(interaction.user)
+
       .setColor(randomColor)
       .setURL('https://github.com/OfficialSirH/Semblance-bot/blob/master/Privacy%20Policy.md');
 

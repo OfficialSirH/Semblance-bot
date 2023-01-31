@@ -1,17 +1,22 @@
 import { Command } from '#structures/Command';
 import { Category, SubCategory, attachments } from '#constants/index';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Geodes extends Command {
-  public override name = 'geodes';
-  public override description = 'Get geode comparisons to show the best value.';
-  public override category = [Category.game, SubCategory.mesozoic];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'geodes',
+      description: 'Get geode comparisons to show the best value.',
+      fullCategory: [Category.game, SubCategory.mesozoic],
+    });
+  }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
+  public override templateRun() {
     const embed = new EmbedBuilder()
       .setTitle('Geodes Comparison')
-      .setAuthor(interaction.user)
-      .setThumbnail(attachments.currentLogo)
-      .setImage(attachments.geodeLevelComparison)
+
+      .setThumbnail(attachments.currentLogo.url)
+      .setImage(attachments.geodeLevelComparison.url)
       .setDescription(
         'The top row of the image represents the rewards from each geode at rank 50, ' +
           'while the bottom row represents the geode rewards at rank 4, ' +
@@ -21,7 +26,7 @@ export default class Geodes extends Command {
       .setFooter({ text: 'Diamond Geodes for da win!' });
     return {
       embeds: [embed.toJSON()],
-      files: [attachments.currentLogo.attachment, attachments.geodeLevelComparison.attachment],
+      files: [attachments.currentLogo, attachments.geodeLevelComparison],
     };
   }
 }

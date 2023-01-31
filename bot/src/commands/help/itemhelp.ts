@@ -3,32 +3,30 @@ import { Command } from '#structures/Command';
 import { chatInputApplicationCommandMention, EmbedBuilder } from '@discordjs/builders';
 
 export default class ItemHelp extends Command {
-  public override name = 'itemhelp';
-  public override description = 'Get help with the item calculator commands';
-  public override category = [Category.help];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'itemhelp',
+      description: 'Get help with the item calculator commands',
+      fullCategory: [Category.help],
+    });
+  }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
-    const { client } = interaction;
+  public override templateRun() {
     const itemcalc = chatInputApplicationCommandMention(
-      {
-        client,
-        commandName: 'itemcalc',
-      },
+      'itemcalc',
       'required_resources',
+      this.client.cache.data.applicationCommands.find(c => c.name === 'itemcalc')?.id as string,
     );
     const itemcalcrev = chatInputApplicationCommandMention(
-      {
-        client,
-        commandName: 'itemcalc',
-      },
+      'itemcalc',
       'obtainable_levels',
+      this.client.cache.data.applicationCommands.find(c => c.name === 'itemcalcrev')?.id as string,
     );
 
     const embed = new EmbedBuilder()
       .setTitle('Item Calculator Help')
-      .setAuthor(interaction.user)
+
       .setColor(randomColor)
-      .setThumbnail(client.user.displayAvatarURL())
       .setDescription(
         `The item calculator's command is done by doing ${itemcalc} <item name> <item level> <current lvl> or ${itemcalcrev} <item name> <currency input> <current lvl>` +
           ", which any name that has more than one word has to include '-', for example: martian-factory.",

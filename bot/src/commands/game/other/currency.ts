@@ -1,17 +1,22 @@
 ﻿import { Category, randomColor, SubCategory, attachments, emojis } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Currency extends Command {
-  public override name = 'currency';
-  public override description = 'List all of the in-game currency.';
-  public override category = [Category.game, SubCategory.other];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'currency',
+      description: 'List all of the in-game currency.',
+      fullCategory: [Category.game, SubCategory.other],
+    });
+  }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
+  public override templateRun() {
     const embed = new EmbedBuilder()
       .setTitle('Currency')
-      .setAuthor(interaction.user)
+
       .setColor(randomColor)
-      .setThumbnail(attachments.currentLogo)
+      .setThumbnail(attachments.currentLogo.url)
       .addFields(
         {
           name: `${emojis.entropy} Entropy`,
@@ -49,6 +54,6 @@ export default class Currency extends Command {
         },
       )
       .setFooter({ text: 'List of currencies used ingame' });
-    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment, attachments.currency] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo, attachments.currency] };
   }
 }

@@ -1,17 +1,21 @@
 import { Category, randomColor, SubCategory, attachments } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Mvunlocks extends Command {
-  public override name = 'mvunlocks';
-  public override description = 'Information about the unlocking of each reptile and bird';
-  public override category = [Category.game, SubCategory.mesozoic];
-  public override aliases = ['reptiles', 'birds', 'mvunlock'];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'mvunlocks',
+      description: 'Information about the unlocking of each reptile and bird',
+      fullCategory: [Category.game, SubCategory.mesozoic],
+    });
+  }
 
-  public override sharedRun(interaction: Command['SharedBuilder']) {
+  public override templateRun() {
     const embed = new EmbedBuilder()
       .setTitle('Reptiles and Birds')
-      .setAuthor(interaction.user)
-      .setThumbnail(attachments.currentLogo)
+
+      .setThumbnail(attachments.currentLogo.url)
       .setColor(randomColor)
       .setDescription(
         'The following generators are unlocked by achieving the following ranks in the Mesozoic Valley\n' +
@@ -28,6 +32,6 @@ export default class Mvunlocks extends Command {
             .map(t => `**${t}**`)
             .join('\n'),
       );
-    return { embeds: [embed.toJSON()], files: [attachments.currentLogo.attachment] };
+    return { embeds: [embed.toJSON()], files: [attachments.currentLogo] };
   }
 }

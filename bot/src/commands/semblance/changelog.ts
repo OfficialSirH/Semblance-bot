@@ -1,17 +1,22 @@
 ﻿import { Category, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
+import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Changelog extends Command {
-  public override name = 'changelog';
-  public override description = 'Provides the latest changes to Semblance.';
-  public override category = [Category.semblance];
+  public constructor(client: Command.Requirement) {
+    super(client, {
+      name: 'changelog',
+      description: 'Provides the latest changes to Semblance.',
+      fullCategory: [Category.semblance],
+    });
+  }
 
-  public override async sharedRun(interaction: Command['SharedBuilder']) {
+  public override async templateRun() {
     const changelogHandler = await this.client.db.information.findUnique({ where: { type: 'changelog' } });
-    if (!changelogHandler) return 'No changelog found.';
+    if (!changelogHandler) return { content: 'No changelog found.' };
     const embed = new EmbedBuilder()
       .setTitle('Changelog')
-      .setAuthor(interaction.user)
+
       .setColor(randomColor)
       .setDescription(changelogHandler.value);
     return { embeds: [embed.toJSON()] };
