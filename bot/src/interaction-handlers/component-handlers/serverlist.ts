@@ -9,7 +9,6 @@ import {
 } from 'discord.js';
 import { guildBookPage, serversPerPage, randomColor } from '#constants/index';
 import { componentInteractionDefaultParser, buildCustomId } from '#constants/components';
-import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
 
 interface ServerListCustomIdData extends CustomIdData {
   page: number;

@@ -13,10 +13,20 @@ import {
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import type { Client } from './Client';
-import type { Awaitable, CustomIdData } from '#lib/interfaces/Semblance';
-import type { Category, GuildId, PreconditionName, SubCategory } from '#constants/index';
+import type { Awaitable, ParsedCustomIdData, ResultValue } from '#lib/interfaces/Semblance';
+import {
+  getPermissionLevel,
+  type Category,
+  type GuildId,
+  type PreconditionName,
+  type SubCategory,
+} from '#constants/index';
 import { InteractionOptionResolver } from './InteractionOptionResolver';
 import type { Attachy } from './Attachy';
+import {
+  componentInteractionDefaultParser,
+  type ComponentInteractionDefaultParserOptions,
+} from '#constants/components';
 
 export abstract class Command {
   public readonly name: string;
@@ -24,6 +34,7 @@ export abstract class Command {
   public readonly category?: Category;
   public readonly subCategory?: SubCategory;
   public readonly preconditions: PreconditionName[];
+  public readonly componentParseOptions?: ComponentInteractionDefaultParserOptions & { permissionLevel: number };
 
   public constructor(
     public readonly client: Command.Requirement,
@@ -32,6 +43,7 @@ export abstract class Command {
       description: string;
       fullCategory?: [Category, SubCategory?];
       preconditions?: PreconditionName[];
+      componentParseOptions?: ComponentInteractionDefaultParserOptions & { permissionLevel: number };
     },
   ) {
     this.name = options.name;
@@ -41,6 +53,7 @@ export abstract class Command {
       this.subCategory = options.fullCategory[1];
     }
     this.preconditions = options.preconditions ?? [];
+    this.componentParseOptions = options.componentParseOptions;
   }
 
   // a method named preRun that is used for executing preconditions then if the precondition succeeds, run the corresponding run method
@@ -163,7 +176,7 @@ export abstract class Command {
   public componentRun?(
     reply: FastifyReply,
     interaction: APIMessageComponentInteraction,
-    customData: CustomIdData,
+    customData: ParsedCustomIdData,
   ): Awaitable<void>;
 
   /**
@@ -266,6 +279,30 @@ export abstract class Command {
    * ```
    */
   public data?(): Awaitable<{ command: RESTPostAPIApplicationCommandsJSONBody; guildIds?: GuildId[] }>;
+
+  /**
+   * component preparser that runs before the component run method, checks if the component is valid, and returns the custom data
+   * @param interaction the interaction that triggered the command
+   * @example
+   * ```typescript
+   * public override async componentPreparser(interaction: APIMessageComponentInteraction) {
+   *
+   * }
+   * ```
+   */
+  public componentPreparser(
+    interaction: APIMessageComponentInteraction,
+  ): Awaitable<ResultValue<boolean, ParsedCustomIdData>> {
+    if (getPermissionLevel(interaction.member) < (this.componentParseOptions?.permissionLevel || 0)) {
+      return {
+        ok: false,
+        message: 'You do not have permission to interact with this.',
+      };
+    }
+
+    const parsedData = componentInteractionDefaultParser(interaction);
+    // todo: continue working on this function
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-namespace

@@ -19,11 +19,15 @@ export interface CustomIdData {
   id: Snowflake;
 }
 
-export type ParsedCustomIdData<T extends string = string, NewData extends CustomIdData = CustomIdData> = Omit<
+export type ParsedCustomIdData<Action extends string = string, NewData extends CustomIdData = CustomIdData> = Omit<
   NewData,
   'command' | 'action'
 > & {
-  action: T;
+  action: Action;
 };
 
 export type Result<Ok extends boolean = boolean> = Ok extends true ? { ok: true } : { ok: false; message: string };
+
+export type ResultValue<Ok extends boolean = boolean, Value = unknown> = Ok extends true
+  ? { ok: true; value: Value }
+  : { ok: false; message: string };

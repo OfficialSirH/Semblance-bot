@@ -1,6 +1,6 @@
 import { randomColor, attachments, earlyBeyondTesters } from '#constants/index';
 import { backButton, buildCustomId, componentInteractionDefaultParser } from '#constants/components';
-import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
+
 import {
   type MessageActionRowComponentBuilder,
   type ButtonInteraction,

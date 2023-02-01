@@ -1,4 +1,3 @@
-import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 import { componentInteractionDefaultParser } from '#constants/components';
 
 export default class InfoEditor extends InteractionHandler {

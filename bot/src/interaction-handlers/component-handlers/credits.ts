@@ -1,14 +1,12 @@
 import { buildCustomId, componentInteractionDefaultParser, filterAction } from '#constants/components';
-import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
-import {
-  type ButtonInteraction,
-  ActionRowBuilder,
-  ButtonBuilder,
-  EmbedBuilder,
-  type MessageActionRowComponentBuilder,
-  ButtonStyle,
-} from 'discord.js';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
+import {
+  EmbedBuilder,
+  ButtonBuilder,
+  ActionRowBuilder,
+  type MessageActionRowComponentBuilder,
+} from '@discordjs/builders';
+import { ButtonStyle } from '@discordjs/core';
 
 export default class Credits extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {
@@ -25,7 +23,7 @@ export default class Credits extends InteractionHandler {
 
   public override async run(
     interaction: ButtonInteraction,
-    data: ParsedCustomIdData<'credits' | 'thanks' | 'semblance' | 'semblance-beta' | 'semblance-revisioned'>,
+    data: ParsedCustomIdData<'credits' | 'thanks' | 'semblance' | 'semblance-beta'>,
   ) {
     const embed = new EmbedBuilder();
     const creditComponents = [
@@ -68,16 +66,6 @@ export default class Credits extends InteractionHandler {
           }),
         )
         .setLabel('Preview Semblance Beta Art')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
-        .setCustomId(
-          buildCustomId({
-            command: this.name,
-            action: 'semblancerevisioned',
-            id: interaction.user.id,
-          }),
-        )
-        .setLabel('Preview Semblance Revisioned Art')
         .setStyle(ButtonStyle.Primary),
     ];
 
@@ -127,9 +115,6 @@ export default class Credits extends InteractionHandler {
           .setImage(
             'https://cdn.discordapp.com/avatars/794049840651960350/b101b9f78fb44d2c0b0c40e53b17e677.png?size=2048',
           );
-        break;
-      case 'semblance-revisioned':
-        embed.setTitle('Semblance Revisioned - by StarLuckArt(WIP/Not previewable yet)');
         break;
       default:
         return;

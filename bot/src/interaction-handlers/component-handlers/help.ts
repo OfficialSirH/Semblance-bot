@@ -11,7 +11,6 @@ import {
 import { disableAllComponents } from '#constants/index';
 import { backButton, closeButton, componentInteractionDefaultParser } from '#constants/components';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
-import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
 
 export default class Help extends InteractionHandler {
   public constructor(context: PieceContext, options: InteractionHandler.Options) {

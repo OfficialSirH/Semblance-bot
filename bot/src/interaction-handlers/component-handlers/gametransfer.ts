@@ -1,7 +1,7 @@
 import { gameTransferPages } from '#constants/commands';
 import { attachments } from '#constants/index';
 import { componentInteractionDefaultParser } from '#constants/components';
-import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
+
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class GameTransfer extends InteractionHandler {

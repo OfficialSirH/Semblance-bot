@@ -1,5 +1,5 @@
 import { randomColor } from '#constants/index';
-import { InteractionHandler, InteractionHandlerTypes, type PieceContext } from '@sapphire/framework';
+
 import { currentPrice } from '#constants/commands';
 import { LeaderboardUtilities } from '#structures/LeaderboardUtilities';
 import type { Game } from '@prisma/client';

@@ -1,4 +1,3 @@
-import type { InteractionHandler } from '@sapphire/framework';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
 import { type ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder } from '@discordjs/builders';
 import {
@@ -6,6 +5,7 @@ import {
   type APISelectMenuComponent,
   MessageFlags,
   ButtonStyle,
+  type APIMessageComponentInteraction,
 } from '@discordjs/core';
 
 export const filterAction = (
@@ -44,7 +44,7 @@ export const disableComponentsByLabel = (
  * @property {boolean} [allowOthers=false] Whether or not the interaction handler should allow other users to interact with its components.
  * @property {ComponentInteractionDefaultParserOptions} [extraProps={}] An object containing extra properties that are parsed from the custom_id.
  */
-type ComponentInteractionDefaultParserOptions<T extends CustomIdData> = {
+export type ComponentInteractionDefaultParserOptions<T extends CustomIdData = CustomIdData> = {
   allowOthers?: boolean;
   extraProps?: Record<keyof Omit<T, keyof CustomIdData>, 'number' | 'string'>;
 };
@@ -56,8 +56,7 @@ type ComponentInteractionDefaultParserOptions<T extends CustomIdData> = {
  * @param {...ComponentInteractionDefaultParserOptions} options The options for the parser.
  */
 export const componentInteractionDefaultParser = async <T extends CustomIdData = CustomIdData>(
-  handler: InteractionHandler,
-  interaction: MessageComponentInteraction,
+  interaction: APIMessageComponentInteraction,
   {
     allowOthers = false,
     extraProps = {} as ComponentInteractionDefaultParserOptions<T>['extraProps'],

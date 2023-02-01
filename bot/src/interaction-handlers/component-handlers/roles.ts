@@ -1,6 +1,6 @@
 import { c2sRoles, GuildId, attachments } from '#constants/index';
 import { componentInteractionDefaultParser, buildCustomId } from '#constants/components';
-import { InteractionHandler, type PieceContext, InteractionHandlerTypes } from '@sapphire/framework';
+
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 import { EmbedBuilder } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
