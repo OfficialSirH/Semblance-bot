@@ -13,11 +13,16 @@ export default class ImageGen extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
+  public override parse(
+    interaction: APIMessageComponentButtonInteraction,
+  ): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
-  public override async run(interaction: ButtonInteraction, data: ParsedCustomIdData<'refresh-cat' | 'refresh-dog'>) {
+  public override async run(
+    interaction: APIMessageComponentButtonInteraction,
+    data: ParsedCustomIdData<'refresh-cat' | 'refresh-dog'>,
+  ) {
     const wantsCat = data.action === 'refresh-cat',
       query_params = {
         has_breeds: true,
@@ -42,6 +47,6 @@ export default class ImageGen extends InteractionHandler {
       .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)
       .setImage(image_url);
 
-    await interaction.update({ embeds: [embed.toJSON()] });
+    await client.api.interactions.updateMessage(reply, { embeds: [embed.toJSON()] });
   }
 }

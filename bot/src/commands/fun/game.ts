@@ -1,13 +1,14 @@
 import { Category, authorDefault, avatarUrl, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
 import { currentPrice } from '#constants/commands';
-import { buildCustomId } from '#constants/components';
+import { buildCustomId, filterAction } from '#constants/components';
 import {
   type APIChatInputApplicationCommandGuildInteraction,
   ButtonStyle,
   ApplicationCommandOptionType,
   type RESTPostAPIApplicationCommandsJSONBody,
   MessageFlags,
+  type APIMessageComponentButtonInteraction,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import {
@@ -18,6 +19,8 @@ import {
   chatInputApplicationCommandMention,
 } from '@discordjs/builders';
 import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { askConfirmation, about, collect, leaderboard, votes, create, upgrade, stats } from '#constants/idle-game';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Game extends Command {
   public constructor(client: Command.Requirement) {
@@ -214,5 +217,158 @@ export default class Game extends Command {
         ],
       } satisfies RESTPostAPIApplicationCommandsJSONBody,
     };
+  }
+
+  public override async componentRun(
+    reply: FastifyReply,
+    interaction: APIMessageComponentButtonInteraction,
+    data: ParsedCustomIdData<
+      'create' | 'reset' | 'about' | 'collect' | 'upgrade' | 'leaderboard' | 'vote' | 'stats' | 'close'
+    >,
+  ) {
+    const id = interaction.member?.user.id as string;
+    const game = await this.client.db.game.findUnique({ where: { player: id } });
+    let cost = Infinity,
+      components: ActionRowBuilder<MessageActionRowComponentBuilder>[];
+    if (game) cost = await currentPrice(this.client, game);
+
+    const mainComponents = [
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
+            .setCustomId(
+              buildCustomId({
+                command: this.name,
+                action: 'about',
+                id,
+              }),
+            )
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji({ name: '❔' })
+            .setLabel('About'),
+          new ButtonBuilder()
+            .setCustomId(
+              buildCustomId({
+                command: this.name,
+                action: 'collect',
+                id,
+              }),
+            )
+            .setDisabled(!game)
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji({ name: '💵' })
+            .setLabel('Collect'),
+          new ButtonBuilder()
+            .setCustomId(
+              buildCustomId({
+                command: this.name,
+                action: 'upgrade',
+                id,
+              }),
+            )
+            .setDisabled(!game || game.money < cost)
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji({ name: '⬆' })
+            .setLabel('Upgrade'),
+          new ButtonBuilder()
+            .setCustomId(
+              buildCustomId({
+                command: this.name,
+                action: 'leaderboard',
+                id,
+              }),
+            )
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji({ name: '🏅' })
+            .setLabel('Leaderboard'),
+          new ButtonBuilder()
+            .setCustomId(
+              buildCustomId({
+                command: this.name,
+                action: 'vote',
+                id,
+              }),
+            )
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji({ name: '💰' })
+            .setLabel('Voting Sites'),
+        ),
+      ],
+      endComponents = [
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
+            .setCustomId(
+              buildCustomId({
+                command: this.name,
+                action: 'stats',
+                id,
+              }),
+            )
+            .setDisabled(!game)
+            .setStyle(ButtonStyle.Primary)
+            .setEmoji({ name: '🔢' })
+            .setLabel('Stats'),
+          new ButtonBuilder()
+            .setCustomId(
+              buildCustomId({
+                command: this.name,
+                action: 'create',
+                id,
+              }),
+            )
+            .setEmoji({ name: game ? '⛔' : '🌎' })
+            .setLabel(game ? 'Reset Progress' : 'Create new game')
+            .setStyle(game ? ButtonStyle.Danger : ButtonStyle.Success),
+          new ButtonBuilder()
+            .setCustomId(
+              buildCustomId({
+                command: this.name,
+                action: 'close',
+                id,
+              }),
+            )
+            .setEmoji({ name: '🚫' })
+            .setLabel('Close')
+            .setStyle(ButtonStyle.Secondary),
+        ),
+      ];
+    if (['about', 'collect', 'upgrade', 'leaderboard', 'vote'].includes(data.action)) components = endComponents;
+    else if (data.action == 'stats') components = mainComponents;
+    else components = filterAction(endComponents, data.action);
+
+    switch (data.action) {
+      case 'create':
+        await (game
+          ? askConfirmation(this.client, reply, interaction, this.name)
+          : create(this.client, reply, interaction, components));
+        break;
+      case 'reset':
+        await create(this.client, reply, interaction, components);
+        break;
+      case 'about':
+        await about(this.client, reply, interaction, components);
+        break;
+      case 'collect':
+        await collect(this.client, reply, interaction, components);
+        break;
+      case 'upgrade':
+        await upgrade(this.client, reply, interaction, components);
+        break;
+      case 'leaderboard':
+        await leaderboard(this.client, reply, interaction, components);
+        break;
+      case 'vote':
+        await votes(this.client, reply, interaction, components);
+        break;
+      case 'stats':
+        if (!game)
+          return this.client.api.interactions.reply(reply, {
+            content: 'You do not have a game yet.',
+            flags: MessageFlags.Ephemeral,
+          });
+        await stats(this.client, reply, interaction, components, game);
+        break;
+      case 'close':
+        await this.client.api.interactions.deleteReply(interaction);
+    }
   }
 }

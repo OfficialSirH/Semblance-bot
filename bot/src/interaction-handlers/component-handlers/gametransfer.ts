@@ -13,11 +13,16 @@ export default class GameTransfer extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
+  public override parse(
+    interaction: APIMessageComponentButtonInteraction,
+  ): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
-  public override async run(interaction: ButtonInteraction, data: ParsedCustomIdData<'right' | 'left'>) {
+  public override async run(
+    interaction: APIMessageComponentButtonInteraction,
+    data: ParsedCustomIdData<'right' | 'left'>,
+  ) {
     const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data);
     let currentPage = gameTransferPages.indexOf(embed.data.image ? embed.data.image.url : '');
 
@@ -36,6 +41,6 @@ export default class GameTransfer extends InteractionHandler {
       .setThumbnail(attachments.currentLogo.url)
       .setImage(gameTransferPages[currentPage])
       .setDescription(`Step ${currentPage + 1}:${description}`);
-    await interaction.update({ embeds: [embed.toJSON()] });
+    await client.api.interactions.updateMessage(reply, { embeds: [embed.toJSON()] });
   }
 }

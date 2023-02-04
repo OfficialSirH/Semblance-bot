@@ -48,7 +48,7 @@ export default class Codes extends Command {
               buildCustomId({
                 command: this.name,
                 action: 'valid',
-                id: interaction.user.id,
+                id: interaction.member.user.id,
               }),
             )
             .setLabel('View Valid Codes')
@@ -63,7 +63,7 @@ export default class Codes extends Command {
               buildCustomId({
                 command: 'codes',
                 action: 'expired',
-                id: interaction.user.id,
+                id: interaction.member.user.id,
               }),
             )
             .setLabel('View Expired Codes')
@@ -72,7 +72,7 @@ export default class Codes extends Command {
     }
 
     embed.setThumbnail(attachments.currentLogo.url);
-    await interaction.update({ embeds: [embed.toJSON()], components: [component] });
+    await client.api.interactions.updateMessage(reply, { embeds: [embed.toJSON()], components: [component] });
   }
 
   public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {

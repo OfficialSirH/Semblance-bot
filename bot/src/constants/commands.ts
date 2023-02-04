@@ -4,6 +4,7 @@ import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndD
 import type { DeepLParams, DeepLResponse } from '#lib/interfaces/deepLAPI';
 import type { Game } from '@prisma/client';
 import { request } from 'undici';
+import type { APIGuild } from '@discordjs/core';
 
 // gametransfer pages
 
@@ -21,7 +22,7 @@ export const serversPerPage = 50;
 
 export function guildBookPage(client: Client, chosenPage: number) {
   const guildBook: Record<string, Record<string, string>> = {},
-    numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
+    numOfPages = Math.ceil(client.cache.data.guilds.size / serversPerPage);
 
   if (!chosenPage) chosenPage = 1;
   else chosenPage = clamp(chosenPage, 1, numOfPages);
@@ -29,12 +30,12 @@ export function guildBookPage(client: Client, chosenPage: number) {
   for (let i = 0; i < numOfPages; i++) {
     guildBook[`page_${i + 1}`] = {};
     const loopCount =
-      client.guilds.cache.size < serversPerPage - 1 + i * serversPerPage
-        ? client.guilds.cache.size - 1
+      client.cache.data.guilds.size < serversPerPage - 1 + i * serversPerPage
+        ? client.cache.data.guilds.size - 1
         : serversPerPage - 1 + i * serversPerPage;
     for (let j = serversPerPage * i; j <= loopCount; j++)
-      guildBook[`page_${i + 1}`][`${client.guilds.cache.map(c => c)[j].name}`] = `${
-        client.guilds.cache.map(c => c)[j].id
+      guildBook[`page_${i + 1}`][`${client.cache.data.guilds.map(c => c as APIGuild)[j].name}`] = `${
+        client.cache.data.guilds.map(c => c)[j].id
       }`;
   }
 

@@ -290,9 +290,9 @@ export abstract class Command {
    * }
    * ```
    */
-  public componentPreparser(
+  public async componentPreparser(
     interaction: APIMessageComponentInteraction,
-  ): Awaitable<ResultValue<boolean, ParsedCustomIdData>> {
+  ): Promise<ResultValue<boolean, ParsedCustomIdData>> {
     if (getPermissionLevel(interaction.member) < (this.componentParseOptions?.permissionLevel || 0)) {
       return {
         ok: false,
@@ -300,8 +300,7 @@ export abstract class Command {
       };
     }
 
-    const parsedData = componentInteractionDefaultParser(interaction);
-    // todo: continue working on this function
+    return componentInteractionDefaultParser(interaction, { ...this.componentParseOptions });
   }
 }
 

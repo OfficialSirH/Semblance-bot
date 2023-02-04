@@ -3,7 +3,7 @@ import { backButton, buildCustomId, componentInteractionDefaultParser } from '#c
 
 import {
   type MessageActionRowComponentBuilder,
-  type ButtonInteraction,
+  type APIMessageComponentButtonInteraction,
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
@@ -16,23 +16,25 @@ export default class Roadmap extends InteractionHandler {
     super(context, { interactionHandlerType: InteractionHandlerTypes.Button });
   }
 
-  public override async parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
+  public override async parse(
+    interaction: APIMessageComponentButtonInteraction,
+  ): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
   public override async run(
-    interaction: ButtonInteraction,
+    interaction: APIMessageComponentButtonInteraction,
     data: ParsedCustomIdData<'early-beyond' | 'testers' | 'roadmap'>,
   ) {
     switch (data.action) {
       case 'early-beyond':
-        await interaction.update(earlyBeyond(interaction, this.name));
+        await client.api.interactions.updateMessage(reply, earlyBeyond(interaction, this.name));
         break;
       case 'testers':
-        await interaction.update(testerCredits(interaction, this.name));
+        await client.api.interactions.updateMessage(reply, testerCredits(interaction, this.name));
         break;
       case 'roadmap':
-        await interaction.update(roadmap(interaction));
+        await client.api.interactions.updateMessage(reply, roadmap(interaction));
         break;
       default:
         await this.client.api.interactions.reply(res, {
@@ -44,7 +46,7 @@ export default class Roadmap extends InteractionHandler {
   }
 }
 
-function earlyBeyond(interaction: ButtonInteraction, name: string) {
+function earlyBeyond(interaction: APIMessageComponentButtonInteraction, name: string) {
   const embed = new EmbedBuilder()
     .setTitle('Beyond Clips')
 
@@ -69,14 +71,14 @@ function earlyBeyond(interaction: ButtonInteraction, name: string) {
     embeds: [embed.toJSON()],
     components: [
       new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
-        backButton(name, interaction.user.id, 'roadmap'),
+        backButton(name, interaction.member.user.id, 'roadmap'),
       ),
     ],
     files: [],
   };
 }
 
-function testerCredits(interaction: ButtonInteraction, name: string) {
+function testerCredits(interaction: APIMessageComponentButtonInteraction, name: string) {
   const embed = new EmbedBuilder()
     .setTitle('Credits to our Early Private Beta Testers!')
 
@@ -89,14 +91,14 @@ function testerCredits(interaction: ButtonInteraction, name: string) {
     embeds: [embed.toJSON()],
     components: [
       new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
-        backButton(name, interaction.user.id, 'roadmap'),
+        backButton(name, interaction.member.user.id, 'roadmap'),
       ),
     ],
     files: [],
   };
 }
 
-function roadmap(interaction: ButtonInteraction) {
+function roadmap(interaction: APIMessageComponentButtonInteraction) {
   const embed = new EmbedBuilder()
     .setTitle('Road Map')
 
@@ -110,7 +112,7 @@ function roadmap(interaction: ButtonInteraction) {
           buildCustomId({
             command: 'roadmap',
             action: 'testers',
-            id: interaction.user.id,
+            id: interaction.member.user.id,
           }),
         )
         .setStyle(ButtonStyle.Primary)
@@ -120,7 +122,7 @@ function roadmap(interaction: ButtonInteraction) {
           buildCustomId({
             command: 'roadmap',
             action: 'early-beyond',
-            id: interaction.user.id,
+            id: interaction.member.user.id,
           }),
         )
         .setStyle(ButtonStyle.Primary)

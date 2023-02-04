@@ -2,7 +2,7 @@ import {
   type ActionRowData,
   type MessageActionRowComponentData,
   ActionRowBuilder,
-  type ButtonInteraction,
+  type APIMessageComponentButtonInteraction,
   type SelectMenuInteraction,
   type InteractionReplyOptions,
   type InteractionUpdateOptions,
@@ -22,13 +22,13 @@ export default class Help extends InteractionHandler {
   }
 
   public override parse(
-    interaction: ButtonInteraction<'cached'> | SelectMenuInteraction<'cached'>,
+    interaction: APIMessageComponentButtonInteraction<'cached'> | SelectMenuInteraction<'cached'>,
   ): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
   public override async run(
-    interaction: ButtonInteraction<'cached'> | SelectMenuInteraction<'cached'>,
+    interaction: APIMessageComponentButtonInteraction<'cached'> | SelectMenuInteraction<'cached'>,
     data: ParsedCustomIdData<
       'c2shelp' | 'mischelp' | 'metabits' | 'mesoguide' | 'largenumbers' | 'metahelp' | 'itemhelp' | 'help' | 'close'
     >,
@@ -52,7 +52,7 @@ export default class Help extends InteractionHandler {
   }
 
   public async buttonRun(
-    interaction: ButtonInteraction<'cached'>,
+    interaction: APIMessageComponentButtonInteraction<'cached'>,
     data: ParsedCustomIdData<
       'c2shelp' | 'mischelp' | 'metabits' | 'mesoguide' | 'largenumbers' | 'metahelp' | 'itemhelp' | 'help' | 'close'
     >,
@@ -62,7 +62,10 @@ export default class Help extends InteractionHandler {
     if (data.action != 'help')
       components
         .at(0)
-        ?.components.push(backButton('help', interaction.user.id, 'help'), closeButton('help', interaction.user.id));
+        ?.components.push(
+          backButton('help', interaction.member.user.id, 'help'),
+          closeButton('help', interaction.member.user.id),
+        );
 
     let options: string | InteractionReplyOptions | undefined;
     switch (data.action) {
@@ -118,6 +121,6 @@ export default class Help extends InteractionHandler {
       else options.components = components;
       options.files = [];
     }
-    return interaction.update(options as InteractionUpdateOptions);
+    return client.api.interactions.updateMessage(reply, (options as InteractionUpdateOptions);
   }
 }

@@ -12,12 +12,14 @@ export default class Suggest extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
+  public override parse(
+    interaction: APIMessageComponentButtonInteraction,
+  ): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction, { allowOthers: true });
   }
 
   public override async run(
-    interaction: ButtonInteraction<'cached'>,
+    interaction: APIMessageComponentButtonInteraction<'cached'>,
     data: ParsedCustomIdData<'accept' | 'deny' | 'silent-deny'>,
   ) {
     if (getPermissionLevel(interaction.member) == 0)
@@ -27,7 +29,7 @@ export default class Suggest extends InteractionHandler {
 
     await disableAllComponents(interaction);
 
-    await interaction.update({
+    await client.api.interactions.updateMessage(reply, {
       content: `${data.action != 'accept' ? 'denied' : 'accepted'} by ${interaction.user}`,
       components: interaction.message.components,
     });
@@ -42,7 +44,9 @@ export default class Suggest extends InteractionHandler {
           'It just means that your suggestion has been accepted into being shown in the suggestions channel where the team may consider your suggestion.',
       );
       return (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannel).send({
-        embeds: [new EmbedBuilder().setAuthor(user).setDescription(interaction.message.embeds[0].description)],
+        embeds: [
+          new EmbedBuilder().setAuthor(authorDefault(user)).setDescription(interaction.message.embeds[0].description),
+        ],
       });
     }
 

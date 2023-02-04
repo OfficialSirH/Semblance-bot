@@ -9,11 +9,13 @@ export default class InfoEditor extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
+  public override parse(
+    interaction: APIMessageComponentButtonInteraction,
+  ): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
-  public override async run(interaction: ButtonInteraction) {
+  public override async run(interaction: APIMessageComponentButtonInteraction) {
     return this.client.api.interactions.reply(res, { content: 'Not implemented yet.', flags: MessageFlags.Ephemeral });
   }
 }

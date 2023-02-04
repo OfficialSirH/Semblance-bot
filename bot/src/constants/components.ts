@@ -1,9 +1,8 @@
-import type { CustomIdData } from '#lib/interfaces/Semblance';
+import type { CustomIdData, ParsedCustomIdData, ResultValue } from '#lib/interfaces/Semblance';
 import { type ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder } from '@discordjs/builders';
 import {
   type APIButtonComponentWithCustomId,
   type APISelectMenuComponent,
-  MessageFlags,
   ButtonStyle,
   type APIMessageComponentInteraction,
 } from '@discordjs/core';
@@ -51,11 +50,10 @@ export type ComponentInteractionDefaultParserOptions<T extends CustomIdData = Cu
 
 /**
  *  The most commonly used parser for the interaction handler. A parser that can be set to only allow the command caller to interact with its components.
- * @param {InteractionHandler} handler The interaction handler that the custom_id is being parsed for.
- * @param {MessageComponentInteraction} interaction The interaction that is being parsed.
+ * @param {APIMessageComponentGuildInteraction} interaction The interaction that is being parsed.
  * @param {...ComponentInteractionDefaultParserOptions} options The options for the parser.
  */
-export const componentInteractionDefaultParser = async <T extends CustomIdData = CustomIdData>(
+export const componentInteractionDefaultParser = <T extends CustomIdData = CustomIdData>(
   interaction: APIMessageComponentInteraction,
   {
     allowOthers = false,
@@ -64,23 +62,21 @@ export const componentInteractionDefaultParser = async <T extends CustomIdData =
     allowOthers: false,
     extraProps: {} as ComponentInteractionDefaultParserOptions<T>['extraProps'],
   },
-) => {
-  const data: T = JSON.parse(interaction.customId);
+): ResultValue<boolean, ParsedCustomIdData> => {
+  const data: T = JSON.parse(interaction.data.custom_id);
   if (typeof data.action != 'string' || typeof data.command != 'string' || typeof data.id != 'string')
-    return handler.none();
+    return { ok: false, message: 'invalid custom_id' };
   if (extraProps)
     for (const prop of Object.keys(extraProps)) {
-      if (typeof data[prop as keyof CustomIdData] != extraProps[prop as keyof typeof extraProps]) return handler.none();
+      if (typeof data[prop as keyof CustomIdData] != extraProps[prop as keyof typeof extraProps])
+        return { ok: false, message: 'invalid custom_id' };
     }
 
-  if (data.command != handler.name) return handler.none();
-  if (!allowOthers && data.id != interaction.user.id) {
-    await this.client.api.interactions.reply(res, {
-      content: "this button originates from a message that wasn't triggered by you.",
-      flags: MessageFlags.Ephemeral,
-    });
-    return handler.none();
-  }
+  if (!allowOthers && data.id != interaction.member?.user.id)
+    return {
+      ok: false,
+      message: "this button originates from a message that wasn't triggered by you.",
+    };
 
   const finalizedData = {
     action: data.action,
@@ -90,7 +86,7 @@ export const componentInteractionDefaultParser = async <T extends CustomIdData =
     for (const prop of Object.keys(extraProps)) {
       finalizedData[prop as keyof typeof finalizedData] = data[prop as keyof CustomIdData];
     }
-  return handler.some(finalizedData);
+  return { ok: true, value: finalizedData };
 };
 
 export const backButton = (command: string, userId: string, whereToGo: string) =>

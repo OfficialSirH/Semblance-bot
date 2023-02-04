@@ -13,6 +13,7 @@ import {
   ApplicationCommandType,
   type APIChatInputApplicationCommandInteraction,
   type APIContextMenuInteraction,
+  MessageFlags,
 } from '@discordjs/core';
 
 const client = new Client();
@@ -65,9 +66,21 @@ app.route<{ Body: APIInteraction }>({
 
       case InteractionType.MessageComponent: {
         const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
-        await client.cache.handles.commands
+        const preParseStep = await client.cache.handles.commands
           .get(parsedCustomId.command)
-          ?.componentRun?.(rep, interaction, parsedCustomId);
+          ?.componentPreparser?.(interaction);
+
+        if (!preParseStep) return rep.status(400).send('Invalid interaction');
+        if (preParseStep.ok) {
+          await client.cache.handles.commands
+            .get(parsedCustomId.command)
+            ?.componentRun?.(rep, interaction, preParseStep.value);
+        } else {
+          await client.api.interactions.reply(rep, {
+            content: preParseStep.message,
+            flags: MessageFlags.Ephemeral,
+          });
+        }
         break;
       }
 

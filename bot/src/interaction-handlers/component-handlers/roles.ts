@@ -17,12 +17,14 @@ export default class Roles extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
+  public override parse(
+    interaction: APIMessageComponentButtonInteraction,
+  ): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser(this, interaction);
   }
 
   public override async run(
-    interaction: ButtonInteraction<'cached'>,
+    interaction: APIMessageComponentButtonInteraction<'cached'>,
     data: ParsedCustomIdData<'add-events' | 'remove-events'>,
   ) {
     const { user, member, guild } = interaction,
@@ -43,7 +45,7 @@ export default class Roles extends InteractionHandler {
               buildCustomId({
                 command: 'roles',
                 action: isAddingRole ? 'remove-events' : 'add-events',
-                id: interaction.user.id,
+                id: interaction.member.user.id,
               }),
             )
             .setEmoji(isAddingRole ? '❌' : '✅')

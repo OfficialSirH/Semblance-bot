@@ -2,7 +2,7 @@ import type { CustomIdData, ParsedCustomIdData } from '#lib/interfaces/Semblance
 import {
   type MessageActionRowComponentBuilder,
   ActionRowBuilder,
-  type ButtonInteraction,
+  type APIMessageComponentButtonInteraction,
   EmbedBuilder,
   ButtonBuilder,
   ButtonStyle,
@@ -23,7 +23,9 @@ export default class ServerList extends InteractionHandler {
     });
   }
 
-  public override parse(interaction: ButtonInteraction): ReturnType<typeof componentInteractionDefaultParser> {
+  public override parse(
+    interaction: APIMessageComponentButtonInteraction,
+  ): ReturnType<typeof componentInteractionDefaultParser> {
     return componentInteractionDefaultParser<ServerListCustomIdData>(this, interaction, {
       extraProps: {
         page: 'number',
@@ -32,7 +34,7 @@ export default class ServerList extends InteractionHandler {
   }
 
   public override async run(
-    interaction: ButtonInteraction<'cached'>,
+    interaction: APIMessageComponentButtonInteraction<'cached'>,
     data: ParsedCustomIdData<'left' | 'right' | 'first' | 'last', ServerListCustomIdData>,
   ) {
     const { client, user } = interaction;
@@ -63,7 +65,7 @@ export default class ServerList extends InteractionHandler {
           new ButtonBuilder()
             .setLabel('Left')
             .setStyle(ButtonStyle.Secondary)
-            .setEmoji('⬅')
+            .setEmoji({ name: '⬅' })
             .setDisabled(chosenPage === 1)
             .setCustomId(
               buildCustomId({
@@ -76,7 +78,7 @@ export default class ServerList extends InteractionHandler {
           new ButtonBuilder()
             .setLabel('Right')
             .setStyle(ButtonStyle.Secondary)
-            .setEmoji('➡')
+            .setEmoji({ name: '➡' })
             .setDisabled(chosenPage === numOfPages)
             .setCustomId(
               buildCustomId({
@@ -106,6 +108,6 @@ export default class ServerList extends InteractionHandler {
         .setThumbnail(client.user.displayAvatarURL())
         .setDescription(pageDetails)
         .setFooter({ text: `Page ${chosenPage} out of ${numOfPages}` });
-    await interaction.update({ embeds: [embed.toJSON()], components });
+    await client.api.interactions.updateMessage(reply, { embeds: [embed.toJSON()], components });
   }
 }
