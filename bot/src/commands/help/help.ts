@@ -1,6 +1,6 @@
-import { Category, randomColor } from '#constants/index';
+import { Category, disableAllComponents, randomColor } from '#constants/index';
 import { Command } from '#structures/Command';
-import { buildCustomId } from '#constants/components';
+import { backButton, buildCustomId, closeButton } from '#constants/components';
 import {
   EmbedBuilder,
   chatInputApplicationCommandMention,
@@ -15,9 +15,18 @@ import {
   type APIChatInputApplicationCommandGuildInteraction,
   type RESTPostAPIApplicationCommandsJSONBody,
   type APIApplicationCommandAutocompleteGuildInteraction,
+  MessageFlags,
+  type APIMessageComponentButtonInteraction,
+  type APISelectMenuComponent,
+  type APIMessageComponent,
+  type APIMessageComponentInteraction,
+  ComponentType,
+  type APIStringSelectComponent,
+  type APIMessageComponentSelectMenuInteraction,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Help extends Command {
   public constructor(client: Command.Requirement) {
@@ -188,5 +197,104 @@ export default class Help extends Command {
         ],
       } satisfies RESTPostAPIApplicationCommandsJSONBody,
     };
+  }
+
+  public override async componentRun(
+    reply: FastifyReply,
+    interaction: APIMessageComponentInteraction,
+    data: ParsedCustomIdData<
+      'c2shelp' | 'mischelp' | 'metabits' | 'mesoguide' | 'largenumbers' | 'metahelp' | 'itemhelp' | 'help' | 'close'
+    >,
+  ) {
+    if (interaction.data.component_type === ComponentType.Button) return this.buttonRun(reply, interaction as APIMessageComponentButtonInteraction, data);
+    if (interaction.data.component_type === ComponentType.StringSelect) return this.selectMenuRun(reply, interaction as APIMessageComponentSelectMenuInteraction);
+  }
+
+  public async selectMenuRun(reply: FastifyReply, interaction: APIMessageComponentSelectMenuInteraction) {
+    const query = interaction.values[0];
+
+    await disableAllComponents(interaction);
+
+    if (!this.this.client.cache.handles.commands.has(query))
+      return this.client.api.interactions.reply(res, { content: 'Invalid query.', flags: MessageFlags.Ephemeral });
+
+    // @ts-expect-error - I already checked if the command exists just above, but TS doesn't know that
+    const info = await this.this.client.cache.handles.commands.get(query).templateRun(interaction);
+
+    return this.client.api.interactions.reply(res, info);
+  }
+
+  public async buttonRun(
+    reply: FastifyReply,
+    interaction: APIMessageComponentButtonInteraction,
+    data: ParsedCustomIdData<
+      'c2shelp' | 'mischelp' | 'metabits' | 'mesoguide' | 'largenumbers' | 'metahelp' | 'itemhelp' | 'help' | 'close'
+    >,
+  ) {
+    const client = this.client;
+    const components = [new ActionRowBuilder<MessageActionRowComponentBuilder>()];
+    if (data.action != 'help')
+      components
+        .at(0)
+        ?.components.push(
+          backButton('help', interaction.member.user.id, 'help'),
+          closeButton('help', interaction.member.user.id),
+        );
+
+    let options: string | InteractionReplyOptions | undefined;
+    switch (data.action) {
+      // Main Help Page
+      case 'c2shelp':
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await this.client.cache.handles.commands.get('c2shelp')?.templateRun(interaction);
+        break;
+      case 'mischelp':
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await this.client.cache.handles.commands.get('mischelp')?.templateRun(interaction);
+        break;
+      // Cell to Singularity Help Page
+      case 'metabits':
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await this.client.cache.handles.commands.get('metabits')?.templateRun(interaction);
+        break;
+      case 'mesoguide':
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await this.client.cache.handles.commands.get('mesoguide')?.templateRun(interaction);
+        break;
+      // Calculator Help Page
+      case 'largenumbers':
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await this.client.cache.handles.commands.get('largenumbers')?.templateRun(interaction);
+        break;
+      case 'metahelp':
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await this.client.cache.handles.commands.get('metahelp')?.templateRun(interaction);
+        break;
+      case 'itemhelp':
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await this.client.cache.handles.commands.get('itemhelp')?.templateRun(interaction);
+        break;
+      // Back and Close Actions
+      case 'help':
+        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
+        options = await this.client.cache.handles.commands.get('help')?.templateRun(interaction);
+        break;
+      case 'close':
+        return interaction.channel?.messages.delete(interaction.message.id);
+      default:
+        return this.client.api.interactions.reply(res, { content: 'Invalid action.', flags: MessageFlags.Ephemeral });
+    }
+
+    if (!options)
+      return this.client.api.interactions.reply(res, { content: 'Invalid action.', flags: MessageFlags.Ephemeral });
+    if (typeof options != 'string') {
+      if (options.components)
+        (options.components?.at(0) as ActionRowData<MessageActionRowComponentData>).components.push(
+          ...(components.at(0) as ActionRowBuilder<MessageActionRowComponentBuilder>).components,
+        );
+      else options.components = components;
+      options.files = [];
+    }
+    return client.api.interactions.updateMessage(reply, (options as InteractionUpdateOptions);
   }
 }

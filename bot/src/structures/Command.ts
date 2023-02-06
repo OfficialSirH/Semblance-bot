@@ -34,7 +34,7 @@ export abstract class Command {
   public readonly category?: Category;
   public readonly subCategory?: SubCategory;
   public readonly preconditions: PreconditionName[];
-  public readonly componentParseOptions?: ComponentInteractionDefaultParserOptions & { permissionLevel: number };
+  public readonly componentParseOptions?: ComponentInteractionDefaultParserOptions & { permissionLevel?: number };
 
   public constructor(
     public readonly client: Command.Requirement,
@@ -43,7 +43,7 @@ export abstract class Command {
       description: string;
       fullCategory?: [Category, SubCategory?];
       preconditions?: PreconditionName[];
-      componentParseOptions?: ComponentInteractionDefaultParserOptions & { permissionLevel: number };
+      componentParseOptions?: ComponentInteractionDefaultParserOptions & { permissionLevel?: number };
     },
   ) {
     this.name = options.name;

@@ -8,6 +8,7 @@ import {
   type APIChatInputApplicationCommandGuildInteraction,
   type RESTPostAPIApplicationCommandsJSONBody,
   type APIUser,
+  type APIMessageComponentButtonInteraction,
 } from '@discordjs/core';
 import {
   ActionRowBuilder,
@@ -17,6 +18,7 @@ import {
 } from '@discordjs/builders';
 import type { FastifyReply } from 'fastify';
 import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import type { ParsedCustomIdData, CustomIdData } from '#lib/interfaces/Semblance';
 
 export default class ServerList extends Command {
   public constructor(client: Command.Requirement) {
@@ -25,6 +27,11 @@ export default class ServerList extends Command {
       description: 'Lists all servers that Semblance is in.',
       fullCategory: [Category.developer],
       preconditions: [PreconditionName.OwnerOnly],
+      componentParseOptions: {
+        extraProps: {
+          page: 'number',
+        },
+      },
     });
   }
 
@@ -119,4 +126,87 @@ export default class ServerList extends Command {
       guildIds: [GuildId.sirhStuff],
     };
   }
+
+  public override async componentRun(
+    reply: FastifyReply,
+    interaction: APIMessageComponentButtonInteraction,
+    data: ParsedCustomIdData<'left' | 'right' | 'first' | 'last', ServerListCustomIdData>,
+  ) {
+    const { client, user } = interaction;
+    let page = data.page;
+    const numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
+
+    if (data.action == 'left') page--;
+    else if (data.action == 'right') page++;
+    else if (data.action == 'first') page = 1;
+    else page = numOfPages;
+
+    const { chosenPage, pageDetails } = guildBookPage(client, page);
+
+    const components = [
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
+            .setLabel('First Page')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(chosenPage === 1)
+            .setCustomId(
+              buildCustomId({
+                command: 'serverlist',
+                action: 'first',
+                id: user.id,
+                page,
+              }),
+            ),
+          new ButtonBuilder()
+            .setLabel('Left')
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji({ name: '⬅' })
+            .setDisabled(chosenPage === 1)
+            .setCustomId(
+              buildCustomId({
+                command: 'serverlist',
+                action: 'left',
+                id: user.id,
+                page,
+              }),
+            ),
+          new ButtonBuilder()
+            .setLabel('Right')
+            .setStyle(ButtonStyle.Secondary)
+            .setEmoji({ name: '➡' })
+            .setDisabled(chosenPage === numOfPages)
+            .setCustomId(
+              buildCustomId({
+                command: 'serverlist',
+                action: 'right',
+                id: user.id,
+                page,
+              }),
+            ),
+          new ButtonBuilder()
+            .setLabel('Last Page')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(chosenPage === numOfPages)
+            .setCustomId(
+              buildCustomId({
+                command: 'serverlist',
+                action: 'last',
+                id: user.id,
+                page,
+              }),
+            ),
+        ),
+      ],
+      embed = new EmbedBuilder()
+        .setTitle(`Server List [${client.guilds.cache.size}] - Page ${chosenPage}`)
+        .setColor(randomColor)
+        .setThumbnail(client.user.displayAvatarURL())
+        .setDescription(pageDetails)
+        .setFooter({ text: `Page ${chosenPage} out of ${numOfPages}` });
+    await client.api.interactions.updateMessage(reply, { embeds: [embed.toJSON()], components });
+  }
+}
+
+interface ServerListCustomIdData extends CustomIdData {
+  page: number;
 }

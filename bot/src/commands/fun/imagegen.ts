@@ -9,6 +9,7 @@ import {
   type APIChatInputApplicationCommandGuildInteraction,
   MessageFlags,
   type RESTPostAPIApplicationCommandsJSONBody,
+  type APIMessageComponentButtonInteraction,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import {
@@ -18,6 +19,7 @@ import {
   ButtonBuilder,
 } from '@discordjs/builders';
 import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Imagegen extends Command {
   public constructor(client: Command.Requirement) {
@@ -103,5 +105,36 @@ export default class Imagegen extends Command {
         ],
       } satisfies RESTPostAPIApplicationCommandsJSONBody,
     };
+  }
+
+  public override async componentRun(
+    interaction: APIMessageComponentButtonInteraction,
+    data: ParsedCustomIdData<'refresh-cat' | 'refresh-dog'>,
+  ) {
+    const wantsCat = data.action === 'refresh-cat',
+      query_params = {
+        has_breeds: true,
+        mime_types: 'jpg,png,gif',
+        size: 'small' as sizeType,
+        sub_id: interaction.user.username,
+        limit: 1,
+      };
+
+    const images = await fetchCatOrDog(query_params, wantsCat);
+
+    if (images.length === 0)
+      return this.client.api.interactions.reply(res, { content: 'No images found.', flags: MessageFlags.Ephemeral });
+
+    const image = images[0],
+      image_url = image.url,
+      breed = image.breeds[0];
+
+    const embed = new EmbedBuilder()
+      .setTitle(`Here's a ${breed.name}!`)
+
+      .setDescription(`Hi! I'm known to be ${breed.temperament} :D`)
+      .setImage(image_url);
+
+    await this.client.api.interactions.updateMessage(reply, { embeds: [embed.toJSON()] });
   }
 }

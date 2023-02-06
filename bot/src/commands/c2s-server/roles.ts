@@ -2,13 +2,23 @@ import { c2sRoles, c2sRolesInformation, Category, attachments, GuildId, authorDe
 import { buildCustomId } from '#constants/components';
 import type { FastifyReply } from 'fastify';
 import { Command } from '#structures/Command';
-import { MessageFlags, ButtonStyle, type APIChatInputApplicationCommandGuildInteraction } from '@discordjs/core';
+import {
+  MessageFlags,
+  ButtonStyle,
+  type APIChatInputApplicationCommandGuildInteraction,
+  type APIMessageComponentButtonInteraction,
+} from '@discordjs/core';
 import {
   ActionRowBuilder,
   ButtonBuilder,
   EmbedBuilder,
   type MessageActionRowComponentBuilder,
 } from '@discordjs/builders';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
+import { Collection } from '@discordjs/collection';
+
+// todo: remove this poor cooldown implementation and actually implement a cooldown that will actually remove the user from the cooldown collection after the cooldown is over
+const cooldown: Collection<string, number> = new Collection();
 
 export default class Roles extends Command {
   public constructor(client: Command.Requirement) {
@@ -46,8 +56,8 @@ export default class Roles extends Command {
               '**Server Roles**\n',
               ...Object.keys(c2sRolesInformation.server).map(
                 role =>
-                  `${guildRoles.get(c2sRoles.server[role as keyof typeof c2sRoles['server']])?.name}: ${
-                    c2sRolesInformation.server[role as keyof typeof c2sRoles['server']]
+                  `${guildRoles.get(c2sRoles.server[role as keyof (typeof c2sRoles)['server']])?.name}: ${
+                    c2sRolesInformation.server[role as keyof (typeof c2sRoles)['server']]
                   }`,
               ),
             ].join('\n'),
@@ -55,8 +65,8 @@ export default class Roles extends Command {
               '**Simulation Roles**\n',
               ...Object.keys(c2sRolesInformation.simulation).map(
                 role =>
-                  `${guildRoles.get(c2sRoles.simulation[role as keyof typeof c2sRoles['simulation']])?.name}: ${
-                    c2sRolesInformation.simulation[role as keyof typeof c2sRoles['simulation']]
+                  `${guildRoles.get(c2sRoles.simulation[role as keyof (typeof c2sRoles)['simulation']])?.name}: ${
+                    c2sRolesInformation.simulation[role as keyof (typeof c2sRoles)['simulation']]
                   }`,
               ),
             ].join('\n'),
@@ -64,8 +74,8 @@ export default class Roles extends Command {
               '**Metabit Roles**\n',
               ...Object.keys(c2sRolesInformation.metabit).map(
                 role =>
-                  `${guildRoles.get(c2sRoles.metabit[role as keyof typeof c2sRoles['metabit']])?.name}: ${
-                    c2sRolesInformation.metabit[role as keyof typeof c2sRoles['metabit']]
+                  `${guildRoles.get(c2sRoles.metabit[role as keyof (typeof c2sRoles)['metabit']])?.name}: ${
+                    c2sRolesInformation.metabit[role as keyof (typeof c2sRoles)['metabit']]
                   }`,
               ),
             ].join('\n'),
@@ -73,8 +83,8 @@ export default class Roles extends Command {
               '**Mesozoic Valley Roles**\n',
               ...Object.keys(c2sRolesInformation.mesozoic).map(
                 role =>
-                  `${guildRoles.get(c2sRoles.mesozoic[role as keyof typeof c2sRoles['mesozoic']])?.name}: ${
-                    c2sRolesInformation.mesozoic[role as keyof typeof c2sRoles['mesozoic']]
+                  `${guildRoles.get(c2sRoles.mesozoic[role as keyof (typeof c2sRoles)['mesozoic']])?.name}: ${
+                    c2sRolesInformation.mesozoic[role as keyof (typeof c2sRoles)['mesozoic']]
                   }`,
               ),
             ].join('\n'),
@@ -82,8 +92,8 @@ export default class Roles extends Command {
               '**Beyond Roles**\n',
               ...Object.keys(c2sRolesInformation.beyond).map(
                 role =>
-                  `${guildRoles.get(c2sRoles.beyond[role as keyof typeof c2sRoles['beyond']])?.name}: ${
-                    c2sRolesInformation.beyond[role as keyof typeof c2sRoles['beyond']]
+                  `${guildRoles.get(c2sRoles.beyond[role as keyof (typeof c2sRoles)['beyond']])?.name}: ${
+                    c2sRolesInformation.beyond[role as keyof (typeof c2sRoles)['beyond']]
                   }`,
               ),
             ].join('\n'),
@@ -122,5 +132,55 @@ export default class Roles extends Command {
       command: { name: this.name, description: this.description },
       guildIds: [GuildId.cellToSingularity],
     };
+  }
+
+  public override async componentRun(
+    reply: FastifyReply,
+    interaction: APIMessageComponentButtonInteraction,
+    data: ParsedCustomIdData<'add-events' | 'remove-events'>,
+  ) {
+    const { user, member, guild } = interaction,
+      userCooldown = cooldown.get(user.id);
+    if (!userCooldown || (!!userCooldown && Date.now() - userCooldown > 0)) cooldown.set(user.id, Date.now() + 30000);
+    if (!!userCooldown && Date.now() - userCooldown < 0)
+      return await this.client.api.interactions.reply(res, {
+        content: `You're on cooldown for ${(userCooldown - Date.now()) / 1000} seconds`,
+        flags: MessageFlags.Ephemeral,
+      });
+
+    const isAddingRole = data.action == 'add-events',
+      components = [
+        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
+          new ButtonBuilder()
+            .setDisabled(guild.id != GuildId.cellToSingularity)
+            .setCustomId(
+              buildCustomId({
+                command: 'roles',
+                action: isAddingRole ? 'remove-events' : 'add-events',
+                id: interaction.member.user.id,
+              }),
+            )
+            .setEmoji(isAddingRole ? '❌' : '✅')
+            .setLabel(isAddingRole ? 'Remove Server Events Role' : 'Add Server Events Role')
+            .setStyle(isAddingRole ? ButtonStyle.Danger : ButtonStyle.Success),
+        ),
+      ];
+
+    if (data.action == 'add-events') {
+      await member.roles.add(c2sRoles.server.serverEvents);
+      await this.client.api.interactions.reply(res, {
+        content: "Server Events role successfully added! Now you'll receive notifications for our server events! :D",
+        flags: MessageFlags.Ephemeral,
+      });
+    } else if (data.action == 'remove-events') {
+      await member.roles.remove(c2sRoles.server.serverEvents);
+      await this.client.api.interactions.reply(res, {
+        content:
+          "Server Events role successfully removed. You'll stop receiveing notifications for our server events. :(",
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+    const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data).setThumbnail(attachments.currentLogo.url);
+    await interaction.message.edit({ embeds: [embed.toJSON()], components });
   }
 }

@@ -219,6 +219,13 @@ export default class InfoEditor extends Command {
     };
   }
 
+  public override async componentRun(reply: FastifyReply) {
+    return this.client.api.interactions.reply(reply, {
+      content: 'Not implemented yet.',
+      flags: MessageFlags.Ephemeral,
+    });
+  }
+
   private async listBoosterCodes(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
     const darwiniumCodes = await this.client.db.boosterCodes.findMany({});
     const list = darwiniumCodes.length > 0 ? darwiniumCodes.map(c => c.code).join(', ') : 'None';

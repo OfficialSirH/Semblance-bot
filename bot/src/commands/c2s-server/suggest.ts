@@ -1,4 +1,4 @@
-import { GuildId, Category, authorDefault } from '#constants/index';
+import { GuildId, Category, authorDefault, disableAllComponents, getPermissionLevel } from '#constants/index';
 import { buildCustomId } from '#constants/components';
 import { Command } from '#structures/Command';
 import {
@@ -8,6 +8,7 @@ import {
   Routes,
   type APIModalSubmitGuildInteraction,
   type APIChatInputApplicationCommandGuildInteraction,
+  type APIMessageComponentButtonInteraction,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import {
@@ -18,6 +19,8 @@ import {
   ModalBuilder,
   TextInputBuilder,
 } from '@discordjs/builders';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
+import client from 'undici/types/client';
 
 export default class Suggest extends Command {
   public constructor(client: Command.Requirement) {
@@ -25,6 +28,10 @@ export default class Suggest extends Command {
       name: 'suggest',
       description: 'Submit suggestions for Cell to Singularity or the server.',
       fullCategory: [Category.c2sServer],
+      componentParseOptions: {
+        allowOthers: true,
+        permissionLevel: 1,
+      },
     });
   }
 
@@ -116,5 +123,47 @@ export default class Suggest extends Command {
       command: { name: this.name, description: this.description },
       guildIds: [GuildId.cellToSingularity],
     };
+  }
+
+  public override async componentRun(
+    reply: FastifyReply,
+    interaction: APIMessageComponentButtonInteraction,
+    data: ParsedCustomIdData<'accept' | 'deny' | 'silent-deny'>,
+  ) {
+    if (!['accept', 'deny', 'silent-deny'].includes(data.action))
+      return this.client.api.interactions.reply(res, "Something ain't working right");
+
+    await disableAllComponents(interaction);
+
+    await client.api.interactions.updateMessage(reply, {
+      content: `${data.action != 'accept' ? 'denied' : 'accepted'} by ${interaction.user}`,
+      components: interaction.message.components,
+    });
+
+    if (data.action == 'silent-deny') return;
+
+    const user = await this.client.users.fetch(data.id);
+    if (data.action == 'accept') {
+      user.send(
+        'Your suggestion has been accepted! ' +
+          'Note: This does not mean that your suggestion is guaranteed to be added in the game or implemented into the server(depending on the type of suggestion). ' +
+          'It just means that your suggestion has been accepted into being shown in the suggestions channel where the team may consider your suggestion.',
+      );
+      return (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannel).send({
+        embeds: [
+          new EmbedBuilder().setAuthor(authorDefault(user)).setDescription(interaction.message.embeds[0].description),
+        ],
+      });
+    }
+
+    if (data.action == 'deny')
+      await user
+        .send(
+          "Your suggestion has been denied. We deny reports if they're either a duplicate, already in-game, " +
+            'have no connection to what the game is supposed to be(i.e. "pvp dinosaur battles with Mesozoic Valley dinos"), or aren\'t detailed enough. ' +
+            "If you believe this is a mistake, please contact the staff team. You can also edit then resend your suggestion if you think it was a good suggestion that wasn't " +
+            ` written right. suggestion: \`\`\`\n${interaction.message.embeds[0].description}\`\`\``,
+        )
+        .catch(() => null);
   }
 }
