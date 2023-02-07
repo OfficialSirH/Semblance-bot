@@ -108,7 +108,8 @@ export default class Imagegen extends Command {
   }
 
   public override async componentRun(
-    interaction: APIMessageComponentButtonInteraction,
+    reply: FastifyReply,
+    _interaction: APIMessageComponentButtonInteraction,
     data: ParsedCustomIdData<'refresh-cat' | 'refresh-dog'>,
   ) {
     const wantsCat = data.action === 'refresh-cat',
@@ -116,14 +117,14 @@ export default class Imagegen extends Command {
         has_breeds: true,
         mime_types: 'jpg,png,gif',
         size: 'small' as sizeType,
-        sub_id: interaction.user.username,
+        sub_id: data.id,
         limit: 1,
       };
 
     const images = await fetchCatOrDog(query_params, wantsCat);
 
     if (images.length === 0)
-      return this.client.api.interactions.reply(res, { content: 'No images found.', flags: MessageFlags.Ephemeral });
+      return this.client.api.interactions.reply(reply, { content: 'No images found.', flags: MessageFlags.Ephemeral });
 
     const image = images[0],
       image_url = image.url,

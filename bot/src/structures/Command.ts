@@ -10,6 +10,7 @@ import {
   type RESTPostAPIApplicationCommandsJSONBody,
   InteractionType,
   type APIInteractionResponseCallbackData,
+  type APIInteraction,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import type { Client } from './Client';
@@ -177,7 +178,7 @@ export abstract class Command {
     reply: FastifyReply,
     interaction: APIMessageComponentInteraction,
     customData: ParsedCustomIdData,
-  ): Awaitable<void>;
+  ): Awaitable<unknown>;
 
   /**
    * run method for autocomplete commands
@@ -252,7 +253,7 @@ export abstract class Command {
    * }
    * ```
    */
-  public templateRun?(interaction: APIChatInputApplicationCommandInteraction): Awaitable<
+  public templateRun?(interaction: APIInteraction): Awaitable<
     APIInteractionResponseCallbackData & {
       files?: Attachy[];
     }

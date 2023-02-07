@@ -1,4 +1,4 @@
-import { GuildId, Category, authorDefault, disableAllComponents, getPermissionLevel } from '#constants/index';
+import { GuildId, Category, authorDefault, disableAllComponents } from '#constants/index';
 import { buildCustomId } from '#constants/components';
 import { Command } from '#structures/Command';
 import {
@@ -9,6 +9,8 @@ import {
   type APIModalSubmitGuildInteraction,
   type APIChatInputApplicationCommandGuildInteraction,
   type APIMessageComponentButtonInteraction,
+  type APIUser,
+  type APIDMChannel,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import {
@@ -20,7 +22,6 @@ import {
   TextInputBuilder,
 } from '@discordjs/builders';
 import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
-import client from 'undici/types/client';
 
 export default class Suggest extends Command {
   public constructor(client: Command.Requirement) {
@@ -131,39 +132,66 @@ export default class Suggest extends Command {
     data: ParsedCustomIdData<'accept' | 'deny' | 'silent-deny'>,
   ) {
     if (!['accept', 'deny', 'silent-deny'].includes(data.action))
-      return this.client.api.interactions.reply(res, "Something ain't working right");
+      return this.client.api.interactions.reply(reply, { content: "Something ain't working right" });
 
-    await disableAllComponents(interaction);
+    const disabledComponents = await disableAllComponents(interaction);
 
-    await client.api.interactions.updateMessage(reply, {
+    await this.client.api.interactions.updateMessage(reply, {
       content: `${data.action != 'accept' ? 'denied' : 'accepted'} by ${interaction.user}`,
-      components: interaction.message.components,
+      components: disabledComponents,
     });
 
     if (data.action == 'silent-deny') return;
 
-    const user = await this.client.users.fetch(data.id);
+    const user = (await this.client.rest.get(Routes.user(data.id))) as APIUser;
     if (data.action == 'accept') {
-      user.send(
-        'Your suggestion has been accepted! ' +
-          'Note: This does not mean that your suggestion is guaranteed to be added in the game or implemented into the server(depending on the type of suggestion). ' +
-          'It just means that your suggestion has been accepted into being shown in the suggestions channel where the team may consider your suggestion.',
-      );
-      return (interaction.guild.channels.cache.find(c => c.name == 'suggestions') as TextBasedChannel).send({
-        embeds: [
-          new EmbedBuilder().setAuthor(authorDefault(user)).setDescription(interaction.message.embeds[0].description),
-        ],
+      const userDm = (await this.client.rest.post(Routes.userChannels(), {
+        body: {
+          recipient_id: user.id,
+        },
+      })) as APIDMChannel;
+
+      await this.client.rest.post(Routes.channelMessages(userDm.id), {
+        body: {
+          content:
+            'Your suggestion has been accepted! ' +
+            'Note: This does not mean that your suggestion is guaranteed to be added in the game or implemented into the server(depending on the type of suggestion). ' +
+            'It just means that your suggestion has been accepted into being shown in the suggestions channel where the team may consider your suggestion.',
+        },
       });
+
+      await this.client.rest.post(
+        Routes.channelMessages(this.client.cache.data.cellsChannels.get('suggestions')?.id as string),
+        {
+          body: {
+            embeds: [
+              new EmbedBuilder()
+                .setAuthor(authorDefault(user))
+                .setDescription(interaction.message.embeds[0].description as string),
+            ],
+          },
+        },
+      );
+
+      return;
     }
 
-    if (data.action == 'deny')
-      await user
-        .send(
-          "Your suggestion has been denied. We deny reports if they're either a duplicate, already in-game, " +
+    if (data.action == 'deny') {
+      const userDm = (await this.client.rest.post(Routes.userChannels(), {
+        body: {
+          recipient_id: user.id,
+        },
+      })) as APIDMChannel;
+
+      await this.client.rest.post(Routes.channelMessages(userDm.id), {
+        body: {
+          content:
+            "Your suggestion has been denied. We deny reports if they're either a duplicate, already in-game, " +
             'have no connection to what the game is supposed to be(i.e. "pvp dinosaur battles with Mesozoic Valley dinos"), or aren\'t detailed enough. ' +
             "If you believe this is a mistake, please contact the staff team. You can also edit then resend your suggestion if you think it was a good suggestion that wasn't " +
             ` written right. suggestion: \`\`\`\n${interaction.message.embeds[0].description}\`\`\``,
-        )
-        .catch(() => null);
+        },
+      });
+    }
   }
 }

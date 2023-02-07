@@ -17,12 +17,12 @@ import {
   type APIApplicationCommandAutocompleteGuildInteraction,
   MessageFlags,
   type APIMessageComponentButtonInteraction,
-  type APISelectMenuComponent,
-  type APIMessageComponent,
   type APIMessageComponentInteraction,
   ComponentType,
-  type APIStringSelectComponent,
   type APIMessageComponentSelectMenuInteraction,
+  Routes,
+  type APIMessageActionRowComponent,
+  type APIActionRowComponent,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
@@ -206,22 +206,23 @@ export default class Help extends Command {
       'c2shelp' | 'mischelp' | 'metabits' | 'mesoguide' | 'largenumbers' | 'metahelp' | 'itemhelp' | 'help' | 'close'
     >,
   ) {
-    if (interaction.data.component_type === ComponentType.Button) return this.buttonRun(reply, interaction as APIMessageComponentButtonInteraction, data);
-    if (interaction.data.component_type === ComponentType.StringSelect) return this.selectMenuRun(reply, interaction as APIMessageComponentSelectMenuInteraction);
+    if (interaction.data.component_type === ComponentType.Button)
+      return this.buttonRun(reply, interaction as APIMessageComponentButtonInteraction, data);
+    if (interaction.data.component_type === ComponentType.StringSelect)
+      return this.selectMenuRun(reply, interaction as APIMessageComponentSelectMenuInteraction);
   }
 
   public async selectMenuRun(reply: FastifyReply, interaction: APIMessageComponentSelectMenuInteraction) {
-    const query = interaction.values[0];
+    const query = interaction.data.values[0];
 
-    await disableAllComponents(interaction);
+    await disableAllComponents(interaction, this.client.rest);
 
-    if (!this.this.client.cache.handles.commands.has(query))
-      return this.client.api.interactions.reply(res, { content: 'Invalid query.', flags: MessageFlags.Ephemeral });
+    if (!this.client.cache.handles.commands.has(query))
+      return this.client.api.interactions.reply(reply, { content: 'Invalid query.', flags: MessageFlags.Ephemeral });
 
-    // @ts-expect-error - I already checked if the command exists just above, but TS doesn't know that
-    const info = await this.this.client.cache.handles.commands.get(query).templateRun(interaction);
+    const info = await this.client.cache.handles.commands.get(query)?.templateRun?.(interaction);
 
-    return this.client.api.interactions.reply(res, info);
+    return this.client.api.interactions.reply(reply, info as Exclude<typeof info, undefined>);
   }
 
   public async buttonRun(
@@ -231,70 +232,57 @@ export default class Help extends Command {
       'c2shelp' | 'mischelp' | 'metabits' | 'mesoguide' | 'largenumbers' | 'metahelp' | 'itemhelp' | 'help' | 'close'
     >,
   ) {
-    const client = this.client;
+    const userId = interaction.member?.user.id as string;
     const components = [new ActionRowBuilder<MessageActionRowComponentBuilder>()];
     if (data.action != 'help')
-      components
-        .at(0)
-        ?.components.push(
-          backButton('help', interaction.member.user.id, 'help'),
-          closeButton('help', interaction.member.user.id),
-        );
+      components.at(0)?.components.push(backButton('help', userId, 'help'), closeButton('help', userId));
 
-    let options: string | InteractionReplyOptions | undefined;
+    let options: Parameters<typeof this.client.api.interactions.updateMessage>[1];
     switch (data.action) {
       // Main Help Page
       case 'c2shelp':
-        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await this.client.cache.handles.commands.get('c2shelp')?.templateRun(interaction);
+        options = await this.client.cache.handles.commands.get('c2shelp')?.templateRun?.(interaction);
         break;
       case 'mischelp':
-        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await this.client.cache.handles.commands.get('mischelp')?.templateRun(interaction);
+        options = await this.client.cache.handles.commands.get('mischelp')?.templateRun?.(interaction);
         break;
       // Cell to Singularity Help Page
       case 'metabits':
-        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await this.client.cache.handles.commands.get('metabits')?.templateRun(interaction);
+        options = await this.client.cache.handles.commands.get('metabits')?.templateRun?.(interaction);
         break;
       case 'mesoguide':
-        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await this.client.cache.handles.commands.get('mesoguide')?.templateRun(interaction);
+        options = await this.client.cache.handles.commands.get('mesoguide')?.templateRun?.(interaction);
         break;
       // Calculator Help Page
       case 'largenumbers':
-        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await this.client.cache.handles.commands.get('largenumbers')?.templateRun(interaction);
+        options = await this.client.cache.handles.commands.get('largenumbers')?.templateRun?.(interaction);
         break;
       case 'metahelp':
-        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await this.client.cache.handles.commands.get('metahelp')?.templateRun(interaction);
+        options = await this.client.cache.handles.commands.get('metahelp')?.templateRun?.(interaction);
         break;
       case 'itemhelp':
-        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await this.client.cache.handles.commands.get('itemhelp')?.templateRun(interaction);
+        options = await this.client.cache.handles.commands.get('itemhelp')?.templateRun?.(interaction);
         break;
       // Back and Close Actions
       case 'help':
-        // @ts-expect-error - complains about an attempt to invoke a possibly undefined object despite optional chaining
-        options = await this.client.cache.handles.commands.get('help')?.templateRun(interaction);
+        options = await this.client.cache.handles.commands.get('help')?.templateRun?.(interaction);
         break;
       case 'close':
-        return interaction.channel?.messages.delete(interaction.message.id);
+        return this.client.rest.delete(Routes.channelMessage(interaction.channel_id, interaction.message.id));
       default:
-        return this.client.api.interactions.reply(res, { content: 'Invalid action.', flags: MessageFlags.Ephemeral });
+        return this.client.api.interactions.reply(reply, { content: 'Invalid action.', flags: MessageFlags.Ephemeral });
     }
 
     if (!options)
-      return this.client.api.interactions.reply(res, { content: 'Invalid action.', flags: MessageFlags.Ephemeral });
+      return this.client.api.interactions.reply(reply, { content: 'Invalid action.', flags: MessageFlags.Ephemeral });
     if (typeof options != 'string') {
       if (options.components)
-        (options.components?.at(0) as ActionRowData<MessageActionRowComponentData>).components.push(
-          ...(components.at(0) as ActionRowBuilder<MessageActionRowComponentBuilder>).components,
+        (options.components?.at(0) as APIActionRowComponent<APIMessageActionRowComponent>).components.push(
+          ...(components.at(0) as ActionRowBuilder<MessageActionRowComponentBuilder>).toJSON().components,
         );
-      else options.components = components;
+      else options.components = components.map(i => i.toJSON());
       options.files = [];
     }
-    return client.api.interactions.updateMessage(reply, (options as InteractionUpdateOptions);
+    return this.client.api.interactions.updateMessage(reply, options);
   }
 }

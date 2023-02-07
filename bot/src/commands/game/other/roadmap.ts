@@ -124,7 +124,7 @@ function earlyBeyond(interaction: APIMessageComponentButtonInteraction, name: st
     embeds: [embed.toJSON()],
     components: [
       new ActionRowBuilder<MessageActionRowComponentBuilder>()
-        .addComponents(backButton(name, interaction.member.user.id, 'roadmap'))
+        .addComponents(backButton(name, interaction.member?.user.id as string, 'roadmap'))
         .toJSON(),
     ],
     files: [],
@@ -144,7 +144,7 @@ function testerCredits(interaction: APIMessageComponentButtonInteraction, name: 
     embeds: [embed.toJSON()],
     components: [
       new ActionRowBuilder<MessageActionRowComponentBuilder>()
-        .addComponents(backButton(name, interaction.member.user.id, 'roadmap'))
+        .addComponents(backButton(name, interaction.member?.user.id as string, 'roadmap'))
         .toJSON(),
     ],
     files: [],
@@ -152,9 +152,10 @@ function testerCredits(interaction: APIMessageComponentButtonInteraction, name: 
 }
 
 function roadmap(interaction: APIMessageComponentButtonInteraction) {
+  const userId = interaction.member?.user.id as string;
+
   const embed = new EmbedBuilder()
     .setTitle('Road Map')
-
     .setColor(randomColor)
     .setThumbnail(attachments.currentLogo.url)
     .setImage(attachments.roadMap.url);
@@ -166,7 +167,7 @@ function roadmap(interaction: APIMessageComponentButtonInteraction) {
             buildCustomId({
               command: 'roadmap',
               action: 'testers',
-              id: interaction.member.user.id,
+              id: userId,
             }),
           )
           .setStyle(ButtonStyle.Primary)
@@ -176,7 +177,7 @@ function roadmap(interaction: APIMessageComponentButtonInteraction) {
             buildCustomId({
               command: 'roadmap',
               action: 'early-beyond',
-              id: interaction.member.user.id,
+              id: userId,
             }),
           )
           .setStyle(ButtonStyle.Primary)

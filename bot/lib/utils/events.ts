@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import { formattedDate } from '#constants/index';
-import type { Attachy } from '#structures/Attachy';
+import { Attachy } from '#structures/Attachy';
 
 export const eventAttachments = await (async () => {
   const files = await fs.readdir('./src/images/events/');
@@ -10,7 +10,7 @@ export const eventAttachments = await (async () => {
   >;
   for (const file of files)
     if (file.endsWith('.png')) {
-      const attachment = new Attachy(`./src/images/events/${file}`, { name: `attachment://${file}` }),
+      const attachment = new Attachy(`./src/images/events/${file}`, `attachment://${file}`),
         attachmentName = file.substring(0, file.indexOf('.'));
       finalAttachments[attachmentName as keyof typeof finalAttachments] = attachment;
     }

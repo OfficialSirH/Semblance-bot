@@ -7,6 +7,7 @@ import {
   ButtonStyle,
   type APIChatInputApplicationCommandGuildInteraction,
   type APIMessageComponentButtonInteraction,
+  Routes,
 } from '@discordjs/core';
 import {
   ActionRowBuilder,
@@ -139,48 +140,54 @@ export default class Roles extends Command {
     interaction: APIMessageComponentButtonInteraction,
     data: ParsedCustomIdData<'add-events' | 'remove-events'>,
   ) {
-    const { user, member, guild } = interaction,
-      userCooldown = cooldown.get(user.id);
-    if (!userCooldown || (!!userCooldown && Date.now() - userCooldown > 0)) cooldown.set(user.id, Date.now() + 30000);
+    const userId = data.id;
+    const userCooldown = cooldown.get(userId);
+
+    if (!userCooldown || (!!userCooldown && Date.now() - userCooldown > 0)) cooldown.set(userId, Date.now() + 30000);
     if (!!userCooldown && Date.now() - userCooldown < 0)
-      return await this.client.api.interactions.reply(res, {
+      return await this.client.api.interactions.reply(reply, {
         content: `You're on cooldown for ${(userCooldown - Date.now()) / 1000} seconds`,
         flags: MessageFlags.Ephemeral,
       });
 
     const isAddingRole = data.action == 'add-events',
       components = [
-        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
-          new ButtonBuilder()
-            .setDisabled(guild.id != GuildId.cellToSingularity)
-            .setCustomId(
-              buildCustomId({
-                command: 'roles',
-                action: isAddingRole ? 'remove-events' : 'add-events',
-                id: interaction.member.user.id,
-              }),
-            )
-            .setEmoji(isAddingRole ? '❌' : '✅')
-            .setLabel(isAddingRole ? 'Remove Server Events Role' : 'Add Server Events Role')
-            .setStyle(isAddingRole ? ButtonStyle.Danger : ButtonStyle.Success),
-        ),
+        new ActionRowBuilder<MessageActionRowComponentBuilder>()
+          .addComponents(
+            new ButtonBuilder()
+              .setCustomId(
+                buildCustomId({
+                  command: 'roles',
+                  action: isAddingRole ? 'remove-events' : 'add-events',
+                  id: userId,
+                }),
+              )
+              .setEmoji({ name: isAddingRole ? '❌' : '✅' })
+              .setLabel(isAddingRole ? 'Remove Server Events Role' : 'Add Server Events Role')
+              .setStyle(isAddingRole ? ButtonStyle.Danger : ButtonStyle.Success),
+          )
+          .toJSON(),
       ];
 
     if (data.action == 'add-events') {
-      await member.roles.add(c2sRoles.server.serverEvents);
-      await this.client.api.interactions.reply(res, {
+      await this.client.rest.put(
+        Routes.guildMemberRole(GuildId.cellToSingularity, userId, c2sRoles.server.serverEvents),
+      );
+      await this.client.api.interactions.reply(reply, {
         content: "Server Events role successfully added! Now you'll receive notifications for our server events! :D",
         flags: MessageFlags.Ephemeral,
       });
     } else if (data.action == 'remove-events') {
-      await member.roles.remove(c2sRoles.server.serverEvents);
-      await this.client.api.interactions.reply(res, {
+      await this.client.rest.delete(
+        Routes.guildMemberRole(GuildId.cellToSingularity, userId, c2sRoles.server.serverEvents),
+      );
+      await this.client.api.interactions.reply(reply, {
         content:
           "Server Events role successfully removed. You'll stop receiveing notifications for our server events. :(",
         flags: MessageFlags.Ephemeral,
       });
     }
-    const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data).setThumbnail(attachments.currentLogo.url);
-    await interaction.message.edit({ embeds: [embed.toJSON()], components });
+    const embed = new EmbedBuilder(interaction.message.embeds.at(0)).setThumbnail(attachments.currentLogo.url);
+    await this.client.api.interactions.updateMessage(reply, { embeds: [embed.toJSON()], components });
   }
 }

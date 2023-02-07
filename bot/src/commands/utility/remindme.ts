@@ -3,18 +3,16 @@ import type { Reminder, UserReminder } from '@prisma/client';
 import { handleReminder } from '#constants/models';
 import { scheduleJob } from 'node-schedule';
 import { Command } from '#structures/Command';
-import type {
-  APIApplicationCommandAutocompleteInteraction,
-  APIApplicationCommandInteractionDataIntegerOption,
-} from 'discord-api-types/v9';
 import { EmbedBuilder } from '@discordjs/builders';
 import {
   type APIChatInputApplicationCommandGuildInteraction,
   MessageFlags,
   ApplicationCommandOptionType,
   type RESTPostAPIApplicationCommandsJSONBody,
+  type APIApplicationCommandAutocompleteInteraction,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 
 const MAX_TIME = 29030400000;
 const MAX_REMINDERS = 5;
@@ -29,18 +27,22 @@ export default class RemindMe extends Command {
     });
   }
 
-  public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+  public override async chatInputRun(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
     const action = options.getSubcommand();
 
     switch (action) {
       case 'create':
-        return create(interaction);
+        return this.create(res, interaction, options);
       case 'edit':
-        return edit(interaction);
+        return this.edit(res, interaction, options);
       case 'delete':
-        return deleteReminder(interaction);
+        return this.deleteReminder(res, interaction, options);
       case 'list':
-        return list(interaction);
+        return this.list(res, interaction);
       default:
         return this.client.api.interactions.reply(res, {
           content: 'You must specify a valid subcommand.',
@@ -49,15 +51,15 @@ export default class RemindMe extends Command {
     }
   }
 
-  public override async autocomplete(interaction: APIApplicationCommandAutocompleteInteraction) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const focusedOption = interaction.data.options.find(
-      option => (option as APIApplicationCommandInteractionDataIntegerOption).focused,
-    )! as APIApplicationCommandInteractionDataIntegerOption;
+  public override async autocompleteRun(
+    reply: FastifyReply,
+    _interaction: APIApplicationCommandAutocompleteInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    const focusedOption = options.getFocused() as number;
+    const inputtedAmount = focusedOption < 1 ? 1 : focusedOption;
 
-    const inputtedAmount = focusedOption.value < 1 ? 1 : focusedOption.value;
-
-    return [
+    await this.client.api.interactions.autocomplete(reply, [
       {
         name: `${inputtedAmount} minute(s)`,
         value: inputtedAmount,
@@ -78,7 +80,7 @@ export default class RemindMe extends Command {
         name: `${inputtedAmount} month(s)`,
         value: inputtedAmount * 60 * 24 * 30,
       },
-    ];
+    ]);
   }
 
   public override data() {
@@ -177,215 +179,220 @@ export default class RemindMe extends Command {
       } satisfies RESTPostAPIApplicationCommandsJSONBody,
     };
   }
-}
 
-async function create(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
-  const timeAmount = options.getInteger('amount', true) * MILLISECONDS_TO_MINUTES,
-    reminder = options.getString('reminder', true),
-    user = interaction.member.user;
+  async create(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    const timeAmount = options.getInteger('amount', true) * MILLISECONDS_TO_MINUTES,
+      reminder = options.getString('reminder', true),
+      user = interaction.member.user;
 
-  if (timeAmount > MAX_TIME)
-    return this.client.api.interactions.reply(res, {
-      content: 'You cannot create a reminder for longer than a year',
-      flags: MessageFlags.Ephemeral,
-    });
+    if (timeAmount > MAX_TIME)
+      return this.client.api.interactions.reply(res, {
+        content: 'You cannot create a reminder for longer than a year',
+        flags: MessageFlags.Ephemeral,
+      });
 
-  const currentReminderData = await this.client.db.reminder.findUnique({ where: { userId: user.id } });
-  if (currentReminderData && currentReminderData?.reminders.length >= MAX_REMINDERS)
-    return this.client.api.interactions.reply(res, {
-      content: `You cannot have more than ${MAX_REMINDERS} reminders at a time`,
-      flags: MessageFlags.Ephemeral,
-    });
+    const currentReminderData = await this.client.db.reminder.findUnique({ where: { userId: user.id } });
+    if (currentReminderData && currentReminderData?.reminders.length >= MAX_REMINDERS)
+      return this.client.api.interactions.reply(res, {
+        content: `You cannot have more than ${MAX_REMINDERS} reminders at a time`,
+        flags: MessageFlags.Ephemeral,
+      });
 
-  const embed = new EmbedBuilder()
-    .setTitle('Reminder')
-    .setColor(randomColor)
-    .setThumbnail(user.displayAvatarURL())
-    .setDescription(
-      `New reminder successfully created:\n**When:** ${formattedDate(
-        Date.now() + timeAmount,
-      )}\n **Reminder**: ${reminder}`,
-    )
-    .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
-  await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+    const embed = new EmbedBuilder()
+      .setTitle('Reminder')
+      .setColor(randomColor)
+      .setDescription(
+        `New reminder successfully created:\n**When:** ${formattedDate(
+          Date.now() + timeAmount,
+        )}\n **Reminder**: ${reminder}`,
+      );
+    await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
 
-  if (currentReminderData) {
-    this.client.db.reminder.update({
-      where: { userId: user.id },
+    if (currentReminderData) {
+      this.client.db.reminder.update({
+        where: { userId: user.id },
+        data: {
+          reminders: currentReminderData.reminders.concat([
+            {
+              message: reminder,
+              time: Date.now() + timeAmount,
+              reminderId: currentReminderData.reminders.length + 1,
+              channelId: interaction.channel_id,
+            },
+          ]),
+        },
+      });
+      return scheduleJob(new Date((currentReminderData.reminders.at(-1) as unknown as UserReminder).time), () =>
+        handleReminder(
+          this.client,
+          currentReminderData as unknown as Reminder,
+          currentReminderData.reminders.at(-1) as unknown as UserReminder,
+        ),
+      );
+    }
+
+    const newReminder = await this.client.db.reminder.create({
       data: {
-        reminders: currentReminderData.reminders.concat([
+        userId: user.id,
+        reminders: [
           {
             message: reminder,
             time: Date.now() + timeAmount,
-            reminderId: currentReminderData.reminders.length + 1,
-            channelId: interaction.channel?.id,
+            reminderId: 1,
+            channelId: interaction.channel_id,
           },
-        ]),
+        ],
       },
     });
-    return scheduleJob(new Date((currentReminderData.reminders.at(-1) as unknown as UserReminder).time), () =>
+    scheduleJob(new Date((newReminder.reminders.at(0) as unknown as UserReminder).time), () =>
       handleReminder(
         this.client,
-        currentReminderData as unknown as Reminder,
-        currentReminderData.reminders.at(-1) as unknown as UserReminder,
+        newReminder as unknown as Reminder,
+        newReminder.reminders.at(0) as unknown as UserReminder,
       ),
     );
   }
 
-  const newReminder = await this.client.db.reminder.create({
-    data: {
-      userId: user.id,
-      reminders: [
-        {
-          message: reminder,
-          time: Date.now() + timeAmount,
-          reminderId: 1,
-          channelId: interaction.channel?.id,
-        },
-      ],
-    },
-  });
-  scheduleJob(new Date((newReminder.reminders.at(0) as unknown as UserReminder).time), () =>
-    handleReminder(
-      this.client,
-      newReminder as unknown as Reminder,
-      newReminder.reminders.at(0) as unknown as UserReminder,
-    ),
-  );
-}
+  async edit(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    const user = interaction.member.user,
+      currentReminderData = (await this.client.db.reminder.findUnique({
+        where: { userId: user.id },
+      })) as unknown as Reminder;
 
-async function edit(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
-  const user = interaction.member.user,
-    currentReminderData = (await this.client.db.reminder.findUnique({
-      where: { userId: user.id },
-    })) as unknown as Reminder;
+    if (!currentReminderData)
+      return this.client.api.interactions.reply(res, {
+        content: "You don't have any reminders to edit.",
+        flags: MessageFlags.Ephemeral,
+      });
 
-  if (!currentReminderData)
-    return this.client.api.interactions.reply(res, {
-      content: "You don't have any reminders to edit.",
-      flags: MessageFlags.Ephemeral,
-    });
+    const reminderId = options.getInteger('reminderid', true),
+      reminder = options.getString('reminder'),
+      amount = options.getInteger('amount') || 0 * MILLISECONDS_TO_MINUTES;
 
-  const reminderId = options.getInteger('reminderid', true),
-    reminder = options.getString('reminder'),
-    amount = options.getInteger('amount') || 0 * MILLISECONDS_TO_MINUTES;
+    if (!reminder && !amount)
+      return this.client.api.interactions.reply(res, {
+        content: 'You must specify either a reminder or an amount of time to apply an edit.',
+        flags: MessageFlags.Ephemeral,
+      });
+    if (reminderId > currentReminderData.reminders.length)
+      return this.client.api.interactions.reply(res, {
+        content: 'You must specify a valid reminder ID',
+        flags: MessageFlags.Ephemeral,
+      });
 
-  if (!reminder && !amount)
-    return this.client.api.interactions.reply(res, {
-      content: 'You must specify either a reminder or an amount of time to apply an edit.',
-      flags: MessageFlags.Ephemeral,
-    });
-  if (reminderId > currentReminderData.reminders.length)
-    return this.client.api.interactions.reply(res, {
-      content: 'You must specify a valid reminder ID',
-      flags: MessageFlags.Ephemeral,
-    });
+    const updatedReminder = {} as UserReminder;
 
-  const updatedReminder = {} as UserReminder;
+    updatedReminder.message = reminder ? reminder : currentReminderData.reminders[reminderId - 1].message;
+    updatedReminder.time = amount ? new Date(Date.now() + amount) : currentReminderData.reminders[reminderId - 1].time;
+    updatedReminder.reminderId = reminderId;
+    updatedReminder.channelId = currentReminderData.reminders.find(r => r.reminderId === reminderId)
+      ?.channelId as string;
 
-  updatedReminder.message = reminder ? reminder : currentReminderData.reminders[reminderId - 1].message;
-  updatedReminder.time = amount ? new Date(Date.now() + amount) : currentReminderData.reminders[reminderId - 1].time;
-  updatedReminder.reminderId = reminderId;
-  updatedReminder.channelId = currentReminderData.reminders.find(r => r.reminderId === reminderId)?.channelId as string;
-
-  const updatedReminderData = await this.client.db.reminder.update({
-    where: { userId: user.id },
-    data: {
-      reminders: currentReminderData.reminders.map(reminder => {
-        return (reminder.reminderId == reminderId ? updatedReminder : reminder) as object;
-      }),
-    },
-  });
-
-  if (!updatedReminderData)
-    return this.client.api.interactions.reply(res, {
-      content: 'An error occurred while updating your reminder',
-      flags: MessageFlags.Ephemeral,
-    });
-
-  const embed = new EmbedBuilder()
-    .setTitle('Edited Reminder')
-    .setColor(randomColor)
-    .setThumbnail(user.displayAvatarURL())
-    .setDescription(
-      `Reminder successfully edited:\n**When:** ${formattedDate(updatedReminder.time.valueOf())}\n **Reminder**: ${
-        updatedReminder.message
-      }`,
-    )
-    .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
-  await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
-}
-
-async function deleteReminder(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
-  const user = interaction.member.user,
-    reminderId = options.getInteger('reminderid', true),
-    currentReminderData = (await this.client.db.reminder.findUnique({
-      where: { userId: user.id },
-    })) as unknown as Reminder;
-
-  if (!currentReminderData)
-    return this.client.api.interactions.reply(res, {
-      content: "You don't have any reminders to delete.",
-      flags: MessageFlags.Ephemeral,
-    });
-  if (reminderId > currentReminderData.reminders.length)
-    return this.client.api.interactions.reply(res, {
-      content: 'You must specify a valid reminder ID',
-      flags: MessageFlags.Ephemeral,
-    });
-
-  const deletedReminder = currentReminderData.reminders.find(
-    reminder => reminder.reminderId == reminderId,
-  ) as UserReminder;
-  if (currentReminderData.reminders.length == 1) await this.client.db.reminder.delete({ where: { userId: user.id } });
-  else
-    await this.client.db.reminder.update({
+    const updatedReminderData = await this.client.db.reminder.update({
       where: { userId: user.id },
       data: {
-        reminders: currentReminderData.reminders
-          .filter(reminder => reminder.reminderId != reminderId)
-          .map((reminder, index) => {
-            reminder.reminderId = index + 1;
-            return reminder as object;
-          }),
+        reminders: currentReminderData.reminders.map(reminder => {
+          return (reminder.reminderId == reminderId ? updatedReminder : reminder) as object;
+        }),
       },
     });
 
-  const embed = new EmbedBuilder()
-    .setTitle('Deleted Reminder')
-    .setColor(randomColor)
-    .setThumbnail(user.displayAvatarURL())
-    .setDescription(`Your reminder to remind you about: ${deletedReminder.message}\n has been deleted successfully`)
-    .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
-  await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
-}
+    if (!updatedReminderData)
+      return this.client.api.interactions.reply(res, {
+        content: 'An error occurred while updating your reminder',
+        flags: MessageFlags.Ephemeral,
+      });
 
-async function list(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
-  const user = interaction.member.user,
-    currentReminderData = (await this.client.db.reminder.findUnique({
-      where: { userId: user.id },
-    })) as unknown as Reminder;
+    const embed = new EmbedBuilder()
+      .setTitle('Edited Reminder')
+      .setColor(randomColor)
+      .setDescription(
+        `Reminder successfully edited:\n**When:** ${formattedDate(updatedReminder.time.valueOf())}\n **Reminder**: ${
+          updatedReminder.message
+        }`,
+      );
+    await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+  }
 
-  if (!currentReminderData)
-    return this.client.api.interactions.reply(res, {
-      content: "You don't have any reminders.",
-      flags: MessageFlags.Ephemeral,
-    });
+  async deleteReminder(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    const user = interaction.member.user,
+      reminderId = options.getInteger('reminderid', true),
+      currentReminderData = (await this.client.db.reminder.findUnique({
+        where: { userId: user.id },
+      })) as unknown as Reminder;
 
-  const embed = new EmbedBuilder()
-    .setTitle('Reminder List')
-    .setColor(randomColor)
-    .setThumbnail(user.displayAvatarURL())
-    .setDescription(
-      currentReminderData.reminders
-        .map(
-          reminder =>
-            `**Reminder ID:** ${reminder.reminderId}\n**When:** ${formattedDate(
-              reminder.time.valueOf(),
-            )}\n**Reminder:** ${reminder.message}`,
-        )
-        .join('\n\n'),
-    )
-    .setFooter({ text: `Command called by ${user.tag}`, iconURL: user.displayAvatarURL() });
-  await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
+    if (!currentReminderData)
+      return this.client.api.interactions.reply(res, {
+        content: "You don't have any reminders to delete.",
+        flags: MessageFlags.Ephemeral,
+      });
+    if (reminderId > currentReminderData.reminders.length)
+      return this.client.api.interactions.reply(res, {
+        content: 'You must specify a valid reminder ID',
+        flags: MessageFlags.Ephemeral,
+      });
+
+    const deletedReminder = currentReminderData.reminders.find(
+      reminder => reminder.reminderId == reminderId,
+    ) as UserReminder;
+    if (currentReminderData.reminders.length == 1) await this.client.db.reminder.delete({ where: { userId: user.id } });
+    else
+      await this.client.db.reminder.update({
+        where: { userId: user.id },
+        data: {
+          reminders: currentReminderData.reminders
+            .filter(reminder => reminder.reminderId != reminderId)
+            .map((reminder, index) => {
+              reminder.reminderId = index + 1;
+              return reminder as object;
+            }),
+        },
+      });
+
+    const embed = new EmbedBuilder()
+      .setTitle('Deleted Reminder')
+      .setColor(randomColor)
+      .setDescription(`Your reminder to remind you about: ${deletedReminder.message}\n has been deleted successfully`);
+    await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+  }
+
+  async list(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    const user = interaction.member.user,
+      currentReminderData = (await this.client.db.reminder.findUnique({
+        where: { userId: user.id },
+      })) as unknown as Reminder;
+
+    if (!currentReminderData)
+      return this.client.api.interactions.reply(res, {
+        content: "You don't have any reminders.",
+        flags: MessageFlags.Ephemeral,
+      });
+
+    const embed = new EmbedBuilder()
+      .setTitle('Reminder List')
+      .setColor(randomColor)
+      .setDescription(
+        currentReminderData.reminders
+          .map(
+            reminder =>
+              `**Reminder ID:** ${reminder.reminderId}\n**When:** ${formattedDate(
+                reminder.time.valueOf(),
+              )}\n**Reminder:** ${reminder.message}`,
+          )
+          .join('\n\n'),
+      );
+    await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
+  }
 }

@@ -161,7 +161,7 @@ export default class ItemCalc extends Command {
       .map(item => ({ name: item, value: item }));
 
     if (filteredList.length === 0) return;
-    await this.client.api.interactions.autocomplete(res, { choices: filteredList });
+    await this.client.api.interactions.autocomplete(res, filteredList);
   }
 
   public override data() {

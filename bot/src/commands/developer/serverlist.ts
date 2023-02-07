@@ -132,78 +132,80 @@ export default class ServerList extends Command {
     interaction: APIMessageComponentButtonInteraction,
     data: ParsedCustomIdData<'left' | 'right' | 'first' | 'last', ServerListCustomIdData>,
   ) {
-    const { client, user } = interaction;
+    const userId = interaction.member?.user.id as string;
     let page = data.page;
-    const numOfPages = Math.ceil(client.guilds.cache.size / serversPerPage);
+    const numOfPages = Math.ceil(this.client.cache.data.guilds.size / serversPerPage);
 
     if (data.action == 'left') page--;
     else if (data.action == 'right') page++;
     else if (data.action == 'first') page = 1;
     else page = numOfPages;
 
-    const { chosenPage, pageDetails } = guildBookPage(client, page);
+    const { chosenPage, pageDetails } = guildBookPage(this.client, page);
 
     const components = [
-        new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(
-          new ButtonBuilder()
-            .setLabel('First Page')
-            .setStyle(ButtonStyle.Secondary)
-            .setDisabled(chosenPage === 1)
-            .setCustomId(
-              buildCustomId({
-                command: 'serverlist',
-                action: 'first',
-                id: user.id,
-                page,
-              }),
-            ),
-          new ButtonBuilder()
-            .setLabel('Left')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji({ name: '⬅' })
-            .setDisabled(chosenPage === 1)
-            .setCustomId(
-              buildCustomId({
-                command: 'serverlist',
-                action: 'left',
-                id: user.id,
-                page,
-              }),
-            ),
-          new ButtonBuilder()
-            .setLabel('Right')
-            .setStyle(ButtonStyle.Secondary)
-            .setEmoji({ name: '➡' })
-            .setDisabled(chosenPage === numOfPages)
-            .setCustomId(
-              buildCustomId({
-                command: 'serverlist',
-                action: 'right',
-                id: user.id,
-                page,
-              }),
-            ),
-          new ButtonBuilder()
-            .setLabel('Last Page')
-            .setStyle(ButtonStyle.Secondary)
-            .setDisabled(chosenPage === numOfPages)
-            .setCustomId(
-              buildCustomId({
-                command: 'serverlist',
-                action: 'last',
-                id: user.id,
-                page,
-              }),
-            ),
-        ),
+        new ActionRowBuilder<MessageActionRowComponentBuilder>()
+          .addComponents(
+            new ButtonBuilder()
+              .setLabel('First Page')
+              .setStyle(ButtonStyle.Secondary)
+              .setDisabled(chosenPage === 1)
+              .setCustomId(
+                buildCustomId({
+                  command: 'serverlist',
+                  action: 'first',
+                  id: userId,
+                  page,
+                }),
+              ),
+            new ButtonBuilder()
+              .setLabel('Left')
+              .setStyle(ButtonStyle.Secondary)
+              .setEmoji({ name: '⬅' })
+              .setDisabled(chosenPage === 1)
+              .setCustomId(
+                buildCustomId({
+                  command: 'serverlist',
+                  action: 'left',
+                  id: userId,
+                  page,
+                }),
+              ),
+            new ButtonBuilder()
+              .setLabel('Right')
+              .setStyle(ButtonStyle.Secondary)
+              .setEmoji({ name: '➡' })
+              .setDisabled(chosenPage === numOfPages)
+              .setCustomId(
+                buildCustomId({
+                  command: 'serverlist',
+                  action: 'right',
+                  id: userId,
+                  page,
+                }),
+              ),
+            new ButtonBuilder()
+              .setLabel('Last Page')
+              .setStyle(ButtonStyle.Secondary)
+              .setDisabled(chosenPage === numOfPages)
+              .setCustomId(
+                buildCustomId({
+                  command: 'serverlist',
+                  action: 'last',
+                  id: userId,
+                  page,
+                }),
+              ),
+          )
+          .toJSON(),
       ],
       embed = new EmbedBuilder()
-        .setTitle(`Server List [${client.guilds.cache.size}] - Page ${chosenPage}`)
+        .setTitle(`Server List [${this.client.cache.data.guilds.size}] - Page ${chosenPage}`)
         .setColor(randomColor)
-        .setThumbnail(client.user.displayAvatarURL())
+        .setThumbnail(avatarUrl(this.client.user))
         .setDescription(pageDetails)
         .setFooter({ text: `Page ${chosenPage} out of ${numOfPages}` });
-    await client.api.interactions.updateMessage(reply, { embeds: [embed.toJSON()], components });
+    await this.client.api.interactions.updateMessage(reply, { embeds: [embed.toJSON()], components });
   }
 }
 

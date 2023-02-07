@@ -351,19 +351,24 @@ class RandomColor {
 }
 export const randomColor = RandomColor.randomColor;
 
-export const disableAllComponents = async (rest: REST, interaction: APIMessageComponentInteraction) =>
+export const disableAllComponents = async (interaction: APIMessageComponentInteraction, rest?: REST) => {
+  const disabledComponents = interaction.message.components?.map(component => {
+    Reflect.set(
+      component,
+      'components',
+      component.components.map(comp => ({ ...comp, disabled: true })),
+    );
+    return component;
+  });
+
+  if (!rest) return disabledComponents;
+
   await rest.patch(Routes.channelMessage(interaction.channel_id, interaction.message.id), {
     body: {
-      components: interaction.message.components?.map(component => {
-        Reflect.set(
-          component,
-          'components',
-          component.components.map(comp => ({ ...comp, disabled: true })),
-        );
-        return component;
-      }),
+      components: disabledComponents,
     },
   });
+};
 
 export const isUserInGuild = async (rest: REST, guildId: string, user: APIUser) => {
   try {

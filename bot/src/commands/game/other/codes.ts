@@ -36,9 +36,11 @@ export default class Codes extends Command {
         content: 'codes object is missing',
         flags: MessageFlags.Ephemeral,
       });
-    const embed = new EmbedBuilder(interaction.message.embeds.at(0)?.data);
-    let component: ActionRowBuilder<MessageActionRowComponentBuilder>;
 
+    const userId = data.id;
+    const embed = new EmbedBuilder(interaction.message.embeds.at(0));
+
+    let component: ActionRowBuilder<MessageActionRowComponentBuilder>;
     switch (data.action) {
       case 'expired':
         embed.setDescription(codeHandler.expired);
@@ -48,7 +50,7 @@ export default class Codes extends Command {
               buildCustomId({
                 command: this.name,
                 action: 'valid',
-                id: interaction.member.user.id,
+                id: userId,
               }),
             )
             .setLabel('View Valid Codes')
@@ -63,7 +65,7 @@ export default class Codes extends Command {
               buildCustomId({
                 command: 'codes',
                 action: 'expired',
-                id: interaction.member.user.id,
+                id: userId,
               }),
             )
             .setLabel('View Expired Codes')
@@ -72,7 +74,10 @@ export default class Codes extends Command {
     }
 
     embed.setThumbnail(attachments.currentLogo.url);
-    await client.api.interactions.updateMessage(reply, { embeds: [embed.toJSON()], components: [component] });
+    await this.client.api.interactions.updateMessage(reply, {
+      embeds: [embed.toJSON()],
+      components: [component.toJSON()],
+    });
   }
 
   public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
