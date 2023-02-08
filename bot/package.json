@@ -50,6 +50,7 @@
     ]
   },
   "scripts": {
+    "deploy-commands": "rimraf ./dist && tsc --project tsconfig.json && dotenv -e .env -v DEPLOY=true -- node --es-module-specifier-resolution=node ./dist/src/index.js",
     "build-image": "docker build -t sirh/c2s:semblance .",
     "push-image": "docker push sirh/c2s:semblance",
     "start:docker": "node dist/src/index.js",
@@ -70,6 +71,7 @@
     "@types/ws": "^8.5.4",
     "@typescript-eslint/eslint-plugin": "^5.51.0",
     "@typescript-eslint/parser": "^5.51.0",
+    "dotenv-cli": "^7.0.0",
     "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
@@ -77,6 +79,7 @@
     "lint-staged": "^13.1.0",
     "prettier": "^2.8.3",
     "prisma": "^4.9.0",
+    "rimraf": "^4.1.2",
     "typescript": "^4.9.5"
   },
   "packageManager": "yarn@3.2.2"

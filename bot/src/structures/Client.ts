@@ -1,7 +1,7 @@
 import { Collection } from '@discordjs/collection';
 import Prisma from '@prisma/client';
 import { FastifyBasedAPI } from './DiscordAPI';
-import { LogLevel, type PreconditionName, isProduction, token } from '#constants/index';
+import { LogLevel, type PreconditionName, isProduction, token, BotId, type GuildId } from '#constants/index';
 import { WebhookLogger } from './WebhookLogger';
 import { REST } from '@discordjs/rest';
 import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
@@ -22,6 +22,7 @@ import {
   type APIChannel,
   type APIRole,
   type GatewayGuildCreateDispatchData,
+  Routes,
 } from '@discordjs/core';
 import type { Precondition } from './Precondition';
 
@@ -101,5 +102,34 @@ export class Client {
           this.cache.handles.listeners.get(data.t)?.run?.(data.d);
       }
     });
+  }
+
+  async deployCommands() {
+    const applicationId = isProduction ? BotId.Production : BotId.Development;
+
+    // may allow for global commands to be used in DMs, but for now, we'll just disable it
+    const globalCommands = (
+      await Promise.all(
+        this.cache.handles.commands
+          .filter(async command => !(await command.data?.())?.guildIds)
+          .map(async command => command.data?.()),
+      )
+    ).map(command => ({ ...command, dm_permission: false })) as APIApplicationCommand[];
+
+    await this.rest.put(Routes.applicationCommands(applicationId), {
+      body: globalCommands,
+    });
+
+    const guildCommands = await Promise.all(
+      this.cache.handles.commands
+        .filter(async command => (await command.data?.())?.guildIds)
+        .map(async command => command.data?.()),
+    );
+
+    for (const guildId of guildCommands.map(command => command?.guildIds).flat()) {
+      await this.rest.put(Routes.applicationGuildCommands(applicationId, guildId as string), {
+        body: guildCommands.filter(command => command?.guildIds?.includes(guildId as GuildId)),
+      });
+    }
   }
 }

@@ -96,13 +96,17 @@ export const attachments = await (async () => {
 export const resolveFile = (path: string | Buffer | Stream) =>
   typeof path === 'string' ? fs.readFile(path as string).catch(() => '') : '';
 
+export enum BotId {
+  Production = '794033850665533450',
+  Development = '794049840651960350',
+}
+
 export enum UserId {
   sirh = '780995336293711875',
   // organizer
   aditya = '506458497718812674',
   // artist
   cabiie = '342004536753520651',
-  bloodex = '297007456461258752',
   // contributors
   offpringles = '299174026411114497',
   jojoseis = '325373529967296513',

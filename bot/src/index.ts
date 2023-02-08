@@ -18,6 +18,12 @@ import {
 
 const client = new Client();
 
+if (Boolean(process.env.DEPLOY) === true) {
+  await client.loadCommands();
+  await client.deployCommands();
+  process.exit(0);
+}
+
 await client.login();
 
 const app = fastify();
