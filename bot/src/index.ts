@@ -3,7 +3,7 @@ import { install as sourceMapInstall } from 'source-map-support';
 sourceMapInstall();
 await import('#constants/index');
 
-import { publicKey, UserId } from '#constants/index';
+import { publicKey } from '#constants/index';
 import fastify from 'fastify';
 import { InteractionType, InteractionResponseType, type APIInteraction } from 'discord-api-types/v9';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
@@ -48,10 +48,6 @@ app.route<{ Body: APIInteraction }>({
     const interaction = req.body;
 
     if (interaction.type === InteractionType.Ping) return rep.send({ type: InteractionResponseType.Pong });
-
-    // TODO: remove this whenever I finish setting up proper permission checks
-    if (interaction.member?.user?.id === UserId.sirh) client.logger.info('Sirh test', interaction);
-    else return rep.status(400).send('not sirh');
 
     switch (interaction.type) {
       case InteractionType.ApplicationCommand:
