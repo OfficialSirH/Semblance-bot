@@ -64,30 +64,34 @@ export class Client {
 
   async loadCommands() {
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const commandFiles = (await readdir(join(__dirname, 'commands'))).filter(file => file.endsWith('.js'));
+    const commandFiles = (await readdir(join(__dirname, '..', 'commands'))).filter(file => file.endsWith('.js'));
 
     for (const file of commandFiles) {
-      const command = new (await import(join(__dirname, 'commands', file))).default(this) as Command;
+      const command = new (await import(join(__dirname, '..', 'commands', file))).default(this) as Command;
       this.cache.handles.commands.set(command.name, command);
     }
   }
 
   async loadPreconditions() {
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const preconditionFiles = (await readdir(join(__dirname, 'preconditions'))).filter(file => file.endsWith('.js'));
+    const preconditionFiles = (await readdir(join(__dirname, '..', 'preconditions'))).filter(file =>
+      file.endsWith('.js'),
+    );
 
     for (const file of preconditionFiles) {
-      const precondition = new (await import(join(__dirname, 'preconditions', file))).default(this) as Precondition;
+      const precondition = new (await import(join(__dirname, '..', 'preconditions', file))).default(
+        this,
+      ) as Precondition;
       this.cache.handles.preconditions.set(precondition.name as PreconditionName, precondition);
     }
   }
 
   async loadListeners() {
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const listenerFiles = (await readdir(join(__dirname, 'listeners'))).filter(file => file.endsWith('.js'));
+    const listenerFiles = (await readdir(join(__dirname, '..', 'listeners'))).filter(file => file.endsWith('.js'));
 
     for (const file of listenerFiles) {
-      const listener = new (await import(join(__dirname, 'listeners', file))).default(this) as Listener;
+      const listener = new (await import(join(__dirname, '..', 'listeners', file))).default(this) as Listener;
       this.cache.handles.listeners.set(listener.event, listener);
     }
 

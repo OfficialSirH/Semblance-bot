@@ -3,7 +3,7 @@ import { install as sourceMapInstall } from 'source-map-support';
 sourceMapInstall();
 await import('#constants/index');
 
-import { publicKey } from '#constants/index';
+import { isProduction, publicKey } from '#constants/index';
 import fastify from 'fastify';
 import { InteractionType, InteractionResponseType, type APIInteraction } from 'discord-api-types/v9';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
@@ -29,7 +29,7 @@ await client.login();
 const app = fastify();
 
 app.route<{ Body: APIInteraction }>({
-  url: process.env.NODE_ENV === 'development' ? '/dev-interactions' : '/interactions',
+  url: isProduction ? '/interactions' : '/dev-interactions',
   method: 'POST',
   preHandler: async (req, res) => {
     const signature = String(req.headers['x-signature-ed25519']);

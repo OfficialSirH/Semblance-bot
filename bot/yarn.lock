@@ -2841,7 +2841,7 @@ __metadata:
     rimraf: ^4.1.2
     source-map-support: ^0.5.21
     tweetnacl: ^1.0.3
-    typescript: ^4.9.5
+    typescript: next
     undici: ^5.18.0
     utf-8-validate: ^6.0.2
     zlib-sync: ^0.1.8
@@ -3268,23 +3268,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.9.5":
-  version: 4.9.5
-  resolution: "typescript@npm:4.9.5"
+"typescript@npm:next":
+  version: 5.0.0-dev.20230208
+  resolution: "typescript@npm:5.0.0-dev.20230208"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: ee000bc26848147ad423b581bd250075662a354d84f0e06eb76d3b892328d8d4440b7487b5a83e851b12b255f55d71835b008a66cbf8f255a11e4400159237db
+  checksum: d2e88854caaab09d355446f978a1329c07b3c4b3a2c1acca9b23e63291a28e4b02900fe58c86298e7a2bf01196aed6b1f45539f285107186582f11f26f72f60d
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.9.5#~builtin<compat/typescript>":
-  version: 4.9.5
-  resolution: "typescript@patch:typescript@npm%3A4.9.5#~builtin<compat/typescript>::version=4.9.5&hash=f456af"
+"typescript@patch:typescript@next#~builtin<compat/typescript>":
+  version: 5.0.0-dev.20230208
+  resolution: "typescript@patch:typescript@npm%3A5.0.0-dev.20230208#~builtin<compat/typescript>::version=5.0.0-dev.20230208&hash=f456af"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 2eee5c37cad4390385db5db5a8e81470e42e8f1401b0358d7390095d6f681b410f2c4a0c496c6ff9ebd775423c7785cdace7bcdad76c7bee283df3d9718c0f20
+  checksum: fadab938f3348182ac6e277192dbba43de682e7cca955c590accd69387c74fc1609298f646a41b851ec29df13d8965a7a01c7c32f7346c5871e6d62cee70fff9
   languageName: node
   linkType: hard
 
