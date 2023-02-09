@@ -55,14 +55,22 @@ app.route<{ Body: APIInteraction }>({
           case ApplicationCommandType.ChatInput:
             await client.cache.handles.commands
               .get(interaction?.data.name)
-              ?.preRun?.(rep, interaction as APIChatInputApplicationCommandInteraction);
+              ?.preRun?.(rep, interaction as APIChatInputApplicationCommandInteraction)
+              .catch(e => {
+                client.logger.error(`command '${interaction.data.name}' errored: ${e}`);
+                client.api.interactions.reply(rep, { content: e, flags: MessageFlags.Ephemeral });
+              });
             break;
 
           case ApplicationCommandType.User:
           case ApplicationCommandType.Message:
             await client.cache.handles.commands
               .get(interaction?.data.name)
-              ?.preRun?.(rep, interaction as APIContextMenuInteraction);
+              ?.preRun?.(rep, interaction as APIContextMenuInteraction)
+              .catch(e => {
+                client.logger.error(`command '${interaction.data.name}' errored: ${e}`);
+                client.api.interactions.reply(rep, { content: e, flags: MessageFlags.Ephemeral });
+              });
         }
         break;
 
@@ -70,13 +78,24 @@ app.route<{ Body: APIInteraction }>({
         const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
         const preParseStep = await client.cache.handles.commands
           .get(parsedCustomId.command)
-          ?.componentPreparser?.(interaction);
+          ?.componentPreparser?.(interaction)
+          .catch(e => {
+            client.logger.error(
+              `component with custom id of '${interaction.data.custom_id}' errored at pre-parsing: ${e}`,
+            );
+            client.api.interactions.reply(rep, { content: e, flags: MessageFlags.Ephemeral });
+          });
 
         if (!preParseStep) return rep.status(400).send('Invalid interaction');
         if (preParseStep.ok) {
-          await client.cache.handles.commands
-            .get(parsedCustomId.command)
-            ?.componentRun?.(rep, interaction, preParseStep.value);
+          await (
+            client.cache.handles.commands
+              .get(parsedCustomId.command)
+              ?.componentRun?.(rep, interaction, preParseStep.value) as Promise<unknown>
+          ).catch(e => {
+            client.logger.error(`command '${interaction.data.custom_id}' errored: ${e}`);
+            client.api.interactions.reply(rep, { content: e, flags: MessageFlags.Ephemeral });
+          });
         } else {
           await client.api.interactions.reply(rep, {
             content: preParseStep.message,
@@ -87,13 +106,24 @@ app.route<{ Body: APIInteraction }>({
       }
 
       case InteractionType.ApplicationCommandAutocomplete: {
-        await client.cache.handles.commands.get(interaction?.data.name)?.preRun?.(rep, interaction);
+        await client.cache.handles.commands
+          .get(interaction?.data.name)
+          ?.preRun?.(rep, interaction)
+          .catch(e => {
+            client.logger.error(`autocomplete for command '${interaction.data.name}' errored: ${e}`);
+            client.api.interactions.reply(rep, { content: e, flags: MessageFlags.Ephemeral });
+          });
         break;
       }
 
       case InteractionType.ModalSubmit: {
         const parsedCustomId: CustomIdData = JSON.parse(interaction?.data.custom_id);
-        client.cache.handles.commands.get(parsedCustomId.command)?.modalRun?.(rep, interaction);
+        await (
+          client.cache.handles.commands.get(parsedCustomId.command)?.modalRun?.(rep, interaction) as Promise<void>
+        ).catch(e => {
+          client.logger.error(`modal submission with custom id of '${interaction.data.custom_id}' errored: ${e}`);
+          client.api.interactions.reply(rep, { content: e, flags: MessageFlags.Ephemeral });
+        });
         break;
       }
 

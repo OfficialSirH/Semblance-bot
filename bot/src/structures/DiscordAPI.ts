@@ -60,7 +60,8 @@ export class FastifyBasedInteractionsAPI {
     },
   ) {
     const resolvedData = await this.resolveData({ data, type: InteractionResponseType.ChannelMessageWithSource });
-    await res.type('multipart/form-data').send(resolvedData);
+    if (resolvedData instanceof FormData) await res.type('multipart/form-data').send(resolvedData);
+    else await res.send(resolvedData);
   }
 
   async deferReply(res: FastifyReply, data?: Pick<APIInteractionResponseCallbackData, 'flags'>) {
@@ -108,7 +109,8 @@ export class FastifyBasedInteractionsAPI {
     },
   ) {
     const resolvedData = await this.resolveData({ data, type: InteractionResponseType.UpdateMessage });
-    await res.type('multipart/form-data').send(resolvedData);
+    if (resolvedData instanceof FormData) await res.type('multipart/form-data').send(resolvedData);
+    else await res.send(resolvedData);
   }
 
   async autocomplete(res: FastifyReply, choices: APICommandAutocompleteInteractionResponseCallbackData['choices']) {

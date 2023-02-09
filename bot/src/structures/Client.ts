@@ -83,6 +83,8 @@ export class Client {
       ) as Command;
       this.cache.handles.commands.set(command.name, command);
     }
+
+    this.logger.info(`Loaded ${this.cache.handles.commands.size} commands.`);
   }
 
   async loadPreconditions() {
@@ -97,6 +99,8 @@ export class Client {
       ).default(this) as Precondition;
       this.cache.handles.preconditions.set(precondition.name as PreconditionName, precondition);
     }
+
+    this.logger.info(`Loaded ${this.cache.handles.preconditions.size} preconditions.`);
   }
 
   async loadListeners() {
@@ -111,6 +115,8 @@ export class Client {
       ) as Listener;
       this.cache.handles.listeners.set(listener.event, listener);
     }
+
+    this.logger.info(`Loaded ${this.cache.handles.listeners.size} listeners.`);
 
     this.ws.on(WebSocketShardEvents.Dispatch, ({ data }) => {
       switch (data.t) {
