@@ -1,5 +1,5 @@
 import type { Awaitable } from '#lib/interfaces/Semblance';
-import type { Client } from './Client';
+import type { Client } from './Client.js';
 import type { GatewayDispatchEvents, GatewayDispatchPayload } from '@discordjs/core';
 
 export class Listener<DispatchType extends GatewayDispatchEvents = GatewayDispatchEvents> {

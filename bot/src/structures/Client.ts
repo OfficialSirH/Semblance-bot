@@ -1,15 +1,15 @@
 import { Collection } from '@discordjs/collection';
 import Prisma from '@prisma/client';
-import { FastifyBasedAPI } from './DiscordAPI';
+import { FastifyBasedAPI } from './DiscordAPI.js';
 import { LogLevel, type PreconditionName, isProduction, token, BotId, type GuildId } from '#constants/index';
-import { WebhookLogger } from './WebhookLogger';
+import { WebhookLogger } from './WebhookLogger.js';
 import { REST } from '@discordjs/rest';
 import { WebSocketManager, WebSocketShardEvents } from '@discordjs/ws';
 import { readdir } from 'fs/promises';
 import { dirname, join } from 'path';
-import { fileURLToPath } from 'url';
-import type { Command } from './Command';
-import type { Listener } from './Listener';
+import { fileURLToPath, pathToFileURL } from 'url';
+import type { Command } from './Command.js';
+import type { Listener } from './Listener.js';
 import {
   type Snowflake,
   type APIGuild,
@@ -24,7 +24,7 @@ import {
   type GatewayGuildCreateDispatchData,
   Routes,
 } from '@discordjs/core';
-import type { Precondition } from './Precondition';
+import type { Precondition } from './Precondition.js';
 
 export class Client {
   public cache = {
@@ -58,40 +58,57 @@ export class Client {
 
   async login() {
     await this.loadCommands();
+    await this.loadPreconditions();
     await this.loadListeners();
     await this.ws.connect();
   }
 
   async loadCommands() {
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const commandFiles = (await readdir(join(__dirname, '..', 'commands'))).filter(file => file.endsWith('.js'));
+    const commandFiles = (
+      await Promise.all(
+        (
+          await readdir(pathToFileURL(join(__dirname, '..', 'commands')))
+        ).map(async folder =>
+          (await readdir(pathToFileURL(join(__dirname, '..', 'commands', folder))))
+            .filter(file => file.endsWith('.js'))
+            .map(file => join(folder, file)),
+        ),
+      )
+    ).flat();
 
     for (const file of commandFiles) {
-      const command = new (await import(join(__dirname, '..', 'commands', file))).default(this) as Command;
+      const command = new (await import(pathToFileURL(join(__dirname, '..', 'commands', file)).toString())).default(
+        this,
+      ) as Command;
       this.cache.handles.commands.set(command.name, command);
     }
   }
 
   async loadPreconditions() {
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const preconditionFiles = (await readdir(join(__dirname, '..', 'preconditions'))).filter(file =>
+    const preconditionFiles = (await readdir(pathToFileURL(join(__dirname, '..', 'preconditions')))).filter(file =>
       file.endsWith('.js'),
     );
 
     for (const file of preconditionFiles) {
-      const precondition = new (await import(join(__dirname, '..', 'preconditions', file))).default(
-        this,
-      ) as Precondition;
+      const precondition = new (
+        await import(pathToFileURL(join(__dirname, '..', 'preconditions', file)).toString())
+      ).default(this) as Precondition;
       this.cache.handles.preconditions.set(precondition.name as PreconditionName, precondition);
     }
   }
 
   async loadListeners() {
     const __dirname = dirname(fileURLToPath(import.meta.url));
-    const listenerFiles = (await readdir(join(__dirname, '..', 'listeners'))).filter(file => file.endsWith('.js'));
+    const listenerFiles = (await readdir(pathToFileURL(join(__dirname, '..', 'listeners')))).filter(file =>
+      file.endsWith('.js'),
+    );
 
     for (const file of listenerFiles) {
-      const listener = new (await import(join(__dirname, '..', 'listeners', file))).default(this) as Listener;
+      const listener = new (await import(pathToFileURL(join(__dirname, '..', 'listeners', file)).toString())).default(
+        this,
+      ) as Listener;
       this.cache.handles.listeners.set(listener.event, listener);
     }
 
@@ -114,25 +131,33 @@ export class Client {
     // may allow for global commands to be used in DMs, but for now, we'll just disable it
     const globalCommands = (
       await Promise.all(
-        this.cache.handles.commands
-          .filter(async command => !(await command.data?.())?.guildIds)
-          .map(async command => command.data?.()),
+        this.cache.handles.commands.filter(command => 'data' in command).map(async command => command.data?.()),
       )
-    ).map(command => ({ ...command, dm_permission: false })) as APIApplicationCommand[];
+    )
+      .filter(data => !data?.guildIds)
+      .map(command => ({ ...command?.command, dm_permission: false })) as APIApplicationCommand[];
+
+    this.logger.info(`Deploying ${globalCommands.length} global commands...`);
+    this.logger.info(globalCommands.map(command => command.name));
 
     await this.rest.put(Routes.applicationCommands(applicationId), {
       body: globalCommands,
     });
 
-    const guildCommands = await Promise.all(
-      this.cache.handles.commands
-        .filter(async command => (await command.data?.())?.guildIds)
-        .map(async command => command.data?.()),
-    );
+    const guildCommands = (
+      await Promise.all(
+        this.cache.handles.commands.filter(command => 'data' in command).map(async command => command.data?.()),
+      )
+    ).filter(data => data?.guildIds);
+
+    this.logger.info(`Deploying ${guildCommands.length} guild commands...`);
+    this.logger.info(guildCommands.map(command => command?.command.name));
 
     for (const guildId of guildCommands.map(command => command?.guildIds).flat()) {
       await this.rest.put(Routes.applicationGuildCommands(applicationId, guildId as string), {
-        body: guildCommands.filter(command => command?.guildIds?.includes(guildId as GuildId)),
+        body: guildCommands
+          .filter(command => command?.guildIds?.includes(guildId as GuildId))
+          .map(command => ({ ...command?.command, dm_permission: false })) as APIApplicationCommand[],
       });
     }
   }

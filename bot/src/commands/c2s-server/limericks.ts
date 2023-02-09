@@ -1,7 +1,6 @@
 import { Category, randomColor, attachments, emojis } from '#constants/index';
 import { Command } from '#structures/Command';
 import { EmbedBuilder } from '@discordjs/builders';
-import type { FastifyReply } from 'fastify';
 
 export default class Limericks extends Command {
   public constructor(client: Command.Requirement) {
@@ -12,8 +11,8 @@ export default class Limericks extends Command {
     });
   }
 
-  public override chatInputRun(res: FastifyReply) {
-    return this.client.api.interactions.reply(res, {
+  public override templateRun() {
+    return {
       files: [attachments.currentLogo],
       embeds: [
         new EmbedBuilder()
@@ -50,6 +49,6 @@ export default class Limericks extends Command {
           )
           .toJSON(),
       ],
-    });
+    };
   }
 }

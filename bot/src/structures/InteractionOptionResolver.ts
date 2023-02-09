@@ -11,7 +11,7 @@ import {
   type APIChatInputApplicationCommandInteraction,
   type APIApplicationCommandAutocompleteInteraction,
 } from '@discordjs/core';
-import { InteractionOption } from './InteractionOption';
+import { InteractionOption } from './InteractionOption.js';
 
 export class InteractionOptionResolver {
   public readonly _subcommandgroup: string | undefined;

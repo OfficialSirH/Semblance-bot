@@ -1,6 +1,6 @@
 import type { Awaitable, Result } from '#lib/interfaces/Semblance';
 import type { APIChatInputApplicationCommandInteraction, APIContextMenuInteraction } from '@discordjs/core';
-import type { Client } from './Client';
+import type { Client } from './Client.js';
 
 export class Precondition {
   public readonly name: string;

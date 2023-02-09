@@ -8,9 +8,9 @@ import {
 } from '@discordjs/builders';
 import { ButtonStyle, MessageFlags, type APIMessageComponentButtonInteraction } from '@discordjs/core';
 import type { Game } from '@prisma/client';
-import { authorDefault, avatarUrl, randomColor } from '.';
-import { currentPrice } from './commands';
-import { buildCustomId, disableComponentsByLabel } from './components';
+import { authorDefault, avatarUrl, randomColor } from './index.js';
+import { currentPrice } from './commands.js';
+import { buildCustomId, disableComponentsByLabel } from './components.js';
 import type { FastifyReply } from 'fastify';
 import type { Client } from '#structures/Client';
 

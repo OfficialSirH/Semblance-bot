@@ -1,5 +1,5 @@
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { DBLApi, DBotsApi } from './structures';
+import { DBLApi, DBotsApi } from './structures/index.js';
 import { Api as TopggApi } from '@top-gg/sdk';
 
 export const updateBotData = async (

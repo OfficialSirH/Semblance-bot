@@ -13,7 +13,7 @@ import {
   type APIInteraction,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
-import type { Client } from './Client';
+import type { Client } from './Client.js';
 import type { Awaitable, ParsedCustomIdData, ResultValue } from '#lib/interfaces/Semblance';
 import {
   getPermissionLevel,
@@ -22,8 +22,8 @@ import {
   type PreconditionName,
   type SubCategory,
 } from '#constants/index';
-import { InteractionOptionResolver } from './InteractionOptionResolver';
-import type { Attachy } from './Attachy';
+import { InteractionOptionResolver } from './InteractionOptionResolver.js';
+import type { Attachy } from './Attachy.js';
 import {
   componentInteractionDefaultParser,
   type ComponentInteractionDefaultParserOptions,
