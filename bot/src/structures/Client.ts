@@ -67,13 +67,31 @@ export class Client {
     const __dirname = dirname(fileURLToPath(import.meta.url));
     const commandFiles = (
       await Promise.all(
+        // read the commands folder, retrieving all of the command caegories(folders)
         (
           await readdir(pathToFileURL(join(__dirname, '..', 'commands')))
-        ).map(async folder =>
-          (await readdir(pathToFileURL(join(__dirname, '..', 'commands', folder))))
-            .filter(file => file.endsWith('.js'))
-            .map(file => join(folder, file)),
-        ),
+        ).map(async folder => {
+          // read the command category folder, retrieving all of the command files
+          const recursivelyCheckedfolders = await Promise.all(
+            (
+              await readdir(pathToFileURL(join(__dirname, '..', 'commands', folder)))
+            ).map(async fileOrFolder => {
+              // if the fileOrFolder is a folder, read the folder, retrieving all of the command files within the subcategory
+              if (!fileOrFolder.includes('.'))
+                return (await readdir(pathToFileURL(join(__dirname, '..', 'commands', folder, fileOrFolder))))
+                  .filter(file => file.endsWith('.js'))
+                  .map(file => join(folder, fileOrFolder, file));
+              return fileOrFolder;
+            }),
+          );
+
+          // join the command files with the command category folder and don't touch the subcategory folders
+          // flatten the array of subcategory folders and command files
+          return recursivelyCheckedfolders
+            .filter(file => Array.isArray(file) || file.endsWith('.js'))
+            .map(file => (Array.isArray(file) ? file : join(folder, file)))
+            .flat();
+        }),
       )
     ).flat();
 
