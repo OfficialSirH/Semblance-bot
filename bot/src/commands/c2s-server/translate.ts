@@ -22,12 +22,13 @@ export default class Translate extends Command {
 
   public override async contextMenuRun(res: FastifyReply, interaction: APIMessageApplicationCommandInteraction) {
     const message = interaction.data.resolved.messages[interaction.data.target_id];
-    if (!message) return this.client.api.interactions.reply(res, { content: 'Invalid message.' });
+    if (!message)
+      return this.client.api.interactions.reply(res, { content: 'Invalid message.', flags: MessageFlags.Ephemeral });
 
     await this.client.api.interactions.deferReply(res, { flags: MessageFlags.Ephemeral });
     const translateData = await fetchDeepL({ text: message.content });
 
-    return this.client.api.interactions.followUp(interaction, {
+    return this.client.api.interactions.editReply(interaction, {
       content: `Language: ${translateData.detected_source_language}\n\n${translateData.text}`,
     });
   }

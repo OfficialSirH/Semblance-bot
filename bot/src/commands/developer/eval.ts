@@ -51,8 +51,7 @@ export default class Eval extends Command {
       Promise.resolve(evaled).then(async result => {
         evaled = result;
         if (typeof evaled != 'string') evaled = inspect(evaled);
-        const data: { embeds: APIEmbed[] | undefined; files: Attachy[] } = {
-          embeds: undefined,
+        const data: { embeds?: APIEmbed[] | undefined; files: Attachy[] } = {
           files: [],
         };
         if (evaled.length > 1015) {

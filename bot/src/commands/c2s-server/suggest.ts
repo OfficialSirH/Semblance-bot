@@ -137,7 +137,7 @@ export default class Suggest extends Command {
     const disabledComponents = await disableAllComponents(interaction);
 
     await this.client.api.interactions.updateMessage(reply, {
-      content: `${data.action != 'accept' ? 'denied' : 'accepted'} by ${interaction.user}`,
+      content: `${data.action != 'accept' ? 'denied' : 'accepted'} by <@${interaction.member?.user.id}>`,
       components: disabledComponents,
     });
 
@@ -161,7 +161,7 @@ export default class Suggest extends Command {
       });
 
       await this.client.rest.post(
-        Routes.channelMessages(this.client.cache.data.cellsChannels.get('suggestions')?.id as string),
+        Routes.channelMessages(this.client.cache.data.cellsChannels.find(c => c.name === 'suggestions')?.id as string),
         {
           body: {
             embeds: [

@@ -93,7 +93,7 @@ app.route<{ Body: APIInteraction }>({
               .get(parsedCustomId.command)
               ?.componentRun?.(rep, interaction, preParseStep.value) as Promise<unknown>
           ).catch(e => {
-            client.logger.error(`command '${interaction.data.custom_id}' errored: ${e}`);
+            client.logger.error(`component with custom id of '${interaction.data.custom_id}' errored: ${e}`);
             client.api.interactions.reply(rep, { content: e, flags: MessageFlags.Ephemeral });
           });
         } else {

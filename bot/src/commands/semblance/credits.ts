@@ -66,10 +66,6 @@ export default class Credits extends Command {
         .setCustomId(buildCustomId({ command: 'credits', action: 'semblance-beta', id: user.id }))
         .setLabel('Preview Semblance Beta Art')
         .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
-        .setCustomId(buildCustomId({ command: 'credits', action: 'semblance-revisioned', id: user.id }))
-        .setLabel('Preview Semblance Revisioned Art')
-        .setStyle(ButtonStyle.Primary),
     );
 
     await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], components: [component.toJSON()] });
