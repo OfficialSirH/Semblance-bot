@@ -51,11 +51,9 @@ export default class Eval extends Command {
       Promise.resolve(evaled).then(async result => {
         evaled = result;
         if (typeof evaled != 'string') evaled = inspect(evaled);
-        const data: { embeds?: APIEmbed[] | undefined; files: Attachy[] } = {
-          files: [],
-        };
+        const data: { embeds?: APIEmbed[] | undefined; files?: Attachy[] } = {};
         if (evaled.length > 1015) {
-          const evalOutputFile = new Attachy(Buffer.from(`${evaled}`), 'evalOutput.js');
+          const evalOutputFile = new Attachy(Buffer.from(evaled), 'evalOutput.js');
           data.files = [evalOutputFile];
           embed
             .addFields({ name: '📤 Output', value: 'Output is in file preview above' })

@@ -169,6 +169,7 @@ export default class Roles extends Command {
           .toJSON(),
       ];
 
+    // todo: fix up the message update after the first reply
     if (data.action == 'add-events') {
       await this.client.rest.put(
         Routes.guildMemberRole(GuildId.cellToSingularity, userId, c2sRoles.server.serverEvents),
@@ -188,6 +189,9 @@ export default class Roles extends Command {
       });
     }
     const embed = new EmbedBuilder(interaction.message.embeds.at(0)).setThumbnail(attachments.currentLogo.url);
-    await this.client.api.interactions.updateMessage(reply, { embeds: [embed.toJSON()], components });
+    await this.client.api.interactions.updateMessage(reply, {
+      embeds: [embed.toJSON()],
+      components,
+    });
   }
 }
