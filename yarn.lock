@@ -79,14 +79,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fastify/ajv-compiler@npm:^3.3.1":
-  version: 3.3.1
-  resolution: "@fastify/ajv-compiler@npm:3.3.1"
+"@fastify/ajv-compiler@npm:^3.5.0":
+  version: 3.5.0
+  resolution: "@fastify/ajv-compiler@npm:3.5.0"
   dependencies:
     ajv: ^8.11.0
     ajv-formats: ^2.1.1
     fast-uri: ^2.0.0
-  checksum: 5e07902003cc870733630d5e279a9c69d9024c068e7040b3784f86e1f26eb30ce0ef2c2639b0de076a8aea9a6ad08d5b02fe78e0384d4c6a3d0e242c630d91b5
+  checksum: 5e5b16469f8d586473d0b32e3a9cf38c0d86ef2a6fb7ea12ed7f3665642bd8eb2dde9adcc317814369cb5a58210bfdac35996fa87d1cc23e88bbc799f0b128b0
   languageName: node
   linkType: hard
 
@@ -1439,6 +1439,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-content-type-parse@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "fast-content-type-parse@npm:1.0.0"
+  checksum: 9e9187be17bea18a2ee715c5737b983181cbe84f286a291db0595e421e04b578da10ca10845639be08664a4db6a793f7709822935cf38cfdf9ecba38d84ead9e
+  languageName: node
+  linkType: hard
+
 "fast-decode-uri-component@npm:^1.0.1":
   version: 1.0.1
   resolution: "fast-decode-uri-component@npm:1.0.1"
@@ -1524,15 +1531,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fastify@npm:^4.10.0":
-  version: 4.10.0
-  resolution: "fastify@npm:4.10.0"
+"fastify@npm:^4.14.1":
+  version: 4.14.1
+  resolution: "fastify@npm:4.14.1"
   dependencies:
-    "@fastify/ajv-compiler": ^3.3.1
+    "@fastify/ajv-compiler": ^3.5.0
     "@fastify/error": ^3.0.0
     "@fastify/fast-json-stringify-compiler": ^4.1.0
     abstract-logging: ^2.0.1
     avvio: ^8.2.0
+    fast-content-type-parse: ^1.0.0
     find-my-way: ^7.3.0
     light-my-request: ^5.6.1
     pino: ^8.5.0
@@ -1542,7 +1550,7 @@ __metadata:
     secure-json-parse: ^2.5.0
     semver: ^7.3.7
     tiny-lru: ^10.0.0
-  checksum: 68c905a930d1e6d31d70a1e048c39c2d5d3749e00b9653fa7f20156da791d68f7edfa2856e8b3ea898b6e38b0a70b09782555e3f503a77cda49e8fd983a1a0ba
+  checksum: 243c376fea832a80627fdfdc191043c648430ff4f6c44831b6cad9328cbd02f5ef589de6e4bbe4d075d248e686a0b20832d9b2a6a6f13a92a75a1cbd30ce2cd5
   languageName: node
   linkType: hard
 
@@ -3013,7 +3021,7 @@ __metadata:
     eslint: ^8.27.0
     eslint-config-prettier: ^8.5.0
     eslint-plugin-prettier: ^4.2.1
-    fastify: ^4.10.0
+    fastify: ^4.14.1
     husky: ^8.0.2
     lint-staged: ^13.0.3
     node-schedule: ^2.1.0
