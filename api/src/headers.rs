@@ -1,6 +1,7 @@
 use actix_web::http::header::{
     Header, HeaderName, HeaderValue, InvalidHeaderValue, TryIntoHeaderValue,
 };
+use base64::{engine::general_purpose, Engine};
 
 use crate::utilities::AuthData;
 
@@ -40,7 +41,7 @@ impl TryIntoHeaderValue for Authorization {
         // encode the email and token to "Basic {base64(email:player_token)}"
         let auth_header = format!(
             "Basic {}",
-            base64::encode(&format!("{}:{}", self.email, self.token))
+            general_purpose::STANDARD.encode(&format!("{}:{}", self.email, self.token))
         );
         HeaderValue::from_str(&auth_header)
     }

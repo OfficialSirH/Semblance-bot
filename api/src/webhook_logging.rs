@@ -39,7 +39,6 @@ pub async fn webhook_log(content: String, log_type: LOG) {
     };
 
     pre_webhook_execution
-        .exec()
         .await
         .inspect_err(|error| eprintln!("{:?}", error));
 }

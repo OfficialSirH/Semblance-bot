@@ -1,17 +1,32 @@
+use std::collections::BTreeMap;
+
 use crate::{
     constants::{ErrorLogType, LOG},
-    db,
+    db::{
+        self, create_or_update_linkedrolesuserdata, get_linkedrolesuserdata,
+        update_linkedrolesuserdata,
+    },
     errors::{ConvertResultErrorToMyError, LogMyError, MyError},
     headers::{Authorization, DistributionChannel},
-    models::{CreateUserData, MessageResponse, OGUpdateUserData, UpdateUserData},
+    models::{
+        CreateUserData, LinkedRolesCallbackQuery, LinkedRolesMetadata, LinkedRolesQuery,
+        LinkedRolesUserData, MessageResponse, OGUpdateUserData, UpdateLinkedRolesUserData,
+        UpdateUserData,
+    },
     role_handling::handle_roles,
-    utilities::encode_user_token,
+    utilities::{
+        encode_user_token, get_access_token, get_discord_user, get_oauth_tokens,
+        update_linked_roles_metadata,
+    },
     webhook_logging::webhook_log,
 };
-use actix_web::{delete, patch, post, web, HttpRequest, HttpResponse};
-use crypto::{hmac::Hmac, mac::Mac, sha1::Sha1};
+use actix_web::{
+    cookie::Cookie, delete, get, http::header, patch, post, web, HttpRequest, HttpResponse,
+};
 use deadpool_postgres::{Client, Pool};
+use jwt::{Header, SignWithKey, Token, VerifyWithKey};
 use serde::Deserialize;
+use uuid::Uuid;
 
 #[derive(Deserialize)]
 pub struct PlayerData {
@@ -40,17 +55,11 @@ pub async fn og_update_user(
         .make_log(ErrorLogType::INTERNAL)
         .await?;
 
-    let mut user_token = Hmac::new(Sha1::new(), config.userdata_auth.as_bytes());
-    user_token.input(query.player_id.as_bytes());
-    user_token.input(user_data.player_token.as_bytes());
-
-    let user_token = user_token
-        .result()
-        .code()
-        .iter()
-        .map(|byte| format!("{:02x?}", byte))
-        .collect::<Vec<String>>()
-        .join("");
+    let user_token = encode_user_token(
+        &query.player_id,
+        &user_data.player_token,
+        &config.userdata_auth,
+    );
 
     db::get_userdata(&client, &user_token)
         .await
@@ -355,7 +364,7 @@ pub async fn delete_user(
         &config.userdata_auth,
     );
 
-    db::get_userdata(&client, &user_token) // TODO: replace with delete_userdata once it's implemented
+    db::delete_userdata(&client, &user_token) // TODO: replace with delete_userdata once it's implemented
         .await
         .make_response(MyError::InternalError(
             "Failed at deleting userdata, this token may not be valid",
@@ -364,4 +373,178 @@ pub async fn delete_user(
         .await?;
 
     Ok(HttpResponse::NoContent().finish())
+}
+
+use hmac::{Hmac, Mac};
+use sha2::Sha256;
+
+#[get("")]
+pub async fn authorize_linked_roles(
+    query: web::Query<LinkedRolesQuery>,
+    _db_pool: web::Data<Pool>,
+    config: web::Data<crate::config::Config>,
+) -> Result<HttpResponse, MyError> {
+    let state = Uuid::new_v4()
+        .as_bytes()
+        .iter()
+        .map(|byte| format!("{:02x?}", byte))
+        .collect::<String>();
+
+    let key: Hmac<Sha256> = Hmac::new_from_slice(config.userdata_auth.as_bytes()).unwrap();
+    let header = Header {
+        algorithm: jwt::AlgorithmType::Hs256,
+        ..Default::default()
+    };
+    let mut claims = BTreeMap::new();
+
+    claims.insert("email", query.email.to_owned());
+    claims.insert("token", query.token.to_owned());
+
+    let token = Token::new(header, claims).sign_with_key(&key).unwrap();
+
+    let auth_url = format!(
+        "https://discord.com/api/oauth2/authorize?client_id={}&redirect_uri={}&response_type=code&scope=identify%20role_connections.write&prompt=consent&state={}",
+        config.client_id,
+        config.redirect_uri,
+        state
+    );
+
+    Ok(HttpResponse::Found()
+        .cookie(Cookie::build("clientState", state).secure(true).finish())
+        .cookie(
+            Cookie::build("secretClaims", token.as_str())
+                .secure(true)
+                .finish(),
+        )
+        .append_header((header::LOCATION, auth_url))
+        .finish())
+}
+
+#[get("/oauth-callback")]
+pub async fn linked_roles_oauth_callback(
+    req: HttpRequest,
+    query: web::Query<LinkedRolesCallbackQuery>,
+    db_pool: web::Data<Pool>,
+    config: web::Data<crate::config::Config>,
+) -> Result<HttpResponse, MyError> {
+    let client_state = req.cookie("clientState");
+
+    if client_state.is_none() {
+        return Ok(HttpResponse::BadRequest().body("Missing clientState cookie"));
+    }
+
+    if client_state.unwrap().value() != query.state {
+        return Ok(HttpResponse::BadRequest().body("State verification failed"));
+    }
+
+    let secret_claims = req.cookie("secretClaims");
+
+    if secret_claims.is_none() {
+        return Ok(HttpResponse::BadRequest().body("Missing secretClaims cookie"));
+    }
+
+    let secret_claims = secret_claims.unwrap().value().to_owned();
+
+    let client: Client = db_pool
+        .get()
+        .await
+        .make_response(MyError::InternalError(
+            "request failed at creating database client, please try again",
+        ))
+        .make_log(ErrorLogType::INTERNAL)
+        .await?;
+
+    let key: Hmac<Sha256> = Hmac::new_from_slice(config.userdata_auth.as_bytes()).unwrap();
+    let token: Token<Header, BTreeMap<String, String>, _> =
+        VerifyWithKey::verify_with_key(secret_claims.as_str(), &key).unwrap();
+    let claims = token.claims();
+
+    let user_token = encode_user_token(
+        claims["email"].as_str(),
+        claims["token"].as_str(),
+        &config.userdata_auth,
+    );
+
+    let tokens = get_oauth_tokens(&query.code)
+        .await
+        .make_response(MyError::InternalError("Failed at getting oauth tokens"))
+        .make_log(ErrorLogType::INTERNAL)
+        .await?;
+
+    let discord_user = get_discord_user(&tokens.access_token)
+        .await
+        .make_response(MyError::InternalError("Failed at getting user data"))
+        .make_log(ErrorLogType::INTERNAL)
+        .await?;
+
+    create_or_update_linkedrolesuserdata(&client, user_token, discord_user.id.to_string(), tokens)
+        .await
+        .make_response(MyError::InternalError(
+            "Failed at creating or updating linked roles user data",
+        ))
+        .make_log(ErrorLogType::INTERNAL)
+        .await?;
+
+    Ok(HttpResponse::Ok().body("You've successfully linked your game to Semblance, you can now use the in-game 'Update Stats' button"))
+}
+
+#[post("/update")]
+pub async fn update_linked_roles(
+    auth_header: web::Header<Authorization>,
+    game_data: web::Json<UpdateLinkedRolesUserData>,
+    db_pool: web::Data<Pool>,
+    config: web::Data<crate::config::Config>,
+) -> Result<HttpResponse, MyError> {
+    let auth_header = auth_header.into_inner();
+    let game_data = game_data.into_inner();
+
+    let client: Client = db_pool
+        .get()
+        .await
+        .make_response(MyError::InternalError(
+            "request failed at creating database client, please try again",
+        ))
+        .make_log(ErrorLogType::INTERNAL)
+        .await?;
+
+    let token = encode_user_token(
+        &auth_header.email,
+        &auth_header.token,
+        &config.userdata_auth,
+    );
+
+    let linked_user = get_linkedrolesuserdata(&client, token.as_str())
+        .await
+        .make_response(MyError::InternalError(
+            "Failed at getting linked roles user data",
+        ))
+        .make_log(ErrorLogType::INTERNAL)
+        .await?;
+
+    let tokens = get_access_token(
+        &linked_user.discord_id,
+        linked_user.refresh_token,
+        linked_user.expires_in,
+    )
+    .await
+    .make_response(MyError::InternalError("Failed at getting access token"))
+    .make_log(ErrorLogType::INTERNAL)
+    .await?;
+
+    update_linkedrolesuserdata(&client, token.as_str(), &game_data)
+        .await
+        .make_response(MyError::InternalError(
+            "Failed at updating linked roles user data",
+        ))
+        .make_log(ErrorLogType::INTERNAL)
+        .await?;
+
+    update_linked_roles_metadata(
+        &linked_user.discord_id,
+        tokens,
+        LinkedRolesMetadata::from(game_data),
+    )
+    .await?;
+
+    Ok(HttpResponse::Ok().finish())
 }

@@ -45,6 +45,13 @@ async fn main() -> std::io::Result<()> {
                     .service(update_user)
                     .service(delete_user),
             )
+            .service(
+                web::scope("/linked-roles")
+                    .service(handlers::authorize_linked_roles)
+                    .service(handlers::linked_roles_oauth_callback)
+                    .wrap(middleware::UserDataAuthorization {})
+                    .service(handlers::update_linked_roles),
+            )
     })
     .bind(config.server_addr.clone())?
     .run();

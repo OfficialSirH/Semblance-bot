@@ -22,7 +22,6 @@ pub async fn handle_roles(
 
     let member_data = client
         .guild_member(guild_id, user_id)
-        .exec()
         .await
         .make_internal_error(
         "failed retrieving member data (this usually occurs when you're not in the Discord server)",
@@ -52,7 +51,6 @@ pub async fn handle_roles(
     let updated_member_data = client
         .update_guild_member(guild_id, user_id)
         .roles(applyable_roles.as_slice())
-        .exec()
         .await
         .make_internal_error("failed at updating member roles")?;
     updated_member_data

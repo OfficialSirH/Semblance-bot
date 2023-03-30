@@ -108,3 +108,79 @@ pub struct GameSavesMetadataPostRequest {
     /// user access token
     pub token: String,
 }
+
+/// linked roles data structure
+#[derive(Deserialize, PostgresMapper, Serialize)]
+#[pg_mapper(table = "LinkedRolesUserData")]
+pub struct LinkedRolesUserData {
+    pub token: String,
+    pub discord_id: String,
+    pub access_token: String,
+    pub refresh_token: String,
+    pub expires_in: SystemTime,
+    pub metabits: f64,
+    pub dino_rank: i32,
+    pub beyond_rank: i32,
+    pub singularity_speedrun_time: Option<f64>,
+    pub all_sharks_obtained: bool,
+    pub all_hidden_achievements_obtained: bool,
+    pub edited_timestamp: SystemTime,
+}
+
+/// linked roles update data structure
+#[derive(Deserialize)]
+pub struct UpdateLinkedRolesUserData {
+    pub metabits: f64,
+    pub dino_rank: i32,
+    pub beyond_rank: i32,
+    pub singularity_speedrun_time: Option<f64>,
+    pub all_sharks_obtained: bool,
+    pub all_hidden_achievements_obtained: bool,
+}
+
+/// linked roles required query for linking
+#[derive(Deserialize)]
+pub struct LinkedRolesQuery {
+    pub email: String,
+    pub token: String,
+    pub distribution: String,
+}
+
+/// oauth callback response for linked roles
+#[derive(Deserialize)]
+pub struct LinkedRolesCallbackQuery {
+    pub code: String,
+    pub state: String,
+}
+
+/// access token response
+#[derive(Deserialize)]
+pub struct AccessTokenResponse {
+    pub access_token: String,
+    pub token_type: String,
+    pub expires_in: u32,
+    pub refresh_token: String,
+    pub scope: String,
+}
+// TODO: this is generally what the metadata is going to have, will figure out the metadata structure later
+/// Linked Roles Metadata
+#[derive(Serialize, Deserialize)]
+pub struct LinkedRolesMetadata {
+    pub all_hidden_achievements_obtained: bool,
+    pub beyond_rank: i32,
+    pub dino_rank: i32,
+    pub metabits: f64,
+    pub singularity_speedrun_time: Option<f64>,
+}
+
+impl From<UpdateLinkedRolesUserData> for LinkedRolesMetadata {
+    fn from(data: UpdateLinkedRolesUserData) -> Self {
+        LinkedRolesMetadata {
+            all_hidden_achievements_obtained: data.all_hidden_achievements_obtained,
+            beyond_rank: data.beyond_rank,
+            dino_rank: data.dino_rank,
+            metabits: data.metabits,
+            singularity_speedrun_time: data.singularity_speedrun_time,
+        }
+    }
+}
