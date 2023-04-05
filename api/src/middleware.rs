@@ -11,7 +11,7 @@ use actix_web::{
 
 use crate::{
     models::{GameSavesMetadataPostRequest, GameSavesMetadataResponse, LinkedRolesQuery},
-    utilities::{safe_basic_auth_decoder, AuthData, InvalidItems},
+    utils::{safe_basic_auth_decoder, AuthData, InvalidItems},
 };
 
 type LocalBoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + 'a>>;
@@ -59,8 +59,16 @@ where
     forward_ready!(service);
 
     fn call(&self, req: ServiceRequest) -> Self::Future {
-        // set boolean 'is_header_auth' to true if the path is NOT /linked_roles
-        let is_header_auth = req.path() != "/linked_roles";
+        // set boolean 'is_header_auth' to true if the path is NOT /linked-roles
+        println!("Path: {}", req.path());
+        if req.path() == "/linked-roles/oauth-callback" {
+            let fut = self.service.call(req);
+            return Box::pin(async move { fut.await });
+        }
+
+        let is_header_auth = !req.path().starts_with("/linked-roles")
+            || req.path() == "/linked-roles/update"
+            || req.path() == "/linked-roles/refresh-token";
         any_middleware_authorization(is_header_auth, &self.service, req)
     }
 }

@@ -3,7 +3,7 @@ use actix_web::http::header::{
 };
 use base64::{engine::general_purpose, Engine};
 
-use crate::utilities::AuthData;
+use crate::utils::AuthData;
 
 pub struct DistributionChannel(pub String);
 
@@ -41,7 +41,7 @@ impl TryIntoHeaderValue for Authorization {
         // encode the email and token to "Basic {base64(email:player_token)}"
         let auth_header = format!(
             "Basic {}",
-            general_purpose::STANDARD.encode(&format!("{}:{}", self.email, self.token))
+            general_purpose::STANDARD.encode(format!("{}:{}", self.email, self.token))
         );
         HeaderValue::from_str(&auth_header)
     }
@@ -66,6 +66,3 @@ impl Header for Authorization {
         })
     }
 }
-
-// TODO: I guess implement a header for parsing "x-secret-key" header just for create route?
-// note: may be better to receive a temporary discord token from a user via OAuth2 to confirm it's their account they're linking

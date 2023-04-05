@@ -19,21 +19,6 @@ pub struct UserData {
 }
 
 #[derive(Deserialize)]
-pub struct OGUpdateUserData {
-    #[serde(rename = "playerToken")]
-    pub player_token: String,
-    #[serde(rename = "betaTester")]
-    pub beta_tester: bool,
-    pub metabits: f64,
-    pub dino_rank: i32,
-    pub prestige_rank: i32,
-    pub beyond_rank: i32,
-    pub singularity_speedrun_time: Option<f64>,
-    pub all_sharks_obtained: bool,
-    pub all_hidden_achievements_obtained: bool,
-}
-
-#[derive(Deserialize)]
 pub struct UpdateUserData {
     pub metabits: f64,
     pub dino_rank: i32,
@@ -60,20 +45,6 @@ impl Default for UpdateUserData {
             singularity_speedrun_time: None,
             all_sharks_obtained: false,
             all_hidden_achievements_obtained: false,
-        }
-    }
-}
-
-impl From<OGUpdateUserData> for UpdateUserData {
-    fn from(data: OGUpdateUserData) -> Self {
-        UpdateUserData {
-            metabits: data.metabits,
-            dino_rank: data.dino_rank,
-            prestige_rank: data.prestige_rank,
-            beyond_rank: data.beyond_rank,
-            singularity_speedrun_time: data.singularity_speedrun_time,
-            all_sharks_obtained: data.all_sharks_obtained,
-            all_hidden_achievements_obtained: data.all_hidden_achievements_obtained,
         }
     }
 }
@@ -118,7 +89,7 @@ pub struct LinkedRolesUserData {
     pub access_token: String,
     pub refresh_token: String,
     pub expires_in: SystemTime,
-    pub metabits: f64,
+    pub metabits: i64,
     pub dino_rank: i32,
     pub beyond_rank: i32,
     pub singularity_speedrun_time: Option<f64>,
@@ -136,6 +107,12 @@ pub struct UpdateLinkedRolesUserData {
     pub singularity_speedrun_time: Option<f64>,
     pub all_sharks_obtained: bool,
     pub all_hidden_achievements_obtained: bool,
+}
+
+/// new access token from game refreshing the access token
+#[derive(Deserialize)]
+pub struct NewAccessToken {
+    pub access_token: String,
 }
 
 /// linked roles required query for linking
@@ -162,15 +139,15 @@ pub struct AccessTokenResponse {
     pub refresh_token: String,
     pub scope: String,
 }
-// TODO: this is generally what the metadata is going to have, will figure out the metadata structure later
+
 /// Linked Roles Metadata
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct LinkedRolesMetadata {
     pub all_hidden_achievements_obtained: bool,
     pub beyond_rank: i32,
     pub dino_rank: i32,
-    pub metabits: f64,
-    pub singularity_speedrun_time: Option<f64>,
+    pub metabits: i64,
+    pub singularity_speedrun_time: Option<i32>,
 }
 
 impl From<UpdateLinkedRolesUserData> for LinkedRolesMetadata {
@@ -179,8 +156,17 @@ impl From<UpdateLinkedRolesUserData> for LinkedRolesMetadata {
             all_hidden_achievements_obtained: data.all_hidden_achievements_obtained,
             beyond_rank: data.beyond_rank,
             dino_rank: data.dino_rank,
-            metabits: data.metabits,
-            singularity_speedrun_time: data.singularity_speedrun_time,
+            metabits: data.metabits as i64,
+            singularity_speedrun_time: data.singularity_speedrun_time.map(|x| x as i32),
         }
     }
+}
+
+/// Linked Roles Pushable Body
+///
+/// This is the body that is sent to update the metadata for discord
+#[derive(Serialize, Debug)]
+pub struct LinkedRolesPushBody {
+    pub platform_name: String,
+    pub metadata: LinkedRolesMetadata,
 }

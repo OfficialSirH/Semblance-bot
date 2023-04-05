@@ -9,7 +9,7 @@ pub mod headers;
 pub mod middleware;
 pub mod models;
 pub mod role_handling;
-pub mod utilities;
+pub mod utils;
 pub mod webhook_logging;
 
 use actix_web::{
@@ -19,7 +19,6 @@ use actix_web::{
 };
 use deadpool_postgres::Runtime;
 use dotenv::dotenv;
-use handlers::og_update_user;
 use tokio_postgres::NoTls;
 use webhook_logging::webhook_log;
 
@@ -36,7 +35,6 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .app_data(Data::new(pool.clone()))
             .app_data(Data::new(crate::config::Config::new()))
-            .service(web::scope("/userdata").service(og_update_user))
             .service(
                 web::scope("/v2/userdata")
                     .wrap(middleware::UserDataAuthorization {})
@@ -47,10 +45,11 @@ async fn main() -> std::io::Result<()> {
             )
             .service(
                 web::scope("/linked-roles")
-                    .service(handlers::authorize_linked_roles)
-                    .service(handlers::linked_roles_oauth_callback)
                     .wrap(middleware::UserDataAuthorization {})
-                    .service(handlers::update_linked_roles),
+                    .service(handlers::linked_roles_oauth_callback)
+                    .service(handlers::authorize_linked_roles)
+                    .service(handlers::update_linked_roles)
+                    .service(handlers::refresh_game_access_token),
             )
     })
     .bind(config.server_addr.clone())?

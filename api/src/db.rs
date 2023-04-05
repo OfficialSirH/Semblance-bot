@@ -116,9 +116,9 @@ pub async fn delete_userdata(client: &Client, token: &str) -> Result<UserData, E
 // create functions for LinkedRolesUserData, one for creating or updating, one for explicitly updating, and one for getting
 pub async fn create_or_update_linkedrolesuserdata(
     client: &Client,
-    token: String,
-    discord_id: String,
-    tokens: AccessTokenResponse,
+    token: &String,
+    discord_id: &String,
+    tokens: &AccessTokenResponse,
 ) -> Result<LinkedRolesUserData, Error> {
     let _stmt = include_str!("../sql/create_or_update_linked_roles_data.sql");
     let stmt = client.prepare(_stmt).await?;
@@ -159,7 +159,7 @@ pub async fn update_linkedrolesuserdata(
         .query(
             &stmt,
             &[
-                &data.metabits,
+                &(data.metabits as i64),
                 &data.dino_rank,
                 &data.beyond_rank,
                 &data.singularity_speedrun_time,
