@@ -59,8 +59,6 @@ where
     forward_ready!(service);
 
     fn call(&self, req: ServiceRequest) -> Self::Future {
-        // set boolean 'is_header_auth' to true if the path is NOT /linked-roles
-        println!("Path: {}", req.path());
         if req.path() == "/linked-roles/oauth-callback" {
             let fut = self.service.call(req);
             return Box::pin(async move { fut.await });
@@ -140,8 +138,6 @@ where
             .json::<GameSavesMetadataResponse>()
             .await
             .invalid_auth()?;
-
-        println!("response: {:?}", json_response);
 
         // check if json_response.error is Some and equals "Token expired"
         if let Some(error) = json_response.error {
