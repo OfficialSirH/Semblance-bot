@@ -1,4 +1,4 @@
-use crate::models::{AccessTokenResponse, LinkedRolesUserData, UpdateLinkedRolesUserData};
+use crate::models::{AccessTokenResponse, LinkedRolesUserData, PostLinkedRolesUserDataBody};
 use deadpool_postgres::Client;
 use std::time::SystemTime;
 use tokio_pg_mapper::{Error, FromTokioPostgresRow};
@@ -39,7 +39,7 @@ pub async fn create_or_update_linkedrolesuserdata(
 pub async fn update_linkedrolesuserdata(
     client: &Client,
     token: &str,
-    data: &UpdateLinkedRolesUserData,
+    data: &PostLinkedRolesUserDataBody,
 ) -> Result<LinkedRolesUserData, Error> {
     let _stmt = include_str!("../sql/update_linked_roles_data.sql");
     let _stmt = _stmt.replace("$token", format!("'{}'", &token).as_str());

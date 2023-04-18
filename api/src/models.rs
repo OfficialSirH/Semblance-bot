@@ -53,7 +53,7 @@ pub struct LinkedRolesUserData {
 
 /// linked roles update data structure
 #[derive(Deserialize)]
-pub struct UpdateLinkedRolesUserData {
+pub struct PostLinkedRolesUserDataBody {
     pub metabits: f64,
     pub dino_rank: i32,
     pub beyond_rank: i32,
@@ -64,7 +64,7 @@ pub struct UpdateLinkedRolesUserData {
 
 /// new access token from game refreshing the access token
 #[derive(Deserialize)]
-pub struct PostRefreshTokenJson {
+pub struct PostRefreshTokenBody {
     pub initial_access_token: String,
 }
 
@@ -103,8 +103,8 @@ pub struct LinkedRolesMetadata {
     pub singularity_speedrun_time: Option<i32>,
 }
 
-impl From<UpdateLinkedRolesUserData> for LinkedRolesMetadata {
-    fn from(data: UpdateLinkedRolesUserData) -> Self {
+impl From<PostLinkedRolesUserDataBody> for LinkedRolesMetadata {
+    fn from(data: PostLinkedRolesUserDataBody) -> Self {
         LinkedRolesMetadata {
             all_hidden_achievements_obtained: data.all_hidden_achievements_obtained,
             beyond_rank: data.beyond_rank,

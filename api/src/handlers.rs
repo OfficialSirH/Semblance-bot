@@ -10,7 +10,7 @@ use crate::{
     headers::Authorization,
     models::{
         LinkedRolesCallbackQuery, LinkedRolesMetadata, LinkedRolesQuery, MessageResponse,
-        PostRefreshTokenJson, UpdateLinkedRolesUserData,
+        PostLinkedRolesUserDataBody, PostRefreshTokenBody,
     },
     utils::{encode_user_token, get_discord_user, get_oauth_tokens, update_linked_roles_metadata},
 };
@@ -152,7 +152,7 @@ pub async fn linked_roles_oauth_callback(
 #[post("/update")]
 pub async fn update_linked_roles(
     auth_header: web::Header<Authorization>,
-    game_data: web::Json<UpdateLinkedRolesUserData>,
+    game_data: web::Json<PostLinkedRolesUserDataBody>,
     db_pool: web::Data<Pool>,
     config: web::Data<crate::config::Config>,
 ) -> Result<HttpResponse, MyError> {
@@ -203,7 +203,7 @@ pub async fn update_linked_roles(
 /// The original token goes through the json body and the new token goes through the authorization header
 #[patch("/refresh-token")]
 pub async fn refresh_game_access_token(
-    data: web::Json<PostRefreshTokenJson>,
+    data: web::Json<PostRefreshTokenBody>,
     auth_header: web::Header<Authorization>,
     db_pool: web::Data<Pool>,
     config: web::Data<crate::config::Config>,
