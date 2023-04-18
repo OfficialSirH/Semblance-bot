@@ -12,6 +12,6 @@ FROM debian:buster-slim
 RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY .env /.env
 COPY sql /sql
-COPY --from=builder /usr/src/myapp/target/release/discord-link /usr/local/bin/discord-link
+COPY --from=builder /usr/src/myapp/target/release/c2s-linked-roles /usr/local/bin/c2s-linked-roles
 EXPOSE 3000
-CMD ["discord-link"]
+CMD ["c2s-linked-roles"]

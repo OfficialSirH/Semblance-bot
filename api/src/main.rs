@@ -8,7 +8,6 @@ mod handlers;
 pub mod headers;
 pub mod middleware;
 pub mod models;
-pub mod role_handling;
 pub mod utils;
 pub mod webhook_logging;
 
@@ -22,7 +21,7 @@ use dotenv::dotenv;
 use tokio_postgres::NoTls;
 use webhook_logging::webhook_log;
 
-use crate::handlers::{create_user, delete_user, update_user};
+use crate::handlers::{create_user, update_user};
 
 #[main]
 async fn main() -> std::io::Result<()> {
@@ -40,8 +39,7 @@ async fn main() -> std::io::Result<()> {
                     .wrap(middleware::UserDataAuthorization {})
                     .guard(guard::Header("content-type", "application/json"))
                     .service(create_user)
-                    .service(update_user)
-                    .service(delete_user),
+                    .service(update_user),
             )
             .service(
                 web::scope("/linked-roles")

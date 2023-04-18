@@ -1,276 +1,39 @@
 use std::collections::BTreeMap;
 
 use crate::{
-    constants::{ErrorLogType, LOG},
+    constants::ErrorLogType,
     db::{
-        self, create_or_update_linkedrolesuserdata, get_linkedrolesuserdata,
-        update_linkedrolesuserdata, update_linkedrolesuserdata_token,
+        create_or_update_linkedrolesuserdata, get_linkedrolesuserdata, update_linkedrolesuserdata,
+        update_linkedrolesuserdata_token,
     },
     errors::{ConvertResultErrorToMyError, LogMyError, MyError},
-    headers::{Authorization, DistributionChannel},
+    headers::Authorization,
     models::{
-        CreateUserData, LinkedRolesCallbackQuery, LinkedRolesMetadata, LinkedRolesQuery,
-        MessageResponse, NewAccessToken, UpdateLinkedRolesUserData, UpdateUserData,
+        LinkedRolesCallbackQuery, LinkedRolesMetadata, LinkedRolesQuery, MessageResponse,
+        PostRefreshTokenJson, UpdateLinkedRolesUserData,
     },
-    role_handling::handle_roles,
     utils::{encode_user_token, get_discord_user, get_oauth_tokens, update_linked_roles_metadata},
-    webhook_logging::webhook_log,
 };
-use actix_web::{
-    cookie::Cookie, delete, get, http::header, patch, post, web, HttpRequest, HttpResponse,
-};
+use actix_web::{cookie::Cookie, get, http::header, patch, post, web, HttpRequest, HttpResponse};
 use deadpool_postgres::{Client, Pool};
 use hmac::{Hmac, Mac};
 use jwt::{Header, SignWithKey, Token, VerifyWithKey};
 use sha2::Sha256;
 use uuid::Uuid;
 
+#[deprecated(since = "0.1.0", note = "please use update_linked_roles instead")]
 #[patch("")]
-pub async fn update_user(
-    auth_header: web::Header<Authorization>,
-    distribution_channel: web::Header<DistributionChannel>,
-    received_user: web::Json<UpdateUserData>,
-    db_pool: web::Data<Pool>,
-    config: web::Data<crate::config::Config>,
-) -> Result<HttpResponse, MyError> {
-    let user_data = received_user.into_inner();
-    let distribution_channel = distribution_channel.into_inner();
-    let auth_header = auth_header.into_inner();
-
-    let client: Client = db_pool
-        .get()
-        .await
-        .make_response(MyError::InternalError(
-            "request failed at creating database client, please try again",
-        ))
-        .make_log(ErrorLogType::INTERNAL)
-        .await?;
-
-    let user_token = encode_user_token(
-        &auth_header.email,
-        &auth_header.token,
-        &config.userdata_auth,
-    );
-
-    db::get_userdata(&client, &user_token)
-        .await
-        .make_response(MyError::InternalError(
-            "Failed at retrieving existing data, you may not have your account linked yet",
-        ))
-        .make_log(ErrorLogType::USER(user_token.to_owned()))
-        .await?;
-
-    let updated_data = db::update_userdata(
-        &client,
-        &user_token,
-        &(distribution_channel.0 == "Beta"),
-        user_data,
-    )
-    .await
-    .make_response(MyError::InternalError(
-        "The request has unfortunately failed the update",
-    ))
-    .make_log(ErrorLogType::USER(user_token.to_owned()))
-    .await?;
-
-    let gained_roles = handle_roles(&updated_data, config.discord_token.clone())
-        .await
-        .make_response(MyError::InternalError(
-            "The role-handling process has failed",
-        ))
-        .make_log(ErrorLogType::USER(user_token))
-        .await?;
-    let roles = if gained_roles.join(", ").is_empty() {
-        "The request was successful, but you've already gained all of the possible roles with your current progress".to_owned()
-    } else {
-        format!(
-            "The request was successful, you've gained the following roles: {}",
-            gained_roles.join(", ")
-        )
-    };
-
-    let logged_roles = if gained_roles.join(", ").is_empty() {
-        format!(
-            "user with ID {} had a successful request but gained no roles",
-            updated_data.discord_id
-        )
-    } else {
-        format!(
-            "user with ID {} gained the following roles: {}",
-            updated_data.discord_id,
-            gained_roles.join(", ")
-        )
-    };
-
-    webhook_log(logged_roles, LOG::INFORMATIONAL).await;
-    Ok(HttpResponse::Ok().json(MessageResponse { message: roles }))
+pub async fn update_user() -> Result<HttpResponse, MyError> {
+    Ok(HttpResponse::Ok().json(MessageResponse { message: "this stat-updating method no longer works as it's been replaced with a new feature from discord called Linked Roles.".to_owned() }))
 }
 
+#[deprecated(
+    since = "0.1.0",
+    note = "There's no specific alternative, technically authorize_linked_roles and linked_roles_oauth_callback are the combined alternative."
+)]
 #[post("")]
-pub async fn create_user(
-    req: HttpRequest,
-    auth_header: web::Header<Authorization>,
-    distribution_channel: Option<web::Header<DistributionChannel>>,
-    received_user: web::Json<CreateUserData>,
-    db_pool: web::Data<Pool>,
-    config: web::Data<crate::config::Config>,
-) -> Result<HttpResponse, MyError> {
-    // note: may later replace this snippet with some other way of allowing users to create linked data
-    let semblance_access = req.headers().get("X-Semblance-Exclusive");
-    if semblance_access.is_none() {
-        return Ok(HttpResponse::Forbidden().json(MessageResponse {
-            message: "You are not allowed to create a user".to_owned(),
-        }));
-    }
-    match semblance_access.unwrap().to_str() {
-        Ok(value) => {
-            if value != config.userdata_auth {
-                return Ok(HttpResponse::Forbidden().json(MessageResponse {
-                    message: "You are not allowed to create a user".to_owned(),
-                }));
-            }
-        }
-        Err(_) => {
-            return Ok(HttpResponse::Forbidden().json(MessageResponse {
-                message: "You are not allowed to create a user".to_owned(),
-            }))
-        }
-    };
-    // end of code that may later be replaced with some other way of allowing users to create linked data
-
-    let user_data = received_user.into_inner();
-    let is_default_userdata = user_data.data.is_none();
-    let inner_data = match user_data.data {
-        Some(user) => user,
-        None => UpdateUserData::default(),
-    };
-
-    let distribution_channel = match distribution_channel {
-        Some(channel) => channel.into_inner(),
-        None => DistributionChannel("".to_owned()),
-    };
-    let auth_header = auth_header.into_inner();
-
-    let client: Client = db_pool
-        .get()
-        .await
-        .make_response(MyError::InternalError(
-            "request failed at creating database client, please try again",
-        ))
-        .make_log(ErrorLogType::INTERNAL)
-        .await?;
-
-    let user_token = encode_user_token(
-        &auth_header.email,
-        &auth_header.token,
-        &config.userdata_auth,
-    );
-
-    let user_exists = db::get_userdata(&client, &user_token)
-        .await
-        .make_response(MyError::NotFound)
-        .make_log(ErrorLogType::USER(user_token.to_owned()))
-        .await;
-    if user_exists.is_ok() {
-        if user_data.discord_id != user_exists?.discord_id {
-            return Err(MyError::BadRequest(
-                "This account is already bound to another discord id",
-            ));
-        }
-        return Err(MyError::InternalError(
-            "You're already linked, please use the update endpoint",
-        ));
-    }
-
-    let created_data = db::create_userdata(
-        &client,
-        &user_token,
-        &user_data.discord_id,
-        &(distribution_channel.0 == "Beta"),
-        inner_data,
-    )
-    .await
-    .make_response(MyError::InternalError(
-        "The request has unfortunately failed at creating your account",
-    ))
-    .make_log(ErrorLogType::USER(user_token.to_owned()))
-    .await?;
-
-    if is_default_userdata {
-        webhook_log(
-            format!(
-                "created userdata for user of id '{}'",
-                created_data.discord_id
-            ),
-            LOG::SUCCESSFUL,
-        )
-        .await;
-        return Ok(HttpResponse::Ok().json(created_data));
-    }
-
-    let gained_roles = handle_roles(&created_data, config.discord_token.clone())
-        .await
-        .make_response(MyError::InternalError(
-            "The role-handling process has failed",
-        ))
-        .make_log(ErrorLogType::USER(user_token))
-        .await?;
-    let roles = if gained_roles.join(", ").is_empty() {
-        "The request was successful, but you've already gained all of the possible roles with your current progress".to_owned()
-    } else {
-        format!(
-            "The request was successful, you've gained the following roles: {}",
-            gained_roles.join(", ")
-        )
-    };
-
-    let logged_roles = if gained_roles.join(", ").is_empty() {
-        format!(
-            "user with ID {} had a successful request but gained no roles",
-            created_data.discord_id
-        )
-    } else {
-        format!(
-            "user with ID {} gained the following roles: {}",
-            created_data.discord_id,
-            gained_roles.join(", ")
-        )
-    };
-
-    webhook_log(logged_roles, LOG::INFORMATIONAL).await;
-    Ok(HttpResponse::Ok().json(MessageResponse { message: roles }))
-}
-
-#[delete("")]
-pub async fn delete_user(
-    auth_header: web::Header<Authorization>,
-    db_pool: web::Data<Pool>,
-    config: web::Data<crate::config::Config>,
-) -> Result<HttpResponse, MyError> {
-    let client: Client = db_pool
-        .get()
-        .await
-        .make_response(MyError::InternalError(
-            "request failed at creating database client, please try again",
-        ))
-        .make_log(ErrorLogType::INTERNAL)
-        .await?;
-
-    let user_token = encode_user_token(
-        &auth_header.email,
-        &auth_header.token,
-        &config.userdata_auth,
-    );
-
-    db::delete_userdata(&client, &user_token)
-        .await
-        .make_response(MyError::InternalError(
-            "Failed at deleting userdata, this token may not be valid",
-        ))
-        .make_log(ErrorLogType::USER(user_token.to_owned()))
-        .await?;
-
-    Ok(HttpResponse::NoContent().finish())
+pub async fn create_user() -> Result<HttpResponse, MyError> {
+    Ok(HttpResponse::Ok().json(MessageResponse { message: "This method of linking your progress has now been removed, please instead use the oauth method of linking".to_owned() }))
 }
 
 #[get("")]
@@ -435,9 +198,12 @@ pub async fn update_linked_roles(
     }))
 }
 
+/// Refreshes the game access token
+/// ## Note
+/// The original token goes through the json body and the new token goes through the authorization header
 #[patch("/refresh-token")]
 pub async fn refresh_game_access_token(
-    data: web::Json<NewAccessToken>,
+    data: web::Json<PostRefreshTokenJson>,
     auth_header: web::Header<Authorization>,
     db_pool: web::Data<Pool>,
     config: web::Data<crate::config::Config>,
@@ -453,19 +219,19 @@ pub async fn refresh_game_access_token(
         .make_log(ErrorLogType::INTERNAL)
         .await?;
 
-    let token = encode_user_token(
+    let initial_token = encode_user_token(
         &auth_header.email,
-        &auth_header.token,
+        &data.initial_access_token,
         &config.userdata_auth,
     );
 
     let new_token = encode_user_token(
         &auth_header.email,
-        &data.access_token,
+        &auth_header.token,
         &config.userdata_auth,
     );
 
-    get_linkedrolesuserdata(&client, token.as_str())
+    get_linkedrolesuserdata(&client, &initial_token.as_str())
         .await
         .make_response(MyError::InternalError(
             "Failed at getting linked roles user data",
@@ -473,7 +239,7 @@ pub async fn refresh_game_access_token(
         .make_log(ErrorLogType::INTERNAL)
         .await?;
 
-    update_linkedrolesuserdata_token(&client, token.as_str(), new_token.as_str())
+    update_linkedrolesuserdata_token(&client, initial_token.as_str(), new_token.as_str())
         .await
         .make_response(MyError::InternalError(
             "Failed at updating linked roles game-related access token",

@@ -1,4 +1,4 @@
-# C2S-Discord-Link
+# C2S-Linked-Roles
 
 the REST API for handling C2S UserData in Cell to Singularity
 
@@ -7,13 +7,8 @@ the REST API for handling C2S UserData in Cell to Singularity
 - ### Base URL
   `http://api:3000/`
   - `api` is the automatically determined IP that docker will bind to within the container
-  ## Versioned Routes
-  `userdata`
-    - doesn't properly verify that the user's authorization is an existing user within C2S' Game Transfer database
-    
-  `v2/userdata`
-    - verifies authorization with C2S' Game Transfer database
-    - Uses more standard usage of HTTP's POST and PATCH
+  ## Available Routes
+- ###
 - ### Authorization
   `Basic base64(email:playertoken)`
 - ### UserData Definition

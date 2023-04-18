@@ -329,6 +329,31 @@ dependencies = [
 ]
 
 [[package]]
+name = "c2s-linked-roles"
+version = "0.2.0"
+dependencies = [
+ "actix-web",
+ "async-trait",
+ "base64 0.21.0",
+ "deadpool-postgres",
+ "derive_more",
+ "dotenv",
+ "hmac",
+ "jwt",
+ "reqwest",
+ "rust-crypto",
+ "serde",
+ "sha2",
+ "tokio",
+ "tokio-pg-mapper",
+ "tokio-pg-mapper-derive",
+ "tokio-postgres",
+ "twilight-http",
+ "twilight-model",
+ "uuid",
+]
+
+[[package]]
 name = "cc"
 version = "1.0.79"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -460,31 +485,6 @@ dependencies = [
  "block-buffer",
  "crypto-common",
  "subtle",
-]
-
-[[package]]
-name = "discord-link"
-version = "0.1.0"
-dependencies = [
- "actix-web",
- "async-trait",
- "base64 0.21.0",
- "deadpool-postgres",
- "derive_more",
- "dotenv",
- "hmac",
- "jwt",
- "reqwest",
- "rust-crypto",
- "serde",
- "sha2",
- "tokio",
- "tokio-pg-mapper",
- "tokio-pg-mapper-derive",
- "tokio-postgres",
- "twilight-http",
- "twilight-model",
- "uuid",
 ]
 
 [[package]]

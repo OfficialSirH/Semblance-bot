@@ -2,53 +2,6 @@ use serde::{Deserialize, Serialize};
 use std::time::SystemTime;
 use tokio_pg_mapper_derive::PostgresMapper;
 
-#[derive(Deserialize, PostgresMapper, Serialize)]
-#[pg_mapper(table = "UserData")]
-pub struct UserData {
-    pub discord_id: String,
-    pub token: String,
-    pub beta_tester: bool,
-    pub metabits: i64,
-    pub dino_rank: i32,
-    pub prestige_rank: i32,
-    pub beyond_rank: i32,
-    pub singularity_speedrun_time: Option<f64>,
-    pub all_sharks_obtained: bool,
-    pub all_hidden_achievements_obtained: bool,
-    pub edited_timestamp: SystemTime,
-}
-
-#[derive(Deserialize)]
-pub struct UpdateUserData {
-    pub metabits: f64,
-    pub dino_rank: i32,
-    pub prestige_rank: i32,
-    pub beyond_rank: i32,
-    pub singularity_speedrun_time: Option<f64>,
-    pub all_sharks_obtained: bool,
-    pub all_hidden_achievements_obtained: bool,
-}
-
-#[derive(Deserialize)]
-pub struct CreateUserData {
-    pub discord_id: String,
-    pub data: Option<UpdateUserData>,
-}
-
-impl Default for UpdateUserData {
-    fn default() -> Self {
-        UpdateUserData {
-            metabits: 0.0,
-            dino_rank: 0,
-            prestige_rank: 0,
-            beyond_rank: 0,
-            singularity_speedrun_time: None,
-            all_sharks_obtained: false,
-            all_hidden_achievements_obtained: false,
-        }
-    }
-}
-
 #[derive(Serialize)]
 pub struct MessageResponse {
     pub message: String,
@@ -111,8 +64,8 @@ pub struct UpdateLinkedRolesUserData {
 
 /// new access token from game refreshing the access token
 #[derive(Deserialize)]
-pub struct NewAccessToken {
-    pub access_token: String,
+pub struct PostRefreshTokenJson {
+    pub initial_access_token: String,
 }
 
 /// linked roles required query for linking

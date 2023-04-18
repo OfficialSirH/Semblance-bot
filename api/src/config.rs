@@ -10,6 +10,7 @@ pub struct Config {
     pub webhook_token: String,
     pub userdata_auth: String,
     pub server_addr: String,
+    // TODO: update this to use the new game saves API (Server Endpoint namespace)
     pub game_saves_dev_api: String,
     pub game_saves_prod_api: String,
     pub pg: deadpool_postgres::Config,
