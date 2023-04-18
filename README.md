@@ -2,7 +2,7 @@
 
 ## API
 
-The API, C2S Discord Link, is an API for linking user progress from the game, Cell to Singularity, to your Discord account.
+The API, C2S Linked Roles, is an API for linking user progress from the game, Cell to Singularity, to your Discord account via linked roles.
 
 ## Bot
 
