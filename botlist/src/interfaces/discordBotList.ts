@@ -1,3 +1,4 @@
+import type { Snowflake } from 'discord-api-types/globals';
 import type { FastifyRequest } from 'fastify';
 
 export interface BotStats {

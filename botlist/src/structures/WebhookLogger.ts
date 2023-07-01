@@ -13,7 +13,7 @@ export class WebhookLogger {
     [LogLevel.Fatal, 'error'],
   ]);
 
-  constructor(readonly client: Client, readonly level: LogLevel) {}
+  constructor(readonly rest: REST, readonly level: LogLevel) {}
 
   trace(...values: unknown[]) {
     this.write(LogLevel.Trace, values);
@@ -59,7 +59,7 @@ export class WebhookLogger {
             body: { content: `\`\`\`diff\n${content}\`\`\`` },
           };
 
-    this.client.rest.post(
+    this.rest.post(
       Routes.webhook(process.env[`${webhookLogType}_ID`], process.env[`${webhookLogType}_TOKEN`]),
       options,
     );

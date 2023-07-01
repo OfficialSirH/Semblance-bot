@@ -15,7 +15,7 @@ import {
   type APIGuild,
   GatewayDispatchEvents,
   GatewayIntentBits,
-  createClient,
+  Client as DiscordClient,
   type APIApplicationCommand,
   type APIUser,
   type APIUnavailableGuild,
@@ -50,7 +50,7 @@ export class Client {
     intents: GatewayIntentBits.Guilds,
     rest: this.rest,
   });
-  public core = createClient({ rest: this.rest, ws: this.ws });
+  public core = new DiscordClient({ rest: this.rest, gateway: this.ws });
   public api = new FastifyBasedAPI(this.rest);
 
   public user!: APIUser;

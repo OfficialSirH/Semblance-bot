@@ -3,7 +3,7 @@ import { Routes } from '@discordjs/core';
 import type { REST } from '@discordjs/rest';
 
 type ConsoleFunctions = {
-  [K in keyof typeof console]: typeof console[K] extends (...args: unknown[]) => void ? K : never;
+  [K in keyof typeof console]: (typeof console)[K] extends (...args: unknown[]) => void ? K : never;
 }[keyof typeof console];
 
 export class WebhookLogger {

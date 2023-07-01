@@ -6,20 +6,20 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-reqwest = { version = "0.11.11", features = ["json"] }
-actix-web = "4.1.0"
-twilight-http = "0.15.0"
-twilight-model = "0.15.0"
-tokio = { version = "1.19.2", features = ["macros", "rt-multi-thread"] }
+reqwest = { version = "0.11.15", features = ["json"] }
+actix-web = "4.3.1"
+twilight-http = "0.15.1"
+twilight-model = "0.15.1"
+tokio = { version = "1.26.0", features = ["macros", "rt-multi-thread"] }
 dotenv = "0.15"
 rust-crypto = "0.2.36"
 serde = "1"
 derive_more = "0.99.17"
 tokio-postgres = "0.7"
-deadpool-postgres = "0.10.2"
+deadpool-postgres = "0.10.5"
 tokio-pg-mapper = "0.2"
 tokio-pg-mapper-derive = "0.2"
-async-trait = "0.1.56"
+async-trait = "0.1.68"
 base64 = "0.21.0"
 jwt = "0.16.0"
 hmac = "0.12.1"

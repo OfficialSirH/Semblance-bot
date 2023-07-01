@@ -1,5 +1,4 @@
-import { GuildId, bigToName, Category, msToTime, isDstObserved, PreconditionName, userTag } from '#constants/index';
-import { DiscordLinkAPI } from '#structures/DiscordLinkAPI';
+import { GuildId, Category, isDstObserved, PreconditionName } from '#constants/index';
 import { type Events, gameEvents } from '#lib/utils/events';
 import { Command } from '#structures/Command';
 import {
@@ -16,7 +15,6 @@ import {
   type RESTPatchAPIGuildScheduledEventJSONBody,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
-import { EmbedBuilder } from '@discordjs/builders';
 import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 
 export default class Manage extends Command {
@@ -47,16 +45,6 @@ export default class Manage extends Command {
           return this.client.api.interactions.reply(res, { content: 'Invalid subcommand' });
       }
     }
-
-    if (subcommandGroup === 'discord-link')
-      switch (subcommand) {
-        case 'create':
-          return this.discordLinkCreate(res, options);
-        case 'get':
-          return this.discordLinkGet(res, options);
-        default:
-          return this.client.api.interactions.reply(res, { content: `Unknown subcommand \`${subcommand}\`` });
-      }
   }
 
   public override async autocompleteRun(
@@ -154,101 +142,10 @@ export default class Manage extends Command {
               },
             ],
           },
-          {
-            name: 'discord-link',
-            description: 'Manage linked C2S accounts',
-            type: ApplicationCommandOptionType.SubcommandGroup,
-            options: [
-              {
-                name: 'get',
-                description: 'Get a linked C2S account',
-                type: ApplicationCommandOptionType.Subcommand,
-                options: [
-                  {
-                    name: 'discord-id',
-                    description: 'The Discord ID of the user',
-                    type: ApplicationCommandOptionType.User,
-                    required: true,
-                  },
-                ],
-              },
-              {
-                name: 'create',
-                description: 'Create a linked C2S account',
-                type: ApplicationCommandOptionType.Subcommand,
-                options: [
-                  {
-                    name: 'discord-id',
-                    description: 'The Discord ID of the user',
-                    type: ApplicationCommandOptionType.User,
-                    required: true,
-                  },
-                  {
-                    name: 'playeremail',
-                    description: 'The email bound to your Game Transfer account.',
-                    type: ApplicationCommandOptionType.String,
-                    required: true,
-                  },
-                  {
-                    name: 'playertoken',
-                    description: 'The token bound to your Game Transfer account.',
-                    type: ApplicationCommandOptionType.String,
-                    required: true,
-                  },
-                ],
-              },
-            ],
-          },
         ],
       } satisfies RESTPostAPIApplicationCommandsJSONBody,
       guildIds: [GuildId.cellToSingularity],
     };
-  }
-
-  public async discordLinkGet(res: FastifyReply, options: InteractionOptionResolver) {
-    const user = options.getUser('discord-id', true);
-    const linkedAccount = await this.client.db.userData.findUnique({ where: { discord_id: user.id } });
-
-    if (!linkedAccount)
-      return this.client.api.interactions.reply(res, {
-        content: `No linked account found for ${userTag(user)}`,
-        flags: MessageFlags.Ephemeral,
-      });
-
-    const embed = new EmbedBuilder()
-      .setTitle(`Linked account for ${userTag(user)}(${user.id})`)
-      .setDescription(
-        `Beta Tester: ${linkedAccount.beta_tester ? 'yes' : 'no'}\nSimulation Resets: ${
-          linkedAccount.prestige_rank
-        }\nMesozoic Valley Rank: ${linkedAccount.dino_rank}\nBeyond Rank: ${
-          linkedAccount.beyond_rank
-        }\nMetabits: ${bigToName(Number(linkedAccount.metabits))}\nSingularity Speedrun Time: ${
-          linkedAccount.singularity_speedrun_time ? msToTime(linkedAccount.singularity_speedrun_time) : 'none'
-        }\nAll Sharks Obtained: ${linkedAccount.all_sharks_obtained ? 'yes' : 'no'}\nAll Hidden Achievements Found: ${
-          linkedAccount.all_hidden_achievements_obtained ? 'yes' : 'no'
-        }`,
-      );
-
-    return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
-  }
-
-  public async discordLinkCreate(res: FastifyReply, options: InteractionOptionResolver) {
-    const user = options.getUser('discord-id', true);
-    const playerEmail = options.getString('playeremail');
-    const playerToken = options.getString('playertoken');
-
-    const discordLinkClient = new DiscordLinkAPI(Buffer.from(playerEmail + ':' + playerToken).toString('base64'));
-
-    const linkedAccount = await discordLinkClient.linkDiscordUser({ discord_id: user.id });
-
-    const content =
-      typeof linkedAccount == 'string'
-        ? linkedAccount
-        : 'message' in linkedAccount
-        ? linkedAccount.message
-        : `\`\`\`json\n${JSON.stringify(linkedAccount)}\`\`\``;
-
-    return this.client.api.interactions.reply(res, { content, flags: MessageFlags.Ephemeral });
   }
 
   public async createGameEvent(

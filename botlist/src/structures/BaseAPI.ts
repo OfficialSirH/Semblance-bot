@@ -1,6 +1,5 @@
 import { type Dispatcher, Headers, request } from 'undici';
 import { ApiError } from './ApiError.js';
-import type { HttpMethod } from 'undici/types/dispatcher';
 
 interface APIOptions {
   token: string;
@@ -29,7 +28,11 @@ export class BaseAPI {
     };
   }
 
-  protected async _request(method: HttpMethod, path: string, body?: Record<string, unknown>): Promise<unknown> {
+  protected async _request(
+    method: 'GET' | 'POST' | 'DELETE' | 'PATCH' | 'PUT',
+    path: string,
+    body?: Record<string, unknown>,
+  ): Promise<unknown> {
     const headers = new Headers();
     if (this.options.token) headers.set('Authorization', this.options.token);
     if (method !== 'GET') headers.set('Content-Type', 'application/json');
@@ -51,7 +54,7 @@ export class BaseAPI {
     });
 
     let responseBody: unknown;
-    if (response.headers['content-type']?.startsWith('application/json')) {
+    if ((response.headers['content-type'] as string)?.startsWith('application/json')) {
       responseBody = await response.body.json();
     } else {
       responseBody = await response.body.text();

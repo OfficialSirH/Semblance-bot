@@ -2,8 +2,8 @@ import type { FastifyReply } from 'fastify';
 import type { DBLRequest } from '../interfaces/discordBotList.js';
 import type { TGGRequest } from '../interfaces/topGG.js';
 import type { REST } from '@discordjs/rest';
-import { type APIEmbed, type APIUser, Routes } from 'discord-api-types/v10.js';
-import { voteChannel } from 'src/constants.js';
+import { type APIEmbed, type APIUser, Routes } from 'discord-api-types/v10';
+import { voteChannel } from '../constants.js';
 
 type AvailableRequests = DBLRequest | TGGRequest;
 
@@ -55,7 +55,7 @@ export class VoteHandler {
         },
       };
 
-    return this.rest.post(Routes.channelMessages(voteChannel), { body: { embeds: [embed.toJSON()] } });
+    return this.rest.post(Routes.channelMessages(voteChannel), { body: { embeds: [embed] } });
   }
 
   public async handle(request: AvailableRequests, reply: FastifyReply): Promise<FastifyReply> {
