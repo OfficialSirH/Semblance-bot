@@ -1,5 +1,5 @@
 import { randomColor, formattedDate, Category } from '#constants/index';
-import type { Reminder, UserReminder } from '@prisma/client';
+import type { Reminder, UserReminder, Prisma } from '@prisma/client';
 import { handleReminder } from '#constants/models';
 import { scheduleJob } from 'node-schedule';
 import { Command } from '#structures/Command';
@@ -221,9 +221,9 @@ export default class RemindMe extends Command {
               message: reminder,
               time: Date.now() + timeAmount,
               reminderId: currentReminderData.reminders.length + 1,
-              channelId: interaction.channel_id,
+              channelId: interaction.channel.id,
             },
-          ]),
+          ]) as Prisma.InputJsonValue[],
         },
       });
       return scheduleJob(new Date((currentReminderData.reminders.at(-1) as unknown as UserReminder).time), () =>

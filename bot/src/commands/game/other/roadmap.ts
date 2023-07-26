@@ -127,7 +127,7 @@ function earlyBeyond(interaction: APIMessageComponentButtonInteraction, name: st
         .addComponents(backButton(name, interaction.member?.user.id as string, 'roadmap'))
         .toJSON(),
     ],
-    files: [],
+    attachments: [],
   };
 }
 
@@ -147,7 +147,7 @@ function testerCredits(interaction: APIMessageComponentButtonInteraction, name: 
         .addComponents(backButton(name, interaction.member?.user.id as string, 'roadmap'))
         .toJSON(),
     ],
-    files: [],
+    attachments: [],
   };
 }
 

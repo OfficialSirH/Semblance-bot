@@ -1,5 +1,4 @@
 {
-  "sqltools.autoConnectTo": ["PostgreSQL"],
   "sqltools.connections": [
     {
       "name": "PostgreSQL",

@@ -10,6 +10,7 @@ import {
   PresenceUpdateStatus,
   Routes,
   type APIRole,
+  type APIApplicationCommand,
 } from '@discordjs/core';
 import { Listener } from '#structures/Listener';
 import { Collection } from '@discordjs/collection';
@@ -34,6 +35,32 @@ export default class Ready extends Listener<GatewayDispatchEvents.Ready> {
         role.id,
         role,
       ]) as [string, APIRole][],
+    );
+
+    // cache application commands
+    this.client.cache.data.applicationCommands = new Collection(
+      ((await this.client.rest.get(Routes.applicationCommands(this.client.user.id))) as APIApplicationCommand[]).map(
+        command => [command.id, command],
+      ) as [string, APIApplicationCommand][],
+    );
+    // append to the application command cache with guild-specific application commands from cellToSingularity and sirhStuff
+    this.client.cache.data.applicationCommands = this.client.cache.data.applicationCommands.concat(
+      new Collection(
+        (
+          (await this.client.rest.get(
+            Routes.applicationGuildCommands(this.client.user.id, GuildId.cellToSingularity),
+          )) as APIApplicationCommand[]
+        ).map(command => [command.id, command]) as [string, APIApplicationCommand][],
+      ),
+    );
+    this.client.cache.data.applicationCommands = this.client.cache.data.applicationCommands.concat(
+      new Collection(
+        (
+          (await this.client.rest.get(
+            Routes.applicationGuildCommands(this.client.user.id, GuildId.sirhStuff),
+          )) as APIApplicationCommand[]
+        ).map(command => [command.id, command]) as [string, APIApplicationCommand][],
+      ),
     );
 
     if (!isProduction) {
