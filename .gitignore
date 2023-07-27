@@ -484,3 +484,4 @@ FodyWeavers.xsd
 
 # cargo
 */target/
+.vscode/settings.json
