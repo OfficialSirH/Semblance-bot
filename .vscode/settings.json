@@ -1,0 +1,17 @@
+{
+  "sqltools.connections": [
+    {
+      "name": "PostgreSQL",
+      "server": "localhost",
+      "database": "postgres",
+      "username": "postgres",
+      "askForPassword": true,
+      "port": 5432,
+      "driver": "PostgreSQL"
+    }
+  ],
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.addMissingImports": true
+  }
+}
