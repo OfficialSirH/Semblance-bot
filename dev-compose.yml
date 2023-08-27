@@ -1,0 +1,44 @@
+version: "3.9"
+services:
+  api:
+    build:
+      context: api
+      target: builder
+    image: sirh/c2s:api
+    container_name: api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    tty: true
+  bot:
+    build:
+      context: bot
+      target: builder
+    image: sirh/c2s:semblance
+    container_name: bot
+    restart: unless-stopped
+    ports:
+      - "8008:8008"
+    stdin_open: true
+    tty: true
+  botlist:
+    build:
+      context: botlist
+      target: builder
+    image: sirh/c2s:botlist
+    container_name: botlist
+    restart: unless-stopped
+    ports:
+      - "8079:8079"
+    stdin_open: true
+    tty: true
+  twitter:
+    build:
+      context: twitter
+      target: builder
+    image: sirh/c2s:twitter
+    container_name: twitter
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
