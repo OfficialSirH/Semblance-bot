@@ -8,7 +8,10 @@ import { voteChannel } from '../constants.js';
 type AvailableRequests = DBLRequest | TGGRequest;
 
 export class VoteHandler {
-  constructor(readonly rest: REST, readonly votingSite: string) {}
+  constructor(
+    readonly rest: REST,
+    readonly votingSite: string,
+  ) {}
 
   public async sendVotedEmbed(
     user: string | APIUser,
@@ -55,7 +58,9 @@ export class VoteHandler {
         },
       };
 
-    return this.rest.post(Routes.channelMessages(voteChannel), { body: { embeds: [embed] } });
+    return this.rest.post(Routes.channelMessages(voteChannel), {
+      body: { embeds: [embed] },
+    });
   }
 
   public async handle(request: AvailableRequests, reply: FastifyReply): Promise<FastifyReply> {

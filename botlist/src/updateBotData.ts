@@ -3,7 +3,14 @@ import { DBLApi, DBotsApi } from './structures/index.js';
 import { Api as TopggApi } from '@top-gg/sdk';
 
 export const updateBotData = async (
-  req: FastifyRequest<{ Body: { guild_count: number; shard_count: number; shard_id: number; user_count: number } }>,
+  req: FastifyRequest<{
+    Body: {
+      guild_count: number;
+      shard_count: number;
+      shard_id: number;
+      user_count: number;
+    };
+  }>,
   rep: FastifyReply,
 ) => {
   const topggApi = new TopggApi(process.env.topGGAuth),

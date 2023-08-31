@@ -5,7 +5,10 @@ import type { Client } from './Client.js';
 export class Precondition {
   public readonly name: string;
 
-  public constructor(public readonly client: Precondition.Requirement, options: { name: string }) {
+  public constructor(
+    public readonly client: Precondition.Requirement,
+    options: { name: string },
+  ) {
     this.name = options.name;
   }
 

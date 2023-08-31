@@ -13,7 +13,10 @@ export class WebhookLogger {
     [LogLevel.Fatal, 'error'],
   ]);
 
-  constructor(readonly rest: REST, readonly level: LogLevel) {}
+  constructor(
+    readonly rest: REST,
+    readonly level: LogLevel,
+  ) {}
 
   trace(...values: unknown[]) {
     this.write(LogLevel.Trace, values);

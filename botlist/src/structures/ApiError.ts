@@ -6,7 +6,12 @@ const tips = {
  * API Error
  */
 export class ApiError extends Error {
-  constructor(origin: string, public code: number, public text: string, public response?: unknown) {
+  constructor(
+    origin: string,
+    public code: number,
+    public text: string,
+    public response?: unknown,
+  ) {
     super(`${code} ${text}${tips[code as keyof typeof tips] ? ` (${tips[code as keyof typeof tips]})` : ''}`);
     this.name = `${origin} API Error`;
     this.response = response;

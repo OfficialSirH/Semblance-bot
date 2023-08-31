@@ -5,7 +5,10 @@ import type { GatewayDispatchEvents, GatewayDispatchPayload } from '@discordjs/c
 export class Listener<DispatchType extends GatewayDispatchEvents = GatewayDispatchEvents> {
   public readonly event: DispatchType;
 
-  public constructor(public readonly client: Listener.Requirement, options: { event: DispatchType }) {
+  public constructor(
+    public readonly client: Listener.Requirement,
+    options: { event: DispatchType },
+  ) {
     this.event = options.event;
   }
 

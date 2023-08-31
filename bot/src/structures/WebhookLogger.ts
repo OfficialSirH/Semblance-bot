@@ -17,7 +17,10 @@ export class WebhookLogger {
     [LogLevel.None, 'log'],
   ]);
 
-  constructor(readonly rest: REST, readonly level: LogLevel) {}
+  constructor(
+    readonly rest: REST,
+    readonly level: LogLevel,
+  ) {}
 
   debug(...values: unknown[]) {
     this.write(LogLevel.Debug, ...values);

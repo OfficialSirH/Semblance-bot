@@ -19,9 +19,9 @@
     "build:docker": "npx tsc --project tsconfig.json",
     "cleanup": "rm -rf dist",
     "setup": "npm run lint:fix && npm run prettier",
-    "prettier": "prettier --write src/**/*.ts lib/**/*.ts",
-    "lint": "eslint --ext .ts lib src",
-    "lint:fix": "eslint --ext .ts --fix lib src",
+    "prettier": "prettier --write src/**/*.ts",
+    "lint": "eslint --ext .ts src",
+    "lint:fix": "eslint --ext .ts --fix src",
     "prepare": "husky install"
   },
   "keywords": [],

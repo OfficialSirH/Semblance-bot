@@ -10,7 +10,12 @@ export default function (app: FastifyInstance, rest: REST) {
   const topGG = new VoteHandler(rest, 'top.gg');
 
   app.route<{
-    Body: { guild_count: number; shard_count: number; shard_id: number; user_count: number };
+    Body: {
+      guild_count: number;
+      shard_count: number;
+      shard_id: number;
+      user_count: number;
+    };
   }>({
     method: 'POST',
     url: '/update',
