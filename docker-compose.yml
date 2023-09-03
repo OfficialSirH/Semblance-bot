@@ -12,6 +12,8 @@ services:
   bot:
     build: ./bot
     image: sirh/c2s:semblance
+    environment:
+      - NODE_ENV=production
     container_name: bot
     restart: unless-stopped
     ports:
@@ -21,6 +23,8 @@ services:
   botlist:
     build: ./botlist
     image: sirh/c2s:botlist
+    environment:
+      - NODE_ENV=production
     container_name: botlist
     restart: unless-stopped
     ports:
@@ -30,6 +34,8 @@ services:
   twitter:
     build: ./twitter
     image: sirh/c2s:twitter
+    environment:
+      - NODE_ENV=production
     container_name: twitter
     restart: unless-stopped
     stdin_open: true
