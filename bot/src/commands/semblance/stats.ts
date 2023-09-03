@@ -1,11 +1,7 @@
 import { randomColor, msToTime, Category, emojis, userTag, avatarUrl } from '#constants/index';
 import { Command } from '#structures/Command';
 import { EmbedBuilder } from '@discordjs/builders';
-import {
-  version as coreVersion,
-  type APIChatInputApplicationCommandGuildInteraction,
-  type APIGuild,
-} from '@discordjs/core';
+import { version as coreVersion, type APIChatInputApplicationCommandGuildInteraction } from '@discordjs/core';
 import { version as restVersion } from '@discordjs/rest';
 import { version as wsVersion } from '@discordjs/ws';
 import type { FastifyReply } from 'fastify';
