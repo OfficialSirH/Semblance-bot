@@ -1,9 +1,15 @@
 import { randomColor, msToTime, Category, emojis, userTag, avatarUrl } from '#constants/index';
 import { Command } from '#structures/Command';
 import { EmbedBuilder } from '@discordjs/builders';
-import type { APIChatInputApplicationCommandGuildInteraction, APIGuild } from '@discordjs/core';
+import {
+  version as coreVersion,
+  type APIChatInputApplicationCommandGuildInteraction,
+  type APIGuild,
+} from '@discordjs/core';
+import { version as restVersion } from '@discordjs/rest';
+import { version as wsVersion } from '@discordjs/ws';
 import type { FastifyReply } from 'fastify';
-import { release, version } from 'os';
+import { release } from 'os';
 
 export default class Info extends Command {
   public constructor(client: Command.Requirement) {
@@ -19,30 +25,9 @@ export default class Info extends Command {
     const uptime = Date.now() - client.readyTimestamp;
     const duration = msToTime(uptime);
     const createdTimestamp = Number(interaction.id) / 4194304 + 1420070400000;
-    const responseTime = Date.now() - createdTimestamp;
-    const totalMembers = client.cache.data.guilds.reduce(
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      (total, cur) => (total += (cur as APIGuild).approximate_member_count!),
-      0,
-    );
+    const responseTime = Math.trunc(Date.now() - createdTimestamp);
     const usage = Math.round((process.memoryUsage().heapUsed / Math.pow(1024, 2)) * 100) / 100;
     const percentageUsed = Math.round((usage / 1000) * 10000) / 100;
-
-    // let guilds: number, users: number, shardCount: number;
-    // if (client.shard) {
-    //   guilds = await client.shard
-    //     .broadcastEval(eclient => eclient.guilds.cache.size)
-    //     .then(res => res.reduce((prev, val) => prev + val, 0));
-    //   users = await client.shard
-    //     .broadcastEval(eclient => eclient.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b))
-    //     .then(res => res.reduce((prev, val) => prev + val, 0));
-    //   shardCount = client.shard.count;
-    // } else {
-    //   guilds = client.guilds.cache.size;
-    //   users = client.guilds.cache.map(g => g.memberCount).reduce((a, b) => a + b);
-    //   shardCount = 0;
-    // }
-    const guilds = client.cache.data.guilds.size;
 
     const embed = new EmbedBuilder()
       .setTitle(`Bot Information - ${userTag(client.user)}`)
@@ -54,7 +39,7 @@ export default class Info extends Command {
           name: `${emojis.singularity} Host`,
           value: [
             `**OS:** \`Ubuntu ${release()}\``,
-            `**Library:** \`discord.js${version}\``,
+            `**Library:** \`\`\`\ndiscordjs/core@${coreVersion}\ndiscordjs/rest@${restVersion}\ndiscordjs/ws@${wsVersion}\`\`\``,
             `**Memory Usage:** \`${usage} MB (${percentageUsed}%)\``,
           ].join('\n'),
           inline: true,
@@ -62,21 +47,13 @@ export default class Info extends Command {
 
         {
           name: `${emojis.entropy} Stats`,
-          value: [
-            `**Guilds:** \`${guilds}\``,
-            `**Members:** \`${totalMembers}\``,
-            // `**Shard Count:** \`${shardCount}\``,
-          ].join('\n'),
+          value: `**Guilds:** \`${client.cache.data.guilds.size}\``,
           inline: true,
         },
 
         {
           name: `${emojis.idea} Runtime`,
-          value: [
-            `**Bot Response:** \`${responseTime} ms\``,
-            // `**API Response:** \`${client.ws.ping} ms\``,
-            `**Uptime:** \`${duration}\``,
-          ].join('\n'),
+          value: [`**Bot Response:** \`${responseTime} ms\``, `**Uptime:** \`${duration}\``].join('\n'),
           inline: true,
         },
       )
