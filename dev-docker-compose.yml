@@ -1,0 +1,42 @@
+version: "3.9"
+services:
+  dev-api:
+    build: ./api
+    image: sirh/c2s:dev-api
+    container_name: dev-api
+    restart: unless-stopped
+    ports:
+      - "4000:3000"
+    stdin_open: true
+    tty: true
+  dev-bot:
+    build: ./bot
+    image: sirh/c2s:dev-semblance
+    environment:
+      - NODE_ENV=development
+    container_name: dev-bot
+    restart: unless-stopped
+    ports:
+      - "9009:8008"
+    stdin_open: true
+    tty: true
+  dev-botlist:
+    build: ./botlist
+    image: sirh/c2s:dev-botlist
+    environment:
+      - NODE_ENV=development
+    container_name: dev-botlist
+    restart: unless-stopped
+    ports:
+      - "9079:8079"
+    stdin_open: true
+    tty: true
+  dev-twitter:
+    build: ./twitter
+    image: sirh/c2s:dev-twitter
+    environment:
+      - NODE_ENV=development
+    container_name: dev-twitter
+    restart: unless-stopped
+    stdin_open: true
+    tty: true

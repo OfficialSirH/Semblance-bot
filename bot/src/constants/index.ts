@@ -266,10 +266,9 @@ export const c2sRolesInformation: typeof c2sRoles = {
   },
   simulation: {
     finderOfSemblancesSecrets: 'found all the secrets in the game.',
-    sharkCollector: 'collected all the sharks in the game.',
     sonicSpeedsterOfSimulations: 'reached singularity withn 2 minutes.',
     simulationSpeedster: 'reached singularity within 5 minutes.',
-    betaTester: 'is/was beta tester of a private beta.',
+    betaTesterNotifications: 'notifications for the beta.',
   },
   metabit: {
     realityLegend: 'achieved 100 trillion metabits',
@@ -302,24 +301,23 @@ export const c2sRoles = {
     muted: '718796622867464198',
   },
   simulation: {
-    finderOfSemblancesSecrets: '892352829640032306',
-    sharkCollector: '892352933478400041',
-    sonicSpeedsterOfSimulations: '892353085425459210',
-    simulationSpeedster: '892355042865192980',
-    betaTester: '564870410227679254',
+    finderOfSemblancesSecrets: '1098031197516468385',
+    sonicSpeedsterOfSimulations: '1098043664133017721',
+    simulationSpeedster: '1098043703207149678',
+    betaTesterNotifications: '564870410227679254',
   },
   metabit: {
-    realityLegend: '892353216094814268',
-    realityExpert: '892353419409518604',
-    realityExplorer: '499316778426433538',
+    realityLegend: '1098043671573692508',
+    realityExpert: '1098043680935399434',
+    realityExplorer: '1098043698140418118',
   },
   mesozoic: {
-    paleontologistLegend: '892352619526377473',
-    progressivePaleontologist: '892353322026160138',
-    paleontologist: '657305968442474502',
+    paleontologistLegend: '1098030259812712509',
+    progressivePaleontologist: '1098043676833366076',
+    paleontologist: '1098043693623148674',
   },
   beyond: {
-    planetaryExplorer: '922176303153696768',
+    planetaryExplorer: '1098043684685094973',
   },
 };
 
