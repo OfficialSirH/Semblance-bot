@@ -368,7 +368,7 @@ export default class Game extends Command {
         await stats(this.client, reply, interaction, components, game);
         break;
       case 'close':
-        await this.client.api.interactions.deleteReply(interaction);
+        await this.client.api.interactions.deleteReply(interaction, interaction.message?.id);
     }
   }
 }

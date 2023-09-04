@@ -37,6 +37,35 @@ export default class Suggest extends Command {
   }
 
   public async modalRun(res: FastifyReply, interaction: APIModalSubmitGuildInteraction) {
+    if (JSON.parse(interaction.data.custom_id).action === 'decline') {
+      const userDM = (await this.client.rest.post(Routes.userChannels(), {
+        body: {
+          recipient_id: JSON.parse(interaction.data.custom_id).id,
+        },
+      })) as APIDMChannel;
+
+      let declineReasonSent = true;
+
+      await this.client.rest
+        .post(Routes.channelMessages(userDM.id), {
+          body: {
+            content: `Your suggestion has been denied.\nReason: ${interaction.data.components[0].components[0].value}`,
+          },
+        })
+        .catch(() => {
+          declineReasonSent = false;
+        });
+
+      return this.client.api.interactions.reply(res, {
+        content: `Your decline reason send status: ${
+          declineReasonSent
+            ? 'Sent'
+            : `Failed to send\nHere's your reason: ${interaction.data.components[0].components[0].value}`
+        }.`,
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
     const suggestion = interaction.data.components[0].components[0].value;
     const member = interaction.member;
 
@@ -121,22 +150,26 @@ export default class Suggest extends Command {
 
   public override data() {
     return {
-      command: { name: this.name, description: this.description },
+      command: {
+        name: this.name,
+        description: this.description,
+      },
       guildIds: [GuildId.cellToSingularity],
     };
   }
 
   public override async componentRun(
-    reply: FastifyReply,
+    res: FastifyReply,
     interaction: APIMessageComponentButtonInteraction,
     data: ParsedCustomIdData<'accept' | 'deny' | 'silent-deny'>,
   ) {
     if (!['accept', 'deny', 'silent-deny'].includes(data.action))
-      return this.client.api.interactions.reply(reply, { content: "Something ain't working right" });
+      return this.client.api.interactions.reply(res, { content: "Something ain't working right" });
 
     const disabledComponents = await disableAllComponents(interaction);
 
-    await this.client.api.interactions.updateMessage(reply, {
+    // this piece of crap wants to keep spewing 'unknown webhook!!!', for the love of God, stfu
+    await this.client.api.webhooks.editMessage(interaction.application_id, interaction.token, interaction.message.id, {
       content: `${data.action != 'accept' ? 'denied' : 'accepted'} by <@${interaction.member?.user.id}>`,
       components: disabledComponents,
     });
@@ -177,21 +210,29 @@ export default class Suggest extends Command {
     }
 
     if (data.action == 'deny') {
-      const userDm = (await this.client.rest.post(Routes.userChannels(), {
-        body: {
-          recipient_id: user.id,
-        },
-      })) as APIDMChannel;
+      const modal = new ModalBuilder()
+        .setTitle('Suggestion Decline')
+        .setCustomId(
+          buildCustomId({
+            command: this.name,
+            action: 'decline',
+            id: user.id,
+          }),
+        )
+        .setComponents(
+          new ActionRowBuilder<TextInputBuilder>().addComponents(
+            new TextInputBuilder()
+              .setCustomId('reason')
+              .setLabel('Decline Reason')
+              .setStyle(TextInputStyle.Paragraph)
+              .setPlaceholder('Enter the reason for declining this suggestion here.')
+              .setMinLength(100)
+              .setMaxLength(4000)
+              .setRequired(true),
+          ),
+        );
 
-      await this.client.rest.post(Routes.channelMessages(userDm.id), {
-        body: {
-          content:
-            "Your suggestion has been denied. We deny reports if they're either a duplicate, already in-game, " +
-            'have no connection to what the game is supposed to be(i.e. "pvp dinosaur battles with Mesozoic Valley dinos"), or aren\'t detailed enough. ' +
-            "If you believe this is a mistake, please contact the staff team. You can also edit then resend your suggestion if you think it was a good suggestion that wasn't " +
-            ` written right. suggestion: \`\`\`\n${interaction.message.embeds[0].description}\`\`\``,
-        },
-      });
+      await this.client.api.interactions.createModal(res, modal.toJSON());
     }
   }
 }

@@ -365,7 +365,7 @@ export const disableAllComponents = async (interaction: APIMessageComponentInter
 
   if (!rest) return disabledComponents;
 
-  await rest.patch(Routes.channelMessage(interaction.channel_id, interaction.message.id), {
+  await rest.patch(Routes.channelMessage(interaction.channel.id, interaction.message.id), {
     body: {
       components: disabledComponents,
     },
