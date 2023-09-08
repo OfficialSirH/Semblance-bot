@@ -51,7 +51,8 @@
     ]
   },
   "scripts": {
-    "deploy-commands": "rimraf ./dist && tsc --project tsconfig.json && dotenv -e .env -v DEPLOY=true -- node --es-module-specifier-resolution=node ./dist/src/index.js",
+    "deploy-commands": "rimraf ./dist && tsc --project tsconfig.json && dotenv -e .env -v DEPLOY=true -v NODE_ENV=production -- node --es-module-specifier-resolution=node ./dist/src/index.js",
+    "deploy-dev-commands": "rimraf ./dist && tsc --project tsconfig.json && dotenv -e .env -v DEPLOY=true -v NODE_ENV=development -- node --es-module-specifier-resolution=node ./dist/src/index.js",
     "build-image": "docker build -t sirh/c2s:semblance .",
     "push-image": "docker push sirh/c2s:semblance",
     "start:docker": "node dist/src/index.js",

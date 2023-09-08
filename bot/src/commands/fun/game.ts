@@ -205,7 +205,6 @@ export default class Game extends Command {
             name: 'stats',
             description: "View a user's stats in this little idle-game",
             type: ApplicationCommandOptionType.Subcommand,
-            required: false,
             options: [
               {
                 name: 'user',
@@ -213,6 +212,11 @@ export default class Game extends Command {
                 type: ApplicationCommandOptionType.User,
               },
             ],
+          },
+          {
+            name: 'play',
+            description: 'Play the idle-game',
+            type: ApplicationCommandOptionType.Subcommand,
           },
         ],
       } satisfies RESTPostAPIApplicationCommandsJSONBody,
