@@ -329,6 +329,7 @@ export const getPermissionLevel = function (member: APIGuildMember | APIInteract
   if (member.roles.includes(c2sRoles.server.martianCouncil)) return 1;
   return 0; // normal user
 };
+
 class RandomColor {
   static get randomColor() {
     let red = Math.floor(Math.random() * 256),

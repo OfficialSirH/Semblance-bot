@@ -12,6 +12,39 @@ import {
 } from '@discordjs/core';
 import type { Client } from '#structures/Client';
 import type { REST } from '@discordjs/rest';
+import type { Attachy } from '#structures/Attachy';
+import { FormDataEncoder, type FormDataLike } from 'form-data-encoder';
+import { Readable } from 'node:stream';
+
+// this probably works properly, not sure of the root issue for the issues that came from the encoder's length being wrong
+export const resolveBodyWithAttachments = async (
+  resolveableBody: RESTPostAPIChannelMessageJSONBody & { files?: Attachy[] },
+) => {
+  if (!resolveableBody?.allowed_mentions) resolveableBody.allowed_mentions = { parse: [] };
+
+  if (!resolveableBody.files?.length) return { body: resolveableBody };
+
+  const form = new FormData();
+  for (const [index, file] of resolveableBody.files.entries()) {
+    form.append(`files[${index}]`, new Blob([await file.data()]), file.name);
+  }
+
+  resolveableBody.attachments = resolveableBody.files.map((file, index) => ({
+    id: index.toString(),
+    filename: file.name,
+  }));
+
+  delete resolveableBody.files;
+
+  form.append('payload_json', JSON.stringify(resolveableBody));
+
+  const encoder = new FormDataEncoder(form as unknown as FormDataLike);
+
+  return {
+    headers: encoder.headers,
+    body: Readable.from(encoder.encode()),
+  };
+};
 
 export const sendMessage = async (client: Client, channel: Snowflake, body: RESTPostAPIChannelMessageJSONBody) =>
   (await client.rest.post(Routes.channelMessages(channel), { body })) as Promise<RESTPostAPIChannelMessageResult>;

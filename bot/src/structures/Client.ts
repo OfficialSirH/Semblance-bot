@@ -25,6 +25,7 @@ import {
   Routes,
 } from '@discordjs/core';
 import type { Precondition } from './Precondition.js';
+import type { Job } from 'node-schedule';
 
 export class Client {
   public cache = {
@@ -33,6 +34,11 @@ export class Client {
       applicationCommands: new Collection<Snowflake, APIApplicationCommand>(),
       cellsChannels: new Collection<Snowflake, APIChannel>(),
       cellsRoles: new Collection<Snowflake, APIRole>(),
+    },
+    temp: {
+      // maybe I'll eventually bring this back once I figure out how to make attachments work properly
+      // suggestionAttachments: new Collection<Snowflake, { attachment: Attachy; scheduledRemoval: Job }>(),
+      deniedSuggestions: new Collection<`${Snowflake}-${string}`, { suggestion: string; scheduledRemoval: Job }>(),
     },
     handles: {
       listeners: new Collection<GatewayDispatchEvents, Listener>(),
