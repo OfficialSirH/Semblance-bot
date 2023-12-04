@@ -20,7 +20,7 @@
     "node-schedule": "^2.1.1",
     "source-map-support": "^0.5.21",
     "tweetnacl": "^1.0.3",
-    "undici": "^5.23.0",
+    "undici": "^5.26.2",
     "utf-8-validate": "^6.0.3",
     "zlib-sync": "^0.1.8"
   },
