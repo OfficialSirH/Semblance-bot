@@ -1,4 +1,4 @@
-import { GuildId, Category, authorDefault, disableAllComponents } from '#constants/index';
+import { GuildId, Category, authorDefault, disableAllComponents, SuggestionConstants } from '#constants/index';
 import { buildCustomId } from '#constants/components';
 import { Command } from '#structures/Command';
 import {
@@ -11,6 +11,7 @@ import {
   type APIMessageComponentButtonInteraction,
   type APIUser,
   type APIDMChannel,
+  type RESTPostAPIApplicationCommandsJSONBody,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 import {
@@ -21,7 +22,8 @@ import {
   ModalBuilder,
   TextInputBuilder,
 } from '@discordjs/builders';
-import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
+import { type CustomIdData, type ParsedCustomIdData } from '#lib/interfaces/Semblance';
+import { scheduleJob } from 'node-schedule';
 
 export default class Suggest extends Command {
   public constructor(client: Command.Requirement) {
@@ -37,7 +39,61 @@ export default class Suggest extends Command {
   }
 
   public async modalRun(res: FastifyReply, interaction: APIModalSubmitGuildInteraction) {
+    const customData = JSON.parse(interaction.data.custom_id) as CustomIdData & { ident?: string };
+
+    if (customData.action === 'decline') {
+      const userDM = (await this.client.rest.post(Routes.userChannels(), {
+        body: {
+          recipient_id: customData.id,
+        },
+      })) as APIDMChannel;
+
+      let declineReasonSent = true;
+
+      const deniedSuggestionKey = SuggestionConstants.createUniqueKey(customData.id, customData.ident as string);
+      const cachedDeniedSuggestion = this.client.cache.temp.deniedSuggestions.get(deniedSuggestionKey);
+      if (cachedDeniedSuggestion) {
+        cachedDeniedSuggestion.scheduledRemoval?.cancel();
+        this.client.cache.temp.deniedSuggestions.delete(deniedSuggestionKey);
+      }
+
+      await this.client.rest
+        .post(Routes.channelMessages(userDM.id), {
+          body: {
+            content: `Your suggestion has been denied.\nReason: ${interaction.data.components[0].components[0].value}`,
+          },
+        })
+        .catch(() => {
+          declineReasonSent = false;
+        });
+
+      if (declineReasonSent && cachedDeniedSuggestion)
+        this.client.rest.post(Routes.channelMessages(userDM.id), {
+          body: {
+            content: `Your suggestion: \`\`\`\n${cachedDeniedSuggestion.suggestion}\n\`\`\``,
+          },
+        });
+
+      return this.client.api.interactions.reply(res, {
+        content: `Your decline reason send status: ${
+          declineReasonSent
+            ? 'Sent'
+            : `Failed to send\nHere's your reason: ${interaction.data.components[0].components[0].value}`
+        }.`,
+        flags: MessageFlags.Ephemeral,
+      });
+    }
+
     const suggestion = interaction.data.components[0].components[0].value;
+    // Attachments are too much of a pain in the ass in this situation
+    // // Suggestion Attachment Step 2: Grabbing the attachment from cache and removing it from cache
+    // const cachedAttachment = this.client.cache.temp.suggestionAttachments.get(interaction.member.user.id);
+    // const attachment = cachedAttachment?.attachment;
+    // if (cachedAttachment) {
+    //   cachedAttachment.scheduledRemoval.cancel();
+    //   this.client.cache.temp.suggestionAttachments.delete(interaction.member.user.id);
+    // }
+
     const member = interaction.member;
 
     const embed = new EmbedBuilder().setAuthor(authorDefault(member.user)).setDescription(suggestion),
@@ -85,6 +141,35 @@ export default class Suggest extends Command {
       },
     });
 
+    // This seems to be failing due to "content length specified in header not matching body length"
+    // await this.client.rest.post(
+    //   Routes.channelMessages(suggestionReviewChannel?.id as string),
+    //   await resolveBodyWithAttachments({
+    //     embeds: [embed.toJSON()],
+    //     components: [component.toJSON()],
+    //     files: attachment ? [attachment] : undefined,
+    //   }),
+    // );
+
+    // this way actually sends the message without the above error but clearly doesn't do it correctly still
+    // const response = (await resolveBodyWithAttachments({
+    //   embeds: [embed.toJSON()],
+    //   components: [component.toJSON()],
+    //   files: attachment ? [attachment] : undefined,
+    // })) as { headers: Record<string, string>; body: Readable };
+    // const result = await request(
+    //   'https://discord.com/api/v10' + Routes.channelMessages(suggestionReviewChannel?.id as string),
+    //   {
+    //     method: 'POST',
+    //     body: response.body,
+    //     headers: {
+    //       ...response.headers,
+    //       Authorization: `Bot ${token}`,
+    //     },
+    //   },
+    // );
+    // this.client.logger.error(`code: ${result.statusCode}\nbody: ${await result.body.text()}`);
+
     await this.client.api.interactions.reply(res, {
       content:
         'Your suggestion was recorded successfully! The moderators will first review your suggestion before allowing it onto the suggestions channel. ' +
@@ -94,6 +179,39 @@ export default class Suggest extends Command {
   }
 
   public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
+    // Attachments are too much of a pain in the ass in this situation
+    // // Suggestion Attachment Step 1: caching the attachment and scheduling its removal
+    // const attachment = options.getAttachment('attachment');
+    // if (attachment) {
+    //   // make sure the attachment is an image
+    //   if (!attachment.content_type?.startsWith('image/'))
+    //     return this.client.api.interactions.reply(res, {
+    //       content: 'Invalid attachment type. Please make sure the attachment is an image.',
+    //       flags: MessageFlags.Ephemeral,
+    //     });
+
+    //   if (this.client.cache.temp.suggestionAttachments.size >= SuggestionConstants.AttachmentCacheLimit)
+    //     return this.client.api.interactions.reply(res, {
+    //       content: `Attachment cache limit reached.
+    //         This occurs when a lot of users are making suggestions that include attachments at the same time.
+    //         Usually, this shouldn't happen so if you get this response again in 5 minutes, please contact <@${UserId.sirh}>`,
+    //       flags: MessageFlags.Ephemeral,
+    //     });
+
+    //   request(attachment.url).then(async res => {
+    //     const buffer = await res.body.arrayBuffer();
+    //     const image = Buffer.from(buffer);
+    //     const imageBase64 = image.toString('base64');
+    //     const imageBase64URL = `data:${attachment.content_type};base64,${imageBase64}`;
+    //     this.client.cache.temp.suggestionAttachments.set(interaction.member.user.id, {
+    //       attachment: new Attachy(imageBase64URL, attachment.filename, true),
+    //       scheduledRemoval: scheduleJob(new Date(Date.now() + SuggestionConstants.AttachmentCacheLifetime), () => {
+    //         this.client.cache.temp.suggestionAttachments.delete(interaction.member.user.id);
+    //       }),
+    //     });
+    //   });
+    // }
+
     const modal = new ModalBuilder()
       .setTitle('Suggestion')
       .setCustomId(
@@ -121,29 +239,42 @@ export default class Suggest extends Command {
 
   public override data() {
     return {
-      command: { name: this.name, description: this.description },
+      command: {
+        name: this.name,
+        description: this.description,
+      } satisfies RESTPostAPIApplicationCommandsJSONBody,
       guildIds: [GuildId.cellToSingularity],
     };
   }
 
   public override async componentRun(
-    reply: FastifyReply,
+    res: FastifyReply,
     interaction: APIMessageComponentButtonInteraction,
     data: ParsedCustomIdData<'accept' | 'deny' | 'silent-deny'>,
   ) {
     if (!['accept', 'deny', 'silent-deny'].includes(data.action))
-      return this.client.api.interactions.reply(reply, { content: "Something ain't working right" });
+      return this.client.api.interactions.reply(res, { content: "Something ain't working right" });
 
     const disabledComponents = await disableAllComponents(interaction);
 
-    await this.client.api.interactions.updateMessage(reply, {
-      content: `${data.action != 'accept' ? 'denied' : 'accepted'} by <@${interaction.member?.user.id}>`,
-      components: disabledComponents,
-    });
+    if (data.action !== 'deny')
+      await this.client.api.interactions.updateMessage(res, {
+        content: `${data.action != 'accept' ? 'denied' : 'accepted'} by <@${interaction.member?.user.id}>`,
+        components: disabledComponents,
+      });
+    else
+      await this.client.rest.patch(Routes.channelMessage(interaction.channel.id, interaction.message.id), {
+        body: {
+          content: `${'denied'} by <@${interaction.member?.user.id}>`,
+          components: disabledComponents,
+        },
+      });
 
     if (data.action == 'silent-deny') return;
 
     const user = (await this.client.rest.get(Routes.user(data.id))) as APIUser;
+    const suggestion = interaction.message.embeds[0].description as string;
+
     if (data.action == 'accept') {
       const userDm = (await this.client.rest.post(Routes.userChannels(), {
         body: {
@@ -164,11 +295,7 @@ export default class Suggest extends Command {
         Routes.channelMessages(this.client.cache.data.cellsChannels.find(c => c.name === 'suggestions')?.id as string),
         {
           body: {
-            embeds: [
-              new EmbedBuilder()
-                .setAuthor(authorDefault(user))
-                .setDescription(interaction.message.embeds[0].description as string),
-            ],
+            embeds: [new EmbedBuilder().setAuthor(authorDefault(user)).setDescription(suggestion)],
           },
         },
       );
@@ -177,21 +304,36 @@ export default class Suggest extends Command {
     }
 
     if (data.action == 'deny') {
-      const userDm = (await this.client.rest.post(Routes.userChannels(), {
-        body: {
-          recipient_id: user.id,
-        },
-      })) as APIDMChannel;
-
-      await this.client.rest.post(Routes.channelMessages(userDm.id), {
-        body: {
-          content:
-            "Your suggestion has been denied. We deny reports if they're either a duplicate, already in-game, " +
-            'have no connection to what the game is supposed to be(i.e. "pvp dinosaur battles with Mesozoic Valley dinos"), or aren\'t detailed enough. ' +
-            "If you believe this is a mistake, please contact the staff team. You can also edit then resend your suggestion if you think it was a good suggestion that wasn't " +
-            ` written right. suggestion: \`\`\`\n${interaction.message.embeds[0].description}\`\`\``,
-        },
+      this.client.cache.temp.deniedSuggestions.set(SuggestionConstants.createUniqueKey(user.id, suggestion), {
+        suggestion,
+        scheduledRemoval: scheduleJob(new Date(Date.now() + SuggestionConstants.DeniedSuggestionCacheLifetime), () => {
+          this.client.cache.temp.deniedSuggestions.delete(SuggestionConstants.createUniqueKey(user.id, suggestion));
+        }),
       });
+
+      const modal = new ModalBuilder()
+        .setTitle('Suggestion Decline')
+        .setCustomId(
+          buildCustomId<CustomIdData & { ident: string }>({
+            command: this.name,
+            action: 'decline',
+            id: user.id,
+            ident: SuggestionConstants.createUniqueKey(user.id, suggestion).split('-')[1],
+          }),
+        )
+        .setComponents(
+          new ActionRowBuilder<TextInputBuilder>().addComponents(
+            new TextInputBuilder()
+              .setCustomId('reason')
+              .setLabel('Decline Reason')
+              .setStyle(TextInputStyle.Paragraph)
+              .setPlaceholder('Enter the reason for declining this suggestion here.')
+              .setMaxLength(4000)
+              .setRequired(true),
+          ),
+        );
+
+      await this.client.api.interactions.createModal(res, modal.toJSON());
     }
   }
 }

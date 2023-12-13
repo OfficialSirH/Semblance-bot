@@ -4,7 +4,7 @@ import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/interfaces/catAndD
 import type { DeepLParams, DeepLResponse } from '#lib/interfaces/deepLAPI';
 import type { Game } from '@prisma/client';
 import { request } from 'undici';
-import type { APIGuild } from '@discordjs/core';
+import type { APIGuild, Snowflake } from '@discordjs/core';
 
 // gametransfer pages
 
@@ -92,3 +92,18 @@ export async function currentPrice(client: Client, userData: Game) {
   }
   return userData.cost == 0 ? 1 : userData.cost;
 }
+
+// Suggestion constants
+export const SuggestionConstants = {
+  // // half an hour
+  // AttachmentCacheLifetime: 1000 * 60 * 30,
+  // // max attachments in cache
+  // AttachmentCacheLimit: 10,
+  // unique key for identifying denied suggestions
+  createUniqueKey: (userId: Snowflake, suggestion: string) =>
+    `${userId}-${suggestion.slice(-4)}` as `${Snowflake}-${string}`,
+  // quarter of an hour
+  DeniedSuggestionCacheLifetime: 1000 * 60 * 15,
+  // max denied suggestions in cache (if this somehow reaches the limit, I did something terribly wrong)
+  DeniedSuggestionsCacheLimit: 5,
+};
