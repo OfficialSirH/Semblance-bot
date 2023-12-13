@@ -13,9 +13,9 @@ import { sendMessage } from '#lib/utils/resolvers';
 
 // BoosterRewards - handle finished booster rewards
 export const handleBoosterReward = async (client: Client, boosterReward: BoosterReward) => {
-  const member = (await client.rest.get(
-    Routes.guildMember(GuildId.cellToSingularity, boosterReward.userId),
-  )) as APIGuildMember | null;
+  const member = (await client.rest
+    .get(Routes.guildMember(GuildId.cellToSingularity, boosterReward.userId))
+    .catch(() => null)) as APIGuildMember | null;
   if (!member || !member.roles.includes(boosterRoleId))
     return client.db.boosterReward.delete({ where: { userId: boosterReward.userId } });
 
