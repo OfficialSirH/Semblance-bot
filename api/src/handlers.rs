@@ -45,8 +45,7 @@ pub async fn authorize_linked_roles(
     let state = Uuid::new_v4()
         .as_bytes()
         .iter()
-        .map(|byte| format!("{:02x?}", byte))
-        .collect::<String>();
+        .fold(String::new(), |acc, byte| format!("{acc}{:02x?}", byte));
 
     let key: Hmac<Sha256> = Hmac::new_from_slice(config.userdata_auth.as_bytes()).unwrap();
     let header = Header {
@@ -231,7 +230,7 @@ pub async fn refresh_game_access_token(
         &config.userdata_auth,
     );
 
-    get_linkedrolesuserdata(&client, &initial_token.as_str())
+    get_linkedrolesuserdata(&client, initial_token.as_str())
         .await
         .make_response(MyError::InternalError(
             "Failed at getting linked roles user data",

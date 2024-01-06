@@ -61,7 +61,7 @@ where
     fn call(&self, req: ServiceRequest) -> Self::Future {
         if req.path() == "/linked-roles/oauth-callback" {
             let fut = self.service.call(req);
-            return Box::pin(async move { fut.await });
+            return Box::pin(fut);
         }
 
         let is_header_auth = !req.path().starts_with("/linked-roles")
@@ -106,7 +106,8 @@ where
             distribution = distribution_header.to_owned();
             data = auth_header_data;
         } else {
-            let query = query.invalid_auth()?;
+            let query = query
+                .map_err(|_| actix_web::error::ErrorNotFound("This link is useless on its own, you need to go through the linking in-game within the Game Transfer menu"))?;
             distribution = query.distribution.to_owned();
             data = AuthData {
                 email: query.email.clone(),
