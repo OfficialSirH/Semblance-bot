@@ -8,8 +8,8 @@ COPY src/ src/
 COPY sql/ sql/
 RUN cargo build --release
 
-FROM alpine:latest
-RUN apk update && apk add --no-interactive ca-certificates && rm -rf /var/lib/apt/lists/*
+FROM debian:buster-slim
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY .env /.env
 COPY sql /sql
 COPY --from=builder /usr/src/myapp/target/release/c2s-linked-roles /usr/local/bin/c2s-linked-roles
