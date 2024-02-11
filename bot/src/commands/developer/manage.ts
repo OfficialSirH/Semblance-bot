@@ -1,21 +1,24 @@
-import { GuildId, Category, isDstObserved, PreconditionName } from '#constants/index';
-import { type Events, gameEvents } from '#lib/utils/events';
+import { Category, GuildId, PreconditionName, isDstObserved } from '#constants/index';
+import type { CustomIdData } from '#lib/interfaces/Semblance';
+import { gameEvents, type Events } from '#lib/utils/events';
 import { Command } from '#structures/Command';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 import {
   ApplicationCommandOptionType,
   GuildScheduledEventEntityType,
   GuildScheduledEventPrivacyLevel,
-  type APIChatInputApplicationCommandGuildInteraction,
   MessageFlags,
-  type RESTPostAPIApplicationCommandsJSONBody,
-  type APIApplicationCommandAutocompleteGuildInteraction,
   Routes,
-  type RESTPostAPIGuildScheduledEventJSONBody,
+  type APIApplicationCommandAutocompleteGuildInteraction,
+  type APIChatInputApplicationCommandGuildInteraction,
+  type APIModalSubmitInteraction,
   type RESTGetAPIGuildScheduledEventsResult,
   type RESTPatchAPIGuildScheduledEventJSONBody,
+  type RESTPostAPIApplicationCommandsJSONBody,
+  type RESTPostAPIGuildScheduledEventJSONBody,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { request } from 'undici';
 
 export default class Manage extends Command {
   public constructor(client: Command.Requirement) {
@@ -35,15 +38,27 @@ export default class Manage extends Command {
     const subcommandGroup = options.getSubcommandGroup();
     const subcommand = options.getSubcommand();
 
-    if (subcommandGroup == 'game-event') {
-      switch (subcommand) {
-        case 'create':
-          return this.createGameEvent(res, interaction, options);
-        case 'edit':
-          return this.editGameEvent(res, interaction, options);
-        default:
-          return this.client.api.interactions.reply(res, { content: 'Invalid subcommand' });
-      }
+    switch (subcommandGroup) {
+      case 'game-event':
+        switch (subcommand) {
+          case 'create':
+            return this.createGameEvent(res, interaction, options);
+          case 'edit':
+            return this.editGameEvent(res, interaction, options);
+          default:
+            return this.client.api.interactions.reply(res, { content: 'Invalid subcommand' });
+        }
+      case 'beta-tester':
+        switch (subcommand) {
+          case 'create':
+            return this.createBetaTesterRoleMessage(res, interaction, options);
+          case 'edit':
+            return this.editBetaTesterRoleMessage(res, interaction, options);
+          default:
+            return this.client.api.interactions.reply(res, { content: 'Invalid subcommand' });
+        }
+      default:
+        return this.client.api.interactions.reply(res, { content: 'Invalid subcommand group' });
     }
   }
 
@@ -137,6 +152,30 @@ export default class Manage extends Command {
                     description: 'The day of the month the game event ends',
                     type: ApplicationCommandOptionType.String,
                     autocomplete: true,
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            name: 'beta-tester',
+            description: 'Manage role message for beta testers',
+            type: ApplicationCommandOptionType.SubcommandGroup,
+            options: [
+              {
+                name: 'create',
+                description: 'Create a role message for beta testers',
+                type: ApplicationCommandOptionType.Subcommand,
+              },
+              {
+                name: 'edit',
+                description: 'Edit a role message for beta testers',
+                type: ApplicationCommandOptionType.Subcommand,
+                options: [
+                  {
+                    name: 'message-id',
+                    description: 'The message id of the role message',
+                    type: ApplicationCommandOptionType.String,
                   },
                 ],
               },
@@ -239,4 +278,120 @@ export default class Manage extends Command {
         .catch(err => this.client.logger.error(`error reply for failed event creation failed: ${err}`));
     }
   }
+
+  private async pullPlayFabData<
+    T extends RESTPostAPIPlayFabPlayerProfileResult | RESTPostAPIPlayFabPlayerStatisticsResult | unknown = unknown,
+  >(route: APIPlayFabRoutes, playFabId: string) {
+    const headers: APIPlayFabHeaders = {
+      'X-SecretKey': process.env.PLAYFAB_SECRET_KEY,
+    };
+
+    const playerData = (await request(`https://${process.env.PLAYFAB_TITLE_ID}.playfabapi.com/Server/${route}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers,
+      },
+      body: JSON.stringify({
+        PlayFabId: playFabId,
+      } satisfies RESTPostAPIPlayFabJSONBody),
+    }).then(res => res.body.json())) as Promise<T>;
+
+    return playerData;
+  }
+
+  private async createBetaTesterRoleMessage(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    // TODO: create modal for creating the beta tester role message
+    throw new Error('Not implemented');
+  }
+
+  private async editBetaTesterRoleMessage(
+    res: FastifyReply,
+    interaction: APIChatInputApplicationCommandGuildInteraction,
+    options: InteractionOptionResolver,
+  ) {
+    // TODO: get the message id from the options and open modal for editing the beta tester role message
+    throw new Error('Not implemented');
+  }
+
+  private async createBetaTesterRoleMessageModal(
+    res: FastifyReply,
+    interaction: APIModalSubmitInteraction,
+    customData: CustomIdData,
+  ) {
+    throw new Error('Not implemented');
+  }
+
+  private async editBetaTesterRoleMessageModal(
+    res: FastifyReply,
+    interaction: APIModalSubmitInteraction,
+    customData: CustomIdData,
+  ) {
+    throw new Error('Not implemented');
+  }
+
+  private async betaTesterModal(res: FastifyReply, interaction: APIModalSubmitInteraction, customData: CustomIdData) {
+    // TODO: get text input for the user's playfab id
+    // then get the user's playfab data and check if they're a beta tester
+    // if they are, give them the beta tester role
+    // if not, tell them they're not a beta tester
+    throw new Error('Not implemented');
+  }
+
+  public async modalRun(reply: FastifyReply, interaction: APIModalSubmitInteraction) {
+    const customData = JSON.parse(interaction.data.custom_id) as CustomIdData;
+
+    switch (customData.action) {
+      case 'create-beta-message':
+        return this.createBetaTesterRoleMessageModal(reply, interaction, customData);
+      case 'edit-beta-message':
+        return this.editBetaTesterRoleMessageModal(reply, interaction, customData);
+      case 'beta-tester':
+        return this.betaTesterModal(reply, interaction, customData);
+      default:
+        return this.client.api.interactions.reply(reply, { content: 'Invalid action', flags: MessageFlags.Ephemeral });
+    }
+  }
+}
+
+interface RESTPostAPIPlayFabJSONBody {
+  PlayFabId: string;
+}
+
+interface RESTPostAPIPlayFabPlayerProfileResult {
+  PlayerProfile: APIPlayFabPlayerProfile;
+}
+
+interface APIPlayFabPlayerProfile {
+  PublisherId: string;
+  TitleId: string;
+  PlayerId: string;
+  DisplayName: string;
+}
+
+interface RESTPostAPIPlayFabPlayerStatisticsResult {
+  PlayFabId: string;
+  Statistics: APIPlayFabPlayerStatistics[];
+}
+
+interface APIPlayFabPlayerStatistics {
+  StatisticsName: APIPlayFabStatisticsNames;
+  Value: number;
+}
+
+enum APIPlayFabStatisticsNames {
+  IsBeta = 'is_beta',
+}
+
+enum APIPlayFabRoutes {
+  GetPlayerProfile = 'GetPlayerProfile',
+  GetPlayerStatistics = 'GetPlayerStatistics',
+}
+
+interface APIPlayFabHeaders {
+  'X-SecretKey': string;
 }

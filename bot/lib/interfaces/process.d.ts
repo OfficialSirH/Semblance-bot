@@ -8,6 +8,10 @@ declare module 'process' {
         readonly DEV_TOKEN: string;
         readonly DATABASE_URL: string;
 
+        readonly PLAYFAB_SECRET_KEY: string;
+        readonly PLAYFAB_TITLE_ID: string;
+        readonly BETA_JOIN_CHANNEL_ID: string;
+
         readonly DEPLOY: string;
 
         readonly PUBLIC_KEY: string;
