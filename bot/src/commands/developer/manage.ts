@@ -1,16 +1,23 @@
+import { buildCustomId } from '#constants/components';
 import { Category, GuildId, PreconditionName, isDstObserved } from '#constants/index';
-import type { CustomIdData } from '#lib/interfaces/Semblance';
+import type { ParsedCustomIdData, ResultValue } from '#lib/interfaces/Semblance';
 import { gameEvents, type Events } from '#lib/utils/events';
 import { Command } from '#structures/Command';
 import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder } from '@discordjs/builders';
 import {
   ApplicationCommandOptionType,
+  ButtonStyle,
+  ComponentType,
   GuildScheduledEventEntityType,
   GuildScheduledEventPrivacyLevel,
   MessageFlags,
   Routes,
+  TextInputStyle,
   type APIApplicationCommandAutocompleteGuildInteraction,
   type APIChatInputApplicationCommandGuildInteraction,
+  type APIMessageComponentGuildInteraction,
+  type APIModalSubmitGuildInteraction,
   type APIModalSubmitInteraction,
   type RESTGetAPIGuildScheduledEventsResult,
   type RESTPatchAPIGuildScheduledEventJSONBody,
@@ -51,9 +58,9 @@ export default class Manage extends Command {
       case 'beta-tester':
         switch (subcommand) {
           case 'create':
-            return this.createBetaTesterRoleMessage(res, interaction, options);
+            return this.createBetaTesterRoleMessage(res, interaction);
           case 'edit':
-            return this.editBetaTesterRoleMessage(res, interaction, options);
+            return this.editBetaTesterRoleMessage(res, interaction);
           default:
             return this.client.api.interactions.reply(res, { content: 'Invalid subcommand' });
         }
@@ -171,13 +178,6 @@ export default class Manage extends Command {
                 name: 'edit',
                 description: 'Edit a role message for beta testers',
                 type: ApplicationCommandOptionType.Subcommand,
-                options: [
-                  {
-                    name: 'message-id',
-                    description: 'The message id of the role message',
-                    type: ApplicationCommandOptionType.String,
-                  },
-                ],
               },
             ],
           },
@@ -279,14 +279,45 @@ export default class Manage extends Command {
     }
   }
 
+  public async componentRun(
+    reply: FastifyReply,
+    interaction: APIMessageComponentGuildInteraction,
+    customData: ManageButtonCustomId,
+  ) {
+    if (customData.action != 'beta-tester-button') return;
+
+    const modal = new ModalBuilder()
+      .setTitle('Input Your PlayFab ID')
+      .setCustomId(
+        buildCustomId({
+          command: this.name,
+          action: ManageModalActions.BetaTester.action,
+          id: interaction.member.user.id,
+        }),
+      )
+      .setComponents([
+        new ActionRowBuilder<TextInputBuilder>().addComponents([
+          new TextInputBuilder()
+            .setCustomId(ManageModalActions.BetaTester.PlayFabIdInput)
+            .setStyle(TextInputStyle.Short)
+            .setLabel('Player ID')
+            .setPlaceholder('Enter your Player ID')
+            .setRequired(true),
+        ]),
+      ])
+      .toJSON();
+
+    await this.client.api.interactions.createModal(reply, modal);
+  }
+
   private async pullPlayFabData<
     T extends RESTPostAPIPlayFabPlayerProfileResult | RESTPostAPIPlayFabPlayerStatisticsResult | unknown = unknown,
-  >(route: APIPlayFabRoutes, playFabId: string) {
+  >(route: APIPlayFabRoutes, playFabId: string): Promise<ResultValue<boolean, T>> {
     const headers: APIPlayFabHeaders = {
       'X-SecretKey': process.env.PLAYFAB_SECRET_KEY,
     };
 
-    const playerData = (await request(`https://${process.env.PLAYFAB_TITLE_ID}.playfabapi.com/Server/${route}`, {
+    const playerData = await request(`https://${process.env.PLAYFAB_TITLE_ID}.playfabapi.com/Server/${route}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -295,68 +326,216 @@ export default class Manage extends Command {
       body: JSON.stringify({
         PlayFabId: playFabId,
       } satisfies RESTPostAPIPlayFabJSONBody),
-    }).then(res => res.body.json())) as Promise<T>;
+    })
+      .then(res => res.body.json() as Promise<T>)
+      .catch(e => `Couldn't retrieve the specified player: ${e}`);
 
-    return playerData;
+    return typeof playerData == 'string' ? { ok: false, message: playerData } : { ok: true, value: playerData };
   }
 
   private async createBetaTesterRoleMessage(
     res: FastifyReply,
     interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: InteractionOptionResolver,
   ) {
-    // TODO: create modal for creating the beta tester role message
-    throw new Error('Not implemented');
+    const components = [
+      new ActionRowBuilder<TextInputBuilder>().addComponents([
+        new TextInputBuilder()
+          .setCustomId(ManageModalActions.CreateBetaMessage.RoleMessageContent)
+          .setLabel('Beta Role Message Content')
+          .setStyle(TextInputStyle.Paragraph)
+          .setPlaceholder('Press the button and input your Player ID to get the Beta Tester role!')
+          .setRequired(true),
+      ]),
+    ];
+
+    const modal = new ModalBuilder()
+      .setTitle('Create Beta Tester Role Message')
+      .setCustomId(
+        buildCustomId({
+          command: this.name,
+          action: ManageModalActions.CreateBetaMessage.action,
+          id: interaction.member.user.id,
+        }),
+      )
+      .setComponents(components)
+      .toJSON();
+
+    await this.client.api.interactions.createModal(res, modal);
   }
 
   private async editBetaTesterRoleMessage(
     res: FastifyReply,
     interaction: APIChatInputApplicationCommandGuildInteraction,
-    options: InteractionOptionResolver,
   ) {
-    // TODO: get the message id from the options and open modal for editing the beta tester role message
-    throw new Error('Not implemented');
+    const components = [
+      new ActionRowBuilder<TextInputBuilder>().addComponents([
+        new TextInputBuilder()
+          .setCustomId(ManageModalActions.EditBetaMessage.RoleMessageId)
+          .setLabel('Beta Role Message ID')
+          .setStyle(TextInputStyle.Short)
+          .setPlaceholder('Enter the message ID to edit')
+          .setRequired(true),
+        new TextInputBuilder()
+          .setCustomId(ManageModalActions.EditBetaMessage.RoleMessageContent)
+          .setLabel('Beta Role Message Content')
+          .setStyle(TextInputStyle.Paragraph)
+          .setValue('Press the button and input your Player ID to get the Beta Tester role!')
+          .setRequired(true),
+      ]),
+    ];
+
+    const modal = new ModalBuilder()
+      .setTitle('Edit Beta Tester Role Message')
+      .setCustomId(
+        buildCustomId({
+          command: this.name,
+          action: ManageModalActions.EditBetaMessage.action,
+          id: interaction.member.user.id,
+        }),
+      )
+      .setComponents(components)
+      .toJSON();
+
+    await this.client.api.interactions.createModal(res, modal);
   }
 
-  private async createBetaTesterRoleMessageModal(
-    res: FastifyReply,
-    interaction: APIModalSubmitInteraction,
-    customData: CustomIdData,
-  ) {
-    throw new Error('Not implemented');
+  private async createBetaTesterRoleMessageModal(res: FastifyReply, interaction: APIModalSubmitGuildInteraction) {
+    const components = [
+      new ActionRowBuilder<ButtonBuilder>()
+        .addComponents([
+          new ButtonBuilder()
+            .setCustomId(
+              buildCustomId({
+                command: this.name,
+                action: 'beta-tester-button' satisfies ManageButtonCustomId['action'],
+                id: interaction.member.user.id,
+              }),
+            )
+            .setLabel('Get Beta Tester Role')
+            .setStyle(ButtonStyle.Primary),
+        ])
+        .toJSON(),
+    ];
+
+    const content = interaction.data.components[0].components.find(
+      c => c.type == ComponentType.TextInput && c.custom_id == ManageModalActions.CreateBetaMessage.RoleMessageContent,
+    )!.value;
+
+    await this.client.rest.post(Routes.channelMessages(process.env.BETA_JOIN_CHANNEL_ID), {
+      body: {
+        content,
+        components,
+      },
+    });
+
+    return this.client.api.interactions.reply(res, {
+      content: 'Successfully created the beta tester role message!',
+      flags: MessageFlags.Ephemeral,
+    });
   }
 
-  private async editBetaTesterRoleMessageModal(
-    res: FastifyReply,
-    interaction: APIModalSubmitInteraction,
-    customData: CustomIdData,
-  ) {
-    throw new Error('Not implemented');
+  private async editBetaTesterRoleMessageModal(res: FastifyReply, interaction: APIModalSubmitGuildInteraction) {
+    const content = interaction.data.components[0].components.find(
+      c => c.type == ComponentType.TextInput && c.custom_id == ManageModalActions.EditBetaMessage.RoleMessageContent,
+    )!.value;
+
+    const messageId = interaction.data.components[0].components.find(
+      c => c.type == ComponentType.TextInput && c.custom_id == ManageModalActions.EditBetaMessage.RoleMessageId,
+    )?.value;
+
+    if (!messageId)
+      return this.client.api.interactions.reply(res, { content: 'Missing message id', flags: MessageFlags.Ephemeral });
+
+    await this.client.rest.patch(Routes.channelMessage(process.env.BETA_JOIN_CHANNEL_ID, messageId), {
+      body: {
+        content,
+      },
+    });
+
+    return this.client.api.interactions.reply(res, {
+      content: 'Successfully edited the beta tester role message!',
+      flags: MessageFlags.Ephemeral,
+    });
   }
 
-  private async betaTesterModal(res: FastifyReply, interaction: APIModalSubmitInteraction, customData: CustomIdData) {
-    // TODO: get text input for the user's playfab id
-    // then get the user's playfab data and check if they're a beta tester
-    // if they are, give them the beta tester role
-    // if not, tell them they're not a beta tester
-    throw new Error('Not implemented');
+  private async betaTesterModal(res: FastifyReply, interaction: APIModalSubmitInteraction) {
+    const playfabId = interaction.data.components[0].components.find(
+      c => c.type == ComponentType.TextInput && c.custom_id == ManageModalActions.BetaTester.PlayFabIdInput,
+    )?.value;
+
+    if (!playfabId)
+      return this.client.api.interactions.reply(res, { content: 'Missing player id', flags: MessageFlags.Ephemeral });
+
+    const playerProfile = await this.pullPlayFabData<RESTPostAPIPlayFabPlayerProfileResult>(
+      APIPlayFabRoutes.GetPlayerProfile,
+      playfabId,
+    );
+
+    if (!playerProfile.ok)
+      return this.client.api.interactions.reply(res, { content: playerProfile.message, flags: MessageFlags.Ephemeral });
+
+    const playerStatistics = await this.pullPlayFabData<RESTPostAPIPlayFabPlayerStatisticsResult>(
+      APIPlayFabRoutes.GetPlayerStatistics,
+      playfabId,
+    );
+
+    if (!playerStatistics.ok)
+      return this.client.api.interactions.reply(res, {
+        content: playerStatistics.message,
+        flags: MessageFlags.Ephemeral,
+      });
+
+    const isBetaTester = playerStatistics.value.Statistics.some(
+      stat => stat.StatisticsName == APIPlayFabStatisticsNames.IsBeta && stat.Value > 0,
+    );
+
+    if (!isBetaTester)
+      return this.client.api.interactions.reply(res, {
+        content: `Sorry, ${playerProfile.value.PlayerProfile.DisplayName}, you're not a beta tester. :(`,
+        flags: MessageFlags.Ephemeral,
+      });
+
+    await this.client.rest.put(
+      Routes.guildMemberRole(interaction.guild_id!, interaction.member!.user.id, process.env.BETA_TESTER_ROLE_ID),
+    );
+
+    return this.client.api.interactions.reply(res, {
+      content: `Congrats on the beta role, ${playerProfile.value.PlayerProfile.DisplayName}!`,
+    });
   }
 
-  public async modalRun(reply: FastifyReply, interaction: APIModalSubmitInteraction) {
-    const customData = JSON.parse(interaction.data.custom_id) as CustomIdData;
+  public async modalRun(reply: FastifyReply, interaction: APIModalSubmitGuildInteraction) {
+    const customData = JSON.parse(interaction.data.custom_id) as ManageModalCustomId;
 
     switch (customData.action) {
-      case 'create-beta-message':
-        return this.createBetaTesterRoleMessageModal(reply, interaction, customData);
-      case 'edit-beta-message':
-        return this.editBetaTesterRoleMessageModal(reply, interaction, customData);
-      case 'beta-tester':
-        return this.betaTesterModal(reply, interaction, customData);
+      case ManageModalActions.CreateBetaMessage.action:
+        return this.createBetaTesterRoleMessageModal(reply, interaction);
+      case ManageModalActions.EditBetaMessage.action:
+        return this.editBetaTesterRoleMessageModal(reply, interaction);
+      case ManageModalActions.BetaTester.action:
+        return this.betaTesterModal(reply, interaction);
       default:
         return this.client.api.interactions.reply(reply, { content: 'Invalid action', flags: MessageFlags.Ephemeral });
     }
   }
 }
+
+type ManageButtonCustomId = ParsedCustomIdData<'beta-tester-button'>;
+
+type ManageModalCustomId = ParsedCustomIdData<(typeof ManageModalActions)[keyof typeof ManageModalActions]['action']>;
+
+const ManageModalActions = {
+  CreateBetaMessage: {
+    action: 'create-beta-message',
+    RoleMessageContent: 'role_message_content',
+  },
+  EditBetaMessage: {
+    action: 'edit-beta-message',
+    RoleMessageId: 'role_message_id',
+    RoleMessageContent: 'role_message_content',
+  },
+  BetaTester: { action: 'beta-tester', PlayFabIdInput: 'playfab_id_input' },
+} as const;
 
 interface RESTPostAPIPlayFabJSONBody {
   PlayFabId: string;
