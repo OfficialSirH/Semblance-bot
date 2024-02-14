@@ -174,11 +174,12 @@ export default class Manage extends Command {
                 description: 'Create a role message for beta testers',
                 type: ApplicationCommandOptionType.Subcommand,
               },
-              {
-                name: 'edit',
-                description: 'Edit a role message for beta testers',
-                type: ApplicationCommandOptionType.Subcommand,
-              },
+              // commented out until the edit functionality is fixed
+              // {
+              //   name: 'edit',
+              //   description: 'Edit a role message for beta testers',
+              //   type: ApplicationCommandOptionType.Subcommand,
+              // },
             ],
           },
         ],
@@ -287,7 +288,7 @@ export default class Manage extends Command {
     if (customData.action != 'beta-tester-button') return;
 
     const modal = new ModalBuilder()
-      .setTitle('Input Your PlayFab ID')
+      .setTitle('Input Your Player ID')
       .setCustomId(
         buildCustomId({
           command: this.name,
@@ -363,6 +364,7 @@ export default class Manage extends Command {
     await this.client.api.interactions.createModal(res, modal);
   }
 
+  // NOTE: Who even knows what's the issue with this function, it's perfectly fine but broken somehow
   private async editBetaTesterRoleMessage(
     res: FastifyReply,
     interaction: APIChatInputApplicationCommandGuildInteraction,
@@ -485,13 +487,13 @@ export default class Manage extends Command {
         flags: MessageFlags.Ephemeral,
       });
 
-    const isBetaTester = playerStatistics.value.Statistics.some(
-      stat => stat.StatisticsName == APIPlayFabStatisticsNames.IsBeta && stat.Value > 0,
+    const isBetaTester = playerStatistics.value.data.Statistics.some(
+      stat => stat.StatisticName == APIPlayFabStatisticNames.IsBeta && stat.Value > 0,
     );
 
     if (!isBetaTester)
       return this.client.api.interactions.reply(res, {
-        content: `Sorry, ${playerProfile.value.PlayerProfile.DisplayName}, you're not a beta tester. :(`,
+        content: `Sorry, ${playerProfile.value.data.PlayerProfile.DisplayName}, you're not a beta tester. :(`,
         flags: MessageFlags.Ephemeral,
       });
 
@@ -500,7 +502,8 @@ export default class Manage extends Command {
     );
 
     return this.client.api.interactions.reply(res, {
-      content: `Congrats on the beta role, ${playerProfile.value.PlayerProfile.DisplayName}!`,
+      content: `Congrats on the beta role, ${playerProfile.value.data.PlayerProfile.DisplayName}!`,
+      flags: MessageFlags.Ephemeral,
     });
   }
 
@@ -542,7 +545,11 @@ interface RESTPostAPIPlayFabJSONBody {
 }
 
 interface RESTPostAPIPlayFabPlayerProfileResult {
-  PlayerProfile: APIPlayFabPlayerProfile;
+  code: number;
+  status: string;
+  data: {
+    PlayerProfile: APIPlayFabPlayerProfile;
+  };
 }
 
 interface APIPlayFabPlayerProfile {
@@ -553,16 +560,20 @@ interface APIPlayFabPlayerProfile {
 }
 
 interface RESTPostAPIPlayFabPlayerStatisticsResult {
-  PlayFabId: string;
-  Statistics: APIPlayFabPlayerStatistics[];
+  code: number;
+  status: string;
+  data: {
+    PlayFabId: string;
+    Statistics: APIPlayFabPlayerStatistics[];
+  };
 }
 
 interface APIPlayFabPlayerStatistics {
-  StatisticsName: APIPlayFabStatisticsNames;
+  StatisticName: APIPlayFabStatisticNames;
   Value: number;
 }
 
-enum APIPlayFabStatisticsNames {
+enum APIPlayFabStatisticNames {
   IsBeta = 'is_beta',
 }
 
