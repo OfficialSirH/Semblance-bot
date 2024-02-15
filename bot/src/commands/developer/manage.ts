@@ -335,7 +335,13 @@ export default class Manage extends Command {
 
     if (typeof playerData == 'string') return { ok: false, message: playerData };
 
-    return playerData.status == 'OK' ? { ok: true, value: playerData as T } : { ok: false, message: playerData.error };
+    return playerData.status == 'OK'
+      ? { ok: true, value: playerData as T }
+      : {
+          ok: false,
+          message: `There was an issue fetching the inputted Player ID, did you properly copy the id from the game's menu (look at instructions above button)?
+            If you're sure you did, please contact the bot owner for further assistance.`,
+        };
   }
 
   private async createBetaTesterRoleMessage(
