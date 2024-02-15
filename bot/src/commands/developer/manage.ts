@@ -34,6 +34,9 @@ export default class Manage extends Command {
       description: 'Manage the bot.',
       fullCategory: [Category.developer],
       preconditions: [PreconditionName.OwnerOnly],
+      componentParseOptions: {
+        allowOthers: true,
+      },
     });
   }
 
@@ -174,12 +177,11 @@ export default class Manage extends Command {
                 description: 'Create a role message for beta testers',
                 type: ApplicationCommandOptionType.Subcommand,
               },
-              // commented out until the edit functionality is fixed
-              // {
-              //   name: 'edit',
-              //   description: 'Edit a role message for beta testers',
-              //   type: ApplicationCommandOptionType.Subcommand,
-              // },
+              {
+                name: 'edit',
+                description: 'Edit a role message for beta testers',
+                type: ApplicationCommandOptionType.Subcommand,
+              },
             ],
           },
         ],
@@ -364,19 +366,20 @@ export default class Manage extends Command {
     await this.client.api.interactions.createModal(res, modal);
   }
 
-  // NOTE: Who even knows what's the issue with this function, it's perfectly fine but broken somehow
   private async editBetaTesterRoleMessage(
     res: FastifyReply,
     interaction: APIChatInputApplicationCommandGuildInteraction,
   ) {
     const components = [
-      new ActionRowBuilder<TextInputBuilder>().addComponents([
+      new ActionRowBuilder<TextInputBuilder>().setComponents([
         new TextInputBuilder()
           .setCustomId(ManageModalActions.EditBetaMessage.RoleMessageId)
           .setLabel('Beta Role Message ID')
           .setStyle(TextInputStyle.Short)
           .setPlaceholder('Enter the message ID to edit')
           .setRequired(true),
+      ]),
+      new ActionRowBuilder<TextInputBuilder>().setComponents([
         new TextInputBuilder()
           .setCustomId(ManageModalActions.EditBetaMessage.RoleMessageContent)
           .setLabel('Beta Role Message Content')
