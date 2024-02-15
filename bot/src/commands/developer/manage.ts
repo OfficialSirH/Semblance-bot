@@ -330,10 +330,12 @@ export default class Manage extends Command {
         PlayFabId: playFabId,
       } satisfies RESTPostAPIPlayFabJSONBody),
     })
-      .then(res => res.body.json() as Promise<T>)
+      .then(res => res.body.json() as Promise<RESTPostAPIPlayFabOkResult | RESTPostAPIPlayFabErrorResult>)
       .catch(e => `Couldn't retrieve the specified player: ${e}`);
 
-    return typeof playerData == 'string' ? { ok: false, message: playerData } : { ok: true, value: playerData };
+    if (typeof playerData == 'string') return { ok: false, message: playerData };
+
+    return playerData.status == 'OK' ? { ok: true, value: playerData as T } : { ok: false, message: playerData.error };
   }
 
   private async createBetaTesterRoleMessage(
@@ -547,9 +549,25 @@ interface RESTPostAPIPlayFabJSONBody {
   PlayFabId: string;
 }
 
-interface RESTPostAPIPlayFabPlayerProfileResult {
+interface RESTPostAPIPlayFabResult {
   code: number;
   status: string;
+}
+
+interface RESTPostAPIPlayFabOkResult extends RESTPostAPIPlayFabResult {
+  status: 'OK';
+  data: unknown;
+}
+
+interface RESTPostAPIPlayFabErrorResult extends RESTPostAPIPlayFabResult {
+  status: 'BadRequest';
+  error: string;
+  errorCode: number;
+  errorMessage: string;
+  errorDetails: Record<string, string[]>;
+}
+
+interface RESTPostAPIPlayFabPlayerProfileResult extends RESTPostAPIPlayFabOkResult {
   data: {
     PlayerProfile: APIPlayFabPlayerProfile;
   };
@@ -562,9 +580,7 @@ interface APIPlayFabPlayerProfile {
   DisplayName: string;
 }
 
-interface RESTPostAPIPlayFabPlayerStatisticsResult {
-  code: number;
-  status: string;
+interface RESTPostAPIPlayFabPlayerStatisticsResult extends RESTPostAPIPlayFabOkResult {
   data: {
     PlayFabId: string;
     Statistics: APIPlayFabPlayerStatistics[];
