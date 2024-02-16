@@ -340,7 +340,7 @@ export default class Manage extends Command {
       : {
           ok: false,
           message: `There was an issue fetching the inputted Player ID, did you properly copy the id from the game's menu (look at instructions above button)?
-            If you're sure you did, please contact the bot owner for further assistance.`,
+If you're sure you did, please contact the bot owner for further assistance.`,
         };
   }
 
