@@ -1,28 +1,28 @@
-import { GuildId, Category, authorDefault, disableAllComponents, SuggestionConstants } from '#constants/index';
 import { buildCustomId } from '#constants/components';
+import { Category, GuildId, SuggestionConstants, authorDefault, disableAllComponents } from '#constants/index';
+import { type CustomIdData, type ParsedCustomIdData } from '#lib/interfaces/Semblance';
 import { Command } from '#structures/Command';
-import {
-  ButtonStyle,
-  TextInputStyle,
-  MessageFlags,
-  Routes,
-  type APIModalSubmitGuildInteraction,
-  type APIChatInputApplicationCommandGuildInteraction,
-  type APIMessageComponentButtonInteraction,
-  type APIUser,
-  type APIDMChannel,
-  type RESTPostAPIApplicationCommandsJSONBody,
-} from '@discordjs/core';
-import type { FastifyReply } from 'fastify';
 import {
   ActionRowBuilder,
   ButtonBuilder,
   EmbedBuilder,
-  type MessageActionRowComponentBuilder,
   ModalBuilder,
   TextInputBuilder,
+  type MessageActionRowComponentBuilder,
 } from '@discordjs/builders';
-import { type CustomIdData, type ParsedCustomIdData } from '#lib/interfaces/Semblance';
+import {
+  ButtonStyle,
+  MessageFlags,
+  Routes,
+  TextInputStyle,
+  type APIChatInputApplicationCommandGuildInteraction,
+  type APIDMChannel,
+  type APIMessageComponentButtonInteraction,
+  type APIModalSubmitGuildInteraction,
+  type APIUser,
+  type RESTPostAPIApplicationCommandsJSONBody,
+} from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 import { scheduleJob } from 'node-schedule';
 
 export default class Suggest extends Command {

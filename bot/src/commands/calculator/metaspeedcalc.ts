@@ -62,8 +62,8 @@ export default class MetaspeedCalc extends Command {
       dinoRanks == 550
         ? 10
         : Math.ceil(dinoRanks / 50) > Math.floor(dinoRanks / 50)
-        ? Math.floor(dinoRanks / 50)
-        : Math.floor(dinoRanks / 50) - 1;
+          ? Math.floor(dinoRanks / 50)
+          : Math.floor(dinoRanks / 50) - 1;
     const dinoranksMulti = 1 + dinoRanks * 0.1 + dinoPrestigeBonus * 0.5;
     num *= dinoRanks == 0 ? 1 : dinoranksMulti;
     num *= simSpeed / 100 + 1;
