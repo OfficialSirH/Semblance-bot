@@ -4,17 +4,17 @@ sourceMapInstall();
 await import('#constants/index');
 
 import { isProduction, publicKey } from '#constants/index';
-import fastify from 'fastify';
-import { InteractionType, InteractionResponseType, type APIInteraction } from 'discord-api-types/v9';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
-import nacl from 'tweetnacl';
 import { Client } from '#structures/Client';
 import {
   ApplicationCommandType,
+  MessageFlags,
   type APIChatInputApplicationCommandInteraction,
   type APIContextMenuInteraction,
-  MessageFlags,
 } from '@discordjs/core';
+import { InteractionResponseType, InteractionType, type APIInteraction } from 'discord-api-types/v9';
+import fastify from 'fastify';
+import nacl from 'tweetnacl';
 
 const client = new Client();
 
@@ -133,4 +133,4 @@ app.route<{ Body: APIInteraction }>({
   },
 });
 
-await app.listen({ port: 8008, host: '0.0.0.0' });
+await app.listen({ port: process.env.PORT || 8008, host: '0.0.0.0' });

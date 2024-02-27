@@ -1,15 +1,16 @@
-﻿import * as fs from 'fs/promises';
-import type { Stream } from 'stream';
-import { Attachy } from '#structures/Attachy';
+﻿import { Attachy } from '#structures/Attachy';
+import type { Client } from '#structures/Client';
+import { TimestampStyles, type TimestampStylesString } from '@discordjs/builders';
 import {
-  type APIGuildMember,
-  type APIMessageComponentInteraction,
   Routes,
-  type APIUser,
+  type APIGuildMember,
   type APIInteractionGuildMember,
+  type APIMessageComponentInteraction,
+  type APIUser,
 } from '@discordjs/core';
 import type { REST } from '@discordjs/rest';
-import type { Client } from '#structures/Client';
+import * as fs from 'fs/promises';
+import type { Stream } from 'stream';
 
 export const isProduction = process.env.NODE_ENV === 'production';
 export const token = isProduction ? process.env.TOKEN : process.env.DEV_TOKEN;
@@ -203,7 +204,10 @@ export const isDstObserved = (date: Date) => {
   return date.getTime() > dstStart.getTime() && date.getTime() < dstEnd.getTime();
 };
 
-export const formattedDate = (ms: number) => `<t:${Math.floor(ms / 1000)}:F>`;
+export const shortFormattedDate = (ms: number) => formattedDate(ms, TimestampStyles.ShortDateTime);
+
+export const formattedDate = (ms: number, timestampFormat: TimestampStylesString = 'F') =>
+  `<t:${Math.floor(ms / 1000)}:${timestampFormat}>`;
 
 export const msToTime = (ms: number) => {
   const days = Math.floor(ms / 86400000); // 24*60*60*1000

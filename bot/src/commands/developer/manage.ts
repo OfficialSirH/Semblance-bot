@@ -86,8 +86,8 @@ export default class Manage extends Command {
       .map((_, i) => {
         const date = new Date();
         date.setUTCDate(inputtedAmount as number);
-        date.setUTCMonth(new Date().getMonth() + i);
-        date.setUTCHours(isDstObserved(date) ? 16 : 17, 0, 0, 0);
+        date.setUTCMonth(date.getMonth() + i);
+        date.setUTCHours(isDstObserved(date) ? 17 : 16, 0, 0, 0);
         return {
           name: date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
           value: date.getTime().toString(),
