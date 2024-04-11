@@ -80,7 +80,7 @@ export default class Manage extends Command {
   ) {
     const option = options.getFocused(true, true);
     const input = option.value;
-    let hours = isDstObserved(new Date()) ? 15 : 14;
+    let hours = isDstObserved(new Date()) ? 15 : 16;
     if (option.name == 'end') hours -= 1;
     let day = 1;
 
