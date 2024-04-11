@@ -2,6 +2,7 @@ import { buildCustomId } from '#constants/components';
 import { Category, GuildId, PreconditionName, isDstObserved } from '#constants/index';
 import type { ParsedCustomIdData, ResultValue } from '#lib/interfaces/Semblance';
 import { gameEvents, type Events } from '#lib/utils/events';
+import { clamp } from '#lib/utils/math';
 import { Command } from '#structures/Command';
 import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 import { ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder } from '@discordjs/builders';
@@ -33,7 +34,7 @@ export default class Manage extends Command {
       name: 'manage',
       description: 'Manage the bot.',
       fullCategory: [Category.developer],
-      preconditions: [PreconditionName.OwnerOnly],
+      preconditions: [PreconditionName.ModOnly],
       componentParseOptions: {
         allowOthers: true,
       },
@@ -74,22 +75,33 @@ export default class Manage extends Command {
 
   public override async autocompleteRun(
     res: FastifyReply,
-    interaction: APIApplicationCommandAutocompleteGuildInteraction,
+    _: APIApplicationCommandAutocompleteGuildInteraction,
     options: InteractionOptionResolver,
   ) {
-    let inputtedAmount = options.getFocused(true);
-    inputtedAmount = parseInt(inputtedAmount as string);
-    if (!inputtedAmount || inputtedAmount < 1) inputtedAmount = 1;
+    const option = options.getFocused(true, true);
+    const input = option.value;
+    let hours = isDstObserved(new Date()) ? 15 : 14;
+    if (option.name == 'end') hours -= 1;
+    let day = 1;
+
+    if ((input as string).includes(':')) {
+      [day, hours] = (input as string).split(':').map(v => parseInt(v));
+      day = isNaN(day) ? 1 : clamp(day, 1, 31);
+      hours = isNaN(hours) ? 0 : clamp(hours, 0, 23);
+    } else {
+      day = parseInt(input as string);
+      day = isNaN(day) ? 1 : clamp(day, 1, 31);
+    }
 
     const dateChoices = Array(12)
       .fill(0)
       .map((_, i) => {
         const date = new Date();
-        date.setUTCDate(inputtedAmount as number);
+        date.setUTCDate(day);
         date.setUTCMonth(date.getMonth() + i);
-        date.setUTCHours(isDstObserved(date) ? 17 : 16, 0, 0, 0);
+        date.setUTCHours(hours, 0, 0, 0);
         return {
-          name: date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }),
+          name: `${date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })} : ${hours}:00 GMT`,
           value: date.getTime().toString(),
         };
       });
@@ -125,14 +137,14 @@ export default class Manage extends Command {
                   },
                   {
                     name: 'start',
-                    description: 'The day of the month the game event starts',
+                    description: 'The day and hour(optional) the game event starts',
                     type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                     required: true,
                   },
                   {
                     name: 'end',
-                    description: 'The day of the month the game event ends',
+                    description: 'The day and hour(optional) the game event ends',
                     type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                     required: true,
@@ -153,13 +165,13 @@ export default class Manage extends Command {
                   },
                   {
                     name: 'start',
-                    description: 'The day of the month the game event starts',
+                    description: 'The day and hour(optional) the game event starts',
                     type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                   },
                   {
                     name: 'end',
-                    description: 'The day of the month the game event ends',
+                    description: 'The day and hour(optional) the game event ends',
                     type: ApplicationCommandOptionType.String,
                     autocomplete: true,
                   },

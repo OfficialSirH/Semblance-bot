@@ -1,15 +1,15 @@
 import {
   ApplicationCommandOptionType,
-  type APIUser,
-  type APIRole,
+  type APIApplicationCommandAutocompleteInteraction,
+  type APIAttachment,
+  type APIChatInputApplicationCommandInteraction,
   type APIInteractionDataResolved,
   type APIInteractionDataResolvedChannel,
   type APIInteractionDataResolvedGuildMember,
-  type APIAttachment,
-  type Snowflake,
   type APIMessage,
-  type APIChatInputApplicationCommandInteraction,
-  type APIApplicationCommandAutocompleteInteraction,
+  type APIRole,
+  type APIUser,
+  type Snowflake,
 } from '@discordjs/core';
 import { InteractionOption } from './InteractionOption.js';
 
@@ -342,7 +342,11 @@ export class InteractionOptionResolver {
     return resolved;
   }
 
-  // get focused
+  public getFocused(throwIfNotHere: true): string | number;
+  public getFocused(throwIfNotHere: true, wholeOption: true): InteractionOption;
+  public getFocused(throwIfNotHere: false, wholeOption: true): InteractionOption | undefined;
+  public getFocused(): string | number | undefined;
+
   /**
    * get the focused option
    * @example
@@ -353,15 +357,12 @@ export class InteractionOptionResolver {
    * @returns the focused option
    * @throws if there is no focused option
    */
-  public getFocused(throwIfNotHere: boolean): string | number;
-  public getFocused(): string | number | undefined;
-
-  public getFocused(throwIfNotHere = false): string | number | undefined {
+  public getFocused(throwIfNotHere = false, wholeOption = false): InteractionOption | string | number | undefined {
     const focused = this.options?.find(o => o.focused);
     if (!focused) {
       if (throwIfNotHere) throw new Error(`Option "${name}" not found`);
       return undefined;
     }
-    return focused.value as string | number;
+    return wholeOption ? focused : (focused.value as string | number);
   }
 }
