@@ -1,19 +1,19 @@
-import { Category, avatarUrl, randomColor } from '#constants/index';
-import { Command } from '#structures/Command';
 import { buildCustomId, filterAction } from '#constants/components';
+import { Category, avatarUrl, randomColor } from '#constants/index';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
+import { Command } from '#structures/Command';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+  type MessageActionRowComponentBuilder,
+} from '@discordjs/builders';
 import {
   ButtonStyle,
   type APIChatInputApplicationCommandGuildInteraction,
   type APIMessageComponentButtonInteraction,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
-import {
-  EmbedBuilder,
-  ActionRowBuilder,
-  type MessageActionRowComponentBuilder,
-  ButtonBuilder,
-} from '@discordjs/builders';
-import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Credits extends Command {
   public constructor(client: Command.Requirement) {
@@ -40,7 +40,6 @@ export default class Credits extends Command {
             "**Semblance Beta:** Lemon ([Lemon's Instagram page](https://www.instagram.com/creations_without_limtation/))",
           ].join('\n'),
         },
-        { name: 'Silly dude who makes up funny ideas', value: 'NerdGamer2848' },
         { name: 'Early Testers', value: 'Aditya, Parrot, Diza, 0NrD, and Aure' },
         {
           name: 'Contributors',
@@ -49,6 +48,7 @@ export default class Credits extends Command {
             '**Image for Prestige List:** Hardik Chavada',
             '**Image for Nanobots:** SampeDrako',
             '**Image for Currency:** Off Pringles',
+            '**Darwin bust statue and all Civilization Garden secrets explanations**: QuarterPL(quarterpl)',
           ].join('\n'),
         },
       );
