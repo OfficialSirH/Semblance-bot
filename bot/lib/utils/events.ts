@@ -112,6 +112,22 @@ Play from ${shortFormattedDate(start)} until ${shortFormattedDate(
     description: () => 'Nothing to see here...🕵️',
     image: eventAttachments.QuestionMark,
   },
+  'Visual Art': {
+    description: (start: number, end: number) =>
+      `Unleash your creativity with Visual Art — The Power of Images, a captivating journey through art history 🎨🚀. Immerse yourself in a world of art, collect unique badges, and experience the evolution of creativity . Join the event from ${shortFormattedDate(start)} to ${shortFormattedDate(end)}. 
+      Let's transform the canvas of history together! 🎉👩‍🎨`,
+    image: eventAttachments.VisualArt,
+  },
+  Outbreaks: {
+    description: (start: number, end: number) =>
+      `🦠🌎 Dive into the history of pandemics in our Explore: Outbreaks event. Witness the battle between humans and diseases from ${shortFormattedDate(start)} to ${shortFormattedDate(end)}. Join the fight!`,
+    image: eventAttachments.Outbreaks,
+  },
+  Cats: {
+    description: (start: number, end: number) =>
+      `🐱✨ Dive into the world of cats at our Explore: Cats event! Learn about their playful behaviors and quirky traits from ${shortFormattedDate(start)} to ${shortFormattedDate(end)}. Join us for a purr-fect adventure with our furry friends!`,
+    image: eventAttachments.Cats,
+  },
 };
 
 export type Events =
@@ -125,6 +141,9 @@ export type Events =
   | 'A Journey of Serenity'
   | 'Good Vibrations'
   | 'Human Body'
+  | 'Visual Art'
+  | 'Outbreaks'
+  | 'Cats'
   | '?';
 
 export interface GameEvent {
