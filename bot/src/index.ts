@@ -16,6 +16,8 @@ import { InteractionResponseType, InteractionType, type APIInteraction } from 'd
 import fastify from 'fastify';
 import nacl from 'tweetnacl';
 
+import { startEventScheduler } from './utils/eventScheduler';
+
 const client = new Client();
 
 if (Boolean(process.env.DEPLOY) === true) {
@@ -25,6 +27,9 @@ if (Boolean(process.env.DEPLOY) === true) {
 }
 
 await client.login();
+
+// hopefully.... this doesnt block the event loop thread ?
+startEventScheduler(client);
 
 const app = fastify();
 
