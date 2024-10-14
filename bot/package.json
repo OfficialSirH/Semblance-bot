@@ -14,6 +14,7 @@
     "@prisma/client": "^5.10.2",
     "@top-gg/sdk": "^3.1.6",
     "bufferutil": "^4.0.8",
+    "cron": "^3.1.7",
     "dotenv": "^16.4.5",
     "fastify": "^4.26.1",
     "form-data-encoder": "^4.0.2",
