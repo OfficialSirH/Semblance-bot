@@ -1,5 +1,5 @@
 import { request } from 'undici';
-import { type Events } from './events';
+import { type Events } from '#lib/utils/events';
 const EVENTS_API_URL =
   process.env.EVENTS_API_URL || 'https://mr5bv92qy1.execute-api.us-east-1.amazonaws.com/prod/global-vars-get';
 

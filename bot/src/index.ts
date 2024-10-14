@@ -15,8 +15,7 @@ import {
 import { InteractionResponseType, InteractionType, type APIInteraction } from 'discord-api-types/v9';
 import fastify from 'fastify';
 import nacl from 'tweetnacl';
-
-import { startEventScheduler } from './utils/eventScheduler';
+import { startEventScheduler } from '#structures/eventScheduler';
 
 const client = new Client();
 
