@@ -1,28 +1,66 @@
-import { GuildId } from '#constants/index';
-import { Routes } from '@discordjs/core';
 import { request } from 'undici';
-import { Client } from '@discordjs/core';
-
+import { type Events } from './events';
 const EVENTS_API_URL =
   process.env.EVENTS_API_URL || 'https://mr5bv92qy1.execute-api.us-east-1.amazonaws.com/prod/global-vars-get';
 
-const SEGMENTS = ['lte_production', 'lte_production_2', 'lte_production_3', 'lte_production_4'];
+export const SEGMENTS = ['lte_production', 'lte_production_2', 'lte_production_3', 'lte_production_4'];
 
-const CRON_SCHEDULE = '* */1 * * *';
-
-interface ExternalEventData {
-  name: string;
-  promo: string;
-  start: string;
-  end: string;
-  req: string;
-}
+export const CRON_SCHEDULE = '* */1 * * *';
 
 interface GlobalVarsResponse {
   data: Record<string, string>;
   dateUpdated: number;
   unixNow: number;
 }
+
+export interface ParsedEventData {
+  name: EventKeyNames;
+  promo: string;
+  start: Date;
+  end: Date;
+  req: string;
+}
+
+export type EventKeyNames =
+  | 'Webb'
+  | 'Fungus'
+  | 'Philosophy'
+  | 'Money'
+  | 'Extinction'
+  | 'Pollinator'
+  | 'Ocean'
+  | 'Tea'
+  | 'Music'
+  | 'Human Body'
+  | 'Visual Art'
+  | 'Cat'
+  | 'Outbreaks'
+  | 'Rock'
+  | 'Cryptid'
+  | 'Question'; // ideally this will never be used but for the sake of completeness
+
+// now we need to map EventKeyNames to Events, example:
+// eventkeyname Webb maps to Events."James Webb"
+// eventkeyname Fungus maps to Events.FungusAmongUs
+
+export const EventKeyNamesToEvents: Record<EventKeyNames, Events> = {
+  Webb: 'James Webb',
+  Fungus: 'Fungus Among Us',
+  Philosophy: 'The Big Questions',
+  Money: 'The Price of Trust',
+  Extinction: 'Life After Apocalypse',
+  Pollinator: 'Co-Evolution Love Story',
+  Ocean: 'Deep Sea Life: Lurking in the Dark',
+  Tea: 'A Journey of Serenity',
+  Music: 'Good Vibrations',
+  'Human Body': 'Human Body',
+  'Visual Art': 'Visual Art',
+  Cat: 'Cats',
+  Outbreaks: 'Outbreaks',
+  Rock: 'Rock',
+  Cryptid: 'Cryptids',
+  Question: '?',
+};
 
 export async function fetchEvents(): Promise<GlobalVarsResponse | null> {
   console.log(`[EventScheduler] Fetching events from: ${EVENTS_API_URL}`);
@@ -50,10 +88,10 @@ export async function fetchEvents(): Promise<GlobalVarsResponse | null> {
  * Parses a segment data string into a structured ExternalEventData object.
  *
  * @param segmentData - The raw segment data string from the API. example: "name=pollen14?promo=01/01/2023?start=10/14/2024 3:10 PM?end=10/17/2024 3:00 PM? = 29.58"
- * @returns An ExternalEventData object if parsing is successful; otherwise, null.
+ * @returns An ParsedEventData object if parsing is successful; otherwise, null.
  */
 
-export function parseSegmentData(segmentData: string): ExternalEventData | null {
+export function parseSegmentData(segmentData: string): ParsedEventData | null {
   try {
     const parts = segmentData.split('?');
     const data: Record<string, string> = {};
@@ -66,11 +104,11 @@ export function parseSegmentData(segmentData: string): ExternalEventData | null 
 
     if (data.name && data.promo && data.start && data.end) {
       return {
-        name: data.name,
+        name: data.name as EventKeyNames,
         promo: data.promo,
-        start: data.start,
-        end: data.end,
-        req: data.req, 
+        start: parseUTCDate(data.start),
+        end: parseUTCDate(data.end),
+        req: data.req,
       };
     } else {
       console.warn(`[EventScheduler] Incomplete event data: ${segmentData}`);
@@ -97,7 +135,7 @@ function getSegmentName(segmentKey: string): string {
   return segmentKey;
 }
 
-export function parseUTCDate(dateString: string): Date {
+function parseUTCDate(dateString: string): Date {
   const date = new Date(dateString);
 
   // Return the date parsed in UTC
