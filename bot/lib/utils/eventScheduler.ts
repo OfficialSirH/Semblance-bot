@@ -120,21 +120,6 @@ export function parseSegmentData(segmentData: string): ParsedEventData | null {
   }
 }
 
-/**
- * Extracts a clean segment name from the segment key.
- * For example, "lte_production_2" becomes "production_2".
- *
- * @param segmentKey - The original segment key string.
- * @returns The cleaned segment name.
- */
-function getSegmentName(segmentKey: string): string {
-  const parts = segmentKey.split('_');
-  if (parts.length >= 2) {
-    return parts.slice(1).join('_');
-  }
-  return segmentKey;
-}
-
 function parseUTCDate(dateString: string): Date {
   const date = new Date(dateString);
 
