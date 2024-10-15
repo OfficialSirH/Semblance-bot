@@ -25,7 +25,8 @@
       "#constants/*": ["./src/constants/*"],
       "#interaction-handlers/*": ["./src/interaction-handlers/*"],
       "#routes/*": ["src/routes/*"],
-      "#itemList": ["./lib/utils/itemList"]
+      "#itemList": ["./lib/utils/itemList"],
+      "#utils/*": ["./src/utils/*"],
     }
   },
   "watchOptions": {

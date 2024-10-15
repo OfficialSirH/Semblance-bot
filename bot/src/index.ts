@@ -15,6 +15,7 @@ import {
 import { InteractionResponseType, InteractionType, type APIInteraction } from 'discord-api-types/v9';
 import fastify from 'fastify';
 import nacl from 'tweetnacl';
+import { startEventScheduler } from '#structures/eventScheduler';
 
 const client = new Client();
 
@@ -25,6 +26,9 @@ if (Boolean(process.env.DEPLOY) === true) {
 }
 
 await client.login();
+
+// hopefully.... this doesnt block the event loop thread ?
+startEventScheduler(client);
 
 const app = fastify();
 
