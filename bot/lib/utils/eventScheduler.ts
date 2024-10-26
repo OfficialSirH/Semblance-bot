@@ -22,21 +22,22 @@ export interface ParsedEventData {
 }
 
 export type EventKeyNames =
-  | 'Webb'
-  | 'Fungus'
-  | 'Philosophy'
-  | 'Money'
-  | 'Extinction'
-  | 'Pollinator'
-  | 'Ocean'
-  | 'Tea'
-  | 'Music'
-  | 'Human Body'
-  | 'Visual Art'
-  | 'Cat'
-  | 'Outbreaks'
-  | 'Rock'
-  | 'Cryptid'
+  | 'pollen'
+  | 'fungi'
+  | 'philo'
+  | 'money'
+  | 'extinct'
+  | 'webb'
+  | 'ocean'
+  | 'tea'
+  | 'music'
+  | 'human'
+  | 'art'
+  | 'cat'
+  | 'plague'
+  | 'rock'
+  | 'cryptid'
+  | 'math'
   | 'Question'; // ideally this will never be used but for the sake of completeness
 
 // now we need to map EventKeyNames to Events, example:
@@ -44,21 +45,22 @@ export type EventKeyNames =
 // eventkeyname Fungus maps to Events.FungusAmongUs
 
 export const EventKeyNamesToEvents: Record<EventKeyNames, Events> = {
-  Webb: 'James Webb',
-  Fungus: 'Fungus Among Us',
-  Philosophy: 'The Big Questions',
-  Money: 'The Price of Trust',
-  Extinction: 'Life After Apocalypse',
-  Pollinator: 'Co-Evolution Love Story',
-  Ocean: 'Deep Sea Life: Lurking in the Dark',
-  Tea: 'A Journey of Serenity',
-  Music: 'Good Vibrations',
-  'Human Body': 'Human Body',
-  'Visual Art': 'Visual Art',
-  Cat: 'Cats',
-  Outbreaks: 'Outbreaks',
-  Rock: 'Rock',
-  Cryptid: 'Cryptids',
+  pollen: 'James Webb',
+  fungi: 'Fungus Among Us',
+  philo: 'The Big Questions',
+  money: 'The Price of Trust',
+  extinct: 'Life After Apocalypse',
+  webb: 'Co-Evolution Love Story',
+  ocean: 'Deep Sea Life: Lurking in the Dark',
+  tea: 'A Journey of Serenity',
+  music: 'Good Vibrations',
+  human: 'Human Body',
+  art: 'Visual Art',
+  cat: 'Cats',
+  plague: 'Outbreaks',
+  rock: 'Rock',
+  cryptid: 'Cryptids',
+  math: 'Math',
   Question: '?',
 };
 
@@ -104,7 +106,7 @@ export function parseSegmentData(segmentData: string): ParsedEventData | null {
 
     if (data.name && data.promo && data.start && data.end) {
       return {
-        name: data.name as EventKeyNames,
+        name: sanitizeName(data.name) as EventKeyNames,
         promo: data.promo,
         start: parseUTCDate(data.start),
         end: parseUTCDate(data.end),
@@ -136,3 +138,8 @@ function parseUTCDate(dateString: string): Date {
     ),
   );
 }
+
+const sanitizeName = (name: string): string => {
+  // Remove any non-alphabetic characters
+  return name.replace(/[^a-zA-Z ]/g, '');
+};
