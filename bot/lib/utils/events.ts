@@ -140,6 +140,11 @@ Play from ${shortFormattedDate(start)} until ${shortFormattedDate(
       `👣🌲 Embark on a journey to uncover the learn the mysteries behind cryptids in our Explore: Cryptids event! Explore the legends and mysteries of these mythical creatures from ${shortFormattedDate(start)} to ${shortFormattedDate(end)}. Join us for an adventure of discovery and wonder!`,
     image: eventAttachments.Cryptids,
   },
+  Math: {
+    description: (start: number, end: number) =>
+      `🧮📚 Dive into the world of numbers and equations in our Explore: Math event! From ${shortFormattedDate(start)} to ${shortFormattedDate(end)}, explore the beauty and complexity of mathematics. Join us for a journey of discovery and problem-solving!`,
+    image: eventAttachments.Math,
+  },
 };
 
 export type Events =
@@ -158,6 +163,7 @@ export type Events =
   | 'Cats'
   | 'Rock'
   | 'Cryptids'
+  | 'Math'
   | '?';
 
 export interface GameEvent {
