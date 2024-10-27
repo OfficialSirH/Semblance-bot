@@ -1,11 +1,11 @@
-import { request } from 'undici';
 import { type Events } from '#lib/utils/events';
-const EVENTS_API_URL =
-  process.env.EVENTS_API_URL || 'https://mr5bv92qy1.execute-api.us-east-1.amazonaws.com/prod/global-vars-get';
+import { request } from 'undici';
 
 export const SEGMENTS = ['lte_production', 'lte_production_2', 'lte_production_3', 'lte_production_4'];
 
-export const CRON_SCHEDULE = '* */1 * * *';
+// TODO: undo this edit after testing is done
+// export const CRON_SCHEDULE = '* */1 * * *';
+export const CRON_SCHEDULE = '*/1 * * * *';
 
 interface GlobalVarsResponse {
   data: Record<string, string>;
@@ -65,16 +65,14 @@ export const EventKeyNamesToEvents: Record<EventKeyNames, Events> = {
 };
 
 export async function fetchEvents(): Promise<GlobalVarsResponse | null> {
-  console.log(`[EventScheduler] Fetching events from: ${EVENTS_API_URL}`);
+  console.log(`[EventScheduler] Fetching events from: ${process.env.EVENTS_API_URL}`);
   try {
-    const response = await request(EVENTS_API_URL);
+    const response = await request(process.env.EVENTS_API_URL);
     if (response.statusCode !== 200) {
       throw new Error(`Failed to fetch events: ${response.statusCode}`);
     }
 
-    const rawData = await response.body.text();
-
-    const data: GlobalVarsResponse = JSON.parse(rawData);
+    const data = await (response.body.json() as Promise<GlobalVarsResponse>);
     if (!data) {
       throw new Error('Invalid events data');
     }

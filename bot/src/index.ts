@@ -6,6 +6,7 @@ await import('#constants/index');
 import { isProduction, publicKey } from '#constants/index';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
 import { Client } from '#structures/Client';
+import { startEventScheduler } from '#structures/eventScheduler';
 import {
   ApplicationCommandType,
   MessageFlags,
@@ -15,7 +16,6 @@ import {
 import { InteractionResponseType, InteractionType, type APIInteraction } from 'discord-api-types/v9';
 import fastify from 'fastify';
 import nacl from 'tweetnacl';
-import { startEventScheduler } from '#structures/eventScheduler';
 
 const client = new Client();
 
@@ -27,7 +27,6 @@ if (Boolean(process.env.DEPLOY) === true) {
 
 await client.login();
 
-// hopefully.... this doesnt block the event loop thread ?
 startEventScheduler(client);
 
 const app = fastify();
@@ -41,9 +40,9 @@ app.route<{ Body: APIInteraction }>({
     const body = JSON.stringify(req.body);
 
     const isValid = nacl.sign.detached.verify(
-      Buffer.from(timestamp + body),
-      Buffer.from(signature, 'hex'),
-      Buffer.from(publicKey, 'hex'),
+      Uint8Array.from(Buffer.from(timestamp + body)),
+      Uint8Array.from(Buffer.from(signature, 'hex')),
+      Uint8Array.from(Buffer.from(publicKey, 'hex')),
     );
 
     if (!isValid) return res.status(401).send('Invalid request signature');

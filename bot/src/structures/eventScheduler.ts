@@ -1,15 +1,15 @@
-import { CronJob } from 'cron';
-import type { Client } from '#structures/Client';
+import { GuildId } from '#constants/index';
 import {
+  CRON_SCHEDULE,
+  EventKeyNamesToEvents,
   fetchEvents,
   parseSegmentData,
-  CRON_SCHEDULE,
   SEGMENTS,
-  EventKeyNamesToEvents,
-  type ParsedEventData,
   type EventKeyNames,
+  type ParsedEventData,
 } from '#lib/utils/eventScheduler';
 import { gameEvents, type Events } from '#lib/utils/events';
+import type { Client } from '#structures/Client';
 import {
   GuildScheduledEventEntityType,
   GuildScheduledEventPrivacyLevel,
@@ -17,7 +17,7 @@ import {
   type APIGuildScheduledEvent,
   type RESTPostAPIGuildScheduledEventJSONBody,
 } from '@discordjs/core';
-import { GuildId } from '#constants/index';
+import { CronJob } from 'cron';
 
 /**
  * Creates a new Discord scheduled event.
@@ -44,8 +44,8 @@ async function createDiscordEvent(client: Client, eventName: Events, startTime: 
       name: `The ${eventName} Exploration!`,
       scheduled_start_time: startTime.toISOString(),
       scheduled_end_time: endTime.toISOString(),
-      privacy_level: GuildScheduledEventPrivacyLevel.GuildOnly, // GUILD_ONLY
-      entity_type: GuildScheduledEventEntityType.External, // EXTERNAL
+      privacy_level: GuildScheduledEventPrivacyLevel.GuildOnly,
+      entity_type: GuildScheduledEventEntityType.External,
       description: description,
       image: imageBuffer,
       // TODO: Add image and description using GameEvent object
@@ -83,7 +83,7 @@ export function startEventScheduler(client: Client) {
       try {
         const eventGlobalVarsData = await fetchEvents();
         if (!eventGlobalVarsData || !eventGlobalVarsData.data) {
-          console.warn(`[EventScheduler] No data received from fetchEvents.`);
+          console.warn('[EventScheduler] No data received from fetchEvents.');
           // TODO: Implement the webhook warn system ?
           return;
         }
@@ -96,6 +96,9 @@ export function startEventScheduler(client: Client) {
             eventsFromGlobalVars.push(parsed);
           }
         }
+        console.log(
+          `[EventScheduler] List of found events from server: ${eventsFromGlobalVars.map(e => e.name).join(', ')}`,
+        );
       } catch (error) {
         // TODO: Webhook error system
         console.error(`[EventScheduler] Failed to fetch events: ${error}`);
@@ -124,12 +127,15 @@ export function startEventScheduler(client: Client) {
         // Now we compare the fetched events with the existing events
         // and create/update/delete events as necessary
         // The comparable data is the event name, start time, and end time
-
         for (const event of eventsFromGlobalVars) {
           // First we need to convert the event name to the display name
           const eventName = EventKeyNamesToEvents[event.name as EventKeyNames];
           if (!eventName) {
             console.warn(`[EventScheduler] No display name found for event key: ${event.name}`);
+            continue;
+          }
+          if (event.start.getTime() < Date.now()) {
+            console.log(`Event "${eventName}" has already started.`);
             continue;
           }
 
