@@ -1,4 +1,4 @@
-FROM node:16-alpine as builder
+FROM node:20-alpine as builder
 
 WORKDIR /build
 
@@ -24,7 +24,7 @@ RUN npm prune --production
 # run node prune
 RUN node-prune
 
-FROM node:16-alpine as runtime
+FROM node:20-alpine as runtime
 
 COPY --from=builder build/dist ./dist
 COPY --from=builder build/node_modules ./node_modules
