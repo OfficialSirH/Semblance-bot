@@ -6,7 +6,6 @@ await import('#constants/index');
 import { isProduction, publicKey } from '#constants/index';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
 import { Client } from '#structures/Client';
-import { startEventScheduler } from '#structures/eventScheduler';
 import {
   ApplicationCommandType,
   MessageFlags,
@@ -16,6 +15,7 @@ import {
 import { InteractionResponseType, InteractionType, type APIInteraction } from 'discord-api-types/v9';
 import fastify from 'fastify';
 import nacl from 'tweetnacl';
+import { startEventScheduler } from '#lib/utils/eventScheduler';
 
 const client = new Client();
 
@@ -27,7 +27,9 @@ if (Boolean(process.env.DEPLOY) === true) {
 
 await client.login();
 
-startEventScheduler(client);
+if (isProduction) {
+  startEventScheduler(client);
+}
 
 const app = fastify();
 
