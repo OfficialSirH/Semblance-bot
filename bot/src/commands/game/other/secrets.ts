@@ -14,7 +14,6 @@ export default class Secrets extends Command {
   }
 
   public override async chatInputRun(res: FastifyReply) {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const help = this.client.cache.data.applicationCommands.find(c => c.name === 'help')!;
 
     const embed = new EmbedBuilder()

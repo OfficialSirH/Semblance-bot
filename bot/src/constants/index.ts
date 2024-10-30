@@ -56,9 +56,8 @@ export const userTag = (user: APIUser | undefined) =>
   user ? `${user.username}#${user.discriminator}` : 'Unknown User';
 
 export const authorDefault = (user: APIUser | undefined) => ({
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   name: userTag(user!),
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
   iconURL: avatarUrl(user!),
 });
 

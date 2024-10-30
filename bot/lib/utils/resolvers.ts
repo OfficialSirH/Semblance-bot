@@ -83,6 +83,7 @@ export const getUser = async (rest: REST, search: string | Snowflake, guild: API
   else
     try {
       return rest.get(Routes.user(search)) as Promise<APIUser>;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       return undefined;
     }

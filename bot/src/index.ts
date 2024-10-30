@@ -5,17 +5,19 @@ await import('#constants/index');
 
 import { isProduction, publicKey } from '#constants/index';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
+import { startEventScheduler } from '#lib/utils/eventScheduler';
 import { Client } from '#structures/Client';
 import {
   ApplicationCommandType,
+  InteractionResponseType,
+  InteractionType,
   MessageFlags,
   type APIChatInputApplicationCommandInteraction,
   type APIContextMenuInteraction,
+  type APIInteraction,
 } from '@discordjs/core';
-import { InteractionResponseType, InteractionType, type APIInteraction } from 'discord-api-types/v9';
 import fastify from 'fastify';
 import nacl from 'tweetnacl';
-import { startEventScheduler } from '#lib/utils/eventScheduler';
 
 const client = new Client();
 
