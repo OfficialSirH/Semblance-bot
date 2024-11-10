@@ -1,18 +1,18 @@
 import { onlyUnique } from '#constants/index';
+import type { Attachy } from '#structures/Attachy';
+import type { Client } from '#structures/Client';
 import {
-  type Snowflake,
   ChannelType,
-  type RESTPostAPIChannelMessageJSONBody,
   Routes,
-  type RESTPostAPIChannelMessageResult,
   type APIGuild,
-  type GatewayGuildCreateDispatchData,
   type APIGuildMember,
   type APIUser,
+  type GatewayGuildCreateDispatchData,
+  type RESTPostAPIChannelMessageJSONBody,
+  type RESTPostAPIChannelMessageResult,
+  type Snowflake,
 } from '@discordjs/core';
-import type { Client } from '#structures/Client';
 import type { REST } from '@discordjs/rest';
-import type { Attachy } from '#structures/Attachy';
 import { FormDataEncoder, type FormDataLike } from 'form-data-encoder';
 import { Readable } from 'node:stream';
 
@@ -60,9 +60,7 @@ export const getMember = (rest: REST, search: string | Snowflake, guild: APIGuil
 export const getChannel = (search: string | Snowflake, guild: APIGuild & GatewayGuildCreateDispatchData) => {
   const channels = guild.channels.filter(ch => ch.type == ChannelType.GuildText);
   return (
-    false ??
-    channels.find(ch => search.toLowerCase() == ch.name?.toLowerCase()) ??
-    channels.find(ch => ch.id === getId(search))
+    channels.find(ch => search.toLowerCase() == ch.name?.toLowerCase()) ?? channels.find(ch => ch.id === getId(search))
   );
 };
 
@@ -85,6 +83,7 @@ export const getUser = async (rest: REST, search: string | Snowflake, guild: API
   else
     try {
       return rest.get(Routes.user(search)) as Promise<APIUser>;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       return undefined;
     }

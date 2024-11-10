@@ -1,6 +1,5 @@
 declare module 'process' {
   global {
-    // eslint-disable-next-line @typescript-eslint/no-namespace
     namespace NodeJS {
       interface ProcessEnv {
         readonly NODE_ENV: 'development' | 'production';
@@ -8,6 +7,7 @@ declare module 'process' {
         readonly TOKEN: string;
         readonly DEV_TOKEN: string;
         readonly DATABASE_URL: string;
+        readonly EVENTS_API_URL: string;
 
         readonly PLAYFAB_SECRET_KEY: string;
         readonly PLAYFAB_TITLE_ID: string;

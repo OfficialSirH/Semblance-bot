@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 /** Converts large numbers to named values */
 export const bigToName = (number: number) => {
   if (Number.isNaN(number) ?? number == 0) return 0;
@@ -11,7 +12,9 @@ export const bigToName = (number: number) => {
   let { digits } = groups;
   number = base;
   if (digits < 6) return Number(`${base}e${digits}`);
-  if (digits % 3 != 0 && digits < 66) (number *= Math.pow(10, digits % 3)), (digits -= digits % 3);
+  if (digits % 3 != 0 && digits < 66) {
+    (number *= Math.pow(10, digits % 3)), (digits -= digits % 3);
+  }
   if (digits >= 6 && digits < 9) return `${number} Million(E${digits})`;
   if (digits >= 9 && digits < 12) return `${number} Billion(E${digits})`;
   if (digits >= 12 && digits < 15) return `${number} Trillion(E${digits})`;

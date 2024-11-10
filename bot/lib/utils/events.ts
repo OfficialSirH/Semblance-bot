@@ -78,7 +78,8 @@ Play from ${shortFormattedDate(start)} until ${shortFormattedDate(
   },
   'Deep Sea Life: Lurking in the Dark': {
     description: (start: number, end: number) =>
-      `From ${shortFormattedDate(start)} to ${shortFormattedDate(
+      `🌊  Get ready to immerse yourself in the mysteries of the ocean with our latest Explore event - Deep Sea Life: Lurking in the Dark🦑 
+      From ${shortFormattedDate(start)} to ${shortFormattedDate(
         end,
       )}, discover the ocean's most unique creatures, from microscopic marvels to giant behemoths! 🐋`,
     image: eventAttachments.DeepSeaLifeLurkingInTheDark,
@@ -128,6 +129,22 @@ Play from ${shortFormattedDate(start)} until ${shortFormattedDate(
       `🐱✨ Dive into the world of cats at our Explore: Cats event! Learn about their playful behaviors and quirky traits from ${shortFormattedDate(start)} to ${shortFormattedDate(end)}. Join us for a purr-fect adventure with our furry friends!`,
     image: eventAttachments.Cats,
   },
+  Rock: {
+    description: (start: number, end: number) =>
+      `Embark on a geological journey in our latest exploration event: Rocks - Set in Stone! 🌍 🪨 ${shortFormattedDate(start)} to ${shortFormattedDate(end)}, explore ancient geological processes, crystals and precious gems. Join us to discover the natural artistry of Earth's crust and collect dazzling geological badges`,
+    image: eventAttachments.Rock,
+  },
+  // TODO: Add image and update description, this is just a temporary placeholder
+  Cryptids: {
+    description: (start: number, end: number) =>
+      `👣🌲 Embark on a journey to uncover the learn the mysteries behind cryptids in our Explore: Cryptids event! Explore the legends and mysteries of these mythical creatures from ${shortFormattedDate(start)} to ${shortFormattedDate(end)}. Join us for an adventure of discovery and wonder!`,
+    image: eventAttachments.Cryptids,
+  },
+  Math: {
+    description: (start: number, end: number) =>
+      `🧮📚 Dive into the world of numbers and equations in our Explore: Math event! From ${shortFormattedDate(start)} to ${shortFormattedDate(end)}, explore the beauty and complexity of mathematics. Join us for a journey of discovery and problem-solving!`,
+    image: eventAttachments.Math,
+  },
 };
 
 export type Events =
@@ -144,6 +161,9 @@ export type Events =
   | 'Visual Art'
   | 'Outbreaks'
   | 'Cats'
+  | 'Rock'
+  | 'Cryptids'
+  | 'Math'
   | '?';
 
 export interface GameEvent {

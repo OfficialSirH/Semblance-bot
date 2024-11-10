@@ -1,26 +1,27 @@
-import { Category, authorDefault, avatarUrl, randomColor } from '#constants/index';
-import { Command } from '#structures/Command';
+/* eslint-disable @typescript-eslint/no-unused-expressions */
 import { currentPrice } from '#constants/commands';
 import { buildCustomId, filterAction } from '#constants/components';
+import { about, askConfirmation, collect, create, leaderboard, stats, upgrade, votes } from '#constants/idle-game';
+import { Category, authorDefault, avatarUrl, randomColor } from '#constants/index';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
+import { Command } from '#structures/Command';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 import {
-  type APIChatInputApplicationCommandGuildInteraction,
-  ButtonStyle,
+  ActionRowBuilder,
+  ButtonBuilder,
+  EmbedBuilder,
+  chatInputApplicationCommandMention,
+  type MessageActionRowComponentBuilder,
+} from '@discordjs/builders';
+import {
   ApplicationCommandOptionType,
-  type RESTPostAPIApplicationCommandsJSONBody,
+  ButtonStyle,
   MessageFlags,
+  type APIChatInputApplicationCommandGuildInteraction,
   type APIMessageComponentButtonInteraction,
+  type RESTPostAPIApplicationCommandsJSONBody,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
-import {
-  EmbedBuilder,
-  ActionRowBuilder,
-  type MessageActionRowComponentBuilder,
-  ButtonBuilder,
-  chatInputApplicationCommandMention,
-} from '@discordjs/builders';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
-import { askConfirmation, about, collect, leaderboard, votes, create, upgrade, stats } from '#constants/idle-game';
-import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 
 export default class Game extends Command {
   public constructor(client: Command.Requirement) {
@@ -43,7 +44,7 @@ export default class Game extends Command {
     const statsHandler = await this.client.db.game.findUnique({ where: { player: user.id } }),
       embed = new EmbedBuilder();
     let cost = Infinity;
-    if (!statsHandler)
+    if (!statsHandler) {
       embed
         .setTitle("Semblance's Idle-Game")
         .setAuthor(authorDefault(user))
@@ -58,7 +59,7 @@ export default class Game extends Command {
             'Vote - list of voting sites to earn bonus currency',
           ].join('\n'),
         );
-    else
+    } else {
       embed
         .setTitle("Welcome back to Semblance's Idle-Game!")
         .setAuthor(authorDefault(user))
@@ -85,6 +86,7 @@ export default class Game extends Command {
         )
         .setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' }),
         (cost = await currentPrice(this.client, statsHandler));
+    }
 
     const components = [
       new ActionRowBuilder<MessageActionRowComponentBuilder>().addComponents(

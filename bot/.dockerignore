@@ -1,3 +1,9 @@
 node_modules
 dist
+.husky
 .yarn/cache
+.yarn/install-state.gz
+.eslintrc.json
+.lintstagedrc.json
+.prettierrc.json
+README.md

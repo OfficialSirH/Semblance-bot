@@ -1,20 +1,7 @@
 import {
-  type APIApplicationCommandAutocompleteInteraction,
-  type APIApplicationCommandInteraction,
-  type APIChatInputApplicationCommandInteraction,
-  type APIContextMenuInteraction,
-  type APIMessageComponentInteraction,
-  type APIModalSubmitInteraction,
-  ApplicationCommandType,
-  MessageFlags,
-  type RESTPostAPIApplicationCommandsJSONBody,
-  InteractionType,
-  type APIInteractionResponseCallbackData,
-  type APIInteraction,
-} from '@discordjs/core';
-import type { FastifyReply } from 'fastify';
-import type { Client } from './Client.js';
-import type { Awaitable, ParsedCustomIdData, ResultValue } from '#lib/interfaces/Semblance';
+  componentInteractionDefaultParser,
+  type ComponentInteractionDefaultParserOptions,
+} from '#constants/components';
 import {
   getPermissionLevel,
   type Category,
@@ -22,12 +9,25 @@ import {
   type PreconditionName,
   type SubCategory,
 } from '#constants/index';
-import { InteractionOptionResolver } from './InteractionOptionResolver.js';
-import type { Attachy } from './Attachy.js';
+import type { Awaitable, ParsedCustomIdData, ResultValue } from '#lib/interfaces/Semblance';
 import {
-  componentInteractionDefaultParser,
-  type ComponentInteractionDefaultParserOptions,
-} from '#constants/components';
+  ApplicationCommandType,
+  InteractionType,
+  MessageFlags,
+  type APIApplicationCommandAutocompleteInteraction,
+  type APIApplicationCommandInteraction,
+  type APIChatInputApplicationCommandInteraction,
+  type APIContextMenuInteraction,
+  type APIInteraction,
+  type APIInteractionResponseCallbackData,
+  type APIMessageComponentInteraction,
+  type APIModalSubmitInteraction,
+  type RESTPostAPIApplicationCommandsJSONBody,
+} from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
+import type { Attachy } from './Attachy.js';
+import type { Client } from './Client.js';
+import { InteractionOptionResolver } from './InteractionOptionResolver.js';
 
 export abstract class Command {
   public readonly name: string;

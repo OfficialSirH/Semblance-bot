@@ -29,7 +29,7 @@ export default class MiscHelp extends Command {
       .setDescription(
         `All of the available commands below can be found through the ${chatInputApplicationCommandMention(
           'help',
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-non-null-asserted-optional-chain
+          // eslint-disable-next-line @typescript-eslint/no-non-null-asserted-optional-chain
           this.client.cache.data.applicationCommands.find(c => c.name === 'help')?.id!,
         )} command via the \`query\` option.`,
       )

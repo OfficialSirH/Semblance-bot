@@ -5,14 +5,17 @@ await import('#constants/index');
 
 import { isProduction, publicKey } from '#constants/index';
 import type { CustomIdData } from '#lib/interfaces/Semblance';
+import { startEventScheduler } from '#lib/utils/eventScheduler';
 import { Client } from '#structures/Client';
 import {
   ApplicationCommandType,
+  InteractionResponseType,
+  InteractionType,
   MessageFlags,
   type APIChatInputApplicationCommandInteraction,
   type APIContextMenuInteraction,
+  type APIInteraction,
 } from '@discordjs/core';
-import { InteractionResponseType, InteractionType, type APIInteraction } from 'discord-api-types/v9';
 import fastify from 'fastify';
 import nacl from 'tweetnacl';
 
@@ -26,6 +29,10 @@ if (Boolean(process.env.DEPLOY) === true) {
 
 await client.login();
 
+if (isProduction) {
+  startEventScheduler(client);
+}
+
 const app = fastify();
 
 app.route<{ Body: APIInteraction }>({
@@ -37,9 +44,9 @@ app.route<{ Body: APIInteraction }>({
     const body = JSON.stringify(req.body);
 
     const isValid = nacl.sign.detached.verify(
-      Buffer.from(timestamp + body),
-      Buffer.from(signature, 'hex'),
-      Buffer.from(publicKey, 'hex'),
+      Uint8Array.from(Buffer.from(timestamp + body)),
+      Uint8Array.from(Buffer.from(signature, 'hex')),
+      Uint8Array.from(Buffer.from(publicKey, 'hex')),
     );
 
     if (!isValid) return res.status(401).send('Invalid request signature');

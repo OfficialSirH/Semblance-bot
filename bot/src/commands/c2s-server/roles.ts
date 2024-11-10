@@ -1,22 +1,22 @@
-import { c2sRoles, c2sRolesInformation, Category, attachments, GuildId, authorDefault } from '#constants/index';
 import { buildCustomId } from '#constants/components';
-import type { FastifyReply } from 'fastify';
+import { attachments, authorDefault, c2sRoles, c2sRolesInformation, Category, GuildId } from '#constants/index';
+import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 import { Command } from '#structures/Command';
-import {
-  MessageFlags,
-  ButtonStyle,
-  type APIChatInputApplicationCommandGuildInteraction,
-  type APIMessageComponentButtonInteraction,
-  Routes,
-} from '@discordjs/core';
 import {
   ActionRowBuilder,
   ButtonBuilder,
   EmbedBuilder,
   type MessageActionRowComponentBuilder,
 } from '@discordjs/builders';
-import type { ParsedCustomIdData } from '#lib/interfaces/Semblance';
 import { Collection } from '@discordjs/collection';
+import {
+  ButtonStyle,
+  MessageFlags,
+  Routes,
+  type APIChatInputApplicationCommandGuildInteraction,
+  type APIMessageComponentButtonInteraction,
+} from '@discordjs/core';
+import type { FastifyReply } from 'fastify';
 
 // todo: remove this poor cooldown implementation and actually implement a cooldown that will actually remove the user from the cooldown collection after the cooldown is over
 const cooldown: Collection<string, number> = new Collection();

@@ -1,22 +1,22 @@
-﻿import { getRole, getChannel, getUser } from '#lib/utils/resolvers';
+﻿import { Category, PreconditionName, onlyUnique, randomColor } from '#constants/index';
+import { getChannel, getRole, getUser } from '#lib/utils/resolvers';
 import { Command } from '#structures/Command';
-import { Category, PreconditionName, onlyUnique, randomColor } from '#constants/index';
-import { request } from 'undici';
+import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 import {
+  ApplicationCommandOptionType,
+  ChannelType,
+  Routes,
+  type APIChatInputApplicationCommandGuildInteraction,
   type APIEmbedField,
   type APIGuild,
   type APIInvite,
   type APIMessage,
   type APIUser,
   type GatewayGuildCreateDispatchData,
-  Routes,
   type RESTPostAPIApplicationCommandsJSONBody,
-  ApplicationCommandOptionType,
-  ChannelType,
-  type APIChatInputApplicationCommandGuildInteraction,
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { request } from 'undici';
 
 export default class Lookup extends Command {
   public constructor(client: Command.Requirement) {
@@ -250,6 +250,7 @@ export default class Lookup extends Command {
           ],
         });
       }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {}
 
     // emoji lookup
@@ -259,6 +260,7 @@ export default class Lookup extends Command {
         return this.client.api.interactions.reply(res, {
           content: `✅ This Id is an emoji Id: https://cdn.discordapp.com/emojis/${unknownItem}.png`,
         });
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {}
 
     // message lookup
@@ -274,6 +276,7 @@ export default class Lookup extends Command {
           return this.client.api.interactions.reply(res, {
             content: `✅ This Id is a message Id: <https://discordapp.com/channels/${interaction.guild_id}/${ch.id}/${m.id}>`,
           });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {}
 
     return this.client.api.interactions.reply(res, {

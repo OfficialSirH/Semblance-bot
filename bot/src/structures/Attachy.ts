@@ -9,7 +9,7 @@ export class Attachy {
 
   public constructor(
     pathOrData: string | Buffer,
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+
     public readonly name: string = (pathOrData as string).split('/').pop()!,
   ) {
     if (typeof pathOrData === 'string') {
