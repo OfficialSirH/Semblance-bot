@@ -1,96 +1,102 @@
 {
-  "name": "semblance",
-  "version": "1.0.0",
-  "description": "The AI that runs the Reality Engine",
-  "main": "dist/src/index.js",
-  "author": "SirH",
-  "type": "module",
-  "dependencies": {
-    "@discordjs/builders": "1.7.0",
-    "@discordjs/collection": "^2.0.0",
-    "@discordjs/core": "^1.1.1",
-    "@discordjs/rest": "^2.2.0",
-    "@discordjs/ws": "^1.0.2",
-    "@prisma/client": "^5.21.1",
-    "@top-gg/sdk": "^3.1.6",
-    "bufferutil": "^4.0.8",
-    "cron": "^3.1.8",
-    "dotenv": "^16.4.5",
-    "fastify": "^4.28.1",
-    "form-data-encoder": "^4.0.2",
-    "node-schedule": "^2.1.1",
-    "source-map-support": "^0.5.21",
-    "tweetnacl": "^1.0.3",
-    "undici": "^6.20.1",
-    "utf-8-validate": "^6.0.4",
-    "zlib-sync": "^0.1.9"
-  },
-  "imports": {
-    "#lib/*": [
-      "./dist/lib/*.js"
-    ],
-    "#structures/*": [
-      "./dist/src/structures/*.js"
-    ],
-    "#models/*": [
-      "./dist/src/models/*.js"
-    ],
-    "#listeners/*": [
-      "./dist/src/listeners/*.js"
-    ],
-    "#constants/*": [
-      "./dist/src/constants/*.js"
-    ],
-    "#interaction-handlers/*": [
-      "./dist/src/interaction-handlers/*.js"
-    ],
-    "#routes/*": [
-      "./dist/src/routes/*.js"
-    ],
-    "#itemList": [
-      "./dist/lib/utils/itemList.js"
-    ]
-  },
-  "scripts": {
-    "deploy-commands": "rimraf ./dist && tsc --project tsconfig.json && dotenv -e .env -v DEPLOY=true -v NODE_ENV=production -- node --es-module-specifier-resolution=node ./dist/src/index.js",
-    "deploy-dev-commands": "rimraf ./dist && tsc --project tsconfig.json && dotenv -e .env -v DEPLOY=true -v NODE_ENV=development -- node --es-module-specifier-resolution=node ./dist/src/index.js",
-    "build-image": "docker compose -f ../docker-compose.yml build bot",
-    "push-image": "docker push sirh/c2s:semblance",
-    "start:docker": "node dist/src/index.js",
-    "build:docker": "npx prisma generate && npx tsc --project tsconfig.json",
-    "dev": "npx tsc --project tsconfig.json && dotenv -e .env -v NODE_ENV=development -v PORT=3000 -- node --es-module-specifier-resolution=node dist/src/index.js",
-    "cleanup": "rimraf dist",
-    "setup": "npm run lint:fix && npm run prettier",
-    "prettier": "prettier --write src/**/*.ts lib/**/*.ts *.mjs",
-    "check": "yarn types && yarn lint",
-    "types": "tsc --noEmit",
-    "lint": "eslint lib/**/*.ts src/**/*.ts *.mjs",
-    "lint:fix": "eslint --fix lib/**/*.ts src/**/*.ts *.mjs",
-    "prepare": "husky install"
-  },
-  "keywords": [],
-  "license": "MIT",
-  "devDependencies": {
-    "@eslint/eslintrc": "^3.1.0",
-    "@eslint/js": "^9.13.0",
-    "@eslint/migrate-config": "^1.3.3",
-    "@types/node": "^22.8.4",
-    "@types/node-schedule": "^2.1.7",
-    "@types/source-map-support": "^0.5.10",
-    "@types/ws": "^8.5.12",
-    "@typescript-eslint/eslint-plugin": "^8.12.2",
-    "@typescript-eslint/parser": "^8.12.2",
-    "dotenv-cli": "^7.4.2",
-    "eslint": "^9.13.0",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "globals": "^15.11.0",
-    "husky": "^9.1.6",
-    "lint-staged": "^15.2.10",
-    "prettier": "^3.3.3",
-    "prisma": "^5.21.1",
-    "rimraf": "^6.0.1",
-    "typescript": "5.6.3"
-  },
-  "packageManager": "yarn@4.5.1"
+	"name": "semblance",
+	"version": "1.0.0",
+	"description": "The AI that runs the Reality Engine",
+	"author": "SirH",
+	"license": "MIT",
+	"private": true,
+	"main": "dist/src/index.js",
+	"type": "module",
+	"imports": {
+		"#lib/*": "./dist/lib/*.js",
+		"#structures/*": "./dist/structures/*.js",
+		"#models/*": "./dist/models/*.js",
+		"#listeners/*": "./dist/listeners/*.js",
+		"#constants/*": "./dist/constants/*.js",
+		"#interaction-handlers/*": "./dist/interaction-handlers/*.js",
+		"#routes/*": "./dist/routes/*.js",
+		"#itemList": "./dist/lib/utils/itemList.js"
+	},
+	"scripts": {
+		"deploy-commands": "rimraf ./dist && tsc --project tsconfig.json && dotenv -e .env -v DEPLOY=true -v NODE_ENV=production -- node --es-module-specifier-resolution=node ./dist/src/index.js",
+		"deploy-dev-commands": "rimraf ./dist && tsc --project tsconfig.json && dotenv -e .env -v DEPLOY=true -v NODE_ENV=development -- node --es-module-specifier-resolution=node ./dist/src/index.js",
+		"build-image": "docker compose -f ../docker-compose.yml build bot",
+		"push-image": "docker push sirh/c2s:semblance",
+		"start:docker": "node --enable-source-maps dist/src/index.js",
+		"build:docker": "yarn prisma generate && yarn tsc --project tsconfig.json",
+		"dev": "yarn tsc --project tsconfig.json && dotenv -e .env -v NODE_ENV=development -v PORT=3000 -- node --es-module-specifier-resolution=node dist/src/index.js",
+		"cleanup": "rimraf dist",
+		"setup": "npm run lint:fix && npm run prettier",
+		"prettier": "prettier --write src/**/*.ts",
+		"check": "yarn types && yarn lint",
+		"types": "tsc --noEmit",
+		"lint": "eslint src/**/*.ts",
+		"lint:fix": "eslint --fix src/**/*.ts",
+		"prepare": "husky install"
+	},
+	"dependencies": {
+		"@discordjs/builders": "1.7.0",
+		"@discordjs/collection": "^2.0.0",
+		"@discordjs/core": "^1.1.1",
+		"@discordjs/rest": "^2.2.0",
+		"@discordjs/ws": "^1.0.2",
+		"@prisma/client": "^5.21.1",
+		"@sapphire/result": "^2.7.2",
+		"@skyra/env-utilities": "^1.3.0",
+		"@skyra/http-framework": "^2.1.0",
+		"@skyra/shared-http-pieces": "^1.2.2",
+		"@skyra/start-banner": "^2.0.1",
+		"@top-gg/sdk": "^3.1.6",
+		"bufferutil": "^4.0.8",
+		"cron": "^3.1.8",
+		"dotenv": "^16.4.5",
+		"fastify": "^4.28.1",
+		"form-data-encoder": "^4.0.2",
+		"gradient-string": "^3.0.0",
+		"node-schedule": "^2.1.1",
+		"tweetnacl": "^1.0.3",
+		"undici": "^6.20.1",
+		"utf-8-validate": "^6.0.4",
+		"zlib-sync": "^0.1.9"
+	},
+	"devDependencies": {
+		"@commitlint/cli": "^19.5.0",
+		"@commitlint/config-conventional": "^19.5.0",
+		"@sapphire/eslint-config": "^5.0.5",
+		"@sapphire/prettier-config": "^2.0.0",
+		"@sapphire/ts-config": "^5.0.1",
+		"@types/node": "^22.8.4",
+		"@types/node-schedule": "^2.1.7",
+		"@types/ws": "^8.5.12",
+		"@typescript-eslint/eslint-plugin": "7.18.0",
+		"@typescript-eslint/parser": "7.18.0",
+		"dotenv-cli": "^7.4.2",
+		"eslint": "8.57.1",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-prettier": "^5.2.1",
+		"globals": "^15.11.0",
+		"husky": "^9.1.6",
+		"lint-staged": "^15.2.10",
+		"prettier": "^3.3.3",
+		"prisma": "^5.21.1",
+		"rimraf": "^6.0.1",
+		"typescript": "5.6.3"
+	},
+	"commitlint": {
+		"extends": [
+			"@commitlint/config-conventional"
+		]
+	},
+	"lint-staged": {
+		"*": "prettier --ignore-unknown --write",
+		"*.{mjs,js,ts}": "eslint --fix --ext mjs,js,ts"
+	},
+	"prettier": "@sapphire/prettier-config",
+	"eslintConfig": {
+		"extends": "@sapphire",
+		"rules": {
+			"@typescript-eslint/no-duplicate-enum-values": "off"
+		}
+	},
+	"packageManager": "yarn@4.5.1"
 }
