@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
-import { currentPrice } from '#constants/commands';
-import { buildCustomId, filterAction } from '#constants/components';
-import { about, askConfirmation, collect, create, leaderboard, stats, upgrade, votes } from '#constants/idle-game';
-import { Category, authorDefault, avatarUrl, randomColor } from '#constants/index';
-import type { ParsedCustomIdData } from '#lib/typess/Semblance';
-import { Command } from '#structures/Command';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import type { ParsedCustomIdData } from '#lib/types/Semblance';
+import { currentPrice } from '#lib/utilities/commands';
+import { buildCustomId, filterAction } from '#lib/utilities/components';
+import { about, askConfirmation, collect, create, leaderboard, stats, upgrade, votes } from '#lib/utilities/idle-game';
+import { Category, authorDefault, avatarUrl, randomColor } from '#lib/utilities/index';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -150,7 +148,7 @@ export default class Game extends Command {
 			)
 		].map((row) => row.toJSON());
 
-		await this.client.api.interactions.reply(res, {
+		await interaction.reply(res, {
 			embeds: [embed.toJSON()],
 			components
 		});
@@ -162,7 +160,7 @@ export default class Game extends Command {
 
 		const statsHandler = await this.client.db.game.findUnique({ where: { player: user.id } });
 		if (!statsHandler)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content:
 					user.id != interaction.member.user.id
 						? 'This user does not exist'
@@ -190,7 +188,7 @@ export default class Game extends Command {
 				{ name: 'Idle Profit', value: statsHandler.profitRate.toString() }
 			)
 			.setFooter({ text: 'Remember to vote for Semblance to gain a production boost!' });
-		return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		return interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 
 	public override data() {
@@ -359,7 +357,7 @@ export default class Game extends Command {
 				break;
 			case 'stats':
 				if (!game)
-					return this.client.api.interactions.reply(reply, {
+					return interaction.reply(reply, {
 						content: 'You do not have a game yet.',
 						flags: MessageFlags.Ephemeral
 					});

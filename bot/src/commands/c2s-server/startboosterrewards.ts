@@ -1,6 +1,5 @@
-import { Category, GuildId } from '#constants/index';
-import { boosterRoleId, createBoosterRewards } from '#constants/models';
-import { Command } from '#structures/Command';
+import { Category, GuildId } from '#lib/utilities/index';
+import { boosterRoleId, createBoosterRewards } from '#lib/utilities/models';
 import { MessageFlags, type APIChatInputApplicationCommandGuildInteraction } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 
@@ -15,12 +14,12 @@ export default class StartBoosterRewards extends Command {
 
 	public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
 		if (!interaction.member?.roles.includes(boosterRoleId))
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'You need to have the booster role to use this command.',
 				flags: MessageFlags.Ephemeral
 			});
 
-		return this.client.api.interactions.reply(res, await createBoosterRewards(this.client, interaction.member.user.id));
+		return interaction.reply(res, await createBoosterRewards(this.client, interaction.member.user.id));
 	}
 
 	public override data() {

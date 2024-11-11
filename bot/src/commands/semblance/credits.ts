@@ -1,7 +1,6 @@
-import { buildCustomId, filterAction } from '#constants/components';
-import { Category, avatarUrl, randomColor } from '#constants/index';
-import type { ParsedCustomIdData } from '#lib/typess/Semblance';
-import { Command } from '#structures/Command';
+import type { ParsedCustomIdData } from '#lib/types/Semblance';
+import { buildCustomId, filterAction } from '#lib/utilities/components';
+import { Category, avatarUrl, randomColor } from '#lib/utilities/index';
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, type MessageActionRowComponentBuilder } from '@discordjs/builders';
 import { ButtonStyle, type APIChatInputApplicationCommandGuildInteraction, type APIMessageComponentButtonInteraction } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
@@ -59,7 +58,7 @@ export default class Credits extends Command {
 				.setStyle(ButtonStyle.Primary)
 		);
 
-		await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], components: [component.toJSON()] });
+		await interaction.reply(res, { embeds: [embed.toJSON()], components: [component.toJSON()] });
 	}
 
 	public override data() {

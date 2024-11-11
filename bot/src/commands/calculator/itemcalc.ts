@@ -1,8 +1,5 @@
-import { authorDefault, bigToName, Category, randomColor } from '#constants/index';
-import { itemList } from '#itemList';
-import type { ItemList } from '#lib/typess/ItemList';
-import { Command } from '#structures/Command';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { authorDefault, bigToName, Category, randomColor } from '#lib/utilities/index';
+import { ItemList } from '#lib/utilities/itemList';
 import { EmbedBuilder } from '@discordjs/builders';
 import {
 	ApplicationCommandOptionType,
@@ -11,6 +8,7 @@ import {
 	type APIChatInputApplicationCommandGuildInteraction,
 	type RESTPostAPIApplicationCommandsJSONBody
 } from '@discordjs/core';
+import type { Command } from '@skyra/http-framework';
 import type { FastifyReply } from 'fastify';
 
 export default class ItemCalc extends Command {
@@ -34,27 +32,27 @@ export default class ItemCalc extends Command {
 		if (!options.currentLevel) options.currentLevel = 0;
 
 		if (!options.item)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: "You forgot input for 'item'.",
 				flags: MessageFlags.Ephemeral
 			});
 
 		if (!options.levelGains)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: "You forgot input for 'level'.",
 				flags: MessageFlags.Ephemeral
 			});
 
 		let itemCost = 0;
 		let itemCostType = 'unknown currency';
-		for (const key of Object.keys(itemList))
-			if (itemList[key as keyof ItemList][options.item]) {
-				itemCost = itemList[key as keyof ItemList][options.item].price;
+		for (const key of Object.keys(ItemList))
+			if (ItemList[key as keyof ItemList][options.item]) {
+				itemCost = ItemList[key as keyof ItemList][options.item].price;
 				itemCostType = key;
 			}
 
 		if (!itemCost)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: "Your input for 'item' was invalid.",
 				flags: MessageFlags.Ephemeral
 			});
@@ -76,7 +74,7 @@ export default class ItemCalc extends Command {
 					`Resulting Price: ${bigToName(resultingPrice)} ${itemCostType}`
 				].join('\n')
 			);
-		return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		return interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 
 	public async itemCalcRev(
@@ -94,14 +92,14 @@ export default class ItemCalc extends Command {
 
 		let itemCost = 0;
 		let itemCostType = 'unknown currency';
-		for (const key of Object.keys(itemList))
-			if (itemList[key as keyof ItemList][options.item]) {
-				itemCost = itemList[key as keyof ItemList][options.item].price;
+		for (const key of Object.keys(ItemList))
+			if (ItemList[key as keyof ItemList][options.item]) {
+				itemCost = ItemList[key as keyof ItemList][options.item].price;
 				itemCostType = key;
 			}
 
 		if (!itemCost)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: "Your input for 'item' was invalid.",
 				flags: MessageFlags.Ephemeral
 			});
@@ -120,7 +118,7 @@ export default class ItemCalc extends Command {
 					`Resulting level: ${level}`
 				].join('\n')
 			);
-		return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		return interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 
 	public override chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction, options: InteractionOptionResolver) {
@@ -146,8 +144,8 @@ export default class ItemCalc extends Command {
 	) {
 		const inputtedItem = options.getString('item', true);
 
-		const fullList = Object.keys(itemList).reduce<Array<string>>(
-			(acc, currency) => acc.concat(Object.keys(itemList[currency as keyof ItemList])),
+		const fullList = Object.keys(ItemList).reduce<Array<string>>(
+			(acc, currency) => acc.concat(Object.keys(ItemList[currency as keyof ItemList])),
 			[]
 		);
 

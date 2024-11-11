@@ -6,7 +6,10 @@
 		"outDir": "./dist",
 		"composite": true,
 		"tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo",
-		"resolvePackageJsonImports": true
+		"resolvePackageJsonImports": true,
+		"paths": {
+			"*": ["./src/lib/types/augments/*"]
+		}
 	},
 	"include": ["./src"]
 }

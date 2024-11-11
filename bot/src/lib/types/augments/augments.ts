@@ -1,4 +1,5 @@
 import type { IntegerString } from '@skyra/env-utilities';
+import type { Snowflake } from 'discord-api-types/globals';
 
 declare module '@skyra/env-utilities' {
 	interface Env {
@@ -33,5 +34,21 @@ declare module '@skyra/env-utilities' {
 		readonly LOG_TOKEN: string;
 		readonly ERR_LOG_ID: string;
 		readonly ERR_LOG_TOKEN: string;
+	}
+}
+
+declare global {
+	namespace PrismaJson {
+		export interface LeaderboardUser {
+			userId: Snowflake;
+			level: number;
+		}
+
+		export interface UserReminder {
+			message: string;
+			time: Date;
+			reminderId: number;
+			channelId: Snowflake;
+		}
 	}
 }

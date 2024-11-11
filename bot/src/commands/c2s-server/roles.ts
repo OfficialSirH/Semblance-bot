@@ -1,7 +1,6 @@
-import { buildCustomId } from '#constants/components';
-import { attachments, authorDefault, c2sRoles, c2sRolesInformation, Category, GuildId } from '#constants/index';
-import type { ParsedCustomIdData } from '#lib/typess/Semblance';
-import { Command } from '#structures/Command';
+import type { ParsedCustomIdData } from '#lib/types/Semblance';
+import { buildCustomId } from '#lib/utilities/components';
+import { attachments, authorDefault, c2sRoles, c2sRolesInformation, Category, GuildId } from '#lib/utilities/index';
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, type MessageActionRowComponentBuilder } from '@discordjs/builders';
 import { Collection } from '@discordjs/collection';
 import {
@@ -11,6 +10,7 @@ import {
 	type APIChatInputApplicationCommandGuildInteraction,
 	type APIMessageComponentButtonInteraction
 } from '@discordjs/core';
+import type { Command } from '@skyra/http-framework';
 import type { FastifyReply } from 'fastify';
 
 // todo: remove this poor cooldown implementation and actually implement a cooldown that will actually remove the user from the cooldown collection after the cooldown is over
@@ -28,7 +28,7 @@ export default class Roles extends Command {
 	public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
 		const { member } = interaction;
 		if (!member) {
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				flags: MessageFlags.Ephemeral,
 				content: 'An issue occurred while trying to get your roles.'
 			});
@@ -36,7 +36,7 @@ export default class Roles extends Command {
 		const guildRoles = this.client.cache.data.cellsRoles;
 
 		if (!guildRoles) {
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				flags: MessageFlags.Ephemeral,
 				content: 'An issue occurred while trying to get your roles.'
 			});
@@ -116,7 +116,7 @@ export default class Roles extends Command {
 				.toJSON()
 		];
 
-		await this.client.api.interactions.reply(res, {
+		await interaction.reply(res, {
 			embeds: [embed.toJSON()],
 			components,
 			files: [attachments.currentLogo]
@@ -140,7 +140,7 @@ export default class Roles extends Command {
 
 		if (!userCooldown || (Boolean(userCooldown) && Date.now() - userCooldown > 0)) cooldown.set(userId, Date.now() + 30000);
 		if (Boolean(userCooldown) && Date.now() - userCooldown < 0)
-			return await this.client.api.interactions.reply(reply, {
+			return await interaction.reply(reply, {
 				content: `You're on cooldown for ${(userCooldown - Date.now()) / 1000} seconds`,
 				flags: MessageFlags.Ephemeral
 			});
@@ -166,13 +166,13 @@ export default class Roles extends Command {
 
 		if (data.action == 'add-events') {
 			await this.client.rest.put(Routes.guildMemberRole(GuildId.cellToSingularity, userId, c2sRoles.server.serverEvents));
-			await this.client.api.interactions.reply(reply, {
+			await interaction.reply(reply, {
 				content: "Server Events role successfully added! Now you'll receive notifications for our server events! :D",
 				flags: MessageFlags.Ephemeral
 			});
 		} else if (data.action == 'remove-events') {
 			await this.client.rest.delete(Routes.guildMemberRole(GuildId.cellToSingularity, userId, c2sRoles.server.serverEvents));
-			await this.client.api.interactions.reply(reply, {
+			await interaction.reply(reply, {
 				content: "Server Events role successfully removed. You'll stop receiveing notifications for our server events. :(",
 				flags: MessageFlags.Ephemeral
 			});

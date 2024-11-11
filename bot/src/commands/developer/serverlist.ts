@@ -1,9 +1,7 @@
-import { serversPerPage } from '#constants/commands';
-import { buildCustomId } from '#constants/components';
-import { Category, GuildId, PreconditionName, avatarUrl, guildBookPage, randomColor } from '#constants/index';
-import type { CustomIdData, ParsedCustomIdData } from '#lib/typess/Semblance';
-import { Command } from '#structures/Command';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import type { CustomIdData, ParsedCustomIdData } from '#lib/types/Semblance';
+import { serversPerPage } from '#lib/utilities/commands';
+import { buildCustomId } from '#lib/utilities/components';
+import { Category, GuildId, PreconditionName, avatarUrl, guildBookPage, randomColor } from '#lib/utilities/index';
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, type MessageActionRowComponentBuilder } from '@discordjs/builders';
 import {
 	ApplicationCommandOptionType,
@@ -101,7 +99,7 @@ export default class ServerList extends Command {
 			.setDescription(pageDetails)
 			.setFooter({ text: `Page ${chosenPage} out of ${numOfPages}` });
 
-		await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], components });
+		await interaction.reply(res, { embeds: [embed.toJSON()], components });
 	}
 
 	public override data() {

@@ -1,12 +1,11 @@
-import { Category, GuildId, PreconditionName } from '#constants/index';
-import { fetchDeepL } from '#constants/commands';
-import { Command } from '#structures/Command';
+import { fetchDeepL } from '#lib/utilities/commands';
+import { Category, GuildId, PreconditionName } from '#lib/utilities/index';
 import {
-	ApplicationCommandType,
-	PermissionFlagsBits,
-	type RESTPostAPIApplicationCommandsJSONBody,
 	type APIMessageApplicationCommandInteraction,
-	MessageFlags
+	ApplicationCommandType,
+	MessageFlags,
+	PermissionFlagsBits,
+	type RESTPostAPIApplicationCommandsJSONBody
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 
@@ -23,7 +22,7 @@ export default class Translate extends Command {
 	public override async contextMenuRun(res: FastifyReply, interaction: APIMessageApplicationCommandInteraction) {
 		const message = interaction.data.resolved.messages[interaction.data.target_id];
 		if (!message)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'Invalid message.',
 				flags: MessageFlags.Ephemeral
 			});

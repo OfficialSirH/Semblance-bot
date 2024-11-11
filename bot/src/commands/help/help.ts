@@ -1,8 +1,6 @@
-import { backButton, buildCustomId, closeButton } from '#constants/components';
-import { Category, disableAllComponents, randomColor } from '#constants/index';
-import type { ParsedCustomIdData } from '#lib/typess/Semblance';
-import { Command } from '#structures/Command';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import type { ParsedCustomIdData } from '#lib/types/Semblance';
+import { backButton, buildCustomId, closeButton } from '#lib/utilities/components';
+import { Category, disableAllComponents, randomColor } from '#lib/utilities/index';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -115,7 +113,7 @@ export default class Help extends Command {
 		options: InteractionOptionResolver
 	) {
 		const query = options.getString('query');
-		if (!query) return this.client.api.interactions.reply(res, this.templateRun(interaction));
+		if (!query) return interaction.reply(res, this.templateRun(interaction));
 
 		const commands = this.client.cache.handles.commands.filter((c) => 'templateRun' in c);
 
@@ -140,7 +138,7 @@ export default class Help extends Command {
 					return acc;
 				}, [] as ActionRowBuilder<MessageActionRowComponentBuilder>[])
 				.map((i) => i.toJSON());
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				embeds: [
 					new EmbedBuilder()
 						.setTitle('Help')
@@ -154,7 +152,7 @@ export default class Help extends Command {
 		const info = (await commands.get(query)?.templateRun?.(interaction)) ?? {
 			content: 'failed to retrieve info for query'
 		};
-		await this.client.api.interactions.reply(res, info);
+		await interaction.reply(res, info);
 	}
 
 	public override autocompleteRun(
@@ -212,14 +210,14 @@ export default class Help extends Command {
 		await disableAllComponents(interaction, this.client.rest);
 
 		if (!this.client.cache.handles.commands.has(query))
-			return this.client.api.interactions.reply(reply, {
+			return interaction.reply(reply, {
 				content: 'Invalid query.',
 				flags: MessageFlags.Ephemeral
 			});
 
 		const info = await this.client.cache.handles.commands.get(query)?.templateRun?.(interaction);
 
-		return this.client.api.interactions.reply(reply, info as Exclude<typeof info, undefined>);
+		return interaction.reply(reply, info as Exclude<typeof info, undefined>);
 	}
 
 	public async buttonRun(
@@ -264,14 +262,14 @@ export default class Help extends Command {
 			case 'close':
 				return this.client.rest.delete(Routes.channelMessage(interaction.channel_id, interaction.message.id));
 			default:
-				return this.client.api.interactions.reply(reply, {
+				return interaction.reply(reply, {
 					content: 'Invalid action.',
 					flags: MessageFlags.Ephemeral
 				});
 		}
 
 		if (!options)
-			return this.client.api.interactions.reply(reply, {
+			return interaction.reply(reply, {
 				content: 'Invalid action.',
 				flags: MessageFlags.Ephemeral
 			});

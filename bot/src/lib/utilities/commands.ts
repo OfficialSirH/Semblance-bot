@@ -1,7 +1,6 @@
-import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/typess/catAndDogAPI';
-import type { DeepLParams, DeepLResponse } from '#lib/typess/deepLAPI';
-import { clamp } from '#lib/utils/math';
-import type { Client } from '#structures/Client';
+import type { AnimalAPIParams, AnimalAPIResponse } from '#lib/types/catAndDogAPI';
+import type { DeepLParams, DeepLResponse } from '#lib/types/deepLAPI';
+import { clamp } from '#lib/utilities/math';
 import type { APIGuild, Snowflake } from '@discordjs/core';
 import type { Game } from '@prisma/client';
 import { request } from 'undici';

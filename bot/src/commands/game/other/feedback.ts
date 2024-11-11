@@ -1,5 +1,4 @@
-import { Category, randomColor, SubCategory } from '#constants/index';
-import { Command } from '#structures/Command';
+import { Category, randomColor, SubCategory } from '#lib/utilities/index';
 import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Feedback extends Command {

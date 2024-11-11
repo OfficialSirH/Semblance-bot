@@ -1,10 +1,8 @@
-import { fetchCatOrDog } from '#constants/commands';
-import { buildCustomId } from '#constants/components';
-import { Category, authorDefault } from '#constants/index';
-import type { sizeType } from '#lib/typess/catAndDogAPI';
-import type { ParsedCustomIdData } from '#lib/typess/Semblance';
-import { Command } from '#structures/Command';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import type { sizeType } from '#lib/types/catAndDogAPI';
+import type { ParsedCustomIdData } from '#lib/types/Semblance';
+import { fetchCatOrDog } from '#lib/utilities/commands';
+import { buildCustomId } from '#lib/utilities/components';
+import { Category, authorDefault } from '#lib/utilities/index';
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, type MessageActionRowComponentBuilder } from '@discordjs/builders';
 import {
 	ApplicationCommandOptionType,
@@ -16,10 +14,10 @@ import {
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 
-export default class Imagegen extends Command {
+export default class UserCommand extends Command {
 	public constructor(client: Command.Requirement) {
 		super(client, {
-			name: 'imagegen',
+			name: 'animal',
 			description: 'Generates a random image of either a cat or dog.',
 			fullCategory: [Category.fun]
 		});
@@ -44,7 +42,7 @@ export default class Imagegen extends Command {
 		const images = await fetchCatOrDog(query_params, wantsCat);
 
 		if (images.length === 0)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'No images found.',
 				flags: MessageFlags.Ephemeral
 			});
@@ -67,7 +65,7 @@ export default class Imagegen extends Command {
 					.setStyle(ButtonStyle.Secondary)
 					.setCustomId(
 						buildCustomId({
-							command: 'imagegen',
+							command: 'animal',
 							action: `refresh-${wantsCat ? 'cat' : 'dog'}`,
 							id: interaction.member.user.id
 						})
@@ -75,7 +73,7 @@ export default class Imagegen extends Command {
 			)
 		].map((row) => row.toJSON());
 
-		return this.client.api.interactions.reply(res, {
+		return interaction.reply(res, {
 			embeds: [embed.toJSON()],
 			components
 		});
@@ -119,7 +117,7 @@ export default class Imagegen extends Command {
 		const images = await fetchCatOrDog(query_params, wantsCat);
 
 		if (images.length === 0)
-			return this.client.api.interactions.reply(reply, {
+			return interaction.reply(reply, {
 				content: 'No images found.',
 				flags: MessageFlags.Ephemeral
 			});

@@ -1,18 +1,16 @@
-import { LeaderboardUtilities } from '#structures/LeaderboardUtilities';
 import {
 	ActionRowBuilder,
-	type MessageActionRowComponentBuilder,
 	ButtonBuilder,
 	EmbedBuilder,
-	chatInputApplicationCommandMention
+	chatInputApplicationCommandMention,
+	type MessageActionRowComponentBuilder
 } from '@discordjs/builders';
-import { ButtonStyle, MessageFlags, type APIMessageComponentButtonInteraction } from '@discordjs/core';
+import { ButtonStyle, Client, MessageFlags, type APIMessageComponentButtonInteraction } from '@discordjs/core';
 import type { Game } from '@prisma/client';
-import { authorDefault, avatarUrl, randomColor } from './index.js';
+import type { FastifyReply } from 'fastify';
 import { currentPrice } from './commands.js';
 import { buildCustomId, disableComponentsByLabel } from './components.js';
-import type { FastifyReply } from 'fastify';
-import type { Client } from '#structures/Client';
+import { authorDefault, avatarUrl, randomColor } from './index.js';
 
 export async function askConfirmation(client: Client, reply: FastifyReply, interaction: APIMessageComponentButtonInteraction, name: string) {
 	const userId = interaction.member?.user.id as string;
@@ -250,7 +248,14 @@ export async function leaderboard(
 	components: ActionRowBuilder<MessageActionRowComponentBuilder>[]
 ) {
 	const user = interaction.member?.user;
-	let leaderboard = await LeaderboardUtilities.topTwenty(client, 'game');
+	let leaderboard = (
+		await client.db.game.findMany({
+			take: 20,
+			orderBy: {
+				level: 'desc'
+			}
+		})
+	).reduce((acc, cur, index) => `${acc}\n${index + 1}. <@${cur.player}> - level ${cur.level}`, '');
 	if (!leaderboard) leaderboard = 'There is currently no one who has upgraded their income.';
 	const embed = new EmbedBuilder()
 		.setTitle("Semblance's idle-game leaderboard")

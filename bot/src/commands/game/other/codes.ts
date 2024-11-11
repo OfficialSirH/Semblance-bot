@@ -1,7 +1,6 @@
-import { buildCustomId } from '#constants/components';
-import { attachments, Category, randomColor, SubCategory } from '#constants/index';
-import type { ParsedCustomIdData } from '#lib/typess/Semblance';
-import { Command } from '#structures/Command';
+import type { ParsedCustomIdData } from '#lib/types/Semblance';
+import { buildCustomId } from '#lib/utilities/components';
+import { attachments, Category, randomColor, SubCategory } from '#lib/utilities/index';
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, type MessageActionRowComponentBuilder } from '@discordjs/builders';
 import { ButtonStyle, MessageFlags, type APIChatInputApplicationCommandGuildInteraction, type APIMessageComponentInteraction } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
@@ -22,7 +21,7 @@ export default class Codes extends Command {
 	): Promise<void> {
 		const codeHandler = await this.client.db.information.findUnique({ where: { type: 'codes' } });
 		if (!codeHandler)
-			return this.client.api.interactions.reply(reply, {
+			return interaction.reply(reply, {
 				content: 'codes object is missing',
 				flags: MessageFlags.Ephemeral
 			});
@@ -71,7 +70,7 @@ export default class Codes extends Command {
 	}
 
 	public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
-		await this.client.api.interactions.reply(res, await this.templateRun(interaction));
+		await interaction.reply(res, await this.templateRun(interaction));
 	}
 
 	public override async templateRun(interaction: APIChatInputApplicationCommandGuildInteraction) {

@@ -1,6 +1,5 @@
-import { GuildId } from '#constants/index';
-import { gameEvents, type Events } from '#lib/utils/events';
-import type { Client } from '#structures/Client';
+import { gameEvents, type Events } from '#lib/utilities/events';
+import { GuildId } from '#lib/utilities/index';
 import {
 	GuildScheduledEventEntityType,
 	GuildScheduledEventPrivacyLevel,
@@ -118,10 +117,9 @@ export function parseSegmentData(segmentData: string): ParsedEventData | null {
 				end: parseUTCDate(data.end),
 				req: data.req
 			};
-		} else {
-			console.warn(`[EventScheduler] Incomplete event data: ${segmentData}`);
-			return null;
 		}
+		console.warn(`[EventScheduler] Incomplete event data: ${segmentData}`);
+		return null;
 	} catch (error) {
 		console.error(`[EventScheduler] Failed to parse segment data: ${segmentData}`, error);
 		return null;
@@ -169,7 +167,7 @@ async function createDiscordEvent(client: Client, eventName: Events, startTime: 
 			scheduled_end_time: endTime.toISOString(),
 			privacy_level: GuildScheduledEventPrivacyLevel.GuildOnly,
 			entity_type: GuildScheduledEventEntityType.External,
-			description: description,
+			description,
 			image: imageBuffer,
 			entity_metadata: {
 				location: 'Cell to Singularity'

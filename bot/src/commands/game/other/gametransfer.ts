@@ -1,7 +1,6 @@
-﻿import { buildCustomId } from '#constants/components';
-import { attachments, Category, gameTransferPages, randomColor, SubCategory } from '#constants/index';
-import type { ParsedCustomIdData } from '#lib/typess/Semblance';
-import { Command } from '#structures/Command';
+﻿import type { ParsedCustomIdData } from '#lib/types/Semblance';
+import { buildCustomId } from '#lib/utilities/components';
+import { attachments, Category, gameTransferPages, randomColor, SubCategory } from '#lib/utilities/index';
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, type MessageActionRowComponentBuilder } from '@discordjs/builders';
 import { ButtonStyle, type APIChatInputApplicationCommandGuildInteraction, type APIMessageComponentButtonInteraction } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';

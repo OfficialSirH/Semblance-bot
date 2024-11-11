@@ -1,6 +1,4 @@
-import { Category, GuildId, PreconditionName } from '#constants/index';
-import { Command } from '#structures/Command';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { Category, GuildId, PreconditionName } from '#lib/utilities/index';
 import { EmbedBuilder } from '@discordjs/builders';
 import {
 	ApplicationCommandOptionType,

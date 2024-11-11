@@ -1,5 +1,4 @@
-import { Category, randomColor, attachments, emojis } from '#constants/index';
-import { Command } from '#structures/Command';
+import { attachments, Category, emojis, randomColor } from '#lib/utilities/index';
 import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Limericks extends Command {

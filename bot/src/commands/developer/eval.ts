@@ -1,18 +1,15 @@
-import { GuildId, Category, randomColor, PreconditionName } from '#constants/index';
-import { Command } from '#structures/Command';
-import { inspect } from 'util';
+import { Category, GuildId, PreconditionName, randomColor } from '#lib/utilities/index';
+import { EmbedBuilder } from '@discordjs/builders';
 import {
 	type APIContextMenuInteraction,
+	type APIEmbed,
 	ApplicationCommandType,
 	MessageFlags,
 	PermissionFlagsBits,
-	type RESTPostAPIApplicationCommandsJSONBody,
-	type APIEmbed
+	type RESTPostAPIApplicationCommandsJSONBody
 } from '@discordjs/core';
-import { Attachy } from '#structures/Attachy';
-import { EmbedBuilder } from '@discordjs/builders';
 import type { FastifyReply } from 'fastify';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { inspect } from 'util';
 
 export default class Eval extends Command {
 	public constructor(client: Command.Requirement) {
@@ -27,7 +24,7 @@ export default class Eval extends Command {
 	public override async contextMenuRun(res: FastifyReply, interaction: APIContextMenuInteraction, options: InteractionOptionResolver) {
 		const message = options.getMessage();
 		if (!message)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'Could not find message.',
 				flags: MessageFlags.Ephemeral
 			});
@@ -52,7 +49,7 @@ export default class Eval extends Command {
 				} else
 					embed.addFields({ name: '📤 Output', value: `\`\`\`js\n${evaled.substring(0, 1015)}\`\`\`` }).setTitle('✅ Evaluation Completed');
 				data.embeds = [embed.toJSON()];
-				await this.client.api.interactions.reply(res, data);
+				await interaction.reply(res, data);
 			});
 		} catch (e) {
 			if (typeof e == 'string')
@@ -64,7 +61,7 @@ export default class Eval extends Command {
 					value: `\`\`\`fix\n${(e as object).toString().substring(0, 1014)}\`\`\``
 				})
 				.setTitle('❌ Evaluation Failed');
-			await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+			await interaction.reply(res, { embeds: [embed.toJSON()] });
 		}
 	}
 

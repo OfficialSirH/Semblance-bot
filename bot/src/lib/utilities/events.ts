@@ -1,5 +1,4 @@
-import { shortFormattedDate } from '#constants/index';
-import { Attachy } from '#structures/Attachy';
+import { shortFormattedDate } from '#lib/utilities/index';
 import fs from 'fs/promises';
 
 type CapitalizeFirstLetter<T extends string> = T extends `${infer L}${infer R}` ? `${Uppercase<L>}${R}` : T;
@@ -19,8 +18,8 @@ export const eventAttachments = await (async () => {
 	const finalAttachments = {} as Record<Exclude<EventAttachmentString, '?'> | 'QuestionMark', Attachy>;
 	for (const file of files)
 		if (file.endsWith('.png')) {
-			const attachment = new Attachy(`./src/images/events/${file}`, `attachment://${file}`),
-				attachmentName = file.substring(0, file.indexOf('.'));
+			const attachment = new Attachy(`./src/images/events/${file}`, `attachment://${file}`);
+			const attachmentName = file.substring(0, file.indexOf('.'));
 			finalAttachments[attachmentName as keyof typeof finalAttachments] = attachment;
 		}
 	return finalAttachments;

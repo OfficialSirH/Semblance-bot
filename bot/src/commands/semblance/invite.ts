@@ -1,5 +1,4 @@
-import { Command } from '#structures/Command';
-import { Category, avatarUrl, randomColor } from '#constants/index';
+import { Category, avatarUrl, randomColor } from '#lib/utilities/index';
 import { EmbedBuilder } from '@discordjs/builders';
 import type { FastifyReply } from 'fastify';
 
@@ -23,7 +22,7 @@ export default class Invite extends Command {
 			)
 			.setFooter({ text: 'Spread the word about Semblance!' });
 
-		await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		await interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 
 	public override data() {

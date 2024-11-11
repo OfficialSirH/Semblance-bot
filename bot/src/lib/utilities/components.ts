@@ -1,4 +1,4 @@
-import type { CustomIdData, ParsedCustomIdData, ResultValue } from '#lib/typess/Semblance';
+import type { CustomIdData, ParsedCustomIdData, ResultValue } from '#lib/types/Semblance';
 import { type ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder } from '@discordjs/builders';
 import { type APIButtonComponentWithCustomId, type APIMessageComponentInteraction, type APISelectMenuComponent, ButtonStyle } from '@discordjs/core';
 

@@ -1,10 +1,8 @@
-import { buildCustomId } from '#constants/components';
-import { Category, GuildId, PreconditionName, isDstObserved } from '#constants/index';
 import type { ParsedCustomIdData, ResultValue } from '#lib/types/Semblance';
-import { gameEvents, type Events } from '#lib/utils/events';
-import { clamp } from '#lib/utils/math';
-import { Command } from '#structures/Command';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { buildCustomId } from '#lib/utilities/components';
+import { gameEvents, type Events } from '#lib/utilities/events';
+import { Category, GuildId, PreconditionName, isDstObserved } from '#lib/utilities/index';
+import { clamp } from '#lib/utilities/math';
 import { ActionRowBuilder, ButtonBuilder, ModalBuilder, TextInputBuilder } from '@discordjs/builders';
 import {
 	ApplicationCommandOptionType,
@@ -25,6 +23,7 @@ import {
 	type RESTPostAPIApplicationCommandsJSONBody,
 	type RESTPostAPIGuildScheduledEventJSONBody
 } from '@discordjs/core';
+import type { Command } from '@skyra/http-framework';
 import type { FastifyReply } from 'fastify';
 import { request } from 'undici';
 
@@ -57,7 +56,7 @@ export default class Manage extends Command {
 					case 'edit':
 						return this.editGameEvent(res, interaction, options);
 					default:
-						return this.client.api.interactions.reply(res, { content: 'Invalid subcommand' });
+						return interaction.reply(res, { content: 'Invalid subcommand' });
 				}
 			case 'beta-tester':
 				switch (subcommand) {
@@ -66,10 +65,10 @@ export default class Manage extends Command {
 					case 'edit':
 						return this.editBetaTesterRoleMessage(res, interaction);
 					default:
-						return this.client.api.interactions.reply(res, { content: 'Invalid subcommand' });
+						return interaction.reply(res, { content: 'Invalid subcommand' });
 				}
 			default:
-				return this.client.api.interactions.reply(res, { content: 'Invalid subcommand group' });
+				return interaction.reply(res, { content: 'Invalid subcommand group' });
 		}
 	}
 
@@ -206,7 +205,7 @@ export default class Manage extends Command {
 		const name = options.getString('name', true);
 
 		if (!gameEvents[name as Events])
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'Invalid game event name',
 				flags: MessageFlags.Ephemeral
 			});
@@ -235,7 +234,7 @@ export default class Manage extends Command {
 				} satisfies RESTPostAPIGuildScheduledEventJSONBody
 			});
 
-			await this.client.api.interactions.reply(res, { content: `Successfully created ${name} event!` });
+			await interaction.reply(res, { content: `Successfully created ${name} event!` });
 		} catch (e) {
 			this.client.logger.error(`creating event failed: ${e}`);
 
@@ -249,7 +248,7 @@ export default class Manage extends Command {
 		const name = options.getString('name', true);
 
 		if (!gameEvents[name as Events])
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'Invalid game event name',
 				flags: MessageFlags.Ephemeral
 			});
@@ -264,7 +263,7 @@ export default class Manage extends Command {
 			).find((event) => event.name.includes(name));
 
 			if (!scheduledEvent)
-				return this.client.api.interactions.reply(res, {
+				return interaction.reply(res, {
 					content: 'No event found',
 					flags: MessageFlags.Ephemeral
 				});
@@ -277,7 +276,7 @@ export default class Manage extends Command {
 				} satisfies RESTPatchAPIGuildScheduledEventJSONBody
 			});
 
-			await this.client.api.interactions.reply(res, { content: `Successfully edited ${name} event!` });
+			await interaction.reply(res, { content: `Successfully edited ${name} event!` });
 		} catch (e) {
 			this.client.logger.error(`creating event failed: ${e}`);
 
@@ -437,7 +436,7 @@ If you're sure you did, please contact the bot owner for further assistance.`
 			}
 		});
 
-		return this.client.api.interactions.reply(res, {
+		return interaction.reply(res, {
 			content: 'Successfully created the beta tester role message!',
 			flags: MessageFlags.Ephemeral
 		});
@@ -453,7 +452,7 @@ If you're sure you did, please contact the bot owner for further assistance.`
 		)?.value;
 
 		if (!messageId)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'Missing message id',
 				flags: MessageFlags.Ephemeral
 			});
@@ -464,7 +463,7 @@ If you're sure you did, please contact the bot owner for further assistance.`
 			}
 		});
 
-		return this.client.api.interactions.reply(res, {
+		return interaction.reply(res, {
 			content: 'Successfully edited the beta tester role message!',
 			flags: MessageFlags.Ephemeral
 		});
@@ -476,7 +475,7 @@ If you're sure you did, please contact the bot owner for further assistance.`
 		)?.value;
 
 		if (!playfabId)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'Missing player id',
 				flags: MessageFlags.Ephemeral
 			});
@@ -484,7 +483,7 @@ If you're sure you did, please contact the bot owner for further assistance.`
 		const playerProfile = await this.pullPlayFabData<RESTPostAPIPlayFabPlayerProfileResult>(APIPlayFabRoutes.GetPlayerProfile, playfabId);
 
 		if (!playerProfile.ok)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: playerProfile.message,
 				flags: MessageFlags.Ephemeral
 			});
@@ -495,7 +494,7 @@ If you're sure you did, please contact the bot owner for further assistance.`
 		);
 
 		if (!playerStatistics.ok)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: playerStatistics.message,
 				flags: MessageFlags.Ephemeral
 			});
@@ -505,14 +504,14 @@ If you're sure you did, please contact the bot owner for further assistance.`
 		);
 
 		if (!isBetaTester)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: `Sorry, ${playerProfile.value.data.PlayerProfile.DisplayName}, you're not a beta tester. :(`,
 				flags: MessageFlags.Ephemeral
 			});
 
 		await this.client.rest.put(Routes.guildMemberRole(interaction.guild_id!, interaction.member!.user.id, process.env.BETA_TESTER_ROLE_ID));
 
-		return this.client.api.interactions.reply(res, {
+		return interaction.reply(res, {
 			content: `Congrats on the beta role, ${playerProfile.value.data.PlayerProfile.DisplayName}!`,
 			flags: MessageFlags.Ephemeral
 		});
@@ -529,7 +528,7 @@ If you're sure you did, please contact the bot owner for further assistance.`
 			case ManageModalActions.BetaTester.action:
 				return this.betaTesterModal(reply, interaction);
 			default:
-				return this.client.api.interactions.reply(reply, {
+				return interaction.reply(reply, {
 					content: 'Invalid action',
 					flags: MessageFlags.Ephemeral
 				});

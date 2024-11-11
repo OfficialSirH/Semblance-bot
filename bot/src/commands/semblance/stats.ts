@@ -1,9 +1,9 @@
-import { randomColor, msToTime, Category, emojis, userTag, avatarUrl } from '#constants/index';
-import { Command } from '#structures/Command';
+import { avatarUrl, Category, emojis, msToTime, randomColor, userTag } from '#lib/utilities/index';
 import { EmbedBuilder } from '@discordjs/builders';
 import { version as coreVersion, type APIChatInputApplicationCommandGuildInteraction } from '@discordjs/core';
 import { version as restVersion } from '@discordjs/rest';
 import { version as wsVersion } from '@discordjs/ws';
+import type { Command } from '@skyra/http-framework';
 import type { FastifyReply } from 'fastify';
 import { release } from 'os';
 
@@ -70,7 +70,7 @@ export default class Info extends Command {
 			].join('\n'),
 			inline: true
 		});
-		this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 
 	public override data() {

@@ -1,9 +1,11 @@
-//
+import { setup } from '#lib/setup/all';
 import { envParseInteger, envParseString } from '@skyra/env-utilities';
 import { Client, container } from '@skyra/http-framework';
 import { registerCommands } from '@skyra/shared-http-pieces';
 import { createBanner } from '@skyra/start-banner';
 import { vice } from 'gradient-string';
+
+setup();
 
 const client = new Client();
 await client.load();
@@ -19,24 +21,23 @@ console.log(
 	vice.multiline(
 		createBanner({
 			logo: [
-				String.raw`                        πππ `,
-				String.raw`                      ππππππ `,
-				String.raw`                      πππππππ `,
-				String.raw`                  πππ√ πππππ `,
-				String.raw`                 ππππππ πππ `,
-				String.raw`                 ππππππ πππ ππππππ `,
-				String.raw`                  ππππ  ππππππ  ππ `,
-				String.raw`             ππππ  ππ   πππ ππππππ `,
-				String.raw`           πππππππ πππ  πππ  πππ `,
-				String.raw`           πππππππ  πππππππ  πππ  πππππ `,
-				String.raw`            πππππ     πππππ ππππ πππ ππ `,
-				String.raw`             π ππ       π ππππ   ππππππ `,
+				String.raw`                       πππππ `,
+				String.raw`                      πππ πππ `,
+				String.raw`                  ππππ πππππ `,
+				String.raw`                 ππ  ππ πππ `,
+				String.raw`                  ππππ  πππ  ππππ `,
+				String.raw`                  ππππ  πππ ππ  ππ `,
+				String.raw`            πππππ  ππ   πππ  ππππ `,
+				String.raw`           πππ πππ πππ  πππ  πππ `,
+				String.raw`           πππ πππ  πππππππ  πππ   πππ `,
+				String.raw`            πππππ     πππππ ππππ  ππ ππ `,
+				String.raw`             ππππ       ππππππ     πππ `,
 				String.raw`               ππππ     πππ        πππ `,
 				String.raw`                 ππππ   πππ      πππππ `,
-				String.raw`                   ππππππ π    ππππ `,
+				String.raw`                   ππππππππ    ππππ `,
 				String.raw`                      πππππ  ππππ `,
 				String.raw`                        πππππππ `,
-				String.raw`                        π ππ `,
+				String.raw`                        ππππ `,
 				''
 			],
 			name: [

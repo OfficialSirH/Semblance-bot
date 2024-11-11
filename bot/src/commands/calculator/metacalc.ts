@@ -1,12 +1,10 @@
-import { authorDefault, bigToName, Category, randomColor } from '#constants/index';
-import { Command } from '#structures/Command';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { authorDefault, bigToName, Category, randomColor } from '#lib/utilities/index';
 import { EmbedBuilder } from '@discordjs/builders';
 import {
 	type APIChatInputApplicationCommandGuildInteraction,
 	ApplicationCommandOptionType,
-	type RESTPostAPIApplicationCommandsJSONBody,
-	MessageFlags
+	MessageFlags,
+	type RESTPostAPIApplicationCommandsJSONBody
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 
@@ -31,13 +29,13 @@ export default class MetaCalc extends Command {
 		const parsedIdeas = parseFloat(options.ideas);
 
 		if (!parsedEntropy)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: "Invalid input for 'entropy'.",
 				flags: MessageFlags.Ephemeral
 			});
 
 		if (!parsedIdeas)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: "Invalid input for 'ideas'.",
 				flags: MessageFlags.Ephemeral
 			});
@@ -50,7 +48,7 @@ export default class MetaCalc extends Command {
 			.setDescription(
 				`Entropy Input: ${parsedEntropy}\nIdea Input: ${parsedIdeas}\n\nMetabits Produced: ${metabits < 1 ? 0 : bigToName(metabits)}`
 			);
-		return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		return interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 
 	public async metaCalcRev(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction, metabits: number) {
@@ -60,7 +58,7 @@ export default class MetaCalc extends Command {
 			.setColor(randomColor)
 			.setAuthor(authorDefault(interaction.member.user))
 			.setDescription(`Metabit Input: ${metabits}\n\nEntropy/Idea Accumulation Required: ${bigToName(accumulated)}`);
-		return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		return interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 
 	public override chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction, options: InteractionOptionResolver) {

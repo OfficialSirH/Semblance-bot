@@ -1,6 +1,4 @@
-﻿import { Attachy } from '#structures/Attachy';
-import type { Client } from '#structures/Client';
-import { TimestampStyles, type TimestampStylesString } from '@discordjs/builders';
+﻿import { TimestampStyles, type TimestampStylesString } from '@discordjs/builders';
 import { Routes, type APIGuildMember, type APIInteractionGuildMember, type APIMessageComponentInteraction, type APIUser } from '@discordjs/core';
 import type { REST } from '@discordjs/rest';
 import * as fs from 'fs/promises';
@@ -373,5 +371,5 @@ export const isUserInGuild = async (rest: REST, guildId: string, user: APIUser) 
 	}
 };
 // Command related functions and constants
-export * from '#constants/commands';
-export * from '#constants/largeNumberConversion';
+export * from '#lib/utilities/commands';
+export * from '#lib/utilities/largeNumberConversion';

@@ -1,7 +1,5 @@
-﻿import { Category, PreconditionName, onlyUnique, randomColor } from '#constants/index';
+﻿import { Category, PreconditionName, onlyUnique, randomColor } from '#lib/utilities/index';
 import { getChannel, getRole, getUser } from '#lib/utils/resolvers';
-import { Command } from '#structures/Command';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
 import {
 	ApplicationCommandOptionType,
 	ChannelType,
@@ -51,17 +49,17 @@ export default class Lookup extends Command {
 		options: InteractionOptionResolver
 	) {
 		const unknownItem = options.getString('unknown_item');
-		if (!unknownItem) return this.client.api.interactions.reply(res, { content: 'Please provide a valid ID or invite!' });
+		if (!unknownItem) return interaction.reply(res, { content: 'Please provide a valid ID or invite!' });
 
 		const role = getRole(unknownItem, this.client.cache.data.guilds.get(interaction.guild_id) as APIGuild);
 		if (role)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: `✅ This Id is a role Id for the role ${role.name}.`
 			});
 
 		const channel = getChannel(unknownItem, this.client.cache.data.guilds.get(interaction.guild_id) as APIGuild & GatewayGuildCreateDispatchData);
 		if (channel)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: `✅ This Id is a channel Id for the channel ${channel}.`
 			});
 
@@ -72,7 +70,7 @@ export default class Lookup extends Command {
 				if (user.bot) {
 					const botblock = (await request(`https://botblock.org/api/bots/${user.id}`).then((res) => res.body.json())) as BotBlock;
 					if (botblock.discriminator == '0000')
-						return this.client.api.interactions.reply(res, {
+						return interaction.reply(res, {
 							content: `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}). Unfortunately, this bot is not listed on any of BotBlock's bot lists.`
 						});
 
@@ -146,7 +144,7 @@ export default class Lookup extends Command {
 					if (owners.length > 1) add({ Owners: owners.join('\n') });
 					else add({ Owner: owners[0] });
 
-					return this.client.api.interactions.reply(res, {
+					return interaction.reply(res, {
 						content: `✅ This Id is a bot Id of ${user.username}#${user.discriminator} (${user.id}).`,
 						embeds: [
 							{
@@ -161,7 +159,7 @@ export default class Lookup extends Command {
 						]
 					});
 				}
-				return this.client.api.interactions.reply(res, {
+				return interaction.reply(res, {
 					content: `✅ This Id is a user Id of ${user.username}#${user.discriminator} (${user.id}).`
 				});
 			}
@@ -218,7 +216,7 @@ export default class Lookup extends Command {
 					});
 				if (invite.guild?.features.length) add({ Features: invite.guild.features.join(', ') }, true);
 
-				return this.client.api.interactions.reply(res, {
+				return interaction.reply(res, {
 					content: '✅ This Id is a Discord invite.',
 					embeds: [
 						{
@@ -247,7 +245,7 @@ export default class Lookup extends Command {
 		try {
 			const response = await request(`https://cdn.discordapp.com/emojis/${unknownItem}.png`);
 			if (response.statusCode == 200)
-				return this.client.api.interactions.reply(res, {
+				return interaction.reply(res, {
 					content: `✅ This Id is an emoji Id: https://cdn.discordapp.com/emojis/${unknownItem}.png`
 				});
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -261,13 +259,13 @@ export default class Lookup extends Command {
 			try {
 				const m = (await this.client.rest.get(Routes.channelMessage(ch.id, unknownItem))) as APIMessage;
 				if (m)
-					return this.client.api.interactions.reply(res, {
+					return interaction.reply(res, {
 						content: `✅ This Id is a message Id: <https://discordapp.com/channels/${interaction.guild_id}/${ch.id}/${m.id}>`
 					});
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			} catch (e) {}
 
-		return this.client.api.interactions.reply(res, {
+		return interaction.reply(res, {
 			content: `🚫 I don't know what the Id \`${unknownItem}\` is coming from. Maybe the deep abyss known as The Beyond?`
 		});
 	}

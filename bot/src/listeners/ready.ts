@@ -1,19 +1,18 @@
-import * as schedule from 'node-schedule';
-import { GuildId, isProduction } from '#constants/index';
-import { handleBoosterReward, handleReminder } from '#constants/models';
-import type { BoosterReward, Reminder } from '@prisma/client';
+import { GuildId, isProduction } from '#lib/utilities/index';
+import { handleBoosterReward, handleReminder } from '#lib/utilities/models';
+import { Collection } from '@discordjs/collection';
 import {
 	ActivityType,
 	GatewayDispatchEvents,
 	GatewayOpcodes,
-	type GatewayReadyDispatchData,
 	PresenceUpdateStatus,
 	Routes,
+	type APIApplicationCommand,
 	type APIRole,
-	type APIApplicationCommand
+	type GatewayReadyDispatchData
 } from '@discordjs/core';
-import { Listener } from '#structures/Listener';
-import { Collection } from '@discordjs/collection';
+import type { BoosterReward, Reminder } from '@prisma/client';
+import * as schedule from 'node-schedule';
 
 export default class Ready extends Listener<GatewayDispatchEvents.Ready> {
 	public constructor(client: Listener.Requirement) {

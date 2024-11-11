@@ -1,5 +1,4 @@
-import { Category, randomColor, SubCategory } from '#constants/index';
-import { Command } from '#structures/Command';
+import { Category, randomColor, SubCategory } from '#lib/utilities/index';
 import { chatInputApplicationCommandMention, EmbedBuilder } from '@discordjs/builders';
 import { MessageFlags } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
@@ -47,7 +46,7 @@ export default class Secrets extends Command {
 				].join('\n')
 			);
 
-		await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
+		await interaction.reply(res, { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
 	}
 
 	public override data() {

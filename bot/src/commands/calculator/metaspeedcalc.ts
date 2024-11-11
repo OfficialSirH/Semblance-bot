@@ -1,13 +1,11 @@
-import { authorDefault, bigToName, Category, randomColor } from '#constants/index';
-import { Command } from '#structures/Command';
-import { clamp } from '#lib/utils/math';
+import { authorDefault, bigToName, Category, randomColor } from '#lib/utilities/index';
+import { clamp } from '#lib/utilities/math';
+import { EmbedBuilder } from '@discordjs/builders';
 import {
 	type APIChatInputApplicationCommandGuildInteraction,
 	ApplicationCommandOptionType,
 	type RESTPostAPIApplicationCommandsJSONBody
 } from '@discordjs/core';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
-import { EmbedBuilder } from '@discordjs/builders';
 import type { FastifyReply } from 'fastify';
 
 export default class MetaspeedCalc extends Command {
@@ -79,7 +77,7 @@ export default class MetaspeedCalc extends Command {
 			.setFooter({
 				text: 'P.S. Mesozoic Valley rank accumulation caps at 550 and simulation speed upgrades cap at 2105%.'
 			});
-		return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		return interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 
 	public override data() {

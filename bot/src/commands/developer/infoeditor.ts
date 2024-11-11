@@ -1,15 +1,12 @@
-import { GuildId, Category, randomColor, PreconditionName, avatarUrl, authorDefault } from '#constants/index';
-import { Attachy } from '#structures/Attachy';
-import { Command } from '#structures/Command';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { Category, GuildId, PreconditionName, authorDefault, avatarUrl, randomColor } from '#lib/utilities/index';
 import { EmbedBuilder } from '@discordjs/builders';
 import {
 	type APIChatInputApplicationCommandGuildInteraction,
+	type APIUser,
 	ApplicationCommandOptionType,
 	MessageFlags,
 	PermissionFlagsBits,
-	type RESTPostAPIApplicationCommandsJSONBody,
-	type APIUser
+	type RESTPostAPIApplicationCommandsJSONBody
 } from '@discordjs/core';
 import type { FastifyReply } from 'fastify';
 
@@ -43,7 +40,7 @@ export default class InfoEditor extends Command {
 
 			if (subCommand == 'list') return this.listBoosterCodes(res, interaction);
 
-			return this.client.api.interactions.reply(res, { content: 'Invalid subcommand' });
+			return interaction.reply(res, { content: 'Invalid subcommand' });
 		}
 
 		const subject = async () => {
@@ -52,7 +49,7 @@ export default class InfoEditor extends Command {
 					type: options.getString('subject', true)
 				}
 			});
-			return subject ? subject : this.client.api.interactions.reply(res, { content: 'Invalid subject.' });
+			return subject ? subject : interaction.reply(res, { content: 'Invalid subject.' });
 		};
 
 		if (options.getSubcommand() == 'edit') {
@@ -79,7 +76,7 @@ export default class InfoEditor extends Command {
 				}
 			});
 
-			if (!updatedSubject) return this.client.api.interactions.reply(res, { content: 'Could not update information.' });
+			if (!updatedSubject) return interaction.reply(res, { content: 'Could not update information.' });
 
 			embed.setDescription(
 				`${
@@ -90,7 +87,7 @@ export default class InfoEditor extends Command {
 				)}\`\`\``
 			);
 
-			return this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
+			return interaction.reply(res, { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
 		}
 
 		const subjectValue = await subject();
@@ -104,7 +101,7 @@ export default class InfoEditor extends Command {
 
 		const file = new Attachy(Buffer.from(JSON.stringify(subjectValue)), `${subjectValue.type}.json`);
 
-		return this.client.api.interactions.reply(res, {
+		return interaction.reply(res, {
 			embeds: [embed.toJSON()],
 			files: [file],
 			flags: MessageFlags.Ephemeral
@@ -221,7 +218,7 @@ export default class InfoEditor extends Command {
 	}
 
 	public override async componentRun(reply: FastifyReply) {
-		return this.client.api.interactions.reply(reply, {
+		return interaction.reply(reply, {
 			content: 'Not implemented yet.',
 			flags: MessageFlags.Ephemeral
 		});
@@ -235,15 +232,15 @@ export default class InfoEditor extends Command {
 			.setAuthor(authorDefault(interaction.member.user))
 			.setDescription(`number of codes: ${darwiniumCodes.length}\n\`\`\`\n${list}\`\`\``)
 			.setColor(randomColor);
-		this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 
 	private async addBoosterCode(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction, codes: string[]) {
-		if (codes.length == 0) return this.client.api.interactions.reply(res, { content: 'You need to give me a code to add.' });
+		if (codes.length == 0) return interaction.reply(res, { content: 'You need to give me a code to add.' });
 
 		const darwiniumCodes = await this.client.db.boosterCodes.findMany({});
 		if (codes.every((c) => darwiniumCodes.map((code) => code.code).includes(c)))
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'All of the codes you provided are already in the list.'
 			});
 
@@ -258,15 +255,15 @@ export default class InfoEditor extends Command {
 			.setAuthor(authorDefault(interaction.member.user))
 			.setDescription(`**The provided codes were successfully added**\nnew number of codes: ${list.length}\n\`\`\`\n${list.join(', ')}\`\`\``)
 			.setColor(randomColor);
-		this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 
 	private async removeBoosterCode(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction, codes: string[]) {
-		if (codes.length == 0) return this.client.api.interactions.reply(res, { content: 'You need to give me a code to remove.' });
+		if (codes.length == 0) return interaction.reply(res, { content: 'You need to give me a code to remove.' });
 
 		const darwiniumCodes = await this.client.db.boosterCodes.findMany({});
 		if (codes.every((c) => !darwiniumCodes.map((code) => code.code).includes(c)))
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: "All of the codes you provided aren't in the list."
 			});
 
@@ -290,6 +287,6 @@ export default class InfoEditor extends Command {
 				}\n\`\`\`\n${filteredList.join(', ')}\`\`\``
 			)
 			.setColor(randomColor);
-		this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 }

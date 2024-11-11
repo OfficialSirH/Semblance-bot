@@ -1,6 +1,4 @@
-import type { ItemList } from '../interfaces/ItemList.js';
-
-export const itemList: ItemList = {
+export const ItemList: ItemList = {
 	entropy: {
 		'amino-acid': { price: 15 },
 		dna: { price: 100 },
@@ -70,10 +68,10 @@ export const itemList: ItemList = {
 		pachycephalosaurus: { price: 44580000000000 },
 		gallimimus: { price: 534970000000000 },
 		archaeopteryx: { price: 6420000000000000 },
-		brachiosaurus: { price: 77040000000000000 },
-		'tyrannosaurus-rex': { price: 924420000000000000 },
-		spinosaurus: { price: 11090000000000000000 },
-		iguanodon: { price: 133120000000000000000 },
+		brachiosaurus: { price: 77040000000000000n },
+		'tyrannosaurus-rex': { price: 924420000000000000n },
+		spinosaurus: { price: 11090000000000000000n },
+		iguanodon: { price: 133120000000000000000n },
 		ichthyosaur: { price: 1.6e21 },
 		cynodont: { price: 1.917e22 },
 		eoraptor: { price: 2.3002e23 },
@@ -82,3 +80,13 @@ export const itemList: ItemList = {
 		giganotosaurus: { price: 3.975e26 }
 	}
 };
+
+export interface ItemList {
+	entropy: Record<string, ItemDefinitions>;
+	ideas: Record<string, ItemDefinitions>;
+	fossils: Record<string, ItemDefinitions>;
+}
+
+export interface ItemDefinitions {
+	price: number | bigint;
+}

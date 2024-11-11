@@ -1,5 +1,4 @@
-import { Category, randomColor } from '#constants/index';
-import { Command } from '#structures/Command';
+import { Category, randomColor } from '#lib/utilities/index';
 import { EmbedBuilder, chatInputApplicationCommandMention } from '@discordjs/builders';
 
 export default class MiscHelp extends Command {

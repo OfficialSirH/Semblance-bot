@@ -1,5 +1,4 @@
-import { Command } from '#structures/Command';
-import { Category, SubCategory, attachments } from '#constants/index';
+import { Category, SubCategory, attachments } from '#lib/utilities/index';
 import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Geodes extends Command {

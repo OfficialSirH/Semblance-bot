@@ -1,6 +1,4 @@
-import { Command } from '#structures/Command';
-import { authorDefault, Category, randomColor, SubCategory } from '#constants/index';
-import { Attachy } from '#structures/Attachy';
+import { authorDefault, Category, randomColor, SubCategory } from '#lib/utilities/index';
 import { EmbedBuilder } from '@discordjs/builders';
 import type { APIChatInputApplicationCommandGuildInteraction } from '@discordjs/core';
 

@@ -1,5 +1,4 @@
-import { Category } from '#constants/index';
-import { Command } from '#structures/Command';
+import { Category } from '#lib/utilities/index';
 import { EmbedBuilder } from '@discordjs/builders';
 import { MessageFlags } from '@discordjs/core';
 export default class Freedarwinium extends Command {

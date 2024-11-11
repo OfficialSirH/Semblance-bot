@@ -1,5 +1,4 @@
-import { Category, randomColor, SubCategory, attachments } from '#constants/index';
-import { Command } from '#structures/Command';
+import { attachments, Category, randomColor, SubCategory } from '#lib/utilities/index';
 import { EmbedBuilder } from '@discordjs/builders';
 
 export default class Mvunlocks extends Command {

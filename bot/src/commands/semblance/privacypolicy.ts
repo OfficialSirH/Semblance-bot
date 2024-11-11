@@ -1,30 +1,22 @@
-import { Category, randomColor } from '#constants/index';
-import { Command } from '#structures/Command';
+import { randomColor } from '#lib/utilities/index';
 import { EmbedBuilder } from '@discordjs/builders';
-import type { FastifyReply } from 'fastify';
+import { Command, RegisterCommand } from '@skyra/http-framework';
+import { ApplicationIntegrationType, InteractionContextType, MessageFlags } from 'discord-api-types/v10';
 
-export default class PrivacyPolicy extends Command {
-	public constructor(client: Command.Requirement) {
-		super(client, {
-			name: 'privacypolicy',
-			description: 'Get the privacy policy for Semblance.',
-			fullCategory: [Category.semblance]
-		});
-	}
-
-	public override async chatInputRun(res: FastifyReply) {
+@RegisterCommand((builder) =>
+	builder
+		.setName('privacypolicy')
+		.setDescription('Get the privacy policy for Semblance.')
+		.setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall)
+		.setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel)
+)
+export class UserCommand extends Command {
+	public override async chatInputRun(interaction: Command.ChatInputInteraction) {
 		const embed = new EmbedBuilder()
 			.setTitle('Privacy Policy')
-
 			.setColor(randomColor)
-			.setURL('https://github.com/OfficialSirH/Semblance-bot/blob/master/Privacy%20Policy.md');
+			.setURL('https://github.com/OfficialSirH/Semblance-bot/blob/main/Privacy%20Policy.md');
 
-		await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
-	}
-
-	public override data() {
-		return {
-			command: { name: this.name, description: this.description }
-		};
+		return interaction.reply({ embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
 	}
 }

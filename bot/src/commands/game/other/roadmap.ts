@@ -1,7 +1,6 @@
-import { backButton, buildCustomId } from '#constants/components';
-import { attachments, Category, earlyBeyondTesters, randomColor, SubCategory } from '#constants/index';
-import type { ParsedCustomIdData } from '#lib/typess/Semblance';
-import { Command } from '#structures/Command';
+import type { ParsedCustomIdData } from '#lib/types/Semblance';
+import { backButton, buildCustomId } from '#lib/utilities/components';
+import { attachments, Category, earlyBeyondTesters, randomColor, SubCategory } from '#lib/utilities/index';
 import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, type MessageActionRowComponentBuilder } from '@discordjs/builders';
 import {
 	ButtonStyle,
@@ -21,7 +20,7 @@ export default class Roadmap extends Command {
 	}
 
 	public override async chatInputRun(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
-		await this.client.api.interactions.reply(res, this.templateRun(interaction));
+		await interaction.reply(res, this.templateRun(interaction));
 	}
 
 	public override templateRun(interaction: APIChatInputApplicationCommandGuildInteraction) {
@@ -85,7 +84,7 @@ export default class Roadmap extends Command {
 				await this.client.api.interactions.updateMessage(reply, roadmap(interaction));
 				break;
 			default:
-				await this.client.api.interactions.reply(reply, {
+				await interaction.reply(reply, {
 					content: 'An improper action was received.',
 					flags: MessageFlags.Ephemeral
 				});

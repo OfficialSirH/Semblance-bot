@@ -1,6 +1,4 @@
-import { onlyUnique } from '#constants/index';
-import type { Attachy } from '#structures/Attachy';
-import type { Client } from '#structures/Client';
+import { onlyUnique } from '#lib/utilities/index';
 import {
 	ChannelType,
 	Routes,
@@ -76,13 +74,12 @@ export const getMembers = async (rest: REST, searches: string[] | Snowflake[], g
 export const getUser = async (rest: REST, search: string | Snowflake, guild: APIGuild) => {
 	const member = await getMember(rest, search, guild);
 	if (member) return member.user;
-	else
-		try {
-			return rest.get(Routes.user(search)) as Promise<APIUser>;
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		} catch (e) {
-			return undefined;
-		}
+	try {
+		return rest.get(Routes.user(search)) as Promise<APIUser>;
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	} catch (e) {
+		return undefined;
+	}
 };
 
 const getId = (search: string | Snowflake) => (search.match(/[0-9]+/) ?? [''])[0];

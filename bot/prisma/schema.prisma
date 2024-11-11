@@ -7,6 +7,10 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator json {
+  provider = "prisma-json-types-generator"
+}
+
 model BoosterReward {
   userId        String   @id
   rewardingDate DateTime
@@ -37,11 +41,13 @@ model BoosterCodes {
 
 model Leaderboard {
   type  String @id
+  /// [LeaderboardUser]
   users Json[]
 }
 
 model Reminder {
   userId    String @id
+  /// [UserReminder]
   reminders Json[]
 }
 

@@ -1,5 +1,4 @@
-import { PreconditionName, UserId } from '#constants/index';
-import { Precondition } from '#structures/Precondition';
+import { PreconditionName, UserId } from '#lib/utilities/index';
 import type { APIChatInputApplicationCommandInteraction, APIContextMenuInteraction } from '@discordjs/core';
 export default class OwnerOnly extends Precondition {
 	public constructor(client: Precondition.Requirement) {

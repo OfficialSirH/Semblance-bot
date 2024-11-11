@@ -1,7 +1,6 @@
-import { buildCustomId } from '#constants/components';
-import { Category, GuildId, SuggestionConstants, authorDefault, disableAllComponents } from '#constants/index';
-import { type CustomIdData, type ParsedCustomIdData } from '#lib/typess/Semblance';
-import { Command } from '#structures/Command';
+import { type CustomIdData, type ParsedCustomIdData } from '#lib/types/Semblance';
+import { buildCustomId } from '#lib/utilities/components';
+import { Category, GuildId, SuggestionConstants, authorDefault, disableAllComponents } from '#lib/utilities/index';
 import {
 	ActionRowBuilder,
 	ButtonBuilder,
@@ -74,7 +73,7 @@ export default class Suggest extends Command {
 					}
 				});
 
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: `Your decline reason send status: ${
 					declineReasonSent ? 'Sent' : `Failed to send\nHere's your reason: ${interaction.data.components[0].components[0].value}`
 				}.`,
@@ -168,7 +167,7 @@ export default class Suggest extends Command {
 		// );
 		// this.client.logger.error(`code: ${result.statusCode}\nbody: ${await result.body.text()}`);
 
-		await this.client.api.interactions.reply(res, {
+		await interaction.reply(res, {
 			content:
 				'Your suggestion was recorded successfully! The moderators will first review your suggestion before allowing it onto the suggestions channel. ' +
 				"You'll receive a DM when your suggestion is either accepted or denied so make sure to have your DMs opened.",
@@ -183,13 +182,13 @@ export default class Suggest extends Command {
 		// if (attachment) {
 		//   // make sure the attachment is an image
 		//   if (!attachment.content_type?.startsWith('image/'))
-		//     return this.client.api.interactions.reply(res, {
+		//     return interaction.reply(res, {
 		//       content: 'Invalid attachment type. Please make sure the attachment is an image.',
 		//       flags: MessageFlags.Ephemeral,
 		//     });
 
 		//   if (this.client.cache.temp.suggestionAttachments.size >= SuggestionConstants.AttachmentCacheLimit)
-		//     return this.client.api.interactions.reply(res, {
+		//     return interaction.reply(res, {
 		//       content: `Attachment cache limit reached.
 		//         This occurs when a lot of users are making suggestions that include attachments at the same time.
 		//         Usually, this shouldn't happen so if you get this response again in 5 minutes, please contact <@${UserId.sirh}>`,
@@ -250,8 +249,7 @@ export default class Suggest extends Command {
 		interaction: APIMessageComponentButtonInteraction,
 		data: ParsedCustomIdData<'accept' | 'deny' | 'silent-deny'>
 	) {
-		if (!['accept', 'deny', 'silent-deny'].includes(data.action))
-			return this.client.api.interactions.reply(res, { content: "Something ain't working right" });
+		if (!['accept', 'deny', 'silent-deny'].includes(data.action)) return interaction.reply(res, { content: "Something ain't working right" });
 
 		const disabledComponents = await disableAllComponents(interaction);
 

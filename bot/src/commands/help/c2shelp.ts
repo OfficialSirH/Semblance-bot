@@ -1,7 +1,6 @@
-import { Category, randomColor, SubCategory, subcategoryList } from '#constants/index';
-import { Command } from '#structures/Command';
-import { buildCustomId } from '#constants/components';
-import { ActionRowBuilder, type MessageActionRowComponentBuilder, ButtonBuilder, EmbedBuilder } from '@discordjs/builders';
+import { buildCustomId } from '#lib/utilities/components';
+import { Category, randomColor, SubCategory, subcategoryList } from '#lib/utilities/index';
+import { ActionRowBuilder, ButtonBuilder, EmbedBuilder, type MessageActionRowComponentBuilder } from '@discordjs/builders';
 import { type APIChatInputApplicationCommandGuildInteraction, ButtonStyle } from '@discordjs/core';
 
 export default class C2sHelp extends Command {

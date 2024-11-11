@@ -1,56 +1,23 @@
-import { randomColor, formattedDate, Category } from '#constants/index';
-import type { Reminder, UserReminder, Prisma } from '@prisma/client';
-import { handleReminder } from '#constants/models';
-import { scheduleJob } from 'node-schedule';
-import { Command } from '#structures/Command';
+import { formattedDate, randomColor } from '#lib/utilities/index';
+import { handleReminder } from '#lib/utilities/models';
 import { EmbedBuilder } from '@discordjs/builders';
 import {
+	type APIApplicationCommandAutocompleteInteraction,
 	type APIChatInputApplicationCommandGuildInteraction,
-	MessageFlags,
 	ApplicationCommandOptionType,
-	type RESTPostAPIApplicationCommandsJSONBody,
-	type APIApplicationCommandAutocompleteInteraction
+	MessageFlags,
+	type RESTPostAPIApplicationCommandsJSONBody
 } from '@discordjs/core';
+import type { Prisma, Reminder } from '@prisma/client';
+import type { AutocompleteInteractionArguments, Command } from '@skyra/http-framework';
 import type { FastifyReply } from 'fastify';
-import type { InteractionOptionResolver } from '#structures/InteractionOptionResolver';
+import { scheduleJob } from 'node-schedule';
 
 const MAX_TIME = 29030400000;
 const MAX_REMINDERS = 5;
 const MILLISECONDS_TO_MINUTES = 1000 * 60;
 
-export default class RemindMe extends Command {
-	public constructor(client: Command.Requirement) {
-		super(client, {
-			name: 'remindme',
-			description: 'create reminders for yourself',
-			fullCategory: [Category.utility]
-		});
-	}
-
-	public override async chatInputRun(
-		res: FastifyReply,
-		interaction: APIChatInputApplicationCommandGuildInteraction,
-		options: InteractionOptionResolver
-	) {
-		const action = options.getSubcommand();
-
-		switch (action) {
-			case 'create':
-				return this.create(res, interaction, options);
-			case 'edit':
-				return this.edit(res, interaction, options);
-			case 'delete':
-				return this.deleteReminder(res, interaction, options);
-			case 'list':
-				return this.list(res, interaction);
-			default:
-				return this.client.api.interactions.reply(res, {
-					content: 'You must specify a valid subcommand.',
-					flags: MessageFlags.Ephemeral
-				});
-		}
-	}
-
+export default class UserCommand extends Command {
 	public override async autocompleteRun(
 		reply: FastifyReply,
 		_interaction: APIApplicationCommandAutocompleteInteraction,
@@ -124,8 +91,8 @@ export default class RemindMe extends Command {
 								required: true
 							},
 							{
-								name: 'reminder',
-								description: 'the reminder to be sent',
+								name: 'content',
+								description: 'the content to be sent',
 								type: ApplicationCommandOptionType.String,
 								required: true
 							}
@@ -150,8 +117,8 @@ export default class RemindMe extends Command {
 								autocomplete: true
 							},
 							{
-								name: 'reminder',
-								description: 'the reminder to be sent',
+								name: 'content',
+								description: 'the content to be sent',
 								type: ApplicationCommandOptionType.String
 							}
 						]
@@ -186,14 +153,14 @@ export default class RemindMe extends Command {
 		const { user } = interaction.member;
 
 		if (timeAmount > MAX_TIME)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'You cannot create a reminder for longer than a year',
 				flags: MessageFlags.Ephemeral
 			});
 
 		const currentReminderData = await this.client.db.reminder.findUnique({ where: { userId: user.id } });
 		if (currentReminderData && currentReminderData?.reminders.length >= MAX_REMINDERS)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: `You cannot have more than ${MAX_REMINDERS} reminders at a time`,
 				flags: MessageFlags.Ephemeral
 			});
@@ -202,7 +169,7 @@ export default class RemindMe extends Command {
 			.setTitle('Reminder')
 			.setColor(randomColor)
 			.setDescription(`New reminder successfully created:\n**When:** ${formattedDate(Date.now() + timeAmount)}\n **Reminder**: ${reminder}`);
-		await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		await interaction.reply(res, { embeds: [embed.toJSON()] });
 
 		if (currentReminderData) {
 			this.client.db.reminder.update({
@@ -252,7 +219,7 @@ export default class RemindMe extends Command {
 		})) as unknown as Reminder;
 
 		if (!currentReminderData)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: "You don't have any reminders to edit.",
 				flags: MessageFlags.Ephemeral
 			});
@@ -262,12 +229,12 @@ export default class RemindMe extends Command {
 		const amount = options.getInteger('amount') || 0 * MILLISECONDS_TO_MINUTES;
 
 		if (!reminder && !amount)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'You must specify either a reminder or an amount of time to apply an edit.',
 				flags: MessageFlags.Ephemeral
 			});
 		if (reminderId > currentReminderData.reminders.length)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'You must specify a valid reminder ID',
 				flags: MessageFlags.Ephemeral
 			});
@@ -289,7 +256,7 @@ export default class RemindMe extends Command {
 		});
 
 		if (!updatedReminderData)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'An error occurred while updating your reminder',
 				flags: MessageFlags.Ephemeral
 			});
@@ -300,7 +267,7 @@ export default class RemindMe extends Command {
 			.setDescription(
 				`Reminder successfully edited:\n**When:** ${formattedDate(updatedReminder.time.valueOf())}\n **Reminder**: ${updatedReminder.message}`
 			);
-		await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		await interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 
 	async deleteReminder(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction, options: InteractionOptionResolver) {
@@ -311,12 +278,12 @@ export default class RemindMe extends Command {
 		})) as unknown as Reminder;
 
 		if (!currentReminderData)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: "You don't have any reminders to delete.",
 				flags: MessageFlags.Ephemeral
 			});
 		if (reminderId > currentReminderData.reminders.length)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: 'You must specify a valid reminder ID',
 				flags: MessageFlags.Ephemeral
 			});
@@ -340,7 +307,7 @@ export default class RemindMe extends Command {
 			.setTitle('Deleted Reminder')
 			.setColor(randomColor)
 			.setDescription(`Your reminder to remind you about: ${deletedReminder.message}\n has been deleted successfully`);
-		await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()] });
+		await interaction.reply(res, { embeds: [embed.toJSON()] });
 	}
 
 	async list(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
@@ -350,7 +317,7 @@ export default class RemindMe extends Command {
 		})) as unknown as Reminder;
 
 		if (!currentReminderData)
-			return this.client.api.interactions.reply(res, {
+			return interaction.reply(res, {
 				content: "You don't have any reminders.",
 				flags: MessageFlags.Ephemeral
 			});
@@ -368,6 +335,22 @@ export default class RemindMe extends Command {
 					)
 					.join('\n\n')
 			);
-		await this.client.api.interactions.reply(res, { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
+		await interaction.reply(res, { embeds: [embed.toJSON()], flags: MessageFlags.Ephemeral });
 	}
+}
+
+type AutoCompleteOptions = AutocompleteInteractionArguments<{ amount: string }>;
+
+interface CreateOptions {
+	content: string;
+	amount: number;
+}
+
+interface UpdateOptions extends IdOptions {
+	content?: string;
+	amount?: string;
+}
+
+interface IdOptions {
+	id: string;
 }

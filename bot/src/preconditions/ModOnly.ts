@@ -1,6 +1,5 @@
-import { PreconditionName, getPermissionLevel } from '#constants/index';
+import { PreconditionName, getPermissionLevel } from '#lib/utilities/index';
 import type { APIChatInputApplicationCommandGuildInteraction, APIContextMenuInteraction } from '@discordjs/core';
-import { Precondition } from '#structures/Precondition';
 
 export default class ModOnly extends Precondition {
 	public constructor(client: Precondition.Requirement) {
