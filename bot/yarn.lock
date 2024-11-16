@@ -694,68 +694,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry-internal/tracing@npm:7.119.2":
-  version: 7.119.2
-  resolution: "@sentry-internal/tracing@npm:7.119.2"
-  dependencies:
-    "@sentry/core": "npm:7.119.2"
-    "@sentry/types": "npm:7.119.2"
-    "@sentry/utils": "npm:7.119.2"
-  checksum: 10/5a3a0e3f33da1b502c37d0d2c91861dce206806fdedbf2bed687fa65912044e7fd684903f9d8c2f41123f8484feae98c12f90ff5368550a29a6cf2f9f6cd4c72
-  languageName: node
-  linkType: hard
-
-"@sentry/core@npm:7.119.2":
-  version: 7.119.2
-  resolution: "@sentry/core@npm:7.119.2"
-  dependencies:
-    "@sentry/types": "npm:7.119.2"
-    "@sentry/utils": "npm:7.119.2"
-  checksum: 10/67969ef7cc20da2cb4ba79887b3531d5f624e795c8404414506939b647fc3d6a0fac4c44657fa734dbb4f8d37c6b4ad12c14caf988d6e07d3bc7eb7e0fe0c2c2
-  languageName: node
-  linkType: hard
-
-"@sentry/integrations@npm:7.119.2, @sentry/integrations@npm:^7.92.0":
-  version: 7.119.2
-  resolution: "@sentry/integrations@npm:7.119.2"
-  dependencies:
-    "@sentry/core": "npm:7.119.2"
-    "@sentry/types": "npm:7.119.2"
-    "@sentry/utils": "npm:7.119.2"
-    localforage: "npm:^1.8.1"
-  checksum: 10/6e064ca92a21615d57d06469353b924b1c34254132615b2e8ec364375f31a18c607b3d46ad3390eef1ed9c654706793af4f01ce4c7c61486f6a638a70942c721
-  languageName: node
-  linkType: hard
-
-"@sentry/node@npm:^7.92.0":
-  version: 7.119.2
-  resolution: "@sentry/node@npm:7.119.2"
-  dependencies:
-    "@sentry-internal/tracing": "npm:7.119.2"
-    "@sentry/core": "npm:7.119.2"
-    "@sentry/integrations": "npm:7.119.2"
-    "@sentry/types": "npm:7.119.2"
-    "@sentry/utils": "npm:7.119.2"
-  checksum: 10/2160288943093d0a5617508482095e5b118a1a67c4a858150b801e110d12ebbc8cdef69a5d50aa55a448447dc3db6251102fb6eaf58deb976de0042682469af1
-  languageName: node
-  linkType: hard
-
-"@sentry/types@npm:7.119.2":
-  version: 7.119.2
-  resolution: "@sentry/types@npm:7.119.2"
-  checksum: 10/8a4c8d13e1e5232be33837d42af8f85539a61d7bde1e174d4a077485f6a53896a3fe2c53cdaf13840f5e8ef6dea3977d5aa506a28f23431f8c629359b9cf8be9
-  languageName: node
-  linkType: hard
-
-"@sentry/utils@npm:7.119.2":
-  version: 7.119.2
-  resolution: "@sentry/utils@npm:7.119.2"
-  dependencies:
-    "@sentry/types": "npm:7.119.2"
-  checksum: 10/97501d95e169f91ed3718845975dc69a9f03fe0ca9058ef4558c9c67d0653df62cfa9c696a6c48c7dd0eb12a9417a7ffdaa9efa675333283c75654ef9f27eb40
-  languageName: node
-  linkType: hard
-
 "@skyra/env-utilities@npm:^1.3.0":
   version: 1.3.0
   resolution: "@skyra/env-utilities@npm:1.3.0"
@@ -780,7 +718,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@skyra/http-framework@npm:^2.0.0, @skyra/http-framework@npm:^2.1.0":
+"@skyra/http-framework@npm:^2.1.0":
   version: 2.1.0
   resolution: "@skyra/http-framework@npm:2.1.0"
   dependencies:
@@ -803,23 +741,6 @@ __metadata:
   dependencies:
     tslib: "npm:^2.6.2"
   checksum: 10/b07e267d5d08e19455a7202520a9dd001f2f47ffc120458efea78e5c2a10c97d928a333d376f984f4cbd55e111b70edaac1649c542836b9856d50a6a3aee0705
-  languageName: node
-  linkType: hard
-
-"@skyra/shared-http-pieces@npm:^1.2.2":
-  version: 1.2.2
-  resolution: "@skyra/shared-http-pieces@npm:1.2.2"
-  dependencies:
-    "@discordjs/builders": "npm:^1.7.0"
-    "@discordjs/collection": "npm:^1.5.3"
-    "@sentry/integrations": "npm:^7.92.0"
-    "@sentry/node": "npm:^7.92.0"
-    "@skyra/env-utilities": "npm:^1.3.0"
-    "@skyra/http-framework": "npm:^2.0.0"
-    "@skyra/http-framework-i18n": "npm:^1.2.0"
-    discord-api-types: "npm:^0.37.67"
-    tslib: "npm:^2.6.2"
-  checksum: 10/97ad76ade2a62441d856e41b425d79baab2df14e1d348eb07dc1ceced3b39ee130619cc49417eb985e40b29be41784d55cf3f1e8edd846e8157b663913951242
   languageName: node
   linkType: hard
 
@@ -2394,13 +2315,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immediate@npm:~3.0.5":
-  version: 3.0.6
-  resolution: "immediate@npm:3.0.6"
-  checksum: 10/f9b3486477555997657f70318cc8d3416159f208bec4cca3ff3442fd266bc23f50f0c9bd8547e1371a6b5e82b821ec9a7044a4f7b944798b25aa3cc6d5e63e62
-  languageName: node
-  linkType: hard
-
 "import-fresh@npm:^3.2.1, import-fresh@npm:^3.3.0":
   version: 3.3.0
   resolution: "import-fresh@npm:3.3.0"
@@ -2703,15 +2617,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lie@npm:3.1.1":
-  version: 3.1.1
-  resolution: "lie@npm:3.1.1"
-  dependencies:
-    immediate: "npm:~3.0.5"
-  checksum: 10/c2c7d9dcc3a9aae641f41cde4e2e2cd571e4426b1f5915862781d77776672dcbca43461e16f4d382c9a300825c15e1a4923f1def3a5568d97577e077a3cecb44
-  languageName: node
-  linkType: hard
-
 "light-my-request@npm:^5.11.0":
   version: 5.14.0
   resolution: "light-my-request@npm:5.14.0"
@@ -2768,15 +2673,6 @@ __metadata:
     rfdc: "npm:^1.4.1"
     wrap-ansi: "npm:^9.0.0"
   checksum: 10/c76542f18306195e464fe10203ee679a7beafa9bf0dc679ebacb416387cca8f5307c1d8ba35483d26ba611dc2fac5a1529733dce28f2660556082fb7eebb79f9
-  languageName: node
-  linkType: hard
-
-"localforage@npm:^1.8.1":
-  version: 1.10.0
-  resolution: "localforage@npm:1.10.0"
-  dependencies:
-    lie: "npm:3.1.1"
-  checksum: 10/d5c44be3a09169b013a3ebe252e678aaeb6938ffe72e9e12c199fd4307c1ec9d1a057ac2dfdfbb1379dfeec467a34ad0fc3ecd27489a2c43a154fb72b2822542
   languageName: node
   linkType: hard
 
@@ -3733,7 +3629,6 @@ __metadata:
     "@skyra/env-utilities": "npm:^1.3.0"
     "@skyra/http-framework": "npm:^2.1.0"
     "@skyra/http-framework-i18n": "npm:^1.2.0"
-    "@skyra/shared-http-pieces": "npm:^1.2.2"
     "@skyra/start-banner": "npm:^2.0.1"
     "@top-gg/sdk": "npm:^3.1.6"
     "@types/node": "npm:^22.8.4"

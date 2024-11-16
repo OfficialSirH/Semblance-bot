@@ -95,7 +95,7 @@ export default class Ready extends Listener<GatewayDispatchEvents.Ready> {
 		});
 
 		/* Reminder scheduling */
-		const reminders = (await this.client.db.reminder.findMany({})) as unknown as Reminder[];
+		const reminders = (await this.container.prisma.reminder.findMany({})) as unknown as Reminder[];
 		reminders.forEach((reminderData) => {
 			reminderData.reminders.forEach((reminder) => {
 				schedule.scheduleJob(reminder.time, () => handleReminder(this.client, reminderData, reminder));
@@ -103,7 +103,7 @@ export default class Ready extends Listener<GatewayDispatchEvents.Ready> {
 		});
 
 		/* Booster rewards scheduling */
-		const boosterRewards = await this.client.db.boosterReward.findMany({});
+		const boosterRewards = await this.container.prisma.boosterReward.findMany({});
 		const dueBoosterRewards: Promise<BoosterReward>[] = [];
 
 		boosterRewards

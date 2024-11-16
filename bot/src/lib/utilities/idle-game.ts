@@ -58,7 +58,7 @@ export async function create(
 	const percent = (Math.round(Math.random() * 25) + 25) / 100 + 1;
 	const startingProfits = Math.random() * 0.05 + 0.05;
 
-	const creationHandler = await client.db.game.upsert({
+	const creationHandler = await container.prisma.game.upsert({
 		where: {
 			player: user?.id
 		},
@@ -131,7 +131,7 @@ export async function collect(
 	components: ActionRowBuilder<MessageActionRowComponentBuilder>[]
 ) {
 	const user = interaction.member?.user;
-	let collectionHandler = await client.db.game.findUnique({ where: { player: user?.id } });
+	let collectionHandler = await container.prisma.game.findUnique({ where: { player: user?.id } });
 	if (!collectionHandler)
 		return client.api.interactions.reply(reply, {
 			content: 'You do not have a game yet.',
@@ -139,7 +139,7 @@ export async function collect(
 		});
 	const collected = collectionHandler.profitRate * ((Date.now() - collectionHandler.lastCollected.valueOf()) / 1000);
 
-	collectionHandler = await client.db.game.update({
+	collectionHandler = await container.prisma.game.update({
 		where: {
 			player: user?.id
 		},
@@ -174,7 +174,7 @@ export async function upgrade(
 	await client.api.interactions.deferMessageUpdate(reply);
 	const user = interaction.member?.user;
 
-	let upgradeHandler = await client.db.game.findUnique({ where: { player: user?.id } });
+	let upgradeHandler = await container.prisma.game.findUnique({ where: { player: user?.id } });
 	if (!upgradeHandler)
 		return client.api.interactions.reply(reply, {
 			content: 'You do not have a game yet.',
@@ -203,7 +203,7 @@ export async function upgrade(
 
 	while (upgradeHandler.money > costSubtraction) {
 		costSubtraction = await currentPrice(client, upgradeHandler);
-		upgradeHandler = await client.db.game.update({
+		upgradeHandler = await container.prisma.game.update({
 			where: {
 				player: user?.id
 			},
@@ -249,7 +249,7 @@ export async function leaderboard(
 ) {
 	const user = interaction.member?.user;
 	let leaderboard = (
-		await client.db.game.findMany({
+		await container.prisma.game.findMany({
 			take: 20,
 			orderBy: {
 				level: 'desc'

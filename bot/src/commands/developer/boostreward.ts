@@ -136,13 +136,13 @@ export default class BoostReward extends Command {
 		interaction: APIChatInputApplicationCommandGuildInteraction,
 		options: { user: APIUser; days: number }
 	) {
-		let boosterRewards = await this.client.db.boosterReward.findUnique({ where: { userId: options.user.id } });
+		let boosterRewards = await this.container.prisma.boosterReward.findUnique({ where: { userId: options.user.id } });
 		if (boosterRewards)
 			return interaction.reply(res, {
 				content: `That user is already listed to receive an automated reward on ${formattedDate(boosterRewards.rewardingDate.valueOf())}`
 			});
 
-		boosterRewards = await this.client.db.boosterReward.create({
+		boosterRewards = await this.container.prisma.boosterReward.create({
 			data: {
 				userId: options.user.id,
 				rewardingDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * options.days)
@@ -158,13 +158,13 @@ export default class BoostReward extends Command {
 		interaction: APIChatInputApplicationCommandGuildInteraction,
 		options: { user: APIUser; days: number }
 	) {
-		let boosterRewards = await this.client.db.boosterReward.findUnique({ where: { userId: options.user.id } });
+		let boosterRewards = await this.container.prisma.boosterReward.findUnique({ where: { userId: options.user.id } });
 		if (!boosterRewards)
 			return interaction.reply(res, {
 				content: 'That user is not listed to receive an automated reward'
 			});
 
-		boosterRewards = await this.client.db.boosterReward.update({
+		boosterRewards = await this.container.prisma.boosterReward.update({
 			where: {
 				userId: options.user.id
 			},
@@ -180,7 +180,7 @@ export default class BoostReward extends Command {
 	}
 
 	public async removeBooster(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction, user: APIUser) {
-		const boosterRewards = await this.client.db.boosterReward.delete({ where: { userId: user.id } });
+		const boosterRewards = await this.container.prisma.boosterReward.delete({ where: { userId: user.id } });
 		if (!boosterRewards)
 			return interaction.reply(res, {
 				content: 'That user is not listed to receive an automated reward'
@@ -192,7 +192,7 @@ export default class BoostReward extends Command {
 	}
 
 	public async listBoosters(res: FastifyReply) {
-		const boosterRewards = await this.client.db.boosterReward.findMany({});
+		const boosterRewards = await this.container.prisma.boosterReward.findMany({});
 		if (!boosterRewards.length) return interaction.reply(res, { content: 'There are no booster rewards to list' });
 
 		interaction.reply(res, {

@@ -9,9 +9,9 @@ export const handleBoosterReward = async (client: Client, boosterReward: Booster
 	const member = (await client.rest
 		.get(Routes.guildMember(GuildId.cellToSingularity, boosterReward.userId))
 		.catch(() => null)) as APIGuildMember | null;
-	if (!member || !member.roles.includes(boosterRoleId)) return client.db.boosterReward.delete({ where: { userId: boosterReward.userId } });
+	if (!member || !member.roles.includes(boosterRoleId)) return container.prisma.boosterReward.delete({ where: { userId: boosterReward.userId } });
 
-	const darwiniumCodes = await client.db.boosterCodes.findMany({});
+	const darwiniumCodes = await container.prisma.boosterCodes.findMany({});
 
 	if (darwiniumCodes.length == 0) {
 		await sendMessage(client, boosterChannelId, {
@@ -19,7 +19,7 @@ export const handleBoosterReward = async (client: Client, boosterReward: Booster
 			allowed_mentions: { users: [UserId.sirh, UserId.aditya] }
 		});
 
-		return client.db.boosterReward.update({
+		return container.prisma.boosterReward.update({
 			where: { userId: boosterReward.userId },
 			data: { rewardingDate: new Date(Date.now() + 1000 * 3600 * 24 * 28) }
 		});
@@ -49,13 +49,13 @@ export const handleBoosterReward = async (client: Client, boosterReward: Booster
 	});
 
 	if (darwiniumCodes.length != ogCodeLength)
-		await client.db.boosterCodes.delete({
+		await container.prisma.boosterCodes.delete({
 			where: {
 				id: darwiniumCode.id
 			}
 		});
 
-	return client.db.boosterReward.update({
+	return container.prisma.boosterReward.update({
 		where: { userId: boosterReward.userId },
 		data: { rewardingDate: new Date(Date.now() + 1000 * 3600 * 24 * 28) }
 	});
@@ -66,10 +66,10 @@ export const boosterRoleId = '660930089990488099';
 
 // BoosterRewards - create automatic booster rewards for author of message
 export const createBoosterRewards = async (client: Client, userId: string): Promise<APIInteractionResponseCallbackData> => {
-	const boosterReward = await client.db.boosterReward.findUnique({ where: { userId } });
+	const boosterReward = await container.prisma.boosterReward.findUnique({ where: { userId } });
 	if (boosterReward) return { content: 'You already have a booster reward!', flags: MessageFlags.Ephemeral };
 
-	const newBoosterReward = await client.db.boosterReward.create({
+	const newBoosterReward = await container.prisma.boosterReward.create({
 		data: {
 			userId,
 			rewardingDate: new Date(Date.now() + 1000 * 3600 * 24 * 28)
@@ -98,9 +98,9 @@ export const handleReminder = async (client: Client, reminderData: Reminder, rem
 			allowed_mentions: { users: [reminderData.userId] }
 		}
 	});
-	if (reminderData.reminders.length == 1) return client.db.reminder.delete({ where: { userId: reminderData.userId } });
+	if (reminderData.reminders.length == 1) return container.prisma.reminder.delete({ where: { userId: reminderData.userId } });
 
-	return client.db.reminder.update({
+	return container.prisma.reminder.update({
 		where: { userId: reminderData.userId },
 		data: { reminders: reminderData.reminders.filter((r) => r.reminderId != reminder.reminderId) as object[] }
 	});

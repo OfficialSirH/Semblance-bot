@@ -11,7 +11,7 @@ export default class Update extends Command {
 	}
 
 	public override async templateRun() {
-		const infoHandler = await this.client.db.information.findUnique({ where: { type: 'update' } });
+		const infoHandler = await this.container.prisma.information.findUnique({ where: { type: 'update' } });
 		if (!infoHandler) return { content: 'No update info found.' };
 		const embed = new EmbedBuilder()
 			.setTitle('Steam and Mobile Updates')

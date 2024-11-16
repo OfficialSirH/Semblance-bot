@@ -1,7 +1,6 @@
 import { setup } from '#lib/setup/all';
 import { envParseInteger, envParseString } from '@skyra/env-utilities';
 import { Client, container } from '@skyra/http-framework';
-import { registerCommands } from '@skyra/shared-http-pieces';
 import { createBanner } from '@skyra/start-banner';
 import { vice } from 'gradient-string';
 
@@ -9,8 +8,6 @@ setup();
 
 const client = new Client();
 await client.load();
-
-void registerCommands();
 
 const address = envParseString('HTTP_ADDRESS', '0.0.0.0');
 const port = envParseInteger('HTTP_PORT', 8008);
@@ -27,8 +24,8 @@ console.log(
 				String.raw`                 ππ  ππ πππ `,
 				String.raw`                  ππππ  πππ  ππππ `,
 				String.raw`                  ππππ  πππ ππ  ππ `,
-				String.raw`            πππππ  ππ   πππ  ππππ `,
-				String.raw`           πππ πππ πππ  πππ  πππ `,
+				String.raw`                   ππ   πππ  ππππ `,
+				String.raw`            πππππ  πππ  πππ  πππ `,
 				String.raw`           πππ πππ  πππππππ  πππ   πππ `,
 				String.raw`            πππππ     πππππ ππππ  ππ ππ `,
 				String.raw`             ππππ       ππππππ     πππ `,

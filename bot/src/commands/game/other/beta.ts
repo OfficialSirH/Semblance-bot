@@ -11,7 +11,7 @@ export default class Beta extends Command {
 	}
 
 	public override async templateRun() {
-		const infoHandler = await this.client.db.information.findUnique({ where: { type: 'beta' } });
+		const infoHandler = await this.container.prisma.information.findUnique({ where: { type: 'beta' } });
 		if (!infoHandler) return { content: 'No beta info found.' };
 		const embed = new EmbedBuilder()
 			.setTitle('Beta')

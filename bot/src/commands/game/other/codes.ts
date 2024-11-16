@@ -19,7 +19,7 @@ export default class Codes extends Command {
 		interaction: APIMessageComponentInteraction,
 		data: ParsedCustomIdData<'expired' | 'valid'>
 	): Promise<void> {
-		const codeHandler = await this.client.db.information.findUnique({ where: { type: 'codes' } });
+		const codeHandler = await this.container.prisma.information.findUnique({ where: { type: 'codes' } });
 		if (!codeHandler)
 			return interaction.reply(reply, {
 				content: 'codes object is missing',
@@ -74,7 +74,7 @@ export default class Codes extends Command {
 	}
 
 	public override async templateRun(interaction: APIChatInputApplicationCommandGuildInteraction) {
-		const codeHandler = await this.client.db.information.findUnique({ where: { type: 'codes' } });
+		const codeHandler = await this.container.prisma.information.findUnique({ where: { type: 'codes' } });
 		if (!codeHandler) return { content: 'No codes found.' };
 		const embed = new EmbedBuilder()
 			.setTitle('Darwinium Codes')

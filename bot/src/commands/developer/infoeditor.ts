@@ -44,7 +44,7 @@ export default class InfoEditor extends Command {
 		}
 
 		const subject = async () => {
-			const subject = await this.client.db.information.findUnique({
+			const subject = await this.container.prisma.information.findUnique({
 				where: {
 					type: options.getString('subject', true)
 				}
@@ -65,7 +65,7 @@ export default class InfoEditor extends Command {
 					)}\`\`\``
 				);
 
-			const updatedSubject = await this.client.db.information.update({
+			const updatedSubject = await this.container.prisma.information.update({
 				where: {
 					type: subjectValue.type
 				},
@@ -110,7 +110,7 @@ export default class InfoEditor extends Command {
 
 	public override async data() {
 		const infoSubjects = (
-			await this.client.db.information.findMany({
+			await this.container.prisma.information.findMany({
 				select: {
 					type: true
 				}
@@ -225,7 +225,7 @@ export default class InfoEditor extends Command {
 	}
 
 	private async listBoosterCodes(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction) {
-		const darwiniumCodes = await this.client.db.boosterCodes.findMany({});
+		const darwiniumCodes = await this.container.prisma.boosterCodes.findMany({});
 		const list = darwiniumCodes.length > 0 ? darwiniumCodes.map((c) => c.code).join(', ') : 'None';
 		const embed = new EmbedBuilder()
 			.setTitle('Booster Codes')
@@ -238,14 +238,14 @@ export default class InfoEditor extends Command {
 	private async addBoosterCode(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction, codes: string[]) {
 		if (codes.length == 0) return interaction.reply(res, { content: 'You need to give me a code to add.' });
 
-		const darwiniumCodes = await this.client.db.boosterCodes.findMany({});
+		const darwiniumCodes = await this.container.prisma.boosterCodes.findMany({});
 		if (codes.every((c) => darwiniumCodes.map((code) => code.code).includes(c)))
 			return interaction.reply(res, {
 				content: 'All of the codes you provided are already in the list.'
 			});
 
 		codes = codes.filter((c) => !darwiniumCodes.map((code) => code.code).includes(c));
-		await this.client.db.boosterCodes.createMany({
+		await this.container.prisma.boosterCodes.createMany({
 			data: codes.map((c) => ({ code: c }))
 		});
 
@@ -261,7 +261,7 @@ export default class InfoEditor extends Command {
 	private async removeBoosterCode(res: FastifyReply, interaction: APIChatInputApplicationCommandGuildInteraction, codes: string[]) {
 		if (codes.length == 0) return interaction.reply(res, { content: 'You need to give me a code to remove.' });
 
-		const darwiniumCodes = await this.client.db.boosterCodes.findMany({});
+		const darwiniumCodes = await this.container.prisma.boosterCodes.findMany({});
 		if (codes.every((c) => !darwiniumCodes.map((code) => code.code).includes(c)))
 			return interaction.reply(res, {
 				content: "All of the codes you provided aren't in the list."
@@ -270,7 +270,7 @@ export default class InfoEditor extends Command {
 		codes = codes.filter((c) => darwiniumCodes.map((c) => c.code).includes(c));
 		const filteredList = darwiniumCodes.filter((c) => !codes.includes(c.code)).map((c) => c.code);
 
-		await this.client.db.boosterCodes.deleteMany({
+		await this.container.prisma.boosterCodes.deleteMany({
 			where: {
 				code: {
 					in: codes

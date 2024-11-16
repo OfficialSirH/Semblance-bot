@@ -72,7 +72,7 @@ export const fetchDeepL = async (query_params: DeepLParams) => {
 // TODO: figure some way to not need checkedLevel and have the cost automatically adjusted based on the level
 export async function currentPrice(client: Client, userData: Game) {
 	if (userData.level == userData.checkedLevel) {
-		userData = await client.db.game.update({
+		userData = await container.prisma.game.update({
 			where: {
 				player: userData.player
 			},

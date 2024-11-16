@@ -39,7 +39,7 @@ export default class Game extends Command {
 
 		const { user } = interaction.member;
 
-		const statsHandler = await this.client.db.game.findUnique({ where: { player: user.id } });
+		const statsHandler = await this.container.prisma.game.findUnique({ where: { player: user.id } });
 		const embed = new EmbedBuilder();
 		let cost = Infinity;
 		if (!statsHandler) {
@@ -158,7 +158,7 @@ export default class Game extends Command {
 		let user = options.getUser('user');
 		if (!user) user = interaction.member.user;
 
-		const statsHandler = await this.client.db.game.findUnique({ where: { player: user.id } });
+		const statsHandler = await this.container.prisma.game.findUnique({ where: { player: user.id } });
 		if (!statsHandler)
 			return interaction.reply(res, {
 				content:
@@ -225,7 +225,7 @@ export default class Game extends Command {
 		data: ParsedCustomIdData<'create' | 'reset' | 'about' | 'collect' | 'upgrade' | 'leaderboard' | 'vote' | 'stats' | 'close'>
 	) {
 		const id = interaction.member?.user.id as string;
-		const game = await this.client.db.game.findUnique({ where: { player: id } });
+		const game = await this.container.prisma.game.findUnique({ where: { player: id } });
 		let cost = Infinity;
 		let components: ActionRowBuilder<MessageActionRowComponentBuilder>[];
 		if (game) cost = await currentPrice(this.client, game);

@@ -11,7 +11,7 @@ export default class JoinBeta extends Command {
 	}
 
 	public override async templateRun() {
-		const infoHandler = await this.client.db.information.findUnique({ where: { type: 'joinbeta' } });
+		const infoHandler = await this.container.prisma.information.findUnique({ where: { type: 'joinbeta' } });
 		if (!infoHandler) return { content: 'No join beta info found.' };
 		const embed = new EmbedBuilder()
 			.setTitle('Steps to join beta')
