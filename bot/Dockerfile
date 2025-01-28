@@ -2,7 +2,7 @@ FROM node:20-alpine AS builder
 
 WORKDIR /build
 
-RUN apk add --no-cache python3 make g++ curl bash \
+RUN apk add --no-cache openssl python3 make g++ curl bash \
   && curl -sf https://gobinaries.com/tj/node-prune | sh
 
 COPY .yarn ./.yarn
@@ -18,6 +18,8 @@ RUN npm run build:docker \
   && node-prune
 
 FROM node:20-alpine AS runtime
+
+RUN apk add --no-cache openssl
 
 COPY --from=builder build/dist ./dist
 COPY --from=builder build/node_modules ./node_modules

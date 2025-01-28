@@ -145,6 +145,11 @@ Play from ${shortFormattedDate(start)} until ${shortFormattedDate(
       `🧮📚 Dive into the world of numbers and equations in our Explore: Math event! From ${shortFormattedDate(start)} to ${shortFormattedDate(end)}, explore the beauty and complexity of mathematics. Join us for a journey of discovery and problem-solving!`,
     image: eventAttachments.Math,
   },
+  'Artificial Intelligence': {
+    description: (start: number, end: number) =>
+      `🤖✨ Explore: Artificial Intelligence - Mind Machines runs from ${shortFormattedDate(start)} to ${shortFormattedDate(end)}! Dive into the evolution of AI, how machines learn, and their role in our future. Unlock unique badges and uncover the secrets of AI! 🧠💻`,
+    image: eventAttachments.ArtificialIntelligence,
+  },
 };
 
 export type Events =
@@ -164,6 +169,7 @@ export type Events =
   | 'Rock'
   | 'Cryptids'
   | 'Math'
+  | 'Artificial Intelligence'
   | '?';
 
 export interface GameEvent {
