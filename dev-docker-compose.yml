@@ -4,7 +4,10 @@ services:
     build: ./api
     image: sirh/c2s:dev-api
     container_name: dev-api
-    restart: unless-stopped
+    restart_policy:
+      condition: on-failure
+      delay: 5s
+      max_attempts: 3
     ports:
       - "4000:3000"
     stdin_open: true
@@ -15,7 +18,10 @@ services:
     environment:
       - NODE_ENV=development
     container_name: dev-bot
-    restart: unless-stopped
+    restart_policy:
+      condition: on-failure
+      delay: 5s
+      max_attempts: 3
     ports:
       - "9009:8008"
     stdin_open: true
@@ -26,7 +32,10 @@ services:
     environment:
       - NODE_ENV=development
     container_name: dev-botlist
-    restart: unless-stopped
+    restart_policy:
+      condition: on-failure
+      delay: 5s
+      max_attempts: 3
     ports:
       - "9079:8079"
     stdin_open: true
@@ -37,6 +46,9 @@ services:
     environment:
       - NODE_ENV=development
     container_name: dev-twitter
-    restart: unless-stopped
+    restart_policy:
+      condition: on-failure
+      delay: 5s
+      max_attempts: 3
     stdin_open: true
     tty: true
