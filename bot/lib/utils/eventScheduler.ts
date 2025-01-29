@@ -46,6 +46,7 @@ export type EventKeyNames =
   | 'rock'
   | 'cryptid'
   | 'math'
+  | 'ai'
   | 'Question'; // ideally this will never be used but for the sake of completeness
 
 // now we need to map EventKeyNames to Events, example:
@@ -69,6 +70,7 @@ export const EventKeyNamesToEvents: Record<EventKeyNames, Events> = {
   rock: 'Rock',
   cryptid: 'Cryptids',
   math: 'Math',
+  ai: 'Artificial Intelligence',
   Question: '?',
 };
 
