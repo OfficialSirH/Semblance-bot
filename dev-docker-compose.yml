@@ -26,29 +26,3 @@ services:
       - "9009:8008"
     stdin_open: true
     tty: true
-  dev-botlist:
-    build: ./botlist
-    image: sirh/c2s:dev-botlist
-    environment:
-      - NODE_ENV=development
-    container_name: dev-botlist
-    restart_policy:
-      condition: on-failure
-      delay: 5s
-      max_attempts: 3
-    ports:
-      - "9079:8079"
-    stdin_open: true
-    tty: true
-  dev-twitter:
-    build: ./twitter
-    image: sirh/c2s:dev-twitter
-    environment:
-      - NODE_ENV=development
-    container_name: dev-twitter
-    restart_policy:
-      condition: on-failure
-      delay: 5s
-      max_attempts: 3
-    stdin_open: true
-    tty: true

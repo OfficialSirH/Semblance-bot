@@ -25,29 +25,3 @@ services:
       max_attempts: 3
     stdin_open: true
     tty: true
-  botlist:
-    build: ./botlist
-    image: sirh/c2s:botlist
-    environment:
-      - NODE_ENV=production
-    container_name: botlist
-    restart_policy:
-      condition: on-failure
-      delay: 5s
-      max_attempts: 3
-    ports:
-      - "8079:8079"
-    stdin_open: true
-    tty: true
-  twitter:
-    build: ./twitter
-    image: sirh/c2s:twitter
-    environment:
-      - NODE_ENV=production
-    container_name: twitter
-    restart_policy:
-      condition: on-failure
-      delay: 5s
-      max_attempts: 3
-    stdin_open: true
-    tty: true
