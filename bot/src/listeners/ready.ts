@@ -1,19 +1,19 @@
-import * as schedule from 'node-schedule';
 import { GuildId, isProduction } from '#constants/index';
-import { handleBoosterReward, handleReminder } from '#constants/models';
-import type { BoosterReward, Reminder } from '@prisma/client';
+import { handleReminder } from '#constants/models';
+import { Listener } from '#structures/Listener';
+import { Collection } from '@discordjs/collection';
 import {
   ActivityType,
   GatewayDispatchEvents,
   GatewayOpcodes,
-  type GatewayReadyDispatchData,
   PresenceUpdateStatus,
   Routes,
-  type APIRole,
   type APIApplicationCommand,
+  type APIRole,
+  type GatewayReadyDispatchData,
 } from '@discordjs/core';
-import { Listener } from '#structures/Listener';
-import { Collection } from '@discordjs/collection';
+import type { Reminder } from '@prisma/client';
+import * as schedule from 'node-schedule';
 
 export default class Ready extends Listener<GatewayDispatchEvents.Ready> {
   public constructor(client: Listener.Requirement) {
@@ -105,24 +105,24 @@ export default class Ready extends Listener<GatewayDispatchEvents.Ready> {
     });
 
     /* Booster rewards scheduling */
-    const boosterRewards = await this.client.db.boosterReward.findMany({});
-    const dueBoosterRewards: Promise<BoosterReward>[] = [];
+    // const boosterRewards = await this.client.db.boosterReward.findMany({});
+    // const dueBoosterRewards: Promise<BoosterReward>[] = [];
 
-    boosterRewards
-      .filter(boosterReward => {
-        if (boosterReward.rewardingDate.getTime() <= Date.now()) {
-          dueBoosterRewards.push(handleBoosterReward(this.client, boosterReward));
-          return false;
-        }
-        return true;
-      })
-      .forEach(boosterReward => {
-        schedule.scheduleJob(
-          boosterReward.rewardingDate,
-          async () => await handleBoosterReward(this.client, boosterReward),
-        );
-      });
+    // boosterRewards
+    //   .filter(boosterReward => {
+    //     if (boosterReward.rewardingDate.getTime() <= Date.now()) {
+    //       dueBoosterRewards.push(handleBoosterReward(this.client, boosterReward));
+    //       return false;
+    //     }
+    //     return true;
+    //   })
+    //   .forEach(boosterReward => {
+    //     schedule.scheduleJob(
+    //       boosterReward.rewardingDate,
+    //       async () => await handleBoosterReward(this.client, boosterReward),
+    //     );
+    //   });
 
-    await Promise.all(dueBoosterRewards);
+    // await Promise.all(dueBoosterRewards);
   }
 }

@@ -134,7 +134,6 @@ Play from ${shortFormattedDate(start)} until ${shortFormattedDate(
       `Embark on a geological journey in our latest exploration event: Rocks - Set in Stone! 🌍 🪨 ${shortFormattedDate(start)} to ${shortFormattedDate(end)}, explore ancient geological processes, crystals and precious gems. Join us to discover the natural artistry of Earth's crust and collect dazzling geological badges`,
     image: eventAttachments.Rock,
   },
-  // TODO: Add image and update description, this is just a temporary placeholder
   Cryptids: {
     description: (start: number, end: number) =>
       `👣🌲 Embark on a journey to uncover the learn the mysteries behind cryptids in our Explore: Cryptids event! Explore the legends and mysteries of these mythical creatures from ${shortFormattedDate(start)} to ${shortFormattedDate(end)}. Join us for an adventure of discovery and wonder!`,
@@ -149,6 +148,11 @@ Play from ${shortFormattedDate(start)} until ${shortFormattedDate(
     description: (start: number, end: number) =>
       `🤖✨ Explore: Artificial Intelligence - Mind Machines runs from ${shortFormattedDate(start)} to ${shortFormattedDate(end)}! Dive into the evolution of AI, how machines learn, and their role in our future. Unlock unique badges and uncover the secrets of AI! 🧠💻`,
     image: eventAttachments.ArtificialIntelligence,
+  },
+  Cheese: {
+    description: (start: number, end: number) =>
+      `🧀 From humble beginnings to gourmet glory, cheese has delighted palates across the globe for thousands of years.\nJoin us for Explore: Cheese - Dairy Delights from ${shortFormattedDate(start)} to ${shortFormattedDate(end)} as we uncover the science, history, and culture behind one of the world’s most beloved foods. Collect your cheesiest badges yet and say cheddar! 🧂✨`,
+    image: eventAttachments.Cheese,
   },
 };
 
@@ -170,6 +174,7 @@ export type Events =
   | 'Cryptids'
   | 'Math'
   | 'Artificial Intelligence'
+  | 'Cheese'
   | '?';
 
 export interface GameEvent {
