@@ -2837,7 +2837,7 @@ __metadata:
     source-map-support: "npm:^0.5.21"
     tweetnacl: "npm:^1.0.3"
     typescript: "npm:5.6.3"
-    undici: "npm:^6.20.1"
+    undici: "npm:^6.21.2"
     utf-8-validate: "npm:^6.0.4"
     zlib-sync: "npm:^0.1.9"
   languageName: unknown
@@ -3233,10 +3233,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici@npm:^6.20.1":
-  version: 6.20.1
-  resolution: "undici@npm:6.20.1"
-  checksum: 10/68604b53754a95ec89d52efc08fe3e70e333997300c9a5b69f2b6496f1f0f568b2e35adec6442985a7b1d2f7a5648ef5062d1736e4d68082d473cb82177674bc
+"undici@npm:^6.21.2":
+  version: 6.21.3
+  resolution: "undici@npm:6.21.3"
+  checksum: 10/b6b8f4a90e294c11fabbb174b471a310840695ed0154a44b81e9bb4a08867ed738c8a7eac4eb46c7902d502fbccf03fa2cf2e5f18d9a2218d82e4294e3f74a2b
   languageName: node
   linkType: hard
 
